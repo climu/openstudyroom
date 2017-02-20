@@ -1,0 +1,17 @@
+.listing .field label {
+  display: none;
+}
+
+.listing input,
+.listing select,
+.listing textarea {
+  font-size: 1em;
+}
+
+.listing select + span:after {
+  font-size: 2.5em !important;
+}
+
+.page-permissions-listing .admin_page_chooser .field-content {
+  width: 100%;
+}

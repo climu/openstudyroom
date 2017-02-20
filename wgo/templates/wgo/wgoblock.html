@@ -1,0 +1,5 @@
+{% load wgo_tags %}
+<div class="wgo-block" style="{% if value.alignment == 'right' %}float:right;margin-left:10px;{%elif value.alignment == 'left'%}float:left;margin-right:10px;{%else%}margin:auto;{%endif%}width:{{value.width}}px;">
+  <div data-wgo="{{ value.sgf |prepare_sgf }}">
+  </div>
+</div>

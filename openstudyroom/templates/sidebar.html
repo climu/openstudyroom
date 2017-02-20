@@ -1,0 +1,25 @@
+{% load static i18n wagtailcore_tags wagtailimages_tags puput_tags compress wagtailroutablepage_tags %}
+
+    <div class="blog_sidebar">
+        <div class="rss-sitemap">
+            <a href="{% feeds_url blog_page %}" target="_blank" title="RSS">
+                 <i class="fa fa-rss-square"></i> <span>Feed RSS</span>
+            </a>
+        </div>
+
+
+
+        {% if blog_page.display_categories %}
+            <ul class="sidebar">
+                <h4>{% trans 'Categories' %}</h4>
+                {% categories_list %}
+            </ul>
+        {% endif %}
+        {% if blog_page.display_tags %}
+            <ul class="sidebar">
+                <h4>{% trans 'Tags' %}</h4>
+                {% tags_list %}
+            </ul>
+        {% endif %}
+
+    </div>

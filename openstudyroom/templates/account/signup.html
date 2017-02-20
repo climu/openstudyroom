@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% load account_tags %}
+
+{% load bootstrap3 %}
+{%block title%}Singup{%endblock%}
+{% block heading %}{%endblock%}
+{% block page_content %}
+    <div class="row">
+        <div class="col-md-4">
+            <form id="signup_form" method="post" action="{% url "account_signup" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
+                <legend> Sign up</legend>
+                {% csrf_token %}
+                {%bootstrap_form form %}
+                {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                {% endif %}
+                <button type="submit" class="btn btn-primary">Sign up</button>
+            </form>
+            <p class="login-signup">
+                <small>
+                   Already have an account?  <strong><a href="{% url 'account_login' %}">Log in</a></strong>
+                </small>
+            </p>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#id_kgs_username').focus();
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,44 @@
+<ul class="nav nav-tabs">
+  <li><a href="#">Overview</a></li>
+  <li class = active ><a href="#">Results</a></li>
+  <li><a href="#">Players</a></li>
+  <li><a href="#">Games</a></li>
+</ul>
+
+
+<div class='table-responsive'>
+  <table id='example' class='table table-bordered table-player table-league table-hover ' >
+     <thead class='table-league-highlight'>
+       <tr>
+         <th style="width:12em;">player</th>
+         <th style="width:0em;"> score</th>
+        {% for player in players %}
+       		<th style='text-align: center;'> {{ player.kgs_username }}</th>
+        {% endfor %}
+        </thead>
+        <tbody>
+          {% for player in players %}
+        		<tr>
+              <td class='table-league-highlight'>{{forloop.counter}}. {{player.user | user_link}} </td>
+        		<td class='table-league-score-highlight'>{{player.score}} </td>
+        		{% for opponent in players %}
+
+        			{% if forloop.counter == forloop.parentloop.counter %}
+              <td style='text-align: center;' class='table-league-highlight'>
+        			{% else %}
+              <td style='text-align: center;'>
+              {% if opponent.kgs_username in player.get_results %}
+
+              {% html_one_result %}
+
+              {% endif %}
+              </td>
+              {% endif %}
+            {% endfor %}
+              </tr>
+            {% endfor %}
+        	</tbody>
+        </table>
+      </div>
+<iframe name="wgo_iframe" scrolling="no" style= "height:700px;width: 700px;border:none;"></iframe>
+

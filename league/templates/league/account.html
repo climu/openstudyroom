@@ -1,0 +1,112 @@
+{% extends "full_width.html" %}
+{% load wagtailcore_tags %}
+{% load league_tags %}
+{% load bootstrap3 %}
+
+{% block body_class %}user{% endblock %}
+
+{% block title %}{{user.username}}'s league profile{% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1>{{user.username}}'s league profile</h1>
+</div>
+{%endblock%}
+{% block content %}
+<div class="panel panel-default">
+<div class="panel-heading"><h3>Active event</h3></div>
+<div class="panel-body">
+{% if active_player %}
+<p><b>{{user.username}}</b> is currently playing for the <b>{{active_player.event}}</b> in the <b>{{active_player.division}}</b> with the kgs username <b>{{user.kgs_username}}</b>.</p>
+</div>
+  <table id='opponents-table' class=' table table-hover '  >
+     <thead>
+       <tr>
+         <th>Rank</th>
+         <th>Player</th>
+         <th>score</th>
+         <th> {{user.kgs_username}}'s results</th>
+      </thead>
+      <tbody>
+    {% with player=players.0 %}
+    {% for opponent in opponents %}
+    {% if opponent == player %}
+    <tr class="info">
+      {%else%}
+      <tr>
+          {%endif%}
+      <td>{{forloop.counter}}</td>
+      <td>{{opponent.user | user_link}}</td>
+      <td>{{opponent.score}}
+      <td>{% autoescape off%}{% html_one_result%}{%endautoescape%}</td>
+
+    </tr>
+
+    {% endfor %}
+        {% endwith%}
+</tbody>
+</table>
+{% else%}
+{% if request.user == user %}
+<form action=" {% url 'league:league_account'  %}" method="post" class="form">
+{% csrf_token %}
+<input type="hidden" name="action" value="join">
+<span>You are not playing in any league at the moment. Maybe you want to join the {{primary_event}} ?</span>
+
+<button type="submit" class="btn btn-primary"  onclick="return confirm('You are about to join the {{primary_event}}. Allright?')">
+{% bootstrap_icon "ok" %} Join !
+</button>
+</form>
+{% else %}
+<p>{{user.username}} is not playing in any league at the moment. </p>
+{% endif %}
+{% endif %}
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading"><h3>All events</h3></div>
+
+<table id='player-table' class='table' >
+   <thead>
+     <tr>
+       <th>Event</th>
+       <th>Division</th>
+       <th># win</th>
+       <th># loss</th>
+       <th># games </th>
+    </thead>
+    <tbody>
+{% for player in players %}
+  <tr>
+    <td>{{player.event |event_link}}</td>
+    <td>{{player.division |division_link}}</td>
+    <td>{{player.nb_win}}</td>
+    <td>{{player.nb_loss}}</td>
+    <td>{{player | nb_games}}</td>
+  </tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading"><h3>Games</h4></div>
+<div class ="row">
+<div class="col-md-4">
+{% include "league/includes/games.html" with games=games %}
+</div>
+
+<div class="col-md-8">
+  <iframe name="wgo_iframe" scrolling="no" style= "height:700px;width: 100%;border:none;"></iframe>
+
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+$('#game-table').DataTable({"bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>'});
+} );
+</script>
+{% endblock %}

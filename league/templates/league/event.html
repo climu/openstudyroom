@@ -1,0 +1,19 @@
+{% extends "league/base.html" %}
+{% block content %}
+<nav class="navbar navbar-default">
+<ul class="nav navbar-nav navbar-left">
+  <li class="active"><a href="{% url 'league:event' event.pk %}">Overview</a></li>
+  <li><a href="{% url 'league:results' event.pk %}">Results</a></li>
+  <li><a href="#">Players</a></li>
+  <li><a href="{% url 'league:games' event.pk %}">Games</a></li>
+</ul>
+</nav>
+
+<h3>Infos</h3>
+<p>The <b>{{event.name}}</b> started on <b>{{event.begin_time |date:"M d, Y" }}</b> and {% if close %} stoped{% else %}will stop{%endif%} on <b>{{event.end_time |date:"M d, Y" }}</b>.</p>
+<p>{{event.number_players}} players played {{event.number_games}} games in {{event.number_divisions}} divisions. That is {{event.percent_game_played}} % of {{event.possible_games}} possible games.</p>
+{% if close %}
+<h3> winners</h3>
+{% endif %}
+
+{% endblock %}}

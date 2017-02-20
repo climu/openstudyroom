@@ -1,0 +1,63 @@
+{% extends "full_width.html" %}
+{% load wagtailcore_tags bootstrap3 %}
+{% block title %}OSR league admin{% endblock %}
+{% block content %}
+<h2> List of new users </h2>
+  <table id='new_user-table' class='display table' >
+    <thead>
+      <tr><th>username</th><th>email</th><th>kgs_username</th><th>Delete</th><th>Accept</th>
+      </thead>
+      <tbody>
+        {% for new_user in new_users %}
+        <tr>
+          <td>{{new_user.username}}</td>
+          <td>{{new_user.email}}</td>
+          <td><a href="https://www.gokgs.com/gameArchives.jsp?user={{new_user.kgs_username}}" target="_blank">{{new_user.kgs_username}}</a></td>
+          <td>  <form action=" {% url 'league:admin' %}" method="post" class="form">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete_new_user">
+            <input type="hidden" name="user_id" value="{{new_user.pk}}">
+              <button type="submit" class="btn btn-danger"onclick="return confirm('You are about to delete the new user {{new_user.username}}. Allright?')" >
+                {% bootstrap_icon "remove" %}  delete
+              </button>
+            </form>
+          </td>
+          <td><form action=" {% url 'league:admin' %}" method="post" class="form">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="welcome_new_user">
+            <input type="hidden" name="user_id" value="{{new_user.pk}}">
+              <button type="submit" class="btn btn-success" onclick="return confirm('Accept the new user  {{new_user.username}} as a league memeber ?')">
+                {% bootstrap_icon "ok" %}  Accept
+              </button></form></td>
+        </tr>
+        {% endfor %}
+      </tbdoy>
+  </table>
+
+<h2>List of Sgf that didn't pass the test</h2>
+<table id='sgf-table' class='display table' cellspacing='0' width='100%' >
+   <thead>
+     <tr><th>date</th><th>white</th><th>black</th><th>result</th><th>message</th><th>Edit</th>
+     </thead>
+     <tbody>
+       {% for sgf in sgfs %}
+       <tr>
+         <td> {{sgf.date |date:"M d, Y"}} </td>
+         <td> {{sgf.wplayer }}</td>
+         <td> {{sgf.bplayer }}</td>
+         <td> {{sgf.result}} </td>
+         <td>{{sgf.message}}</td>
+         <td><a href= "{% url 'league:sgf_edit' sgf.pk %}"> <span class="glyphicon glyphicon-menu-right"></span></a></td>
+       </tr>
+{% endfor %}
+</tbody></table>
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+$('#sgf-table').DataTable();
+} );
+</script>
+{% endblock %}

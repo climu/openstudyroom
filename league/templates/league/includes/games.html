@@ -1,0 +1,29 @@
+{% load wagtailcore_tags league_tags%}
+
+{# generate a table from a game queryset #}
+{# don't forget to add the extrajs when including this ! #}
+<table id='game-table' class='display table ' cellspacing='0' width='100%'>
+   <thead>
+     <tr>
+       <th>date</th>
+       <th>white</th>
+       <th>black</th>
+       <th>result</th>
+    </thead>
+    <tbody>
+{% for game in games %}
+  <tr>
+    <td> {{ game.sgf.date |date:"M d, Y" }}</td>
+    {% if game.winner == game.white %}
+    <td><b> {{ game.white.user | user_link}}<b></td>
+    <td> {{ game.black.user | user_link }}</td>
+
+    {% else %}
+    <td> {{ game.white.user | user_link }}</td>
+    <td><b> {{ game.black.user | user_link }}</b></td>
+    {%endif%}
+    <td> {{ game |game_link }}</td>
+  </tr>
+  {% endfor %}
+</tbody>
+</table>

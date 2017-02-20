@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+
+
+{% block body_class %}account{% endblock %}
+{% block page_content %}
+  {% block sidebar %}
+<div class="col-sm-2 col-md-2  " style="margin-left: -30px;padding-left: 0px;">
+<div class="panel panel-default ">
+    <div class="panel-heading"><strong> Your account</strong></div>
+    <div class="list-group">
+      <a class="list-group-item account-delete" href="{% url "league:league_account" %}">
+           League
+      </a>
+      <a class="list-group-item account-password" href="#">
+             Change password
+        </a>
+
+    </div>
+</div>
+</div>
+{% endblock %}
+  <div class="col-sm-8 col-md-8">
+{% block content %} {% endblock %}
+</div>
+
+{% endblock %}

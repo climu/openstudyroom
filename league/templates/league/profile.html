@@ -1,0 +1,64 @@
+{% extends "full_width.html" %}
+{% load wagtailcore_tags %}
+{% load league_tags %}
+{% block content %}
+<h2>Active event</h2>
+{% if active_player %}
+<p><b>{{user.kgs_username}}</b> currently playing for the <b>{{active_player.event}}</b> in the <b>{{active_player.division}}:</b></p>
+  <table id='opponents-table' class='display' cellspacing='100' >
+     <thead>
+       <tr>
+         <th>Rank</th>
+         <th>Player</th>
+         <th>Results</th>
+      </thead>
+      <tbody>
+    {% for opponent in opponents %}
+    <tr>
+      <td>{{forloop.counter}}</td>
+      <td>{{opponent.kgs_username}}</td>
+      <td></td>
+    </tr>
+
+    {% endfor %}
+</tbody>
+</table>
+{% else%}
+
+{% endif %}
+<h2>All events</h2>
+<table id='player-table' class='display' cellspacing='0' width='100%'>
+   <thead>
+     <tr>
+       <th>Event</th>
+       <th>Division</th>
+       <th># win</th>
+       <th># loss</th>
+       <th># games </th>
+    </thead>
+    <tbody>
+{% for player in players %}
+  <tr>
+    <td>{{player.event}}</td>
+    <td>{{player.division}}</td>
+    <td>{{player.nb_win}}</td>
+    <td>{{player.nb_loss}}</td>
+    <td>{{player | nb_games}}</td>
+  </tr>
+{% endfor %}
+</tbody>
+</table>
+
+<h2>Games</h2>
+{% include "league/includes/games.html" with games=games %}
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+$('#game-table').DataTable();
+$('#opponents-table').DataTable();
+} );
+</script>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "full_width.html" %}
+{% load wagtailcore_tags %}
+{% block body_class %}template-homepage{% endblock %}
+
+{% block content %}
+    
+    {% if self.body %}
+      <div class="body-content">
+          {% include "home/includes/streamfield.html" with content=self.body %}
+      </div>
+    {% endif %}
+{% endblock %}
+

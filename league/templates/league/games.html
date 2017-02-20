@@ -1,0 +1,26 @@
+{% extends "league/base.html" %}
+{% block content %}
+<nav class="navbar navbar-default">
+<ul class="nav navbar-nav navbar-left">
+  <li><a href="{% url 'league:event' event.pk %}">Overview</a></li>
+  <li><a href="{% url 'league:results' event.pk %}">Results</a></li>
+  <li><a href="#">Players</a></li>
+  <li class="active"><a href="{% url 'league:games' event.pk %}">Games</a></li>
+</ul>
+</nav>
+<div class ="row">
+<div class="col-md-4">
+{% include "league/includes/games.html" with games=games %}
+</div>
+<div class="col-md-8">
+  <iframe name="wgo_iframe" scrolling="no" style= "height:700px;width: 100%;border:none;"></iframe>
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+$('#game-table').DataTable({"bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>'});
+} );
+</script>
+{% endblock %}

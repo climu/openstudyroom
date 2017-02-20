@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+
+{% load bootstrap3 %}
+
+{% block page_content %}
+{{form}}
+{% endblock %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#id_username').focus();
+        });
+    </script>
+{% endblock %}

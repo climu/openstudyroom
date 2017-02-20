@@ -1,0 +1,79 @@
+{% extends "right_sidebar.html" %}
+{% load static i18n wagtailcore_tags wagtailimages_tags puput_tags compress wagtailroutablepage_tags %}
+{% block body_class %}template-homepage{% endblock %}
+
+
+{% block extra_css %}
+{% compress css %}
+    <link rel="stylesheet" href="{% static 'puput/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/puput.css' %}"/>
+{% endcompress %}
+{% endblock %}
+{% block heading %}{%endblock%}
+{% block page_intro %}
+
+<div class="col-md-4">
+              <div class="panel panel-default">
+                  <div class="panel-heading">
+                      <h4><i class="fa fa-book" aria-hidden="true"></i>
+ Study Go</h4>
+                  </div>
+                  <div class="panel-body">
+                      <p>We provide a place to study go together. Review your games, study pro games, attend lectures, and more</p>
+                      <a href="#" class="btn btn-default">Learn More</a>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md-4">
+              <div class="panel panel-default">
+                  <div class="panel-heading">
+                      <h4><i class="fa fa-gamepad" aria-hidden="true"></i> Play Go</h4>
+                  </div>
+                  <div class="panel-body">
+                      <p>Our league system allow you to play long serious games in a friendly yet competitive environement.</p>
+                      <a href="#" class="btn btn-default">Learn More</a>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md-4">
+              <div class="panel panel-default">
+                  <div class="panel-heading">
+                      <h4><i class="fa fa-comments" aria-hidden="true"></i> Together</h4>
+                  </div>
+                  <div class="panel-body">
+                      <p>Run by and for an international go community. We would be delighted to hear your ideas or feedback.</p>
+                      <a href="{% url 'forum:index' %}" class="btn btn-default">Visit our forums</a>
+                  </div>
+              </div>
+</div>
+{% endblock %}
+{% block content %}
+<h2> Last News</h2>
+    {% for entry in entries %}
+      <article class="box page-content blog_grid">
+          {% include 'puput/entry_page_header.html' %}
+          {% if entry.header_image %}
+              <section>
+                  <span class="img-responsive">
+                      {% image entry.header_image fill-800x240 as header_image %}
+                      <img alt="{{ entry.header_image.title }}" src="{{ header_image.url }}">
+                  </span>
+              </section>
+          {% endif %}
+          <section class="article">
+              {% if entry.excerpt %}
+                  {{ entry.excerpt|richtext }}
+              {% else %}
+                  {{ entry.body|richtext|truncatewords_html:70 }}
+              {% endif %}
+              <a class="blog_btn continue" href="{% entry_url entry blog_page %}">{% trans 'Continue reading' %} &raquo;</a>
+          </section>
+      </article>
+  {% empty %}
+      <span>{% trans 'No results founds.' %}</span>
+{% endfor %}
+  {% endblock %}
+
+{% block sidebar%}
+{% include 'sidebar.html'%}
+{% endblock %}

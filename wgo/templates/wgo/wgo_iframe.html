@@ -1,0 +1,17 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html class="no-js">
+    <head>
+      <link type="text/css" href="{%static 'wgo/wgo.player.css' %}" rel="stylesheet" />
+      <script type="text/javascript" src="{%static 'wgo/wgo.min.js'%}"></script>
+      <script type="text/javascript" src="{%static 'wgo/wgo.player.min.js'%}"></script>
+    </head>
+<body>
+
+    <div data-wgo="{{ sgf_data }}" >
+    </div>
+
+
+    </body>
+  </html>
