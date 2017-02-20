@@ -138,7 +138,7 @@ class Sgf(models.Model):
 		if self.sgf_text.find('#OSR') == -1 : (b,m)= (False,m+'; Tag missing')
 		event = Registry.get_primary_event()
 		wplayer = LeaguePlayer.objects.filter(kgs_username = self.wplayer, event = event).first()
-		bplayer = LeaguePlayer.objects.filter(kgs_username = self.wplayer, event = event).first()
+		bplayer = LeaguePlayer.objects.filter(kgs_username = self.bplayer, event = event).first()
 		if wplayer != None and bplayer != None :
 			if	wplayer.division != bplayer.division: (b,m) = (False,m+'; players not in same division')
 		else : (b,m) = (False,m+'; One of the players is not a league player')
