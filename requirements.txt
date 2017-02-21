@@ -4,6 +4,6 @@ wagtailmenus
 django-bootstrap3
 puput
 django-allauth
-pybbm
-bbcode
 sorl-thumbnail
+django-machina
+django_cron
