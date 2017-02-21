@@ -12,7 +12,7 @@ The app managing the league is a homemade django app.
 
 The project is under GNU GPL 3.
 
-I am working on writing a tuto to have a local version running.
+You can find a How To deploy this locally in our [wiki](https://github.com/climu/openstudyroom/wiki)
 
 # League app
 You can find it under the league folder.
