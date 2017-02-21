@@ -257,3 +257,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 CRON_CLASSES = [
 	'league.cron.ScraperCronJob',
 ]
+
+SECRET_KEY = 'yourlocalsecretkey'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEBUG = True
