@@ -1,0 +1,3229 @@
+[
+{
+  "model": "wagtailcore.site",
+  "fields": {
+    "hostname": "localhost",
+    "port": 80,
+    "site_name": "",
+    "root_page": 3,
+    "is_default_site": true
+  }
+},
+{
+  "model": "wagtailcore.collection",
+  "pk": 1,
+  "fields": {
+    "path": "0001",
+    "depth": 1,
+    "numchild": 0,
+    "name": "Root"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailcore",
+    "model": "page"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailimages",
+    "model": "image"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailadmin",
+    "model": "admin"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtaildocs",
+    "model": "document"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "home",
+    "model": "homepage"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "home",
+    "model": "leftsidebarpage"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "home",
+    "model": "fullwidthpage"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "home",
+    "model": "rightsidebarpage"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "home",
+    "model": "streamfieldentrypage"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailforms",
+    "model": "formsubmission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailredirects",
+    "model": "redirect"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailembeds",
+    "model": "embed"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailusers",
+    "model": "userprofile"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailimages",
+    "model": "filter"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailimages",
+    "model": "rendition"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailsearch",
+    "model": "querydailyhits"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailsearch",
+    "model": "query"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailcore",
+    "model": "pageviewrestriction"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailcore",
+    "model": "grouppagepermission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailcore",
+    "model": "site"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailcore",
+    "model": "pagerevision"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailcore",
+    "model": "groupcollectionpermission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailcore",
+    "model": "collection"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "taggit",
+    "model": "tag"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "taggit",
+    "model": "taggeditem"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "admin",
+    "model": "logentry"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "auth",
+    "model": "group"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "auth",
+    "model": "permission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "contenttypes",
+    "model": "contenttype"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "sessions",
+    "model": "session"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "sites",
+    "model": "site"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "league",
+    "model": "leagueplayer"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "league",
+    "model": "division"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "league",
+    "model": "game"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "league",
+    "model": "sgf"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "league",
+    "model": "registry"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "league",
+    "model": "leagueevent"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "league",
+    "model": "user"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailmenus",
+    "model": "mainmenuitem"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailmenus",
+    "model": "flatmenu"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailmenus",
+    "model": "mainmenu"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "wagtailmenus",
+    "model": "flatmenuitem"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "puput",
+    "model": "tagentrypage"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "puput",
+    "model": "entrypagerelated"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "puput",
+    "model": "category"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "puput",
+    "model": "categoryentrypage"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "puput",
+    "model": "blogpage"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "puput",
+    "model": "entrypage"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "puput",
+    "model": "tag"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "account",
+    "model": "emailconfirmation"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "account",
+    "model": "emailaddress"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "django_cron",
+    "model": "cronjoblog"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "forum",
+    "model": "forum"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "forum_conversation",
+    "model": "post"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "forum_conversation",
+    "model": "topic"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "forum_attachments",
+    "model": "attachment"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "forum_polls",
+    "model": "topicpollvote"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "forum_polls",
+    "model": "topicpoll"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "forum_polls",
+    "model": "topicpolloption"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "forum_tracking",
+    "model": "topicreadtrack"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "forum_tracking",
+    "model": "forumreadtrack"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "forum_member",
+    "model": "forumprofile"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "forum_permission",
+    "model": "userforumpermission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "forum_permission",
+    "model": "forumpermission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "forum_permission",
+    "model": "groupforumpermission"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "j4nfdg8od0yn3haf0pzyy6475rr36d3m",
+  "fields": {
+    "session_data": "MmQ2OGJjNzcyMDQ4ZDFhNDdlMGMyMDAyYjEwZmU0ZmIzNzBlMGE3Mzp7Il9hbm9ueW1vdXNfZm9ydW1fa2V5IjoiNjNmNGU4NjkzNzVmNDJlZWJlOTFhZDFhZTliODVkY2UifQ==",
+    "expire_date": "2017-03-06T20:23:14.864Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "q8ijf88oydq60sjznh3mczifiu5yeknk",
+  "fields": {
+    "session_data": "MzI4ZTc1ZjkzZTE4MzdhNzcyNDY3MGFiMmUzMzA5ZDI3MDdjMDlhYzp7Il9hbm9ueW1vdXNfZm9ydW1fa2V5IjoiZDE2NWQzNjVjN2VhNGNjNmIyZTYwM2MxMjkwNmM4OTkifQ==",
+    "expire_date": "2017-03-06T20:23:14.690Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "tlta862rmkfje0wizpp0rtio2idkhiot",
+  "fields": {
+    "session_data": "N2MwODIxMGZhMDY2MjRlZjM2MWE1MTJkNjlkM2E4OWQ2OGU2ZjNkNzp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6IjEiLCJfYW5vbnltb3VzX2ZvcnVtX2tleSI6IjIxMTFhNzY4Y2Q5OTQ2MWRiZjE2MDc5NjliZTYzZTM2IiwiX2F1dGhfdXNlcl9oYXNoIjoiYjNkZTkwODJmN2RmMGRkMmU1ZjY3Njg5ZDI1N2MwZGZjYThkY2VhZSJ9",
+    "expire_date": "2017-03-06T19:45:49.934Z"
+  }
+},
+{
+  "model": "sites.site",
+  "fields": {
+    "domain": "example.com",
+    "name": "example.com"
+  }
+},
+{
+  "model": "league.leagueevent",
+  "pk": 1,
+  "fields": {
+    "begin_time": "2017-02-10T19:52:47Z",
+    "end_time": "2017-02-28T19:52:51Z",
+    "name": "OSR first event",
+    "nb_matchs": 2,
+    "ppwin": "1.5",
+    "pploss": "0.5"
+  }
+},
+{
+  "model": "league.registry",
+  "pk": 1,
+  "fields": {
+    "primary_event": 1,
+    "time_kgs": "2017-02-20T19:56:57Z",
+    "kgs_delay": 19
+  }
+},
+{
+  "model": "league.division",
+  "pk": 1,
+  "fields": {
+    "league_event": 1,
+    "name": "First OSR division",
+    "order": 0
+  }
+},
+{
+  "model": "wagtailmenus.mainmenu",
+  "pk": 1,
+  "fields": {
+    "site": 1,
+    "max_levels": 2,
+    "use_specific": 1
+  }
+},
+{
+  "model": "wagtailmenus.mainmenuitem",
+  "pk": 1,
+  "fields": {
+    "sort_order": 0,
+    "link_page": 6,
+    "link_url": "",
+    "link_text": "",
+    "handle": "",
+    "url_append": "",
+    "allow_subnav": false,
+    "menu": 1
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 1,
+  "fields": {
+    "codename": "can_see_forum",
+    "name": "Can see forum",
+    "is_global": true,
+    "is_local": true
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 2,
+  "fields": {
+    "codename": "can_read_forum",
+    "name": "Can read forum",
+    "is_global": true,
+    "is_local": true
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 3,
+  "fields": {
+    "codename": "can_start_new_topics",
+    "name": "Can start new topics",
+    "is_global": true,
+    "is_local": true
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 4,
+  "fields": {
+    "codename": "can_reply_to_topics",
+    "name": "Can reply to topics",
+    "is_global": true,
+    "is_local": true
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 5,
+  "fields": {
+    "codename": "can_post_announcements",
+    "name": "Can post announcements",
+    "is_global": true,
+    "is_local": true
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 6,
+  "fields": {
+    "codename": "can_post_stickies",
+    "name": "Can post stickies",
+    "is_global": true,
+    "is_local": true
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 7,
+  "fields": {
+    "codename": "can_delete_own_posts",
+    "name": "Can delete own posts",
+    "is_global": true,
+    "is_local": true
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 8,
+  "fields": {
+    "codename": "can_edit_own_posts",
+    "name": "Can edit own posts",
+    "is_global": true,
+    "is_local": true
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 9,
+  "fields": {
+    "codename": "can_post_without_approval",
+    "name": "Can post without approval",
+    "is_global": true,
+    "is_local": true
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 10,
+  "fields": {
+    "codename": "can_create_polls",
+    "name": "Can create polls",
+    "is_global": true,
+    "is_local": true
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 11,
+  "fields": {
+    "codename": "can_vote_in_polls",
+    "name": "Can vote in polls",
+    "is_global": true,
+    "is_local": true
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 12,
+  "fields": {
+    "codename": "can_attach_file",
+    "name": "Can attach file",
+    "is_global": true,
+    "is_local": true
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 13,
+  "fields": {
+    "codename": "can_download_file",
+    "name": "Can download file",
+    "is_global": true,
+    "is_local": true
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 14,
+  "fields": {
+    "codename": "can_lock_topics",
+    "name": "Can lock topics",
+    "is_global": false,
+    "is_local": true
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 15,
+  "fields": {
+    "codename": "can_move_topics",
+    "name": "Can move topics",
+    "is_global": false,
+    "is_local": true
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 16,
+  "fields": {
+    "codename": "can_edit_posts",
+    "name": "Can edit posts",
+    "is_global": false,
+    "is_local": true
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 17,
+  "fields": {
+    "codename": "can_delete_posts",
+    "name": "Can delete posts",
+    "is_global": false,
+    "is_local": true
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 18,
+  "fields": {
+    "codename": "can_approve_posts",
+    "name": "Can approve posts",
+    "is_global": false,
+    "is_local": true
+  }
+},
+{
+  "model": "forum_permission.forumpermission",
+  "pk": 19,
+  "fields": {
+    "codename": "can_reply_to_locked_topics",
+    "name": "Can add posts in locked topics",
+    "is_global": false,
+    "is_local": true
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add image",
+    "content_type": 2,
+    "codename": "add_image"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change image",
+    "content_type": 2,
+    "codename": "change_image"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete image",
+    "content_type": 2,
+    "codename": "delete_image"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can access Wagtail admin",
+    "content_type": 3,
+    "codename": "access_admin"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add document",
+    "content_type": 4,
+    "codename": "add_document"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change document",
+    "content_type": 4,
+    "codename": "change_document"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete document",
+    "content_type": 4,
+    "codename": "delete_document"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add home page",
+    "content_type": 5,
+    "codename": "add_homepage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change home page",
+    "content_type": 5,
+    "codename": "change_homepage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete home page",
+    "content_type": 5,
+    "codename": "delete_homepage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add left sidebar page",
+    "content_type": 6,
+    "codename": "add_leftsidebarpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change left sidebar page",
+    "content_type": 6,
+    "codename": "change_leftsidebarpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete left sidebar page",
+    "content_type": 6,
+    "codename": "delete_leftsidebarpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add full width page",
+    "content_type": 7,
+    "codename": "add_fullwidthpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change full width page",
+    "content_type": 7,
+    "codename": "change_fullwidthpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete full width page",
+    "content_type": 7,
+    "codename": "delete_fullwidthpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add right sidebar page",
+    "content_type": 8,
+    "codename": "add_rightsidebarpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change right sidebar page",
+    "content_type": 8,
+    "codename": "change_rightsidebarpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete right sidebar page",
+    "content_type": 8,
+    "codename": "delete_rightsidebarpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add stream field entry page",
+    "content_type": 9,
+    "codename": "add_streamfieldentrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change stream field entry page",
+    "content_type": 9,
+    "codename": "change_streamfieldentrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete stream field entry page",
+    "content_type": 9,
+    "codename": "delete_streamfieldentrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add form submission",
+    "content_type": 10,
+    "codename": "add_formsubmission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change form submission",
+    "content_type": 10,
+    "codename": "change_formsubmission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete form submission",
+    "content_type": 10,
+    "codename": "delete_formsubmission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add redirect",
+    "content_type": 11,
+    "codename": "add_redirect"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change redirect",
+    "content_type": 11,
+    "codename": "change_redirect"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete redirect",
+    "content_type": 11,
+    "codename": "delete_redirect"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add embed",
+    "content_type": 12,
+    "codename": "add_embed"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change embed",
+    "content_type": 12,
+    "codename": "change_embed"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete embed",
+    "content_type": 12,
+    "codename": "delete_embed"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add user profile",
+    "content_type": 13,
+    "codename": "add_userprofile"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change user profile",
+    "content_type": 13,
+    "codename": "change_userprofile"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete user profile",
+    "content_type": 13,
+    "codename": "delete_userprofile"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add filter",
+    "content_type": 14,
+    "codename": "add_filter"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change filter",
+    "content_type": 14,
+    "codename": "change_filter"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete filter",
+    "content_type": 14,
+    "codename": "delete_filter"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add rendition",
+    "content_type": 15,
+    "codename": "add_rendition"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change rendition",
+    "content_type": 15,
+    "codename": "change_rendition"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete rendition",
+    "content_type": 15,
+    "codename": "delete_rendition"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add Query Daily Hits",
+    "content_type": 16,
+    "codename": "add_querydailyhits"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change Query Daily Hits",
+    "content_type": 16,
+    "codename": "change_querydailyhits"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete Query Daily Hits",
+    "content_type": 16,
+    "codename": "delete_querydailyhits"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add query",
+    "content_type": 17,
+    "codename": "add_query"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change query",
+    "content_type": 17,
+    "codename": "change_query"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete query",
+    "content_type": 17,
+    "codename": "delete_query"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add page view restriction",
+    "content_type": 18,
+    "codename": "add_pageviewrestriction"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change page view restriction",
+    "content_type": 18,
+    "codename": "change_pageviewrestriction"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete page view restriction",
+    "content_type": 18,
+    "codename": "delete_pageviewrestriction"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add group page permission",
+    "content_type": 19,
+    "codename": "add_grouppagepermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change group page permission",
+    "content_type": 19,
+    "codename": "change_grouppagepermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete group page permission",
+    "content_type": 19,
+    "codename": "delete_grouppagepermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add page",
+    "content_type": 1,
+    "codename": "add_page"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change page",
+    "content_type": 1,
+    "codename": "change_page"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete page",
+    "content_type": 1,
+    "codename": "delete_page"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add site",
+    "content_type": 20,
+    "codename": "add_site"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change site",
+    "content_type": 20,
+    "codename": "change_site"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete site",
+    "content_type": 20,
+    "codename": "delete_site"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add page revision",
+    "content_type": 21,
+    "codename": "add_pagerevision"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change page revision",
+    "content_type": 21,
+    "codename": "change_pagerevision"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete page revision",
+    "content_type": 21,
+    "codename": "delete_pagerevision"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add group collection permission",
+    "content_type": 22,
+    "codename": "add_groupcollectionpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change group collection permission",
+    "content_type": 22,
+    "codename": "change_groupcollectionpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete group collection permission",
+    "content_type": 22,
+    "codename": "delete_groupcollectionpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add collection",
+    "content_type": 23,
+    "codename": "add_collection"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change collection",
+    "content_type": 23,
+    "codename": "change_collection"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete collection",
+    "content_type": 23,
+    "codename": "delete_collection"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add Tag",
+    "content_type": 24,
+    "codename": "add_tag"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change Tag",
+    "content_type": 24,
+    "codename": "change_tag"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete Tag",
+    "content_type": 24,
+    "codename": "delete_tag"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add Tagged Item",
+    "content_type": 25,
+    "codename": "add_taggeditem"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change Tagged Item",
+    "content_type": 25,
+    "codename": "change_taggeditem"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete Tagged Item",
+    "content_type": 25,
+    "codename": "delete_taggeditem"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add log entry",
+    "content_type": 26,
+    "codename": "add_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change log entry",
+    "content_type": 26,
+    "codename": "change_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete log entry",
+    "content_type": 26,
+    "codename": "delete_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add group",
+    "content_type": 27,
+    "codename": "add_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change group",
+    "content_type": 27,
+    "codename": "change_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete group",
+    "content_type": 27,
+    "codename": "delete_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add permission",
+    "content_type": 28,
+    "codename": "add_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change permission",
+    "content_type": 28,
+    "codename": "change_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete permission",
+    "content_type": 28,
+    "codename": "delete_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add content type",
+    "content_type": 29,
+    "codename": "add_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change content type",
+    "content_type": 29,
+    "codename": "change_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete content type",
+    "content_type": 29,
+    "codename": "delete_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add session",
+    "content_type": 30,
+    "codename": "add_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change session",
+    "content_type": 30,
+    "codename": "change_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete session",
+    "content_type": 30,
+    "codename": "delete_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add site",
+    "content_type": 31,
+    "codename": "add_site"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change site",
+    "content_type": 31,
+    "codename": "change_site"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete site",
+    "content_type": 31,
+    "codename": "delete_site"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add league player",
+    "content_type": 32,
+    "codename": "add_leagueplayer"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change league player",
+    "content_type": 32,
+    "codename": "change_leagueplayer"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete league player",
+    "content_type": 32,
+    "codename": "delete_leagueplayer"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add division",
+    "content_type": 33,
+    "codename": "add_division"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change division",
+    "content_type": 33,
+    "codename": "change_division"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete division",
+    "content_type": 33,
+    "codename": "delete_division"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add game",
+    "content_type": 34,
+    "codename": "add_game"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change game",
+    "content_type": 34,
+    "codename": "change_game"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete game",
+    "content_type": 34,
+    "codename": "delete_game"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add sgf",
+    "content_type": 35,
+    "codename": "add_sgf"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change sgf",
+    "content_type": 35,
+    "codename": "change_sgf"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete sgf",
+    "content_type": 35,
+    "codename": "delete_sgf"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add registry",
+    "content_type": 36,
+    "codename": "add_registry"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change registry",
+    "content_type": 36,
+    "codename": "change_registry"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete registry",
+    "content_type": 36,
+    "codename": "delete_registry"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add league event",
+    "content_type": 37,
+    "codename": "add_leagueevent"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change league event",
+    "content_type": 37,
+    "codename": "change_leagueevent"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete league event",
+    "content_type": 37,
+    "codename": "delete_leagueevent"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add user",
+    "content_type": 38,
+    "codename": "add_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change user",
+    "content_type": 38,
+    "codename": "change_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete user",
+    "content_type": 38,
+    "codename": "delete_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add main menu item",
+    "content_type": 39,
+    "codename": "add_mainmenuitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change main menu item",
+    "content_type": 39,
+    "codename": "change_mainmenuitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete main menu item",
+    "content_type": 39,
+    "codename": "delete_mainmenuitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add flat menu",
+    "content_type": 40,
+    "codename": "add_flatmenu"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change flat menu",
+    "content_type": 40,
+    "codename": "change_flatmenu"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete flat menu",
+    "content_type": 40,
+    "codename": "delete_flatmenu"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add main menu",
+    "content_type": 41,
+    "codename": "add_mainmenu"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change main menu",
+    "content_type": 41,
+    "codename": "change_mainmenu"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete main menu",
+    "content_type": 41,
+    "codename": "delete_mainmenu"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add flat menu item",
+    "content_type": 42,
+    "codename": "add_flatmenuitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change flat menu item",
+    "content_type": 42,
+    "codename": "change_flatmenuitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete flat menu item",
+    "content_type": 42,
+    "codename": "delete_flatmenuitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add tag entry page",
+    "content_type": 43,
+    "codename": "add_tagentrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change tag entry page",
+    "content_type": 43,
+    "codename": "change_tagentrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete tag entry page",
+    "content_type": 43,
+    "codename": "delete_tagentrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add entry page related",
+    "content_type": 44,
+    "codename": "add_entrypagerelated"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change entry page related",
+    "content_type": 44,
+    "codename": "change_entrypagerelated"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete entry page related",
+    "content_type": 44,
+    "codename": "delete_entrypagerelated"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add Category",
+    "content_type": 45,
+    "codename": "add_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change Category",
+    "content_type": 45,
+    "codename": "change_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete Category",
+    "content_type": 45,
+    "codename": "delete_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add category entry page",
+    "content_type": 46,
+    "codename": "add_categoryentrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change category entry page",
+    "content_type": 46,
+    "codename": "change_categoryentrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete category entry page",
+    "content_type": 46,
+    "codename": "delete_categoryentrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add Blog",
+    "content_type": 47,
+    "codename": "add_blogpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change Blog",
+    "content_type": 47,
+    "codename": "change_blogpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete Blog",
+    "content_type": 47,
+    "codename": "delete_blogpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add Entry",
+    "content_type": 48,
+    "codename": "add_entrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change Entry",
+    "content_type": 48,
+    "codename": "change_entrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete Entry",
+    "content_type": 48,
+    "codename": "delete_entrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add email confirmation",
+    "content_type": 50,
+    "codename": "add_emailconfirmation"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change email confirmation",
+    "content_type": 50,
+    "codename": "change_emailconfirmation"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete email confirmation",
+    "content_type": 50,
+    "codename": "delete_emailconfirmation"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add email address",
+    "content_type": 51,
+    "codename": "add_emailaddress"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change email address",
+    "content_type": 51,
+    "codename": "change_emailaddress"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete email address",
+    "content_type": 51,
+    "codename": "delete_emailaddress"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add cron job log",
+    "content_type": 52,
+    "codename": "add_cronjoblog"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change cron job log",
+    "content_type": 52,
+    "codename": "change_cronjoblog"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete cron job log",
+    "content_type": 52,
+    "codename": "delete_cronjoblog"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add Forum",
+    "content_type": 53,
+    "codename": "add_forum"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change Forum",
+    "content_type": 53,
+    "codename": "change_forum"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete Forum",
+    "content_type": 53,
+    "codename": "delete_forum"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add Post",
+    "content_type": 54,
+    "codename": "add_post"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change Post",
+    "content_type": 54,
+    "codename": "change_post"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete Post",
+    "content_type": 54,
+    "codename": "delete_post"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add Topic",
+    "content_type": 55,
+    "codename": "add_topic"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change Topic",
+    "content_type": 55,
+    "codename": "change_topic"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete Topic",
+    "content_type": 55,
+    "codename": "delete_topic"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add Attachment",
+    "content_type": 56,
+    "codename": "add_attachment"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change Attachment",
+    "content_type": 56,
+    "codename": "change_attachment"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete Attachment",
+    "content_type": 56,
+    "codename": "delete_attachment"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add Topic poll vote",
+    "content_type": 57,
+    "codename": "add_topicpollvote"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change Topic poll vote",
+    "content_type": 57,
+    "codename": "change_topicpollvote"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete Topic poll vote",
+    "content_type": 57,
+    "codename": "delete_topicpollvote"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add Topic poll",
+    "content_type": 58,
+    "codename": "add_topicpoll"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change Topic poll",
+    "content_type": 58,
+    "codename": "change_topicpoll"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete Topic poll",
+    "content_type": 58,
+    "codename": "delete_topicpoll"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add Topic poll option",
+    "content_type": 59,
+    "codename": "add_topicpolloption"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change Topic poll option",
+    "content_type": 59,
+    "codename": "change_topicpolloption"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete Topic poll option",
+    "content_type": 59,
+    "codename": "delete_topicpolloption"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add Topic track",
+    "content_type": 60,
+    "codename": "add_topicreadtrack"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change Topic track",
+    "content_type": 60,
+    "codename": "change_topicreadtrack"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete Topic track",
+    "content_type": 60,
+    "codename": "delete_topicreadtrack"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add Forum track",
+    "content_type": 61,
+    "codename": "add_forumreadtrack"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change Forum track",
+    "content_type": 61,
+    "codename": "change_forumreadtrack"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete Forum track",
+    "content_type": 61,
+    "codename": "delete_forumreadtrack"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add Forum profile",
+    "content_type": 62,
+    "codename": "add_forumprofile"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change Forum profile",
+    "content_type": 62,
+    "codename": "change_forumprofile"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete Forum profile",
+    "content_type": 62,
+    "codename": "delete_forumprofile"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add User forum permission",
+    "content_type": 63,
+    "codename": "add_userforumpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change User forum permission",
+    "content_type": 63,
+    "codename": "change_userforumpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete User forum permission",
+    "content_type": 63,
+    "codename": "delete_userforumpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add Forum permission",
+    "content_type": 64,
+    "codename": "add_forumpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change Forum permission",
+    "content_type": 64,
+    "codename": "change_forumpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete Forum permission",
+    "content_type": 64,
+    "codename": "delete_forumpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add Group forum permission",
+    "content_type": 65,
+    "codename": "add_groupforumpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change Group forum permission",
+    "content_type": 65,
+    "codename": "change_groupforumpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete Group forum permission",
+    "content_type": 65,
+    "codename": "delete_groupforumpermission"
+  }
+},
+{
+  "model": "auth.group",
+  "fields": {
+    "name": "Moderators",
+    "permissions": [
+      4,
+      5,
+      6,
+      7,
+      1,
+      2,
+      3
+    ]
+  }
+},
+{
+  "model": "auth.group",
+  "fields": {
+    "name": "Editors",
+    "permissions": [
+      4,
+      5,
+      6,
+      7,
+      1,
+      2,
+      3
+    ]
+  }
+},
+{
+  "model": "auth.group",
+  "fields": {
+    "name": "new_user",
+    "permissions": []
+  }
+},
+{
+  "model": "auth.group",
+  "fields": {
+    "name": "league_member",
+    "permissions": []
+  }
+},
+{
+  "model": "auth.group",
+  "fields": {
+    "name": "league_admin",
+    "permissions": []
+  }
+},
+{
+  "model": "league.user",
+  "fields": {
+    "password": "pbkdf2_sha256$30000$DSMtSXVGzPWu$ULLWd+akqteRsYb03CsReE1AptyefN/7xgdXEocKKAs=",
+    "last_login": "2017-02-20T19:45:49Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2017-02-20T19:45:04Z",
+    "kgs_username": "admin",
+    "groups": [
+      5
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "league.user",
+  "fields": {
+    "password": "foo",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "climu",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2017-02-20T19:55:05Z",
+    "kgs_username": "climu",
+    "groups": [
+      4
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "league.user",
+  "fields": {
+    "password": "foo",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "Rincewind",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2017-02-20T19:55:34Z",
+    "kgs_username": "Rincewind",
+    "groups": [
+      4
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "league.user",
+  "fields": {
+    "password": "foo",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "nas",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2017-02-20T19:58:19Z",
+    "kgs_username": "nas",
+    "groups": [
+      4
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "league.user",
+  "fields": {
+    "password": "foo",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "JackDeGray",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2017-02-20T19:58:38Z",
+    "kgs_username": "JackDeGray",
+    "groups": [
+      4
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "league.user",
+  "fields": {
+    "password": "foo",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "hiddenpain",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2017-02-20T20:00:20Z",
+    "kgs_username": "hiddenpain",
+    "groups": [
+      4
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "league.user",
+  "fields": {
+    "password": "foo",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "Nathan",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2017-02-20T20:00:59Z",
+    "kgs_username": "Nathan",
+    "groups": [
+      3
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "league.user",
+  "fields": {
+    "password": "foo",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "historment",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2017-02-20T20:01:10Z",
+    "kgs_username": "historment",
+    "groups": [
+      4
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "league.user",
+  "fields": {
+    "password": "foo",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "kinabr",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2017-02-20T20:01:31Z",
+    "kgs_username": "kinabr",
+    "groups": [
+      4
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "league.leagueplayer",
+  "pk": 1,
+  "fields": {
+    "user": 3,
+    "kgs_username": "Rincewind",
+    "event": 1,
+    "division": 1,
+    "nb_win": 0,
+    "nb_loss": 0,
+    "score": "0.0",
+    "results": "{}",
+    "p_status": 0
+  }
+},
+{
+  "model": "league.leagueplayer",
+  "pk": 2,
+  "fields": {
+    "user": 2,
+    "kgs_username": "climu",
+    "event": 1,
+    "division": 1,
+    "nb_win": 0,
+    "nb_loss": 0,
+    "score": "0.0",
+    "results": "{}",
+    "p_status": 0
+  }
+},
+{
+  "model": "league.leagueplayer",
+  "pk": 3,
+  "fields": {
+    "user": 4,
+    "kgs_username": "nas",
+    "event": 1,
+    "division": 1,
+    "nb_win": 0,
+    "nb_loss": 0,
+    "score": "0.0",
+    "results": "{}",
+    "p_status": 1
+  }
+},
+{
+  "model": "league.leagueplayer",
+  "pk": 4,
+  "fields": {
+    "user": 5,
+    "kgs_username": "JackDeGray",
+    "event": 1,
+    "division": 1,
+    "nb_win": 0,
+    "nb_loss": 0,
+    "score": "0.0",
+    "results": "{}",
+    "p_status": 1
+  }
+},
+{
+  "model": "league.leagueplayer",
+  "pk": 5,
+  "fields": {
+    "user": 6,
+    "kgs_username": "hiddenpain",
+    "event": 1,
+    "division": 1,
+    "nb_win": 0,
+    "nb_loss": 0,
+    "score": "0.0",
+    "results": "{}",
+    "p_status": 1
+  }
+},
+{
+  "model": "league.leagueplayer",
+  "pk": 6,
+  "fields": {
+    "user": 8,
+    "kgs_username": "historment",
+    "event": 1,
+    "division": 1,
+    "nb_win": 0,
+    "nb_loss": 0,
+    "score": "0.0",
+    "results": "{}",
+    "p_status": 1
+  }
+},
+{
+  "model": "league.leagueplayer",
+  "pk": 7,
+  "fields": {
+    "user": 9,
+    "kgs_username": "kinabr",
+    "event": 1,
+    "division": 1,
+    "nb_win": 0,
+    "nb_loss": 0,
+    "score": "0.0",
+    "results": "{}",
+    "p_status": 1
+  }
+},
+{
+  "model": "puput.blogpage",
+  "pk": 4,
+  "fields": {
+    "description": "",
+    "header_image": null,
+    "display_comments": false,
+    "display_categories": true,
+    "display_tags": true,
+    "display_popular_entries": true,
+    "display_last_entries": true,
+    "display_archive": true,
+    "disqus_api_secret": "",
+    "disqus_shortname": "",
+    "num_entries_page": 5,
+    "num_last_entries": 3,
+    "num_popular_entries": 3,
+    "num_tags_entry_header": 5
+  }
+},
+{
+  "model": "puput.entrypage",
+  "pk": 5,
+  "fields": {
+    "body": "<p>You manage to have a osr website run locally !<br/></p>",
+    "date": "2017-02-20T19:48:00Z",
+    "header_image": null,
+    "excerpt": "",
+    "num_comments": 0
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2017-02-20T19:47:28.699Z",
+    "user": 1,
+    "content_type": 20,
+    "object_id": "1",
+    "object_repr": "localhost [default]",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"root_page\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2017-02-20T19:52:59.960Z",
+    "user": 1,
+    "content_type": 37,
+    "object_id": "1",
+    "object_repr": "OSR first event",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2017-02-20T19:54:12.500Z",
+    "user": 1,
+    "content_type": 27,
+    "object_id": "3",
+    "object_repr": "new_user",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 4,
+  "fields": {
+    "action_time": "2017-02-20T19:54:23.403Z",
+    "user": 1,
+    "content_type": 27,
+    "object_id": "4",
+    "object_repr": "league_member",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 5,
+  "fields": {
+    "action_time": "2017-02-20T19:54:56.984Z",
+    "user": 1,
+    "content_type": 27,
+    "object_id": "5",
+    "object_repr": "league_admin",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 6,
+  "fields": {
+    "action_time": "2017-02-20T19:55:31.439Z",
+    "user": 1,
+    "content_type": 38,
+    "object_id": "2",
+    "object_repr": "climu",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 7,
+  "fields": {
+    "action_time": "2017-02-20T19:55:59.979Z",
+    "user": 1,
+    "content_type": 38,
+    "object_id": "3",
+    "object_repr": "Rincewind",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 8,
+  "fields": {
+    "action_time": "2017-02-20T19:56:13.415Z",
+    "user": 1,
+    "content_type": 38,
+    "object_id": "3",
+    "object_repr": "Rincewind",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 9,
+  "fields": {
+    "action_time": "2017-02-20T19:56:20.635Z",
+    "user": 1,
+    "content_type": 38,
+    "object_id": "2",
+    "object_repr": "climu",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 10,
+  "fields": {
+    "action_time": "2017-02-20T19:56:42.894Z",
+    "user": 1,
+    "content_type": 38,
+    "object_id": "1",
+    "object_repr": "admin",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"kgs_username\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 11,
+  "fields": {
+    "action_time": "2017-02-20T19:57:00.958Z",
+    "user": 1,
+    "content_type": 36,
+    "object_id": "1",
+    "object_repr": "Registry object",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 12,
+  "fields": {
+    "action_time": "2017-02-20T19:57:18.532Z",
+    "user": 1,
+    "content_type": 33,
+    "object_id": "1",
+    "object_repr": "First OSR division",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 13,
+  "fields": {
+    "action_time": "2017-02-20T19:58:34.945Z",
+    "user": 1,
+    "content_type": 38,
+    "object_id": "4",
+    "object_repr": "nas",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 14,
+  "fields": {
+    "action_time": "2017-02-20T19:58:54.930Z",
+    "user": 1,
+    "content_type": 38,
+    "object_id": "5",
+    "object_repr": "JackDeGray",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 15,
+  "fields": {
+    "action_time": "2017-02-20T20:00:33.747Z",
+    "user": 1,
+    "content_type": 38,
+    "object_id": "6",
+    "object_repr": "hiddenpain",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 16,
+  "fields": {
+    "action_time": "2017-02-20T20:01:07.341Z",
+    "user": 1,
+    "content_type": 38,
+    "object_id": "7",
+    "object_repr": "Nathan",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 17,
+  "fields": {
+    "action_time": "2017-02-20T20:01:23.747Z",
+    "user": 1,
+    "content_type": 38,
+    "object_id": "8",
+    "object_repr": "historment",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 18,
+  "fields": {
+    "action_time": "2017-02-20T20:01:44.380Z",
+    "user": 1,
+    "content_type": 38,
+    "object_id": "9",
+    "object_repr": "kinabr",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 19,
+  "fields": {
+    "action_time": "2017-02-20T20:02:21.470Z",
+    "user": 1,
+    "content_type": 38,
+    "object_id": "7",
+    "object_repr": "Nathan",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "wagtailcore.groupcollectionpermission",
+  "pk": 1,
+  "fields": {
+    "group": 2,
+    "collection": 1,
+    "permission": 5
+  }
+},
+{
+  "model": "wagtailcore.groupcollectionpermission",
+  "pk": 2,
+  "fields": {
+    "group": 1,
+    "collection": 1,
+    "permission": 5
+  }
+},
+{
+  "model": "wagtailcore.groupcollectionpermission",
+  "pk": 3,
+  "fields": {
+    "group": 2,
+    "collection": 1,
+    "permission": 6
+  }
+},
+{
+  "model": "wagtailcore.groupcollectionpermission",
+  "pk": 4,
+  "fields": {
+    "group": 1,
+    "collection": 1,
+    "permission": 6
+  }
+},
+{
+  "model": "wagtailcore.groupcollectionpermission",
+  "pk": 5,
+  "fields": {
+    "group": 2,
+    "collection": 1,
+    "permission": 1
+  }
+},
+{
+  "model": "wagtailcore.groupcollectionpermission",
+  "pk": 6,
+  "fields": {
+    "group": 1,
+    "collection": 1,
+    "permission": 1
+  }
+},
+{
+  "model": "wagtailcore.groupcollectionpermission",
+  "pk": 7,
+  "fields": {
+    "group": 2,
+    "collection": 1,
+    "permission": 2
+  }
+},
+{
+  "model": "wagtailcore.groupcollectionpermission",
+  "pk": 8,
+  "fields": {
+    "group": 1,
+    "collection": 1,
+    "permission": 2
+  }
+},
+{
+  "model": "wagtailcore.grouppagepermission",
+  "pk": 1,
+  "fields": {
+    "group": 1,
+    "page": 1,
+    "permission_type": "add"
+  }
+},
+{
+  "model": "wagtailcore.grouppagepermission",
+  "pk": 2,
+  "fields": {
+    "group": 1,
+    "page": 1,
+    "permission_type": "edit"
+  }
+},
+{
+  "model": "wagtailcore.grouppagepermission",
+  "pk": 3,
+  "fields": {
+    "group": 1,
+    "page": 1,
+    "permission_type": "publish"
+  }
+},
+{
+  "model": "wagtailcore.grouppagepermission",
+  "pk": 4,
+  "fields": {
+    "group": 2,
+    "page": 1,
+    "permission_type": "add"
+  }
+},
+{
+  "model": "wagtailcore.grouppagepermission",
+  "pk": 5,
+  "fields": {
+    "group": 2,
+    "page": 1,
+    "permission_type": "edit"
+  }
+},
+{
+  "model": "wagtailcore.grouppagepermission",
+  "pk": 6,
+  "fields": {
+    "group": 1,
+    "page": 1,
+    "permission_type": "lock"
+  }
+},
+{
+  "model": "wagtailcore.pagerevision",
+  "pk": 1,
+  "fields": {
+    "page": 3,
+    "submitted_for_moderation": false,
+    "created_at": "2017-02-20T19:46:35.916Z",
+    "user": 1,
+    "content_json": "{\"depth\": 2, \"expired\": false, \"expire_at\": null, \"locked\": false, \"seo_title\": \"\", \"url_path\": \"/osr/\", \"owner\": 1, \"title\": \"osr\", \"show_in_menus\": false, \"pk\": 3, \"latest_revision_created_at\": null, \"content_type\": 5, \"slug\": \"osr\", \"path\": \"00010002\", \"has_unpublished_changes\": false, \"first_published_at\": null, \"numchild\": 0, \"search_description\": \"\", \"go_live_at\": null, \"live\": true}",
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.pagerevision",
+  "pk": 2,
+  "fields": {
+    "page": 4,
+    "submitted_for_moderation": false,
+    "created_at": "2017-02-20T19:47:49.028Z",
+    "user": 1,
+    "content_json": "{\"disqus_api_secret\": \"\", \"num_tags_entry_header\": 5, \"seo_title\": \"\", \"disqus_shortname\": \"\", \"owner\": 1, \"display_last_entries\": true, \"expired\": false, \"show_in_menus\": false, \"content_type\": 47, \"slug\": \"blog\", \"display_archive\": true, \"num_last_entries\": 3, \"display_comments\": false, \"first_published_at\": null, \"display_categories\": true, \"numchild\": 0, \"search_description\": \"\", \"depth\": 3, \"display_tags\": true, \"description\": \"\", \"latest_revision_created_at\": null, \"num_popular_entries\": 3, \"title\": \"blog\", \"locked\": false, \"pk\": 4, \"url_path\": \"/osr/blog/\", \"display_popular_entries\": true, \"path\": \"000100020001\", \"has_unpublished_changes\": false, \"header_image\": null, \"num_entries_page\": 5, \"expire_at\": null, \"go_live_at\": null, \"live\": true}",
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.pagerevision",
+  "pk": 3,
+  "fields": {
+    "page": 5,
+    "submitted_for_moderation": false,
+    "created_at": "2017-02-20T19:48:56.322Z",
+    "user": 1,
+    "content_json": "{\"related_entrypage_to\": [], \"entry_categories\": [], \"seo_title\": \"\", \"owner\": 1, \"expired\": false, \"show_in_menus\": false, \"content_type\": 9, \"date\": \"2017-02-20T19:48:00Z\", \"slug\": \"1st-blog-page\", \"first_published_at\": null, \"related_entrypage_from\": [], \"numchild\": 0, \"search_description\": \"\", \"latest_revision_created_at\": null, \"depth\": 4, \"streamfield\": \"[]\", \"body\": \"<p>You manage to have a osr website run locally !<br/></p>\", \"num_comments\": 0, \"excerpt\": \"\", \"title\": \"1st blog page\", \"locked\": false, \"pk\": 5, \"url_path\": \"/osr/blog/1st-blog-page/\", \"entry_tags\": [], \"path\": \"0001000200010001\", \"has_unpublished_changes\": false, \"header_image\": null, \"expire_at\": null, \"go_live_at\": null, \"live\": true}",
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.pagerevision",
+  "pk": 4,
+  "fields": {
+    "page": 3,
+    "submitted_for_moderation": false,
+    "created_at": "2017-02-20T19:50:38.972Z",
+    "user": 1,
+    "content_json": "{\"depth\": 2, \"expired\": false, \"expire_at\": null, \"locked\": false, \"seo_title\": \"\", \"url_path\": \"/osr/\", \"owner\": 1, \"title\": \"osr\", \"show_in_menus\": true, \"pk\": 3, \"latest_revision_created_at\": \"2017-02-20T19:46:35.916Z\", \"content_type\": 5, \"slug\": \"osr\", \"path\": \"00010002\", \"has_unpublished_changes\": false, \"first_published_at\": \"2017-02-20T19:46:35.933Z\", \"numchild\": 1, \"search_description\": \"\", \"go_live_at\": null, \"live\": true}",
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.pagerevision",
+  "pk": 5,
+  "fields": {
+    "page": 6,
+    "submitted_for_moderation": false,
+    "created_at": "2017-02-20T19:51:29.545Z",
+    "user": 1,
+    "content_json": "{\"seo_title\": \"\", \"owner\": 1, \"repeated_item_text\": \"\", \"expired\": false, \"show_in_menus\": false, \"content_type\": 7, \"slug\": \"league\", \"first_published_at\": null, \"numchild\": 0, \"search_description\": \"\", \"depth\": 3, \"latest_revision_created_at\": null, \"body\": \"[]\", \"title\": \"League\", \"locked\": false, \"pk\": 6, \"url_path\": \"/osr/league/\", \"path\": \"000100020002\", \"has_unpublished_changes\": false, \"expire_at\": null, \"repeat_in_subnav\": false, \"go_live_at\": null, \"live\": true}",
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.pagerevision",
+  "pk": 6,
+  "fields": {
+    "page": 6,
+    "submitted_for_moderation": false,
+    "created_at": "2017-02-20T19:51:39.614Z",
+    "user": 1,
+    "content_json": "{\"seo_title\": \"\", \"owner\": 1, \"repeated_item_text\": \"\", \"expired\": false, \"show_in_menus\": true, \"content_type\": 7, \"slug\": \"league\", \"first_published_at\": \"2017-02-20T19:51:29.564Z\", \"numchild\": 0, \"search_description\": \"\", \"depth\": 3, \"latest_revision_created_at\": \"2017-02-20T19:51:29.545Z\", \"body\": \"[]\", \"title\": \"League\", \"locked\": false, \"pk\": 6, \"url_path\": \"/osr/league/\", \"path\": \"000100020002\", \"has_unpublished_changes\": false, \"expire_at\": null, \"repeat_in_subnav\": false, \"go_live_at\": null, \"live\": true}",
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.page",
+  "pk": 1,
+  "fields": {
+    "path": "0001",
+    "depth": 1,
+    "numchild": 1,
+    "title": "Root",
+    "slug": "root",
+    "content_type": 1,
+    "live": true,
+    "has_unpublished_changes": false,
+    "url_path": "/",
+    "owner": null,
+    "seo_title": "",
+    "show_in_menus": false,
+    "search_description": "",
+    "go_live_at": null,
+    "expire_at": null,
+    "expired": false,
+    "locked": false,
+    "first_published_at": null,
+    "latest_revision_created_at": null
+  }
+},
+{
+  "model": "wagtailcore.page",
+  "pk": 3,
+  "fields": {
+    "path": "00010002",
+    "depth": 2,
+    "numchild": 2,
+    "title": "osr",
+    "slug": "osr",
+    "content_type": 5,
+    "live": true,
+    "has_unpublished_changes": false,
+    "url_path": "/osr/",
+    "owner": 1,
+    "seo_title": "",
+    "show_in_menus": true,
+    "search_description": "",
+    "go_live_at": null,
+    "expire_at": null,
+    "expired": false,
+    "locked": false,
+    "first_published_at": "2017-02-20T19:46:35.933Z",
+    "latest_revision_created_at": "2017-02-20T19:50:38.972Z"
+  }
+},
+{
+  "model": "wagtailcore.page",
+  "pk": 4,
+  "fields": {
+    "path": "000100020001",
+    "depth": 3,
+    "numchild": 1,
+    "title": "blog",
+    "slug": "blog",
+    "content_type": 47,
+    "live": true,
+    "has_unpublished_changes": false,
+    "url_path": "/osr/blog/",
+    "owner": 1,
+    "seo_title": "",
+    "show_in_menus": false,
+    "search_description": "",
+    "go_live_at": null,
+    "expire_at": null,
+    "expired": false,
+    "locked": false,
+    "first_published_at": "2017-02-20T19:47:49.044Z",
+    "latest_revision_created_at": "2017-02-20T19:47:49.028Z"
+  }
+},
+{
+  "model": "wagtailcore.page",
+  "pk": 5,
+  "fields": {
+    "path": "0001000200010001",
+    "depth": 4,
+    "numchild": 0,
+    "title": "1st blog page",
+    "slug": "1st-blog-page",
+    "content_type": 9,
+    "live": true,
+    "has_unpublished_changes": false,
+    "url_path": "/osr/blog/1st-blog-page/",
+    "owner": 1,
+    "seo_title": "",
+    "show_in_menus": false,
+    "search_description": "",
+    "go_live_at": null,
+    "expire_at": null,
+    "expired": false,
+    "locked": false,
+    "first_published_at": "2017-02-20T19:48:56.338Z",
+    "latest_revision_created_at": "2017-02-20T19:48:56.322Z"
+  }
+},
+{
+  "model": "wagtailcore.page",
+  "pk": 6,
+  "fields": {
+    "path": "000100020002",
+    "depth": 3,
+    "numchild": 0,
+    "title": "League",
+    "slug": "league",
+    "content_type": 7,
+    "live": true,
+    "has_unpublished_changes": false,
+    "url_path": "/osr/league/",
+    "owner": 1,
+    "seo_title": "",
+    "show_in_menus": true,
+    "search_description": "",
+    "go_live_at": null,
+    "expire_at": null,
+    "expired": false,
+    "locked": false,
+    "first_published_at": "2017-02-20T19:51:29.564Z",
+    "latest_revision_created_at": "2017-02-20T19:51:39.614Z"
+  }
+},
+{
+  "model": "home.streamfieldentrypage",
+  "pk": 5,
+  "fields": {
+    "streamfield": "[]"
+  }
+},
+{
+  "model": "home.fullwidthpage",
+  "pk": 6,
+  "fields": {
+    "repeat_in_subnav": false,
+    "repeated_item_text": "",
+    "body": "[]"
+  }
+},
+{
+  "model": "home.homepage",
+  "pk": 3,
+  "fields": {}
+}
+]
