@@ -34,7 +34,7 @@ def scraper():
 	delta_sec = delta.total_seconds()
 	kgs_delay = Registry.get_kgs_delay()
 	if delta_sec < kgs_delay: #we can't scrape yet
-		return 
+		return
 	#2 look for some sgfs that we analyse and maybe record as games
 	sgfs=Sgf.objects.filter(p_status=2)
 	if len(sgfs)==0 :
@@ -59,7 +59,7 @@ def scraper():
 			player.check_player()
 		out=player
 	Registry.set_time_kgs(now)
-	return 
+	return
 
 def scraper_view(request):
 	scraper()
@@ -241,15 +241,16 @@ def players(request,event_id=None,division_id=None):
 		players=LeaguePlayer.objects.all()
 	else:
 		event=get_object_or_404(LeagueEvent,pk=event_id)
-		players = LeaguePlayer.objects.filter(event=event)
+
 	if division_id == None:
-		division = Division.objects.filter(league_event=event).first()
+		players = LeaguePlayer.objects.filter(event=event)
 	else:
 		division = get_object_or_404(Division,pk=division_id)
+		players = LeaguePlayer.objects.filter(event=event,division = division)
+
 	context = {
 		'event':event,
-		'title':'overview',
-		'close':close,
+		'players':players,
 	}
 	template = loader.get_template('league/players.html')
 	return HttpResponse(template.render(context, request))

@@ -1,0 +1,49 @@
+{% extends "league/base.html" %}
+{% block title %}{{event}}- Players{% endblock %}
+{% load league_tags %}
+{% block content %}
+<nav class="navbar navbar-default">
+<ul class="nav navbar-nav navbar-left">
+  <li><a href="{% url 'league:event' event.pk %}">Overview</a></li>
+  <li><a href="{% url 'league:results' event.pk %}">Results</a></li>
+  <li class="active"><a href="{% url 'league:players' event.pk %}">Players</a></li>
+  <li><a href="{% url 'league:games' event.pk %}">Games</a></li>
+</ul>
+</nav>
+
+<table id='player-table' class=' table table-hover '  >
+   <thead>
+     <tr>
+       <th>Division</th>
+       <th>Rank</th>
+       <th>Player</th>
+       <th>score</th>
+       <th># Win</th>
+       <th># Loss</th>
+       <th># Games</th>
+     </tr>
+   </thead>
+   <tbody>
+     {% for player in players %}
+     <tr>
+       <td>{{player.division |division_link}}</td>
+       <td>{{forloop.counter}}</td>
+       <td>{{player.user | user_link}}</td>
+       <td>{{player.score}}</td>
+       <td>{{player.nb_win}}</td>
+       <td>{{player.nb_loss}}</td>
+       <td>{{player | nb_games}}</td>
+    </tr>
+     {% endfor %}
+   </tbody>
+
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+$('#player-table').DataTable();
+} );
+</script>
+{% endblock %}

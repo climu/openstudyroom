@@ -6,7 +6,7 @@
 <ul class="nav navbar-nav navbar-left">
   <li><a href="{% url 'league:event' event.pk %}">Overview</a></li>
   <li class = active ><a href="{% url 'league:results' event.pk %}">Results</a></li>
-  <li><a href="#">Players</a></li>
+  <li><a href="{% url 'league:players' event.pk %}">Players</a></li>
   <li><a href="{% url 'league:games' event.pk %}">Games</a></li>
 </ul>
 </nav>
@@ -18,18 +18,18 @@
 
 <div class='table-responsive'>
   <table id='example' class='table table-bordered table-player table-league table-hover ' >
-     <thead class='table-league-highlight'>
+     <thead class='table-league-highlight' style='heigh:20px'
        <tr>
          <th style="width:12em;">player</th>
          <th style="width:0em;"> score</th>
         {% for player in players %}
-       		<th style='text-align: center;'> {{ player.kgs_username }}</th>
+       		<th style='text-align: center;width:10px'> <div style ='transform: rotate(-60deg);transform-origin: 0 0;position: absolute;'>{{ player.kgs_username }}</div></th>
         {% endfor %}
         </thead>
         <tbody>
           {% for player in players %}
         		<tr>
-              <td class='table-league-highlight'>{{forloop.counter}}. {{player.user | user_link}} </td>
+              <td class='table-league-player'>{{forloop.counter}}. {{player.user | user_link}} </td>
         		<td class='table-league-score-highlight'>{{player.score}} </td>
         		{% for opponent in players %}
 
