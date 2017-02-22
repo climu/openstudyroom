@@ -243,7 +243,7 @@ def players(request,event_id=None,division_id=None):
 		event=get_object_or_404(LeagueEvent,pk=event_id)
 
 	if division_id == None:
-		players = LeaguePlayer.objects.filter(event=event)
+		players = LeaguePlayer.objects.filter(event=event).order_by('-score')
 	else:
 		division = get_object_or_404(Division,pk=division_id)
 		players = LeaguePlayer.objects.filter(event=event,division = division)

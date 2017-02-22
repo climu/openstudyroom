@@ -17,13 +17,13 @@
 </ul>
 
 <div class='table-responsive'>
-  <table id='example' class='table table-bordered table-player table-league table-hover ' >
+  <table id='example' class='table table-bordered  table-hover table-condensed' >
      <thead class='table-league-highlight' style='heigh:20px'
        <tr>
          <th style="width:12em;">player</th>
          <th style="width:0em;"> score</th>
         {% for player in players %}
-       		<th style='text-align: center;width:10px'> <div style ='transform: rotate(-60deg);transform-origin: 0 0;position: absolute;'>{{ player.kgs_username }}</div></th>
+       		<th style='text-align: center;width:10px;'> <div class='table-league-highlight'style ='transform: rotate(-60deg);transform-origin: 0 0;position: absolute;margin-top: -10px;'>{{ player.kgs_username }}</div></th>
         {% endfor %}
         </thead>
         <tbody>
