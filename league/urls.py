@@ -15,7 +15,7 @@ urlpatterns = [
 
 
     url(r'^account/$', views.account, name='league_account'),
-    url(r'^account/(?P<user_name>\w+)/$', views.account,name='league_account'),
+    url(r'^account/(?P<user_name>[\w.@+-]+)/$', views.account,name='league_account'),
     url(r'^scraper/$', views.scraper, name='scraper'),
 
     url(r'^admin/$', views.admin, name='admin'),
