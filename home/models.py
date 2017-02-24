@@ -18,6 +18,14 @@ from wagtail.wagtaildocs.blocks import DocumentChooserBlock
 from puput.models import EntryPage, BlogPage
 from wagtailmenus.models import MenuPage
 
+
+from machina.core.db.models import get_model
+from machina.core.loading import get_class
+
+
+Forum = get_model('forum', 'Forum')
+Topic = get_model('forum_conversation', 'Topic')
+
 # Global Streamfield definition
 
 
@@ -85,9 +93,13 @@ class HomePage(Page):
      def get_context(self, request, *args, **kwargs):
          entries = EntryPage.objects.live().order_by('-date')
          blog_page = BlogPage.objects.all().first()
+         allowed_forums = request.forum_permission_handler._get_forums_for_user(request.user,[ 'can_read_forum',])
+         last_topics = Topic.objects.filter(forum__in = allowed_forums).order_by('-last_post_on')[:5]
+
          context = super(HomePage, self).get_context(request, *args, **kwargs)
          context['entries'] = entries
          context['blog_page'] = blog_page
+         context['topics'] = last_topics
 
          return context
 
@@ -122,4 +134,3 @@ class StreamFieldEntryPage(EntryPage):
         StreamFieldPanel('streamfield')
     ]
 BlogPage.subpage_types.append(StreamFieldEntryPage)
-

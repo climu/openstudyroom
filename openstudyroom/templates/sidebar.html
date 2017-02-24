@@ -1,5 +1,5 @@
 {% load static i18n wagtailcore_tags wagtailimages_tags puput_tags compress wagtailroutablepage_tags %}
-
+{% load league_tags %}
     <div class="blog_sidebar">
         <div class="rss-sitemap">
             <a href="{% feeds_url blog_page %}" target="_blank" title="RSS">
@@ -7,6 +7,12 @@
             </a>
         </div>
 
+        <ul class="sidebar">
+        <h4> Being discussed in our forums </h4>
+        {% for topic in topics %}
+        <li> <a href="{% url 'forum_conversation:topic' topic.forum.slug topic.forum.pk topic.slug topic.pk %}">{{topic.subject}}</a> by {{ topic.poster |user_link }} in <a href="{% url 'forum:forum' topic.forum.slug topic.forum.pk %}">{{topic.forum}}</a> on {{ topic.last_post_on |date:"M d, Y" }}</li>
+        {% endfor %}
+        </ul>
 
 
         {% if blog_page.display_categories %}
