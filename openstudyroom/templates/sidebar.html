@@ -10,7 +10,14 @@
         <ul class="sidebar">
         <h4> Being discussed in our forums </h4>
         {% for topic in topics %}
-        <li> <a href="{% url 'forum_conversation:topic' topic.forum.slug topic.forum.pk topic.slug topic.pk %}"><b>{{topic.subject}}</b></a> in <a href="{% url 'forum:forum' topic.forum.slug topic.forum.pk %}">{{topic.forum}}</a><br />  by {{ topic.poster |user_link }}  on {{ topic.last_post_on |date:"M d, Y" }}</li>
+        <article class="box post-summary">
+
+        <li> <a href="{% url 'forum_conversation:topic' topic.forum.slug topic.forum.pk topic.slug topic.pk %}">
+          <b>{{topic.subject}}</b></a> in <a href="{% url 'forum:forum' topic.forum.slug topic.forum.pk %}">{{topic.forum}}</a><br />
+          <ul class="links"> <li> <i class="fa fa-user"></i> {{ topic.poster |user_link }} </li> <li><i class="fa fa-calendar"></i>
+{{ topic.last_post_on|date:"SHORT_DATE_FORMAT" }}</li></ul>
+ </li>
+
         {% endfor %}
         </ul>
 
