@@ -15,6 +15,9 @@ class LeagueEvent(models.Model):
 	nb_matchs = models.SmallIntegerField(default=2)
 	ppwin = models.DecimalField(default=1.5, max_digits=2, decimal_places=1)
 	pploss = models.DecimalField(default=0.5, max_digits=2, decimal_places=1)
+	min_matchs = models.SmallIntegerField(default=1)
+	class Meta:
+		ordering = ['-begin_time']
 
 	def __str__(self):
 		return self.name
@@ -36,17 +39,31 @@ class LeagueEvent(models.Model):
 
 	def possible_games(self):
 		n = self.number_players()
-		return n*(n-1)*self.nb_matchs
+		return int(n*(n-1)*self.nb_matchs/2)
+
 	def percent_game_played(self):
 		p= self.possible_games()
 		if p == 0:
-		    n=100
+			n=100
 		else:
-		    n= float(self.number_games()) / float(self.possible_games()) * 100
+			n= round(float(self.number_games()) / float(self.possible_games()) * 100,2)
 		return n
 
 	def get_divisions(self):
 		return self.division_set.all()
+
+	def get_players(self):
+		return self.leagueplayer_set.all()
+
+	def number_actives_players(self):
+		#not proud of this method. It works thought
+		n=0
+		for player in self.get_players():
+			if player.nb_games()>=self.min_matchs: n+=1
+		return n
+
+	def number_inactives_players(self):
+		return (self.number_players()-self.number_actives_players())
 
 
 
@@ -185,8 +202,33 @@ class User(AbstractUser):
 
 	def user_is_league_admin(self):
 		return self.groups.filter(name='league_admin').exists()
+
 	def user_is_league_member(self):
 		return self.groups.filter(name='league_member').exists()
+
+	def nb_games(self):
+		players = self.leagueplayer_set.all()
+		n = 0
+		for player in players:
+			n += player.nb_games()
+		return n
+
+	def nb_players(self):
+		return self.leagueplayer_set.all().count()
+
+	def nb_win(self):
+		players = self.leagueplayer_set.all()
+		n = 0
+		for player in players:
+			n += player.nb_win
+		return n
+
+	def nb_loss(self):
+		players = self.leagueplayer_set.all()
+		n = 0
+		for player in players:
+			n += player.nb_loss
+		return n
 
 
 
@@ -202,9 +244,15 @@ class Division(models.Model):
 	name = models.TextField(max_length=20)
 	order = models.SmallIntegerField(default=0)
 
+	class Meta:
+		unique_together = ('league_event', 'order',)
+		ordering = ['-league_event','order']
+
 	def __str__(self):
 		return self.name
 
+	def get_players(self):
+		return self.leagueplayer_set.all().order_by('-score')
 
 
 
@@ -251,7 +299,7 @@ class LeaguePlayer(models.Model):
 		dict_results = eval(self.results)
 		opponent=opponent.kgs_username
 		if opponent in dict_results :
-		 	dict_results[opponent].append({'id':game_id, 'r':0})
+			dict_results[opponent].append({'id':game_id, 'r':0})
 		else : dict_results[opponent]=[{'id':game_id, 'r':0}]
 		str_results = str(dict_results)
 		self.results = str_results
@@ -294,7 +342,11 @@ class LeaguePlayer(models.Model):
 					sgf.game_type = game_type
 					sgf.save()
 
+	def nb_games(self):
+		return(self.nb_win+self.nb_loss)
 
+	def is_active(self):
+		return self.nb_games() >= self.event.min_matchs
 
 
 class Game(models.Model):

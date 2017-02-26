@@ -2,7 +2,9 @@
 {% load wagtailcore_tags bootstrap3 %}
 {% block title %}OSR league admin{% endblock %}
 {% block content %}
-<h2> List of new users </h2>
+<div class="panel panel-default">
+<div class="panel-heading"><h3> List of new users </h3></div>
+<div class="panel-body">
   <table id='new_user-table' class='display table' >
     <thead>
       <tr><th>username</th><th>email</th><th>kgs_username</th><th>Delete</th><th>Accept</th>
@@ -17,7 +19,7 @@
             {% csrf_token %}
             <input type="hidden" name="action" value="delete_new_user">
             <input type="hidden" name="user_id" value="{{new_user.pk}}">
-              <button type="submit" class="btn btn-danger"onclick="return confirm('You are about to delete the new user {{new_user.username}}. Allright?')" >
+              <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('You are about to delete the new user {{new_user.username}}. Allright?')" >
                 {% bootstrap_icon "remove" %}  delete
               </button>
             </form>
@@ -26,15 +28,18 @@
             {% csrf_token %}
             <input type="hidden" name="action" value="welcome_new_user">
             <input type="hidden" name="user_id" value="{{new_user.pk}}">
-              <button type="submit" class="btn btn-success" onclick="return confirm('Accept the new user  {{new_user.username}} as a league memeber ?')">
+              <button type="submit" class="btn btn-success btn-xs" onclick="return confirm('Accept the new user  {{new_user.username}} as a league memeber ?')">
                 {% bootstrap_icon "ok" %}  Accept
               </button></form></td>
         </tr>
         {% endfor %}
       </tbdoy>
   </table>
-
-<h2>List of Sgf that didn't pass the test</h2>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading"><h3> List of Sgf that didn't pass the test </h3></div>
+<div class="panel-body">
 <table id='sgf-table' class='display table' cellspacing='0' width='100%' >
    <thead>
      <tr><th>date</th><th>white</th><th>black</th><th>result</th><th>message</th><th>Edit</th>
@@ -51,6 +56,8 @@
        </tr>
 {% endfor %}
 </tbody></table>
+</div>
+</div>
 {% endblock %}
 
 {% block extra_js %}

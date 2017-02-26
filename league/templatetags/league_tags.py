@@ -51,4 +51,12 @@ def division_link(division):
         html= '<a href="/league/'+str(division.league_event.pk) +'/results/'+ str(division.pk) +'">'+ str(division.name)+ '</a>'
         return mark_safe(html)
 
+@register.filter(name='player_field')
+def player_field(form, player_id):
+        return form['player_'+str(player_id)]
 
+@register.simple_tag(takes_context=True)
+def player_field_tag(context):
+	form=context['form']
+	player = context['player']
+	return form['player_'+str(player.pk)]

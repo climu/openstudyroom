@@ -1,10 +1,9 @@
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.db import models
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect,Http404
 from .models import Sgf,LeaguePlayer,User,LeagueEvent,Division,Game,Registry, User, is_league_admin, is_league_member
-from . import utils
-from .forms import  SgfAdminForm,ActionForm
+from .forms import  SgfAdminForm,ActionForm,LeagueRolloverForm
 import datetime
 from django.http import Http404
 from django.core.urlresolvers import reverse
@@ -14,7 +13,7 @@ from django import forms
 from django.contrib.auth.models import  Group
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
-
+from collections import OrderedDict
 
 
 
@@ -67,15 +66,22 @@ def scraper_view(request):
 
 def games(request,event_id=None):
 	if event_id == None:
-		games=Game.objects.all(white__event=event)
+		games=Game.objects.all()
+		context = {
+			'games': games,
+				}
+		template = loader.get_template('league/archives_games.html')
+
 	else:
 		event = get_object_or_404(LeagueEvent,pk=event_id)
+		close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
 		games=Game.objects.filter(white__event=event)
-	template = loader.get_template('league/games.html')
-	context = {
-		'games': games,
-		'event':event,
-	}
+		template = loader.get_template('league/games.html')
+		context = {
+			'games': games,
+			'event':event,
+			'close':close,
+			}
 	return HttpResponse(template.render(context, request))
 
 
@@ -91,10 +97,12 @@ def results(request,event_id=None,division_id=None):
 		division = get_object_or_404(Division,pk=division_id)
 	template = loader.get_template('league/results.html')
 	players=LeaguePlayer.objects.filter(division=division).order_by('-score')
+	close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
 	context = {
 		'players':players,
 		'event':event,
 		'division':division,
+		'close' : close,
 		}
 	return HttpResponse(template.render(context, request))
 
@@ -133,7 +141,7 @@ def admin(request):
 				user.groups.clear()
 				group = Group.objects.get(name='league_member')
 				user.groups.add(group)
-				division=Division.objects.filter(league_event=event).first()
+				division=Division.objects.filter(league_event=event).last()
 				user.join_event(event,division)
 				message =" You moved " + user.username + "from new user to league member"
 				messages.success(request,message)
@@ -169,7 +177,9 @@ def account(request,user_name=None):
 		else:
 			return HttpResponseRedirect('/')# maybe a view with a list of all our users might be cool redirection here
 	else:
-		user = get_object_or_404(User,username = user_name)
+		#user = get_object_or_404(User,username = user_name)
+		user= User.objects.get(username=user_name)
+
 	if not is_league_member(user): return HttpResponseRedirect('/')
 
 	if request.method == 'POST':
@@ -205,16 +215,14 @@ def account(request,user_name=None):
 		return HttpResponse(template.render(context, request))
 
 
-def overview(request):
-		event = Registry.get_primary_event()
-		close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
-		context = {
-		'event':event,
-		'title':'overview',
-		'close':close,
+def archives(request):
+		primary_event = Registry.get_primary_event()
+		events = LeagueEvent.objects.all()
 
+		context = {
+		'events':events,
 		}
-		template = loader.get_template('league/overview.html')
+		template = loader.get_template('league/archive.html')
 		return HttpResponse(template.render(context, request))
 
 def event(request,event_id=None,division_id=None,):
@@ -229,7 +237,6 @@ def event(request,event_id=None,division_id=None,):
 	close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
 	context = {
 		'event':event,
-		'title':'overview',
 		'close':close,
 
 		}
@@ -238,19 +245,86 @@ def event(request,event_id=None,division_id=None,):
 
 def players(request,event_id=None,division_id=None):
 	if event_id == None:
-		players=LeaguePlayer.objects.all()
+		users=User.objects.filter(groups__name='league_member')
+		context = {
+			'users':users,
+		}
+		template = loader.get_template('league/archives_players.html')
 	else:
 		event=get_object_or_404(LeagueEvent,pk=event_id)
+		if division_id == None:
+			players = LeaguePlayer.objects.filter(event=event).order_by('-score')
+		else:
+			division = get_object_or_404(Division,pk=division_id)
+			players = LeaguePlayer.objects.filter(event=event,division = division)
 
-	if division_id == None:
-		players = LeaguePlayer.objects.filter(event=event).order_by('-score')
+		context = {
+			'event':event,
+			'players':players,
+		}
+		template = loader.get_template('league/players.html')
+	return HttpResponse(template.render(context, request))
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def rollover(request):
+	from_event = Registry.get_primary_event()
+	to_event = LeagueEvent.objects.filter(pk=from_event.pk+1).first()
+
+	if to_event == None:
+		message =" You must create a new event and his divisions before processing rollover."
+		messages.success(request,message)
+		return HttpResponseRedirect(reverse('league:admin'))
+
+	if to_event.number_players()>0:
+		message = "Something strange: you tryed to rollover to a league with players already in it"
+		messages.success(request,message)
+		return HttpResponseRedirect(reverse('league:admin'))
+
+	new_players= OrderedDict()
+	for division in to_event.get_divisions():
+		new_players[division.name]=[]
+
+	if request.method == 'POST':
+		form = LeagueRolloverForm(from_event,to_event,request.POST)
+		if form.is_valid():
+			for player in from_event.get_players():
+				if player.is_active():
+					new_division = Division.objects.get(pk=form.cleaned_data['player_'+str(player.pk)])
+					new_player = LeaguePlayer(user=player.user,event = to_event,kgs_username = player.kgs_username,division=new_division)
+					new_player.previous_division=player.division
+					new_players[new_division.name].append(new_player)
+			preview=True
 	else:
-		division = get_object_or_404(Division,pk=division_id)
-		players = LeaguePlayer.objects.filter(event=event,division = division)
+		form = LeagueRolloverForm(from_event,to_event)
+		preview=False
 
 	context = {
-		'event':event,
-		'players':players,
-	}
-	template = loader.get_template('league/players.html')
+			'from_event' : from_event,
+			'to_event' : to_event,
+			'form' : form,
+			'new_players' : new_players,
+			'preview' : preview,
+		}
+	template = loader.get_template('league/rollover.html')
 	return HttpResponse(template.render(context, request))
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def proceed_rollover(request):
+	from_event = Registry.get_primary_event()
+	to_event = LeagueEvent.objects.filter(pk=from_event.pk+1).first()
+	if request.method == 'POST':
+		form = LeagueRolloverForm(from_event,to_event,request.POST)
+		if form.is_valid():
+			n=0
+			for player in from_event.get_players():
+				if player.is_active():
+						n+=1
+						new_division = Division.objects.get(pk=form.cleaned_data['player_'+str(player.pk)])
+						new_player = LeaguePlayer.objects.create(user=player.user,event = to_event,kgs_username = player.kgs_username,division=new_division)
+		message ="The new "+ to_event.name +" was populated with "+ str(n) +" players."
+		messages.success(request,message)
+		return HttpResponseRedirect(reverse('league:admin'))
+	else:
+		raise Http404("What are you doing here ?")

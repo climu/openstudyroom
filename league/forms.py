@@ -16,3 +16,17 @@ class LeagueSignupForm(forms.Form):
         group = Group.objects.get(name='new_user')
         user.groups.add(group)
         user.save()
+
+
+class LeagueRolloverForm(forms.Form):
+    # a form related to a set of leagueplayers with one field per player.
+    def __init__(self, from_event,to_event,  *args, **kwargs):
+        super(LeagueRolloverForm, self).__init__(*args, **kwargs)
+        players = from_event.get_players()
+        divisions = to_event.get_divisions()
+        for player in players:
+            self.fields[ 'player_'+str(player.pk)] = forms.ChoiceField(choices=[(division.pk,division.name) for division in divisions])
+            # an attempt to set initial choice with same order... failed.
+            #division =divisions.filter(order=player.division.order).first()
+            #if division != None:
+            #    self.fields['player_'+str(player.pk)].inital = (division.pk,division.name)

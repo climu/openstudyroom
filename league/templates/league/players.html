@@ -9,6 +9,10 @@
   <li class="active"><a href="{% url 'league:players' event.pk %}">Players</a></li>
   <li><a href="{% url 'league:games' event.pk %}">Games</a></li>
 </ul>
+<ul class="nav navbar-nav navbar-right" style="margin-right:5px;">
+  <li {%if not close %}class ="active"{%endif%}><a href="{% url 'league:event' %}">Current league</a></li>
+  <li><a href="{% url 'league:archives' %}">Archives</a></li>
+</ul>
 </nav>
 
 <table id='player-table' class=' table table-hover '  >
