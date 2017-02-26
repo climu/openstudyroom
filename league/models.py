@@ -159,11 +159,12 @@ class Sgf(models.Model):
 		bplayer = LeaguePlayer.objects.filter(kgs_username = self.bplayer, event = event).first()
 		if wplayer != None and bplayer != None :
 			if	wplayer.division != bplayer.division: (b,m) = (False,m+'; players not in same division')
+			w_results = wplayer.get_results()
+			if self.bplayer in w_results:
+				if len(w_results[self.bplayer]) >= event.nb_matchs:
+					(b,m) = (False,m+'; max number of games')
 		else : (b,m) = (False,m+'; One of the players is not a league player')
-		w_results = wplayer.get_results()
-		if self.bplayer in w_results:
-			if len(w_results[self.bplayer]) >= event.nb_matchs:
-				(b,m) = (False,m+'; max number of games')
+
 		if not utils.check_byoyomi(self.byo):
 			(b,m) = (False,m+'; byo-yomi')
 		if int(self.time) < 1800: (b,m) = (False,m+'; main time')

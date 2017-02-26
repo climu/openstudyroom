@@ -105,5 +105,8 @@ def parse_sgf_string(sgf_string):
 			q = sgf_string.find(']',p) #find the end of the tag
 			out[prop[key]]=sgf_string[p+3:q]
 	#convert string date to date object
-	out['date']=datetime.datetime.strptime(out['date'],"%Y-%m-%d")
+	if 'date' in out:
+		out['date']=datetime.datetime.strptime(out['date'],"%Y-%m-%d")
+	else:
+		 out['date']=None
 	return out
