@@ -155,8 +155,8 @@ class Sgf(models.Model):
 		if self.game_type == 'review': (b,m) = (False,m+' review gametype')
 		if self.sgf_text.find('#OSR') == -1 : (b,m)= (False,m+'; Tag missing')
 		event = Registry.get_primary_event()
-		wplayer = LeaguePlayer.objects.filter(kgs_username = self.wplayer, event = event).first()
-		bplayer = LeaguePlayer.objects.filter(kgs_username = self.bplayer, event = event).first()
+		wplayer = LeaguePlayer.objects.filter(kgs_username__iexact = self.wplayer, event = event).first()
+		bplayer = LeaguePlayer.objects.filter(kgs_username__iexact = self.bplayer, event = event).first()
 		if wplayer != None and bplayer != None :
 			if	wplayer.division != bplayer.division: (b,m) = (False,m+'; players not in same division')
 			w_results = wplayer.get_results()
@@ -334,7 +334,7 @@ class LeaguePlayer(models.Model):
 					player = players['black']
 				else:
 					player = players['white']
-				if LeaguePlayer.objects.filter(kgs_username=player,division=self.division).exists():
+				if LeaguePlayer.objects.filter(kgs_username__iexact=player,division=self.division).exists():
 					sgf = Sgf()
 					sgf.wplayer = players['white']
 					sgf.bplayer = players['black']
