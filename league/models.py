@@ -166,7 +166,7 @@ class Sgf(models.Model):
 				(b,m) = (False,m+'; max number of games')
 		if not utils.check_byoyomi(self.byo):
 			(b,m) = (False,m+'; byo-yomi')
-		if int(self.time) < 30: (b,m) = (False,m+'; main time')
+		if int(self.time) < 1800: (b,m) = (False,m+'; main time')
 		self.message = m
 		self.league_valid = b
 		return self
