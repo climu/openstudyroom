@@ -257,10 +257,11 @@ def players(request,event_id=None,division_id=None):
 		else:
 			division = get_object_or_404(Division,pk=division_id)
 			players = LeaguePlayer.objects.filter(event=event,division = division)
-
+		close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
 		context = {
 			'event':event,
 			'players':players,
+			'close' : close,
 		}
 		template = loader.get_template('league/players.html')
 	return HttpResponse(template.render(context, request))
