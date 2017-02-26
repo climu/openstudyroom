@@ -141,7 +141,8 @@ class Sgf(models.Model):
 		#prop['time'] = int(prop['time'])
 		for k, v in prop.items(): setattr(self, k, v)
 		self.p_status=0
-		self.save()
+		return self
+
 
 
 	def check_validity(self):
@@ -168,8 +169,7 @@ class Sgf(models.Model):
 		if int(self.time) < 30: (b,m) = (False,m+'; main time')
 		self.message = m
 		self.league_valid = b
-		self.save()
-		return b
+		return self
 
 
 

@@ -18,6 +18,9 @@ class LeagueSignupForm(forms.Form):
         user.save()
 
 
+class UploadFileForm(forms.Form):
+    file = forms.FileField()
+
 class LeagueRolloverForm(forms.Form):
     # a form related to a set of leagueplayers with one field per player.
     def __init__(self, from_event,to_event,  *args, **kwargs):

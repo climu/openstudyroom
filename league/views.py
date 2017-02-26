@@ -3,7 +3,7 @@ from django.template import loader
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect,Http404
 from .models import Sgf,LeaguePlayer,User,LeagueEvent,Division,Game,Registry, User, is_league_admin, is_league_member
-from .forms import  SgfAdminForm,ActionForm,LeagueRolloverForm
+from .forms import  SgfAdminForm,ActionForm,LeagueRolloverForm,UploadFileForm
 import datetime
 from django.http import Http404
 from django.core.urlresolvers import reverse
@@ -14,6 +14,7 @@ from django.contrib.auth.models import  Group
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from collections import OrderedDict
+from . import utils
 
 
 
@@ -39,9 +40,11 @@ def scraper():
 	if len(sgfs)==0 :
 		sgfs=Sgf.objects.filter(p_status=1)
 	if len(sgfs)>0 :
-		sgf=sgfs[0]
-		sgf.parse()
-		if sgf.check_validity():
+		sgf = sgfs[0]
+		sgf = sgf.parse()
+		sgf = sgf.check_validity()
+		sgf.save()
+		if sgf.league_valid:
 			Game.create_game(sgf)
 		out = sgf
 	#3 no games to scrap let's check a player
@@ -106,113 +109,6 @@ def results(request,event_id=None,division_id=None):
 		}
 	return HttpResponse(template.render(context, request))
 
-@login_required()
-@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
-def sgf_view(request,sgf_id):
-	sgf = get_object_or_404(Sgf, pk=sgf_id)
-	if request.method == 'POST':
-		form = SgfAdminForm(request.POST)
-		if form.is_valid():
-			sgf.sgf_text = form.cleaned_data['sgf']
-			sgf.p_status = 2
-			sgf.save()
-			message =" You just modified the sgf " + sgf.wplayer + " Vs "+ sgf.bplayer
-			messages.success(request,message)
-		return HttpResponseRedirect(reverse('league:admin'))
-	else:
-		form = SgfAdminForm(initial={'sgf':sgf.sgf_text})
-		context={
-		'form' : form,
-		'sgf' : sgf,
-		}
-		return render(request,'league/sgf.html', context)
-
-
-@login_required()
-@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
-def admin(request):
-	event = Registry.get_primary_event()
-	if request.method =='POST':
-		form = ActionForm(request.POST)
-		if form.is_valid():
-			print(form.cleaned_data['action'])
-			if form.cleaned_data['action'] == "welcome_new_user":
-				user=User.objects.get(pk=form.cleaned_data['user_id'])
-				user.groups.clear()
-				group = Group.objects.get(name='league_member')
-				user.groups.add(group)
-				division=Division.objects.filter(league_event=event).last()
-				user.join_event(event,division)
-				message =" You moved " + user.username + "from new user to league member"
-				messages.success(request,message)
-				return HttpResponseRedirect(reverse('league:admin'))
-			if form.cleaned_data['action'] == "delete_new_user":
-					user=User.objects.get(pk=form.cleaned_data['user_id'])
-					user.delete()
-					message =" You just deleted " + user.username + "! Bye bye " + user.username +"."
-					messages.success(request,message)
-					return HttpResponseRedirect(reverse('league:admin'))
-	else:
-		sgfs = Sgf.objects.filter(league_valid=False,p_status = 0)
-		new_users=User.objects.filter(groups__name='new_user')
-		context={
-		'sgfs' : sgfs,
-		'new_users': new_users,
-		}
-		template = loader.get_template('league/admin.html')
-		return HttpResponse(template.render(context, request))
-
-
-
-
-def account(request,user_name=None):
-	#This view does many things:
-	# if url ask for a user( /league/user/climu) display that user profile.
-	# if none, we check if user is auth and, if so,  we display his own profile.
-	# In the template, we will display a join button only if user is auth and request.user == user
-	primary_event = Registry.get_primary_event()
-	if user_name == None: # if no user provide  by url, we check if user is auth and if so display hi own profile
-		if request.user.is_authenticated :
-			 user=request.user
-		else:
-			return HttpResponseRedirect('/')# maybe a view with a list of all our users might be cool redirection here
-	else:
-		#user = get_object_or_404(User,username = user_name)
-		user= User.objects.get(username=user_name)
-
-	if not is_league_member(user): return HttpResponseRedirect('/')
-
-	if request.method == 'POST':
-		if request.user.is_authenticated() and user == request.user:
-
-			form=ActionForm(request.POST)
-			if form.is_valid():
-				if form.cleaned_data['action'] == 'join':
-					division = Division.objects.filter(league_event = primary_event).order_by('-order').first()
-					user.join_event(primary_event,division)
-					message ="Welcome in " + division.name +" ! You can start playing right now."
-					messages.success(request,message)
-					return HttpResponseRedirect(reverse('league:league_account'))
-
-	else:
-		players = user.leagueplayer_set.order_by('-pk')
-		games = Game.objects.filter(Q(black__in = players)|Q(white__in = players))
-		if user.is_in_primary_event():
-			active_player = user.get_primary_event_player()
-			opponents = LeaguePlayer.objects.filter(division=active_player.division).order_by('-score')
-		else:
-			active_player = False
-			opponents = []
-		context = {
-		'players' : players,
-		'primary_event':primary_event,
-		'games' : games,
-		'active_player' : active_player,
-		'opponents' : opponents,
-		'user' :user,
-		}
-		template = loader.get_template('league/account.html')
-		return HttpResponse(template.render(context, request))
 
 
 def archives(request):
@@ -265,6 +161,191 @@ def players(request,event_id=None,division_id=None):
 		}
 		template = loader.get_template('league/players.html')
 	return HttpResponse(template.render(context, request))
+
+def account(request,user_name=None):
+	#This view does many things:
+	# if url ask for a user( /league/user/climu) display that user profile.
+	# if none, we check if user is auth and, if so,  we display his own profile.
+	# In the template, we will display a join button only if user is auth and request.user == user
+	primary_event = Registry.get_primary_event()
+	if user_name == None: # if no user provide  by url, we check if user is auth and if so display hi own profile
+		if request.user.is_authenticated :
+			 user=request.user
+		else:
+			return HttpResponseRedirect('/')# maybe a view with a list of all our users might be cool redirection here
+	else:
+		#user = get_object_or_404(User,username = user_name)
+		user= User.objects.get(username=user_name)
+
+	if not is_league_member(user): return HttpResponseRedirect('/')
+
+	if request.method == 'POST':
+		if request.user.is_authenticated() and user == request.user:
+
+			form=ActionForm(request.POST)
+			if form.is_valid():
+				if form.cleaned_data['action'] == 'join':
+					division = Division.objects.filter(league_event = primary_event).order_by('-order').first()
+					user.join_event(primary_event,division)
+					message ="Welcome in " + division.name +" ! You can start playing right now."
+					messages.success(request,message)
+					return HttpResponseRedirect(reverse('league:league_account'))
+
+	else:
+		players = user.leagueplayer_set.order_by('-pk')
+		games = Game.objects.filter(Q(black__in = players)|Q(white__in = players))
+		if user.is_in_primary_event():
+			active_player = user.get_primary_event_player()
+			opponents = LeaguePlayer.objects.filter(division=active_player.division).order_by('-score')
+		else:
+			active_player = False
+			opponents = []
+		context = {
+		'players' : players,
+		'primary_event':primary_event,
+		'games' : games,
+		'active_player' : active_player,
+		'opponents' : opponents,
+		'user' :user,
+		}
+		template = loader.get_template('league/account.html')
+		return HttpResponse(template.render(context, request))
+
+
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def handle_upload_sgf(request):
+	if request.method =='POST':
+		form = UploadFileForm(request.POST, request.FILES)
+		if form.is_valid():
+			file=request.FILES['file']
+			sgf_data=file.read().decode('UTF-8')
+			request.session['sgf_data'] = sgf_data
+			return HttpResponseRedirect(reverse('league:upload_sgf'))
+		else :raise Http404("What are you doing here ?")
+	else :raise Http404("What are you doing here ?")
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def create_sgf(request):
+	if request.method =='POST':
+		form = SgfAdminForm(request.POST)
+		if form.is_valid():
+			sgf=Sgf()
+			sgf.sgf_text = form.cleaned_data['sgf']
+			sgf.p_status = 2
+			sgf=sgf.parse()
+			sgf = sgf.check_validity()
+			if sgf.league_valid:
+				sgf.save()
+				Game.create_game(sgf)
+				message =" Succesfully created a sgf and a league game"
+				messages.success(request,message)
+			else:
+				message =" the sgf didn't seems to pass the tests"
+				messages.success(request,message)
+	return HttpResponseRedirect(reverse('league:admin'))
+
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def upload_sgf(request):
+	if request.method =='POST':
+		form = SgfAdminForm(request.POST)
+		if form.is_valid():
+			sgf=Sgf()
+			sgf.sgf_text = form.cleaned_data['sgf']
+			sgf.p_status = 2
+			sgf=sgf.parse()
+			sgf = sgf.check_validity()
+			form = SgfAdminForm(initial={'sgf':sgf.sgf_text})
+
+			context = {
+			'sgf':sgf,
+			'form': form,
+			}
+			template = loader.get_template('league/upload_sgf.html')
+			return HttpResponse(template.render(context, request))
+	else:
+		if 'sgf_data' in request.session:
+			if request.session['sgf_data'] == None: raise Http404("What are you doing here ?")
+			sgf=Sgf()
+			sgf.sgf_text = request.session['sgf_data']
+			request.session['sgf_data']=None
+			sgf.p_status = 2
+			sgf=sgf.parse()
+			sgf = sgf.check_validity()
+			form = SgfAdminForm(initial={'sgf':sgf.sgf_text})
+			context = {
+			'sgf':sgf,
+			'form': form,
+			}
+			template = loader.get_template('league/upload_sgf.html')
+			return HttpResponse(template.render(context, request))
+		else : raise Http404("What are you doing here ?")
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def sgf_view(request,sgf_id):
+	sgf = get_object_or_404(Sgf, pk=sgf_id)
+	if request.method == 'POST':
+		form = SgfAdminForm(request.POST)
+		if form.is_valid():
+			sgf.sgf_text = form.cleaned_data['sgf']
+			sgf.p_status = 2
+			sgf.save()
+			message =" You just modified the sgf " + sgf.wplayer + " Vs "+ sgf.bplayer
+			messages.success(request,message)
+		return HttpResponseRedirect(reverse('league:admin'))
+	else:
+		form = SgfAdminForm(initial={'sgf':sgf.sgf_text})
+		context={
+		'form' : form,
+		'sgf' : sgf,
+		}
+		return render(request,'league/sgf.html', context)
+
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin(request):
+	event = Registry.get_primary_event()
+	if request.method =='POST':
+		form = ActionForm(request.POST)
+		if form.is_valid():
+			print(form.cleaned_data['action'])
+			if form.cleaned_data['action'] == "welcome_new_user":
+				user=User.objects.get(pk=form.cleaned_data['user_id'])
+				user.groups.clear()
+				group = Group.objects.get(name='league_member')
+				user.groups.add(group)
+				division=Division.objects.filter(league_event=event).last()
+				user.join_event(event,division)
+				message =" You moved " + user.username + "from new user to league member"
+				messages.success(request,message)
+				return HttpResponseRedirect(reverse('league:admin'))
+			if form.cleaned_data['action'] == "delete_new_user":
+					user=User.objects.get(pk=form.cleaned_data['user_id'])
+					user.delete()
+					message =" You just deleted " + user.username + "! Bye bye " + user.username +"."
+					messages.success(request,message)
+					return HttpResponseRedirect(reverse('league:admin'))
+	else:
+		sgfs = Sgf.objects.filter(league_valid=False,p_status = 0)
+		new_users=User.objects.filter(groups__name='new_user')
+		form = UploadFileForm()
+		context={
+		'sgfs' : sgfs,
+		'new_users': new_users,
+		'form':form,
+		}
+		template = loader.get_template('league/admin.html')
+		return HttpResponse(template.render(context, request))
+
+
+
+
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)

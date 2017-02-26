@@ -38,8 +38,19 @@
 </div>
 </div>
 <div class="panel panel-default">
-<div class="panel-heading"><h3> List of Sgf that didn't pass the test </h3></div>
+<div class="panel-heading clearfix"><h3 class=" pull-left"> List of Sgf that didn't pass the test </h3>
+<div class="btn-group pull-right">
+  <legent> Upload a sgf</legend>
+  <form enctype="multipart/form-data" class="form-inline"action=" {% url 'league:handle_upload_sgf' %}" method="post" class="form">
+{% csrf_token %}
+{% bootstrap_form form layout='inline'%}
+<button type="submit" class="btn btn-success btn-sm" >
+  {% bootstrap_icon "ok" %}  Submit
+</button>
+</form></div>
+</div>
 <div class="panel-body">
+
 <table id='sgf-table' class='display table' cellspacing='0' width='100%' >
    <thead>
      <tr><th>date</th><th>white</th><th>black</th><th>result</th><th>message</th><th>Edit</th>
