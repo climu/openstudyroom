@@ -28,7 +28,7 @@
 {%compress css%}
         <link rel="stylesheet" type="text/css" href="{% static 'css/openstudyroom.css' %}">
 	<link type="text/css" href="{%static 'wgo/wgo.player.css' %}" rel="stylesheet" />
-	
+
         <link rel="stylesheet" href="{% static 'css/puput.css' %}"/>
 {%endcompress%}
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.css"/>
@@ -60,7 +60,7 @@
 	<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
       Hello {{ request.user.username }} <span class="caret"></span>
 	</a>
-    <ul class="dropdown-menu"> 
+    <ul class="dropdown-menu">
 	{%if request.user.user_is_league_member %}
 
 		 <li>
@@ -129,8 +129,23 @@ Logout</a>
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="  crossorigin="anonymous"></script>
 
       {% bootstrap_javascript %}
+
         {% block extra_js %}
             {# Override this in templates to add extra javascript #}
         {% endblock %}
+
+        <a title="Web Analytics" href="http://clicky.com/101029159"><img alt="Web Analytics" src="//static.getclicky.com/media/links/badge.gif" border="0" /></a>
+<script type="text/javascript">
+var clicky_site_ids = clicky_site_ids || [];
+clicky_site_ids.push(101029159);
+(function() {
+  var s = document.createElement('script');
+  s.type = 'text/javascript';
+  s.async = true;
+  s.src = '//static.getclicky.com/js';
+  ( document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0] ).appendChild( s );
+})();
+</script>
+<noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/101029159ns.gif" /></p></noscript>
     </body>
 </html>
