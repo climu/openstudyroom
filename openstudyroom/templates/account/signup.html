@@ -4,20 +4,37 @@
 
 {% load bootstrap3 %}
 {%block title%}Singup{%endblock%}
-{% block heading %}
 
-  <div class="page-header">
-      <h1>Signup </h1>
-  </div>
-
-{%endblock%}
 
 {% block page_content %}
     <div class="row">
+      <div class="col-md-8">
+        <div class = "intro">
+          <legend><h3>The Open Study Room</h3></legend>
+          <p>
+      Take chance to join an online go community dedicated to play, teach, learn and study the fasciniting game of go.
+      </p>
+      <p>
+        It's free, community driven, and we welcome everyone from beginers to strong dans.
+      </p>
+      <p>
+        If you are uncertain what OSR is, or have any questions, be sure to read our <a href="/faq/">FAQ</a>. You can also ask us directly in <a href="https://www.gokgs.com">KGS</a> Open Study Room.
+      </p>
+        <legend><h3>Register here</h3></legend>
+      <p>
+        Registering will allow you to participate in our <a href=" {% url 'league:archives' %}">leagues</a> and use our <a href="/forum/">forums</a>.
+      </p>
+      <p>
+        Just fill this form by indicating your <a href="https://www.gokgs.com">KGS</a> username so that our automatic game finder can upload your league games to your profile.
+      </p>
 
+
+      </div>
+      </div>
         <div class="col-md-4">
             <form id="signup_form" method="post" action="{% url "account_signup" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
                 {% csrf_token %}
+                <legend><h3>Sign up</h3></legend>
                 {%bootstrap_form form %}
                 {% if redirect_field_value %}
                     <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
@@ -30,29 +47,7 @@
                 </small>
             </p>
         </div>
-<div class="col-md-8">
-  <div class = "intro">
-    <legend><h3>The Open Study Room</h3></legend>
-    <p>
-Takes chance to join an online go community dedicated to play, teach, learn and study the fasciniting game of go.
-</p>
-<p>
-  It's free, community driven, and we welcome everyone from beginers to strong dans.
-</p>
-<p>
-  If you are uncertain what OSR is, or have any questions, be sure to read our <a href="/faq/">FAQ</a>. You can also ask us directly in <a href="https://www.gokgs.com">KGS</a> Open Study Room.
-</p>
-  <legend><h3>Register here</h3></legend>
-<p>
-  Registering will allow you to participate in our <a href=" {% url 'league:archives' %}">leagues</a> and use our <a href="/forum/">forums</a>.
-</p>
-<p>
-  Just fill this form by indicating your <a href="https://www.gokgs.com">KGS</a> username so that our automatic game finder can upload your league games to your profile.
-</p>
 
-
-</div>
-</div>
     </div>
 {% endblock %}
 
