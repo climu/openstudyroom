@@ -28,7 +28,7 @@ class LeagueRolloverForm(forms.Form):
         players = from_event.get_players()
         divisions = to_event.get_divisions()
         for player in players:
-            self.fields[ 'player_'+str(player.pk)] = forms.ChoiceField(choices=[(division.pk,division.name) for division in divisions])
+            self.fields[ 'player_'+str(player.pk)] = forms.ChoiceField(choices=[(division.pk,division.name) for division in divisions],required=False)
             # an attempt to set initial choice with same order... failed.
             #division =divisions.filter(order=player.division.order).first()
             #if division != None:
