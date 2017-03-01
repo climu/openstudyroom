@@ -12,7 +12,7 @@
         <div class = "intro">
           <legend><h3>The Open Study Room</h3></legend>
           <p>
-      Take chance to join an online go community dedicated to play, teach, learn and study the fasciniting game of go.
+      Take chance to join an online go community dedicated to play, teach, learn and study the fascinating game of go.
       </p>
       <p>
         It's free, community driven, and we welcome everyone from beginers to strong dans.
@@ -35,10 +35,8 @@
             <form id="signup_form" method="post" action="{% url "account_signup" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
                 {% csrf_token %}
                 <legend><h3>Sign up</h3></legend>
-                {%bootstrap_form form %}
-                {% if redirect_field_value %}
-                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-                {% endif %}
+                {%bootstrap_form form show_label=False %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="/welcome" />
                 <button type="submit" class="btn btn-primary">Sign up</button>
             </form>
             <p class="login-signup">
