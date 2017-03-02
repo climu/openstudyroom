@@ -6,6 +6,7 @@ from .models import Sgf,LeaguePlayer,User,LeagueEvent,Division,Game,Registry, Us
 from .forms import  SgfAdminForm,ActionForm,LeagueRolloverForm,UploadFileForm
 import datetime
 from django.http import Http404
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
@@ -410,3 +411,15 @@ def proceed_rollover(request):
 		return HttpResponseRedirect(reverse('league:admin'))
 	else:
 		raise Http404("What are you doing here ?")
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def send_user_mail(request):
+	send_mail(
+    	'Subject here',
+    	'Here is the message.',
+    	'from@example.com',
+    	['climmu@gmail.com'],
+    	fail_silently=False,
+		)
+	return HttpResponse('sent')

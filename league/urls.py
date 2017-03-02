@@ -30,5 +30,5 @@ urlpatterns = [
     url(r'^admin/handle-upload-sgf/$', views.handle_upload_sgf, name='handle_upload_sgf'),
     url(r'^admin/upload-sgf/$', views.upload_sgf, name='upload_sgf'),
     url(r'^admin/create-sgf/$', views.create_sgf, name='create_sgf'),
-
+    url(r'^admin/send-mail/$', views.send_user_mail, name='send_email'),
 ]
