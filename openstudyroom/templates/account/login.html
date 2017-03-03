@@ -1,26 +1,30 @@
-{% extends "base.html" %}
+{% extends "full_width.html" %}
 
 {% load account %}
 
 {% load bootstrap3 %}
-
+{% block title %}Log in {% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1>Log in to an existing account</h1>
+</div>
+{% endblock %}
 {% block page_content %}
     <div class="row">
         <div class="col-md-4">
             <form method="POST" action="{% url "account_login" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
-                <legend> Log in to an existing account </legend>
                 {% csrf_token %}
                 {% bootstrap_form form %}
                 {% if redirect_field_value %}
                     <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                 {% endif %}
                 <button type="submit" class="btn btn-primary">Log in </button>
-                <a href="#" class="btn btn-link"> Forgot your password?</a>
+                <a href="{% url 'account_reset_password'%}" class="btn btn-link"> Forgot your password?</a>
             </form>
             {% if ACCOUNT_OPEN_SIGNUP %}
                 <p class="login-signup">
                     <small>
-                       Don't have an account?  <strong><a href="#""%}"> Sign up </a></strong>
+                       Don't have an account?  <strong><a href="{% url 'account_reset_password'%}"> Sign up </a></strong>
                     </small>
                 </p>
             {% endif %}
