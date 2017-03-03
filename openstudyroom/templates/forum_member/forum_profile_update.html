@@ -16,7 +16,7 @@
   <li ><a href="{% url "league:league_account" forumprofile.user%}">League</a></li>
   <li class="active"><a href="{% url "forum_member:profile" forumprofile.user.pk%}">Forum</a></li>
 </ul>
-{% if request.user.is_authenticated and user == request.user%}
+{% if request.user.is_authenticated and forumprofile.user == request.user%}
 <ul class="nav navbar-nav navbar-right " style="margin-right:5px;">
   <li class="dropdown active">
   <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
