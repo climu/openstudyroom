@@ -64,11 +64,9 @@
 	{%if request.user.user_is_league_member %}
 
 		 <li>
-                      <a href="{% url "league:league_account" %}" >League Profile</a>
+                      <a href="{% url "league:league_account" %}" >{% bootstrap_icon "user" %} Profile</a>
                   </li>
-                  <li>
-                     <a href="{% url "forum_member:profile" request.user.pk%}">Forum profile</a>
-                  </li>
+
 	{%else%}
 		<div>Your account will be activated soon. Thanks for waiting !</div>
 	{%endif%}
@@ -133,7 +131,7 @@ Logout</a>
         {% block extra_js %}
             {# Override this in templates to add extra javascript #}
         {% endblock %}
-      
+
         <script src="//static.getclicky.com/js" type="text/javascript"></script>
         <script type="text/javascript">try{ clicky.init(101029164); }catch(e){}</script>
         <noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/101029164ns.gif" /></p></noscript>
