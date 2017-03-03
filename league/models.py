@@ -168,6 +168,7 @@ class Sgf(models.Model):
 		if not utils.check_byoyomi(self.byo):
 			(b,m) = (False,m+'; byo-yomi')
 		if int(self.time) < 1800: (b,m) = (False,m+'; main time')
+		if self.result == '?':(b,m) = (False,m+'; no result')
 		self.message = m
 		self.league_valid = b
 		return self

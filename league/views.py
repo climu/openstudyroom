@@ -6,7 +6,6 @@ from .models import Sgf,LeaguePlayer,User,LeagueEvent,Division,Game,Registry, Us
 from .forms import  SgfAdminForm,ActionForm,LeagueRolloverForm,UploadFileForm
 import datetime
 from django.http import Http404
-from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
@@ -16,6 +15,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from collections import OrderedDict
 from . import utils
+
 
 
 
@@ -42,11 +42,16 @@ def scraper():
 		sgfs=Sgf.objects.filter(p_status=1)
 	if len(sgfs)>0 :
 		sgf = sgfs[0]
+		#parse the sgf datas to populate the rows
 		sgf = sgf.parse()
-		sgf = sgf.check_validity()
-		sgf.save()
-		if sgf.league_valid:
-			Game.create_game(sgf)
+		#if the sgf doesn't have a result (unfinished game) we just delete it
+		if sgf.result == '?':
+			sgf.delete()
+		else:
+			sgf = sgf.check_validity()
+			sgf.save()
+			if sgf.league_valid:
+				Game.create_game(sgf)
 		out = sgf
 	#3 no games to scrap let's check a player
 	else :
