@@ -16,8 +16,19 @@
 <ul class="nav navbar-nav navbar-left">
   <li class="active"><a href="{% url "league:league_account" user%}">League</a></li>
   <li ><a href="{% url "forum_member:profile" user.pk%}">Forum</a></li>
-
 </ul>
+{% if request.user.is_authenticated and user == request.user%}
+<ul class="nav navbar-nav navbar-right active" style="margin-right:5px;">
+  <li class="dropdown">
+  <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+  Manage <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu">
+  <li><a href="{% url "account_change_password" %} ">Password</a></li>
+  <li ><a href="{% url 'account_email' %}">Email</a></li>
+</ul>
+</ul>
+{%endif %}
 </nav>
 <div class="panel panel-default">
 <div class="panel-heading"><h3>Active event</h3></div>
