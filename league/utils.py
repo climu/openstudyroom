@@ -17,15 +17,6 @@ def check_byoyomi(s):
 		t = int(s[a+1:b])
 	return n >= 3  and t >= 30
 
-def sum_digits(n):
-	'''sum the digits of a number.
-	since win grant 10 and loss 1, this sum is the # of games played between 2 oponents'''
-	s=0
-	while n!=0:
-		s += n % 10
-		n = int(n/10.)
-	return s
-
 def extract_players_from_url(url):
 	'''get players name from a kgs archive url
 	'http://files.gokgs.com/games/Year/month/day/white-black-d*.sgf'
