@@ -146,6 +146,7 @@ def event(request,event_id=None,division_id=None,):
 	return HttpResponse(template.render(context, request))
 
 def players(request,event_id=None,division_id=None):
+	#if no event is provided, we show all the league members
 	if event_id == None:
 		users=User.objects.filter(groups__name='league_member')
 		context = {
@@ -154,16 +155,20 @@ def players(request,event_id=None,division_id=None):
 		template = loader.get_template('league/archives_players.html')
 	else:
 		event=get_object_or_404(LeagueEvent,pk=event_id)
+		#if no division is provided, we show all players from this event
 		if division_id == None:
 			players = LeaguePlayer.objects.filter(event=event).order_by('-score')
+			divisions=event.division_set.all()
 		else:
 			division = get_object_or_404(Division,pk=division_id)
+			divisions = [division]
 			players = LeaguePlayer.objects.filter(event=event,division = division)
 		close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
 		context = {
 			'event':event,
 			'players':players,
 			'close' : close,
+			'divisions':divisions
 		}
 		template = loader.get_template('league/players.html')
 	return HttpResponse(template.render(context, request))
