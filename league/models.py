@@ -123,6 +123,7 @@ class Sgf(models.Model):
 	time = models.SmallIntegerField(default=19)
 	game_type = models.CharField(max_length=20,default='Free')
 	message = models.CharField(max_length=100,default='nothing',blank=True)
+	number_moves = models.SmallIntegerField(default=100)
 	p_status = models.SmallIntegerField(default=1)
 	# status of the sgf:0 already checked
 	#					1 require checking, sgf added from kgs archive link
@@ -173,6 +174,7 @@ class Sgf(models.Model):
 		if int(self.time) < 1800: (b,m) = (False,m+'; main time')
 		#no result shouldn't happen automaticly, but with admin upload, who knows
 		if self.result == '?':(b,m) = (False,m+'; no result')
+		if self.number_moves < 50 : (b,m) = (False,m+'; number moves')
 		self.message = m
 		self.league_valid = b
 		return self
