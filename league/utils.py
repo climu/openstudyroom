@@ -80,6 +80,7 @@ def ask_kgs(kgs_username,year,month):
 
 	return l
 
+
 def parse_sgf_string(sgf_string):
 	#parse a sgf from a string and return a dict:
 	#bplayer,wplayer,time,byo,result,handi,komi,size,rule,date,place
@@ -109,4 +110,5 @@ def parse_sgf_string(sgf_string):
 		out['date']=datetime.datetime.strptime(out['date'],"%Y-%m-%d")
 	else:
 		 out['date']=None
+	out['number_moves'] = 2*sgf_string.count(';B[')
 	return out

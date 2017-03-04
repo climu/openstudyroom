@@ -28,8 +28,9 @@
      </tr>
    </thead>
    <tbody>
-     {% for player in players %}
-     <tr>
+     {%for division in divisions %}
+     {% for player in division.get_players %}
+       <tr>
        <td>{{player.division |division_link}}</td>
        <td>{{forloop.counter}}</td>
        <td>{{player.user | user_link}}</td>
@@ -39,6 +40,7 @@
        <td>{{player | nb_games}}</td>
     </tr>
      {% endfor %}
+     {%endfor%}
    </tbody>
 
 {% endblock %}
