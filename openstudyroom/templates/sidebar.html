@@ -21,10 +21,11 @@
         {% endfor %}
         </ul>
         <ul class="sidebar">
-        <h4> Online on <a href="{% url 'league:discord_redirect'%}"> OSR discord server</a> </h4>
+        <h4>  Online on <a href="{% url 'league:discord_redirect'%}"> OSR discord server</a> ({{disc_users | length}})</h4>
         {% for disc_user in disc_users %}
         <li>{{disc_user.username}}</li>
         {% endfor %}
+        
         </ul>
 
         {% if blog_page.display_categories %}
