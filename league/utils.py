@@ -6,8 +6,8 @@ import re
 import datetime
 
 def check_byoyomi(s):
-	# check if a string is a correct byo-yomi time: at least '3x30 byo-yomi'
-	# We don't have settings for that... for now
+	'''check if a string is a correct byo-yomi time: at least '3x30 byo-yomi'
+	We don't have settings for that... for now'''
 	if s.find('byo-yomi') == -1 :
 		return False
 	else :
@@ -18,22 +18,22 @@ def check_byoyomi(s):
 	return n >= 3  and t >= 30
 
 def sum_digits(n):
-	#sum the digits of a number.
-	#since win grant 10 and loss 1, this sum is the # of games played between 2 oponents
+	'''sum the digits of a number.
+	since win grant 10 and loss 1, this sum is the # of games played between 2 oponents'''
 	s=0
 	while n!=0:
 		s += n % 10
-		n /= 10
+		n = int(n/10.)
 	return s
 
 def extract_players_from_url(url):
-	#get players name from a kgs archive url
-	#'http://files.gokgs.com/games/Year/month/day/white-black-d*.sgf'
+	'''get players name from a kgs archive url
+	'http://files.gokgs.com/games/Year/month/day/white-black-d*.sgf'
 
-	# first we check wether it's a kgs archive link
-	#otherwise we could populate with dumb data
-	#Note: I am not proud of the way I handle error/exception where the url is not proper
-	# Feel free to correct me here
+	 first we check wether it's a kgs archive link
+	otherwise we could populate with dumb data
+	Note: I am not proud of the way I handle error/exception where the url is not proper
+	 Feel free to correct me here'''
 
 	if url.startswith('http://files.gokgs.com/games/'):
 		start = url.rfind('/') +1
@@ -51,9 +51,9 @@ def extract_players_from_url(url):
 
 
 def ask_kgs(kgs_username,year,month):
-	# return a list of dic: { urlto, game_type} of games for the selected user, year and month
-	# We have to check game_type here because it's not in the sgf but only on kgs website
-	# Do not perform any check on players or whatever.
+	''' return a list of dic: { urlto, game_type} of games for the selected user, year and month
+	We have to check game_type here because it's not in the sgf but only on kgs website
+	Do not perform any check on players or whatever.'''
 
 	if len(str(month)):
 		month='0'+str(month)
@@ -81,8 +81,8 @@ def ask_kgs(kgs_username,year,month):
 	return l
 
 def parse_sgf_string(sgf_string):
-	#parse a sgf from a string and return a dict:
-	#bplayer,wplayer,time,byo,result,handi,komi,size,rule,date,place
+	'''parse a sgf from a string and return a dict:
+	bplayer,wplayer,time,byo,result,handi,komi,size,rule,date,place'''
 
 	#First remove all espaces and new lines from the sgf
 	sgf_string=sgf_string.replace(chr(160),'').replace(chr(10),'').replace(chr(13),'')
