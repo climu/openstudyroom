@@ -38,8 +38,11 @@ class LeagueEvent(models.Model):
 		return self.division_set.count()
 
 	def possible_games(self):
-		n = self.number_players()
-		return int(n*(n-1)*self.nb_matchs/2)
+		divisions=self.division_set.all()
+		n=0
+		for division in divisions:
+			n+=division.possible_games()
+		return n
 
 	def percent_game_played(self):
 		p= self.possible_games()
@@ -168,6 +171,7 @@ class Sgf(models.Model):
 		if not utils.check_byoyomi(self.byo):
 			(b,m) = (False,m+'; byo-yomi')
 		if int(self.time) < 1800: (b,m) = (False,m+'; main time')
+		#no result shouldn't happen automaticly, but with admin upload, who knows
 		if self.result == '?':(b,m) = (False,m+'; no result')
 		self.message = m
 		self.league_valid = b
@@ -256,7 +260,12 @@ class Division(models.Model):
 	def get_players(self):
 		return self.leagueplayer_set.all().order_by('-score')
 
+	def number_players(self):
+		return self.leagueplayer_set.count()
 
+	def possible_games(self):
+		n = self.number_players()
+		return int(n*(n-1)*self.league_event.nb_matchs/2)
 
 
 
