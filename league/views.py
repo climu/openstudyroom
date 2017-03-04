@@ -16,9 +16,7 @@ from django.contrib.auth.decorators import user_passes_test
 from collections import OrderedDict
 from . import utils
 
-
-
-
+discord_url_file = ""
 
 def scraper():
 	#the big scraper thing
@@ -433,3 +431,13 @@ def send_user_mail(request):
     	fail_silently=False,
 		)
 	return HttpResponse('sent')
+
+@login_required()
+@user_passes_test(is_league_member, login_url="/", redirect_field_name = None)
+def discord_redirect(request):
+	'''loads discord invite url from discord_url_file and redirects the user if he passes the tests.'''
+	if discord_url_file == "":
+		return HttpResponse("No redirect link specified!")
+	disc_url = open(discord_url_file, "r").read()
+	return HttpResponseRedirect(disc_url.replace('\n', ''))
+
