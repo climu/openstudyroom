@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import  Group
+from .models import User
+
 class SgfAdminForm(forms.Form):
     sgf = forms.CharField(label='sgf data',widget=forms.Textarea(attrs={'cols': 60, 'rows': 20}))
 
@@ -10,6 +12,13 @@ class ActionForm(forms.Form):
 
 class LeagueSignupForm(forms.Form):
     kgs_username = forms.CharField(max_length=10,required=True,)
+
+    def clean_kgs_username(self):
+        kgs_username = self.cleaned_data['kgs_username']
+        if User.objects.filter(kgs_username__iexact=kgs_username).exists():
+            raise forms.ValidationError("This kgs username is already used by one of our member. You should contact us")
+        return kgs_username
+
 
     def signup(self, request, user):
         user.kgs_username = self.cleaned_data['kgs_username']
