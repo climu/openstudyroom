@@ -22,10 +22,12 @@
         </ul>
         <ul class="sidebar">
         <h4>  Online on <a href="{% url 'league:discord_redirect'%}"> OSR discord server</a> ({{disc_users | length}})</h4>
-        {% for disc_user in disc_users %}
+        {% with first_disc_users=disc_users|slice:":5"   %}
+        {% for disc_user in first_disc_users %}
         <li>{{disc_user.username}}</li>
         {% endfor %}
-        
+        {%endwith%}
+
         </ul>
 
         {% if blog_page.display_categories %}
