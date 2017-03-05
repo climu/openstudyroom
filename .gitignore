@@ -1,0 +1,7 @@
+*.log
+*.pot
+*.pyc
+__pycache__/
+/openstudyroom/settings/base.py
+media
+[0-9]*

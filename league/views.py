@@ -16,9 +16,7 @@ from django.contrib.auth.decorators import user_passes_test
 from collections import OrderedDict
 from . import utils
 
-
-
-
+discord_url_file = "/etc/discord_url.txt"
 
 def scraper():
 	#the big scraper thing
@@ -433,3 +431,14 @@ def send_user_mail(request):
     	fail_silently=False,
 		)
 	return HttpResponse('sent')
+
+def discord_redirect(request):
+	'''loads discord invite url from discord_url_file and redirects the user if he passes the tests.'''
+	if request.user.is_authenticated and request.user.user_is_league_member:
+		with open(discord_url_file) as f:
+			disc_url = f.read().strip()
+		return HttpResponseRedirect(disc_url.replace('\n', ''))
+	else:
+		message ="OSR discord server is for members only."
+		messages.success(request,message)
+		return HttpResponseRedirect('/')

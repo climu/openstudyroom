@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^players/$', views.players, name='players'),
     url(r'^(?P<event_id>[0-9]+)/players/$', views.players, name='players'),
 
+    url(r'^discord/$', views.discord_redirect, name='discord_redirect'),
 
     url(r'^account/$', views.account, name='league_account'),
     url(r'^account/(?P<user_name>[\w.@+-]+)/$', views.account,name='league_account'),
