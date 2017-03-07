@@ -1,6 +1,7 @@
 [
 {
   "model": "wagtailcore.site",
+  "pk": 1,
   "fields": {
     "hostname": "localhost",
     "port": 80,
@@ -21,6 +22,7 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 1,
   "fields": {
     "app_label": "wagtailcore",
     "model": "page"
@@ -28,6 +30,7 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 2,
   "fields": {
     "app_label": "wagtailimages",
     "model": "image"
@@ -35,6 +38,7 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 3,
   "fields": {
     "app_label": "wagtailadmin",
     "model": "admin"
@@ -42,6 +46,7 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 4,
   "fields": {
     "app_label": "wagtaildocs",
     "model": "document"
@@ -49,13 +54,7 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "fields": {
-    "app_label": "home",
-    "model": "homepage"
-  }
-},
-{
-  "model": "contenttypes.contenttype",
+  "pk": 5,
   "fields": {
     "app_label": "home",
     "model": "leftsidebarpage"
@@ -63,20 +62,15 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 6,
   "fields": {
     "app_label": "home",
-    "model": "fullwidthpage"
+    "model": "homepage"
   }
 },
 {
   "model": "contenttypes.contenttype",
-  "fields": {
-    "app_label": "home",
-    "model": "rightsidebarpage"
-  }
-},
-{
-  "model": "contenttypes.contenttype",
+  "pk": 7,
   "fields": {
     "app_label": "home",
     "model": "streamfieldentrypage"
@@ -84,6 +78,23 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 8,
+  "fields": {
+    "app_label": "home",
+    "model": "fullwidthpage"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 9,
+  "fields": {
+    "app_label": "home",
+    "model": "rightsidebarpage"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 10,
   "fields": {
     "app_label": "wagtailforms",
     "model": "formsubmission"
@@ -91,6 +102,7 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 11,
   "fields": {
     "app_label": "wagtailredirects",
     "model": "redirect"
@@ -98,6 +110,7 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 12,
   "fields": {
     "app_label": "wagtailembeds",
     "model": "embed"
@@ -105,6 +118,7 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 13,
   "fields": {
     "app_label": "wagtailusers",
     "model": "userprofile"
@@ -112,13 +126,7 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "fields": {
-    "app_label": "wagtailimages",
-    "model": "filter"
-  }
-},
-{
-  "model": "contenttypes.contenttype",
+  "pk": 14,
   "fields": {
     "app_label": "wagtailimages",
     "model": "rendition"
@@ -126,13 +134,15 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 15,
   "fields": {
-    "app_label": "wagtailsearch",
-    "model": "querydailyhits"
+    "app_label": "wagtailimages",
+    "model": "filter"
   }
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 16,
   "fields": {
     "app_label": "wagtailsearch",
     "model": "query"
@@ -140,27 +150,15 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 17,
   "fields": {
-    "app_label": "wagtailcore",
-    "model": "pageviewrestriction"
+    "app_label": "wagtailsearch",
+    "model": "querydailyhits"
   }
 },
 {
   "model": "contenttypes.contenttype",
-  "fields": {
-    "app_label": "wagtailcore",
-    "model": "grouppagepermission"
-  }
-},
-{
-  "model": "contenttypes.contenttype",
-  "fields": {
-    "app_label": "wagtailcore",
-    "model": "site"
-  }
-},
-{
-  "model": "contenttypes.contenttype",
+  "pk": 18,
   "fields": {
     "app_label": "wagtailcore",
     "model": "pagerevision"
@@ -168,13 +166,7 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "fields": {
-    "app_label": "wagtailcore",
-    "model": "groupcollectionpermission"
-  }
-},
-{
-  "model": "contenttypes.contenttype",
+  "pk": 19,
   "fields": {
     "app_label": "wagtailcore",
     "model": "collection"
@@ -182,13 +174,39 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 20,
   "fields": {
-    "app_label": "taggit",
-    "model": "tag"
+    "app_label": "wagtailcore",
+    "model": "groupcollectionpermission"
   }
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 21,
+  "fields": {
+    "app_label": "wagtailcore",
+    "model": "site"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 22,
+  "fields": {
+    "app_label": "wagtailcore",
+    "model": "pageviewrestriction"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 23,
+  "fields": {
+    "app_label": "wagtailcore",
+    "model": "grouppagepermission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 24,
   "fields": {
     "app_label": "taggit",
     "model": "taggeditem"
@@ -196,6 +214,15 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 25,
+  "fields": {
+    "app_label": "taggit",
+    "model": "tag"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 26,
   "fields": {
     "app_label": "admin",
     "model": "logentry"
@@ -203,13 +230,7 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "fields": {
-    "app_label": "auth",
-    "model": "group"
-  }
-},
-{
-  "model": "contenttypes.contenttype",
+  "pk": 27,
   "fields": {
     "app_label": "auth",
     "model": "permission"
@@ -217,6 +238,15 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 28,
+  "fields": {
+    "app_label": "auth",
+    "model": "group"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 29,
   "fields": {
     "app_label": "contenttypes",
     "model": "contenttype"
@@ -224,6 +254,7 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 30,
   "fields": {
     "app_label": "sessions",
     "model": "session"
@@ -231,6 +262,7 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 31,
   "fields": {
     "app_label": "sites",
     "model": "site"
@@ -238,41 +270,7 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "fields": {
-    "app_label": "league",
-    "model": "leagueplayer"
-  }
-},
-{
-  "model": "contenttypes.contenttype",
-  "fields": {
-    "app_label": "league",
-    "model": "division"
-  }
-},
-{
-  "model": "contenttypes.contenttype",
-  "fields": {
-    "app_label": "league",
-    "model": "game"
-  }
-},
-{
-  "model": "contenttypes.contenttype",
-  "fields": {
-    "app_label": "league",
-    "model": "sgf"
-  }
-},
-{
-  "model": "contenttypes.contenttype",
-  "fields": {
-    "app_label": "league",
-    "model": "registry"
-  }
-},
-{
-  "model": "contenttypes.contenttype",
+  "pk": 32,
   "fields": {
     "app_label": "league",
     "model": "leagueevent"
@@ -280,6 +278,15 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 33,
+  "fields": {
+    "app_label": "league",
+    "model": "division"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 34,
   "fields": {
     "app_label": "league",
     "model": "user"
@@ -287,27 +294,39 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 35,
   "fields": {
-    "app_label": "wagtailmenus",
-    "model": "mainmenuitem"
+    "app_label": "league",
+    "model": "leagueplayer"
   }
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 36,
   "fields": {
-    "app_label": "wagtailmenus",
-    "model": "flatmenu"
+    "app_label": "league",
+    "model": "sgf"
   }
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 37,
   "fields": {
-    "app_label": "wagtailmenus",
-    "model": "mainmenu"
+    "app_label": "league",
+    "model": "registry"
   }
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 38,
+  "fields": {
+    "app_label": "league",
+    "model": "game"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 39,
   "fields": {
     "app_label": "wagtailmenus",
     "model": "flatmenuitem"
@@ -315,6 +334,31 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 40,
+  "fields": {
+    "app_label": "wagtailmenus",
+    "model": "mainmenuitem"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 41,
+  "fields": {
+    "app_label": "wagtailmenus",
+    "model": "mainmenu"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 42,
+  "fields": {
+    "app_label": "wagtailmenus",
+    "model": "flatmenu"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 43,
   "fields": {
     "app_label": "puput",
     "model": "tagentrypage"
@@ -322,6 +366,7 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 44,
   "fields": {
     "app_label": "puput",
     "model": "entrypagerelated"
@@ -329,13 +374,7 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "fields": {
-    "app_label": "puput",
-    "model": "category"
-  }
-},
-{
-  "model": "contenttypes.contenttype",
+  "pk": 45,
   "fields": {
     "app_label": "puput",
     "model": "categoryentrypage"
@@ -343,13 +382,15 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 46,
   "fields": {
     "app_label": "puput",
-    "model": "blogpage"
+    "model": "category"
   }
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 47,
   "fields": {
     "app_label": "puput",
     "model": "entrypage"
@@ -357,6 +398,15 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 48,
+  "fields": {
+    "app_label": "puput",
+    "model": "blogpage"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 49,
   "fields": {
     "app_label": "puput",
     "model": "tag"
@@ -364,13 +414,7 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "fields": {
-    "app_label": "account",
-    "model": "emailconfirmation"
-  }
-},
-{
-  "model": "contenttypes.contenttype",
+  "pk": 50,
   "fields": {
     "app_label": "account",
     "model": "emailaddress"
@@ -378,6 +422,15 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 51,
+  "fields": {
+    "app_label": "account",
+    "model": "emailconfirmation"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 52,
   "fields": {
     "app_label": "django_cron",
     "model": "cronjoblog"
@@ -385,6 +438,7 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 53,
   "fields": {
     "app_label": "forum",
     "model": "forum"
@@ -392,6 +446,7 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 54,
   "fields": {
     "app_label": "forum_conversation",
     "model": "post"
@@ -399,6 +454,7 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 55,
   "fields": {
     "app_label": "forum_conversation",
     "model": "topic"
@@ -406,6 +462,7 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 56,
   "fields": {
     "app_label": "forum_attachments",
     "model": "attachment"
@@ -413,13 +470,7 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "fields": {
-    "app_label": "forum_polls",
-    "model": "topicpollvote"
-  }
-},
-{
-  "model": "contenttypes.contenttype",
+  "pk": 57,
   "fields": {
     "app_label": "forum_polls",
     "model": "topicpoll"
@@ -427,6 +478,7 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 58,
   "fields": {
     "app_label": "forum_polls",
     "model": "topicpolloption"
@@ -434,6 +486,15 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 59,
+  "fields": {
+    "app_label": "forum_polls",
+    "model": "topicpollvote"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 60,
   "fields": {
     "app_label": "forum_tracking",
     "model": "topicreadtrack"
@@ -441,6 +502,7 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 61,
   "fields": {
     "app_label": "forum_tracking",
     "model": "forumreadtrack"
@@ -448,6 +510,7 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 62,
   "fields": {
     "app_label": "forum_member",
     "model": "forumprofile"
@@ -455,13 +518,7 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "fields": {
-    "app_label": "forum_permission",
-    "model": "userforumpermission"
-  }
-},
-{
-  "model": "contenttypes.contenttype",
+  "pk": 63,
   "fields": {
     "app_label": "forum_permission",
     "model": "forumpermission"
@@ -469,9 +526,42 @@
 },
 {
   "model": "contenttypes.contenttype",
+  "pk": 64,
+  "fields": {
+    "app_label": "forum_permission",
+    "model": "userforumpermission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 65,
   "fields": {
     "app_label": "forum_permission",
     "model": "groupforumpermission"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "acfht600vagkvok6i2gc9ue0d2109fm9",
+  "fields": {
+    "session_data": "NGIyZDIwNjBjMjBlYjcwZjY4Y2ExMzY3YzhhMjgzNDc1ODljNmZlYTp7Il9hbm9ueW1vdXNfZm9ydW1fa2V5IjoiZjAxYTAwOTBjN2RmNGIwYzg3YWM5MDI0NDcyZTY5NWEifQ==",
+    "expire_date": "2017-03-21T18:09:15.737Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "acljcamg7pg4uniko1sbmlxyqrkizver",
+  "fields": {
+    "session_data": "ZDM2N2U2NDEwYTZiYWY5YWY2MWNmZmUyNmIwZWEwYTNhMTI4MzlmYjp7Il9hdXRoX3VzZXJfaGFzaCI6ImIzZGU5MDgyZjdkZjBkZDJlNWY2NzY4OWQyNTdjMGRmY2E4ZGNlYWUiLCJzZ2ZfZGF0YSI6bnVsbCwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMSIsIl9hbm9ueW1vdXNfZm9ydW1fa2V5IjoiNTYyOGQ2MWVkZWFjNDhlZmFhZGZmMDA4MzMyMTQ4MDUifQ==",
+    "expire_date": "2017-03-21T17:48:53.241Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "fspkml0jc3z48j24158ff9s6hqkjyoxg",
+  "fields": {
+    "session_data": "NWFiOWU3NmZkYjdhZjQ4NGI0YzM2NmMzMzI5NTNmNTMwNzM0Mzk3Nzp7Il9hbm9ueW1vdXNfZm9ydW1fa2V5IjoiZTllYzdkZjE4YTBlNGQzM2I0MDljYzE0OTk0YzdkOGMifQ==",
+    "expire_date": "2017-03-21T18:09:15.639Z"
   }
 },
 {
@@ -500,6 +590,7 @@
 },
 {
   "model": "sites.site",
+  "pk": 1,
   "fields": {
     "domain": "example.com",
     "name": "example.com"
@@ -514,7 +605,21 @@
     "name": "OSR first event",
     "nb_matchs": 2,
     "ppwin": "1.5",
-    "pploss": "0.5"
+    "pploss": "0.5",
+    "min_matchs": 1
+  }
+},
+{
+  "model": "league.leagueevent",
+  "pk": 2,
+  "fields": {
+    "begin_time": "2017-03-07T17:50:51Z",
+    "end_time": "2017-03-25T17:50:54Z",
+    "name": "2nd test league",
+    "nb_matchs": 2,
+    "ppwin": "1.5",
+    "pploss": "0.5",
+    "min_matchs": 1
   }
 },
 {
@@ -527,12 +632,175 @@
   }
 },
 {
+  "model": "league.sgf",
+  "pk": 1,
+  "fields": {
+    "sgf_text": "(;GM[1]FF[4]CA[UTF-8]AP[CGoban:3]ST[2]\r\nRU[Japanese]SZ[19]KM[6.50]TM[1800]OT[5x30 byo-yomi]\r\nPW[climu]PB[historment]WR[1d]DT[2017-03-02]PC[The KGS Go Server at http://www.gokgs.com/]C[climu [1d\\]: Have fun !\r\nhistorment [?\\]: hi, have fun\r\nhistorment [?\\]: #OSR\r\n]RE[B+Resign]\r\n;B[pd]BL[1788.769]\r\n;W[dp]WL[1792.527]\r\n;B[pp]BL[1785.226]\r\n;W[dc]WL[1787.735]\r\n;B[de]BL[1781.12]\r\n;W[ce]WL[1785.75]\r\n;B[cf]BL[1769.452]\r\n;W[cd]WL[1784.898]\r\n;B[df]BL[1757.967]\r\n;W[fc]WL[1783.397]\r\n;B[dj]BL[1752.782]\r\n;W[cm]WL[1777.558]\r\n;B[pj]BL[1748.12]\r\n;W[nq]WL[1775.002]\r\n;B[lq]BL[1622.276]\r\n;W[qq]WL[1769.55]\r\n;B[qp]BL[1618.136]\r\n;W[pq]WL[1768.906]\r\n;B[op]BL[1613.837]\r\n;W[nr]WL[1766.66]\r\n;B[mo]BL[1607.016]\r\n;W[nc]WL[1763.898]\r\n;B[oe]BL[1567.036]\r\n;W[qc]WL[1759.698]\r\n;B[pc]BL[1561.998]\r\n;W[qd]WL[1758.412]\r\n;B[qf]BL[1558.154]C[climu [1d\\]: thanks\r\nhistorment [?\\]: oh  I clicked No accidentally\r\nhistorment [?\\]: used to having \"Yes\" on the right side :)\r\nclimu [1d\\]: did they change undo answerr side with the update?\r\nhistorment [?\\]: no, I mean in other places it's often on the right side\r\n]\r\n(;W[pb]WL[1699.543]C[climu [1d\\]: ok :)\r\n]\r\n;B[cq]BL[1515.837]\r\n;W[dq]WL[1695.502]\r\n;B[cp]BL[1512.255]\r\n;W[do]WL[1692.958]\r\n;B[co]BL[1492.51]\r\n;W[cn]WL[1688.607]\r\n;B[dr]BL[1488.538]\r\n;W[er]WL[1687.099]\r\n;B[cr]BL[1486.82]\r\n;W[jq]WL[1677.862]\r\n;B[fq]BL[1383.447]\r\n;W[fr]WL[1664.709]\r\n;B[gq]BL[1371.169]\r\n;W[eq]WL[1656.963]\r\n;B[en]BL[1361.825]\r\n;W[dn]WL[1655.234]\r\n;B[go]BL[1346.847]C[climu [1d\\]: come on ! what did you do to my wall !\r\nhistorment [?\\]: thought it was a fence because of the holes, sorry :)\r\nclimu [1d\\]: :)\r\n]\r\n;W[jo]WL[1615.043]\r\n;B[gr]BL[1304.209]\r\n;W[lr]WL[1608.982]\r\n;B[bk]BL[1293.136]\r\n;W[em]WL[1606.953]\r\n;B[fn]BL[1283.194]\r\n;W[fm]WL[1601.566]\r\n;B[dl]BL[1281.125]\r\n;W[gn]WL[1595.602]\r\n;B[fo]BL[1267.919]\r\n;W[dm]WL[1592.76]\r\n;B[hn]BL[1252.855]\r\n;W[gm]WL[1589.103]\r\n;B[io]BL[1248.937]\r\n;W[jn]WL[1585.412]\r\n;B[hm]BL[1244.477]\r\n;W[hl]WL[1582.872]\r\n;B[il]BL[1231.086]\r\n;W[im]WL[1575.893]\r\n;B[jp]BL[1203.496]\r\n;W[ip]WL[1465.013]\r\n;B[kp]BL[1111.215]\r\n;W[iq]WL[1409.614]\r\n;B[jl]BL[1088.912]\r\n;W[ln]WL[1404.164]\r\n;B[lo]BL[1010.047]\r\n;W[in]WL[1387.435]\r\n;B[ho]BL[1002.912]\r\n;W[km]WL[1361.315]\r\n;B[kr]BL[995.276]\r\n;W[kq]WL[1359.004]\r\n;B[mr]BL[986.455]\r\n;W[hr]WL[1333.162]C[climu [1d\\]: Oh lord, how did I missed that?\r\n]\r\n;B[gs]BL[964.797]\r\n;W[hk]WL[1324.699]C[historment [?\\]: happens to the best of us q.q\r\n]\r\n;B[ij]BL[919.333]\r\n;W[kj]WL[1310.058]\r\n;B[jj]BL[849.643]\r\n;W[jr]WL[1305.9]\r\n;B[ls]BL[845.63]\r\n;W[is]WL[1298.314]\r\n;B[hq]BL[798.746]\r\n;W[lk]WL[1268.293]\r\n;B[gi]BL[781.364]\r\n;W[fk]WL[1262.416]\r\n;B[gj]BL[763]\r\n;W[cl]WL[1244.662]\r\n;B[ck]BL[748.706]\r\n;W[bo]WL[1198.099]\r\n;B[bp]BL[718.395]\r\n;W[an]WL[1196.485]\r\n;B[ar]BL[697.047]\r\n;W[gk]WL[1181.38]C[climu [1d\\]: now you are frying me\r\n]\r\n;B[bm]BL[651.367]\r\n;W[bl]WL[1178.18]\r\n;B[al]BL[648.827]\r\n;W[am]WL[1176.056]\r\n;B[el]BL[624.663]\r\n;W[fl]WL[1162.204]\r\n;B[ki]BL[504.395]\r\n;W[li]WL[1150.809]\r\n;B[kh]BL[501.095]\r\n;W[lh]WL[1126.291]\r\n;B[mj]BL[489.267]\r\n;W[lj]WL[1122.535]\r\n;B[kg]BL[486.893]\r\n;W[lg]WL[1105.869]\r\n;B[kf]BL[479.539]C[climu [1d\\]: if you keep this way, I surr soon\r\n]\r\n;W[nm]WL[1099.159]\r\n;B[pm]BL[468.439]\r\n;W[me]WL[1090.067]\r\n;B[ob]BL[419.659]\r\n;W[qb]WL[1086.934]\r\n;B[oc]BL[417.681]\r\n;W[nb]WL[1083.279]\r\n;B[oa]BL[404.475]\r\n;W[rf]WL[1078.212]\r\n;B[rg]BL[390.589]\r\n;W[re]WL[1048.266]\r\n;B[qg]BL[387.469]C[historment [?\\]: we all have these days \r\n]\r\n;W[kd]WL[1021.729]C[climu [1d\\]: yes, it happens certainly :)\r\nhistorment [?\\]: though I've never beaten a 1d player before\r\nclimu [1d\\]: welcome in OSR !\r\nclimu [1d\\]: any clue about your rank?\r\nhistorment [?\\]: 2d foxgo, in the upper bracket (2-3 games to +1)\r\nclimu [1d\\]: that's about 1k-1d kgs isn't it?\r\nhistorment [?\\]: I heard 4d foxgo/tygem is 1d kgs\r\nhistorment [?\\]: but I can't tell for sure\r\nclimu [1d\\]: oh, ok.\r\n]\r\n;B[id]BL[231.707]\r\n;W[ge]WL[997.25]\r\n;B[if]BL[122.414]\r\n;W[pi]WL[972.85]\r\n;B[oi]BL[91.983]\r\n;W[pl]WL[962.65]\r\n;B[ql]BL[84.528]\r\n;W[oh]WL[866.954]\r\n;B[ph]BL[76.275]\r\n;W[qi]WL[853.909]C[climu [1d\\]: as you might have understood, I try some crazy as last hope.\r\n]\r\n;B[oj]BL[60.617]\r\n;W[pg]WL[842.15]\r\n;B[qh]BL[53.975]\r\n;W[og]WL[839.327]\r\n;B[nf]BL[29.044]\r\n;W[nh]WL[788.051]\r\n;B[qe]BL[22.192]\r\n;W[qk]WL[776.639]\r\n;B[ol]BL[15]\r\n;W[pk]WL[765.876]\r\n;B[qj]BL[6.875]\r\n;W[qm]WL[757.457]\r\n;B[rk]BL[30]OB[5]\r\n;W[rl]WL[756.21]\r\n;B[ok]BL[30]OB[5]\r\n;W[ql]WL[735.083]\r\n;B[om]BL[30]OB[5]\r\n;W[mp]WL[641.395]\r\n;B[lp]BL[30]OB[5]\r\n;W[no]WL[583.841]\r\n;B[mn]BL[30]OB[5]\r\n;W[rj]WL[532.117]\r\n;B[ri]BL[30]OB[5]\r\n;W[np]WL[459.893]\r\n;B[nn]BL[30]OB[5]\r\n;W[oo]WL[450.283]\r\n;B[pn]BL[30]OB[5]\r\n;W[po]WL[442.283]\r\n;B[qn]BL[30]OB[5]\r\n;W[qo]WL[440.139]\r\n;B[rn]BL[30]OB[5]\r\n;W[ro]WL[437.852]\r\n;B[mf]BL[30]OB[5]\r\n;W[lf]WL[435.947]\r\n;B[le]BL[30]OB[5]\r\n;W[ke]WL[413.532]\r\n;B[ld]BL[30]OB[5]\r\n;W[md]WL[412.301]\r\n;B[lc]BL[30]OB[5]\r\n;W[kc]WL[411.21]\r\n;B[lb]BL[30]OB[5]C[climu [1d\\]: thank you\r\nhistorment [?\\]: thanks for the game\r\nclimu [1d\\]: I tried my best to recover after my blunder\r\nclimu [1d\\]: but you didn't allow me\r\nhistorment [?\\]: shall we review?\r\nclimu [1d\\]: let's review?\r\n])\r\n(;W[re]WL[1757.884]C[climu [1d\\]: miss\r\nclimu [1d\\]: sorry\r\n]))",
+    "urlto": "http://",
+    "wplayer": "climu",
+    "bplayer": "historment",
+    "place": "The KGS Go Server at http://www.gokgs.com/",
+    "result": "B+Resign",
+    "league_valid": true,
+    "date": "2017-03-02T00:00:00Z",
+    "board_size": 19,
+    "handicap": 0,
+    "komi": "6.50",
+    "byo": "5x30 byo-yomi",
+    "time": 1800,
+    "game_type": "Free",
+    "message": "",
+    "number_moves": 178,
+    "p_status": 0
+  }
+},
+{
+  "model": "league.sgf",
+  "pk": 2,
+  "fields": {
+    "sgf_text": "(;GM[1]FF[4]CA[UTF-8]AP[CGoban:3]ST[2]\r\nRU[Japanese]SZ[19]KM[6.50]TM[1800]OT[5x30 byo-yomi]\r\nPW[historment]PB[nas]BR[1k]DT[2017-02-19]PC[The KGS Go Server at http://www.gokgs.com/]C[historment [?\\]: hi, hf\r\nnas [1k\\]: hi\r\nhistorment [?\\]: #OSR\r\nnas [1k\\]:  you are about 3-4K?\r\nhistorment [?\\]: probably\r\n]RE[B+35.50]\r\n;B[pd]BL[1778.715]\r\n;W[dd]WL[1796.532]\r\n;B[pq]BL[1770.159]C[historment [?\\]: it depends on the type of the game :)\r\nnas [1k\\]: :)\r\n]\r\n;W[dp]WL[1785.393]\r\n;B[fq]BL[1764.629]\r\n;W[cn]WL[1781.706]\r\n;B[jp]BL[1758.711]\r\n;W[pn]WL[1768.947]\r\n;B[ql]BL[1740.473]\r\n;W[op]WL[1762.889]\r\n;B[pp]BL[1730.579]\r\n;W[po]WL[1760.527]\r\n;B[oq]BL[1682.277]\r\n;W[np]WL[1757.843]\r\n;B[mq]BL[1678.086]\r\n;W[nq]WL[1745.73]\r\n;B[nr]BL[1675.883]\r\n;W[mp]WL[1741.757]\r\n;B[lq]BL[1673.932]\r\n;W[ro]WL[1736.91]\r\n;B[nn]BL[1667.753]\r\n;W[on]WL[1672.454]\r\n;B[qi]BL[1654.365]\r\n;W[nc]WL[1665.949]\r\n;B[pf]BL[1647.51]\r\n;W[qc]WL[1650.296]\r\n;B[pc]BL[1645.092]\r\n;W[pb]WL[1648.41]\r\n;B[qd]BL[1642.534]\r\n;W[rc]WL[1618.126]\r\n;B[ob]BL[1630.478]\r\n;W[rd]WL[1614.291]\r\n;B[re]BL[1601.289]\r\n;W[qb]WL[1608.638]\r\n;B[oc]BL[1598.032]\r\n;W[nb]WL[1606.772]\r\n;B[oa]BL[1577.742]\r\n;W[sb]WL[1593.023]\r\n;B[sd]BL[1565.908]\r\n;W[ra]WL[1589.573]\r\n;B[kc]BL[1551.373]\r\n;W[ld]WL[1573.913]\r\n;B[kd]BL[1530.858]\r\n;W[le]WL[1557.606]\r\n;B[jf]BL[1520.556]\r\n;W[lg]WL[1552.359]\r\n;B[jh]BL[1509.216]\r\n;W[li]WL[1523.016]\r\n;B[nd]BL[1503.397]\r\n;W[dg]WL[1516.466]\r\n;B[lc]BL[1493.879]\r\n;W[ph]WL[1489.992]\r\n;B[qh]BL[1487.163]\r\n;W[lk]WL[1450.065]\r\n;B[dr]BL[1484.041]\r\n;W[cq]WL[1445.852]\r\n;B[fc]BL[1478.92]\r\n;W[fe]WL[1424.929]\r\n;B[cc]BL[1467.5]\r\n;W[cd]WL[1416.504]\r\n;B[dc]BL[1464.138]\r\n;W[gd]WL[1410.931]\r\n;B[gc]BL[1455.448]\r\n;W[hc]WL[1398.429]\r\n;B[hd]BL[1446.052]\r\n;W[he]WL[1390.346]\r\n;B[id]BL[1443.745]\r\n;W[ie]WL[1386.109]\r\n;B[je]BL[1436.748]\r\n;W[ig]WL[1383.036]\r\n;B[jg]BL[1432.059]\r\n;W[hj]WL[1374.949]\r\n;B[fo]BL[1428.297]\r\n;W[fm]WL[1371.779]\r\n;B[kj]BL[1329.32]\r\n;W[lj]WL[1337.368]\r\n;B[gl]BL[1290.528]\r\n;W[fk]WL[1320.061]\r\n;B[fl]BL[1282.703]\r\n;W[el]WL[1317.478]\r\n;B[ek]BL[1261.506]\r\n;W[fj]WL[1271.473]\r\n;B[em]BL[1258.274]\r\n;W[dl]WL[1269.168]\r\n;B[gm]BL[1214.381]\r\n;W[dm]WL[1263.85]\r\n;B[bc]BL[1209.158]\r\n;W[bd]WL[1260.238]\r\n;B[ad]BL[1205.884]\r\n;W[ae]WL[1257.831]\r\n;B[ac]BL[1204.166]\r\n;W[be]WL[1252.525]\r\n;B[nl]BL[1171.174]\r\n;W[ln]WL[1240.191]\r\n;B[lp]BL[1150.989]\r\n;W[mn]WL[1235.015]\r\n;B[mo]BL[1143.75]\r\n;W[nm]WL[1229.309]\r\n;B[no]BL[1130.858]\r\n;W[lo]WL[1224.864]\r\n;B[oo]BL[1125.716]\r\n;W[ml]WL[1222.914]\r\n;B[om]BL[1120.247]\r\n;W[mm]WL[1204.769]\r\n;B[pm]BL[1077.141]\r\n;W[rq]WL[1196.646]\r\n;B[qp]BL[1068.312]\r\n;W[rp]WL[1194.253]\r\n;B[rn]BL[973.908]\r\n;W[qr]WL[1187.038]\r\n;B[mh]BL[889.937]\r\n;W[lh]WL[1182.378]\r\n;B[nk]BL[879.906]\r\n;W[nj]WL[1175.036]\r\n;B[oj]BL[874.871]\r\n;W[ni]WL[1171.068]\r\n;B[cr]BL[794.381]\r\n;W[md]WL[1149.658]\r\n;B[mc]BL[789.648]\r\n;W[ne]WL[1141.947]\r\n;B[od]BL[787.249]\r\n;W[sn]WL[1138.82]\r\n;B[rm]BL[778.158]\r\n;W[sr]WL[1134.35]\r\n;B[mf]BL[772.017]\r\n;W[nf]WL[1127.741]\r\n;B[bq]BL[727.52]\r\n;W[bp]WL[1120.138]\r\n;B[dq]BL[722.527]\r\n;W[cp]WL[1117.42]\r\n;B[ih]BL[640.73]\r\n;W[gh]WL[1096.717]\r\n;B[hg]BL[610.079]\r\n;W[gg]WL[1090.676]\r\n;B[lf]BL[591.712]\r\n;W[mg]WL[1086.391]\r\n;B[kf]BL[579.439]\r\n;W[in]WL[1075.955]\r\n;B[jn]BL[547.129]\r\n;W[jm]WL[1072.727]\r\n;B[io]BL[539.636]\r\n;W[im]WL[1066.645]\r\n;B[ij]BL[532.497]\r\n;W[en]WL[1061.101]\r\n;B[hn]BL[497.283]\r\n;W[fn]WL[1036.132]\r\n;B[og]BL[483.705]\r\n;W[gn]WL[999.629]\r\n;B[ho]BL[457.032]\r\n;W[hm]WL[995.388]\r\n;B[hk]BL[454.913]\r\n;W[ik]WL[993.21]\r\n;B[jk]BL[443.815]\r\n;W[il]WL[990.087]\r\n;B[hi]BL[432.061]\r\n;W[gj]WL[986.801]\r\n;B[km]BL[426.976]\r\n;W[kn]WL[981.568]\r\n;B[jo]BL[419.919]\r\n;W[kl]WL[979.119]\r\n;B[ng]BL[407.079]\r\n;W[oi]WL[952.834]\r\n;B[pj]BL[395.051]\r\n;W[pg]WL[950.582]\r\n;B[qg]BL[384.522]\r\n;W[gp]WL[920.562]\r\n;B[go]BL[359.938]\r\n;W[fp]WL[918.301]\r\n;B[ep]BL[354.753]\r\n;W[eo]WL[914.865]\r\n;B[eq]BL[352.934]\r\n;W[gq]WL[907.749]\r\n;B[gr]BL[350.044]\r\n;W[hr]WL[905.859]\r\n;B[hq]BL[344.979]\r\n;W[iq]WL[899.876]\r\n;B[ir]BL[322.629]\r\n;W[br]WL[883.86]\r\n;B[bs]BL[318.947]\r\n;W[aq]WL[881.199]\r\n;B[qo]BL[301.783]\r\n;W[ec]WL[859.569]\r\n;B[eb]BL[280.738]\r\n;W[ed]WL[857.246]\r\n;B[fb]BL[235.567]\r\n;W[sc]WL[849.575]\r\n;B[se]BL[220.125]\r\n;W[nh]WL[846.935]\r\n;B[pi]BL[206.895]\r\n;W[oh]WL[837.022]\r\n;B[of]BL[204.731]\r\n;W[ko]WL[821.829]\r\n;B[kp]BL[185.133]\r\n;W[ki]WL[818.034]\r\n;B[ji]BL[173.889]\r\n;W[sm]WL[786.923]\r\n;B[sl]BL[161.783]\r\n;W[so]WL[785.01]\r\n;B[hf]BL[146.363]\r\n;W[gf]WL[773.676]\r\n;B[jl]BL[137.797]\r\n;W[lm]WL[769.228]\r\n;B[pr]BL[110.906]\r\n;W[hh]WL[757.926]\r\n;B[if]BL[108.277]\r\n;W[ge]WL[755.974]\r\n;B[mj]BL[90.349]\r\n;W[mi]WL[751.072]\r\n;B[mk]BL[84.868]\r\n;W[ps]WL[737.862]\r\n;B[os]BL[81.512]\r\n;W[qs]WL[736.151]\r\n;B[cs]BL[47.376]\r\n;W[ar]WL[732.381]\r\n;B[gi]BL[18.064]\r\n;W[fi]WL[728.512]\r\n;B[ii]BL[12.971]\r\n;W[kk]WL[720.414]\r\n;B[jj]BL[10.932]\r\n;W[pa]WL[707.895]\r\n;B[]BL[10.93]\r\n;W[]WL[707.894]TW[qa][sa][rb][ce][de][ee][af][bf][cf][df][ef][ff][ag][bg][cg][eg][fg][ah][bh][ch][dh][eh][fh][mh][ai][bi][ci][di][ei][aj][bj][cj][dj][ej][ak][bk][ck][dk][ek][gk][hk][al][bl][cl][fl][gl][hl][ll][am][bm][cm][em][gm][km][an][bn][dn][ao][bo][co][do][ap][sp][bq][sq][rr][rs][ss]TB[aa][ba][ca][da][ea][fa][ga][ha][ia][ja][ka][la][ma][na][ab][bb][cb][db][gb][hb][ib][jb][kb][lb][mb][nb][hc][ic][jc][nc][jd][ld][md][ke][le][me][ne][oe][pe][qe][nf][qf][rf][sf][ig][rg][sg][rh][sh][ri][si][qj][rj][sj][ok][pk][qk][rk][sk][ol][pl][rl][qm][on][pn][qn][po][fp][gp][hp][ip][mp][np][op][gq][iq][jq][kq][nq][er][fr][hr][jr][kr][lr][mr][or][ds][es][fs][gs][hs][is][js][ks][ls][ms][ns]C[historment [?\\]: thx\r\nnas [1k\\]: thanks\r\nnas [1k\\]: quick review?\r\nhistorment [?\\]: sure\r\n])",
+    "urlto": "http://",
+    "wplayer": "historment",
+    "bplayer": "nas",
+    "place": "The KGS Go Server at http://www.gokgs.com/",
+    "result": "B+35.50",
+    "league_valid": true,
+    "date": "2017-02-19T00:00:00Z",
+    "board_size": 19,
+    "handicap": 0,
+    "komi": "6.50",
+    "byo": "5x30 byo-yomi",
+    "time": 1800,
+    "game_type": "Free",
+    "message": "",
+    "number_moves": 222,
+    "p_status": 0
+  }
+},
+{
+  "model": "league.sgf",
+  "pk": 3,
+  "fields": {
+    "sgf_text": "(;GM[1]FF[4]CA[UTF-8]AP[CGoban:3]ST[2]\r\nRU[Japanese]SZ[19]KM[6.50]TM[1800]OT[5x30 byo-yomi]\r\nPW[historment]PB[Rincewind]BR[3k]DT[2017-02-19]PC[The KGS Go Server at http://www.gokgs.com/]C[historment [?\\]: hi, hf\r\nRincewind [3k\\]: have fun :)\r\n]RE[B+12.50]\r\n;B[pd]BL[1788.07]C[historment [?\\]: #OSR\r\n]\r\n;W[dd]WL[1794.492]\r\n;B[qp]BL[1784.09]\r\n;W[dp]WL[1791.44]\r\n;B[fq]BL[1780.244]\r\n;W[cn]WL[1788.704]\r\n;B[kq]BL[1776.453]\r\n;W[qj]WL[1778.905]\r\n;B[qh]BL[1772.893]\r\n;W[qm]WL[1776.307]\r\n;B[pn]BL[1771.482]\r\n;W[ro]WL[1771.747]\r\n;B[rp]BL[1769.634]\r\n;W[qo]WL[1730.507]\r\n;B[pp]BL[1766.497]\r\n;W[lp]WL[1726.841]\r\n;B[kp]BL[1744.02]\r\n;W[lo]WL[1699.351]\r\n;B[ko]BL[1714.5]\r\n;W[ln]WL[1544.773]\r\n;B[mq]BL[1695.35]\r\n;W[lq]WL[1426.867]\r\n;B[lr]BL[1692.262]\r\n;W[kr]WL[1424.799]\r\n;B[mr]BL[1686.77]\r\n;W[hq]WL[1421.391]\r\n;B[jr]BL[1578.176]\r\n;W[eq]WL[1376.798]\r\n;B[fo]BL[1531.227]\r\n;W[fr]WL[1311.102]\r\n;B[gr]BL[1522.15]\r\n;W[gq]WL[1308.97]\r\n;B[fp]BL[1521.538]\r\n;W[hr]WL[1307.272]\r\n;B[cq]BL[1468.33]\r\n;W[dr]WL[1287.222]\r\n;B[fc]BL[1404.805]\r\n;W[cf]WL[1239.522]\r\n;B[jd]BL[1401.735]\r\n;W[qf]WL[1185.546]\r\n;B[qd]BL[1367.45]\r\n;W[rh]WL[1160.514]\r\n;B[pm]BL[1353.332]\r\n;W[ql]WL[1145.232]\r\n;B[nm]BL[1330.878]\r\n;W[ll]WL[1111.585]\r\n;B[qg]BL[1301.734]\r\n;W[rg]WL[1103.721]\r\n;B[pf]BL[1299.846]\r\n;W[rf]WL[1096.955]\r\n;B[lj]BL[1278.375]\r\n;W[mk]WL[963.591]\r\n;B[ni]BL[1259.877]\r\n;W[ok]WL[959.874]\r\n;B[mc]BL[1224.671]\r\n;W[di]WL[882.973]\r\n;B[dj]BL[1147.896]\r\n;W[ei]WL[865.876]\r\n;B[fk]BL[1066.055]\r\n;W[oh]WL[856.327]\r\n;B[oi]BL[1058.972]\r\n;W[hc]WL[803.394]\r\n;B[hd]BL[1029.037]\r\n;W[id]WL[791.588]\r\n;B[ie]BL[1024.025]\r\n;W[ic]WL[788.667]\r\n;B[jc]BL[1022.878]\r\n;W[gd]WL[779.506]\r\n;B[he]BL[1018.382]\r\n;W[gc]WL[777.864]\r\n;B[gi]BL[1004.518]\r\n;W[ge]WL[771.069]\r\n;B[hg]BL[995.646]\r\n;W[ej]WL[766.49]\r\n;B[ek]BL[990.935]\r\n;W[dk]WL[764.734]\r\n;B[dl]BL[990.083]\r\n;W[cj]WL[750.439]\r\n;B[ml]BL[986.084]\r\n;W[nl]WL[705.94]\r\n;B[mm]BL[981.821]\r\n;W[lk]WL[703.781]\r\n;B[kj]BL[967.574]\r\n;W[lm]WL[696.618]\r\n;B[cc]BL[961.738]\r\n;W[cd]WL[630.02]\r\n;B[dc]BL[955.511]\r\n;W[eb]WL[625.928]\r\n;B[db]BL[941.062]\r\n;W[fb]WL[588.804]\r\n;B[bb]BL[935.52]\r\n;W[bd]WL[481.043]\r\n;B[ca]BL[923.105]\r\n;W[bc]WL[476.454]\r\n;B[ab]BL[916.485]\r\n;W[sp]WL[440.815]\r\n;B[sq]BL[914.133]\r\n;W[so]WL[439.307]\r\n;B[rr]BL[908.388]\r\n;W[pg]WL[374.048]\r\n;B[pi]BL[885.387]\r\n;W[pe]WL[369.156]\r\n;B[of]BL[884.248]\r\n;W[oe]WL[365.046]\r\n;B[nf]BL[858.289]\r\n;W[qe]WL[334.74]\r\n;B[nd]BL[851.357]\r\n;W[rd]WL[303.125]\r\n;B[rc]BL[833.115]\r\n;W[ne]WL[193.818]\r\n;B[me]BL[829.269]\r\n;W[mf]WL[191.689]\r\n;B[mg]BL[822.518]\r\n;W[lf]WL[189.293]\r\n;B[ng]BL[817.416]\r\n;W[od]WL[186.304]\r\n;B[oc]BL[815.278]\r\n;W[rb]WL[184.24]\r\n;B[qb]BL[786.458]\r\n;W[sc]WL[180.373]\r\n;B[qc]BL[785.093]\r\n;W[qi]WL[176.967]\r\n;B[ph]BL[771.558]\r\n;W[cl]WL[172.272]\r\n;B[dm]BL[769.531]\r\n;W[cm]WL[124.442]\r\n;B[fg]BL[717.175]\r\n;W[ef]WL[109.353]\r\n;B[eg]BL[666.561]\r\n;W[dg]WL[95.202]\r\n;B[jl]BL[533.954]\r\n;W[fm]WL[90.333]\r\n;B[en]BL[526.031]\r\n;W[hm]WL[82.55]\r\n;B[in]BL[512.914]\r\n;W[jb]WL[71.572]\r\n;B[kb]BL[509.412]\r\n;W[ib]WL[69.408]\r\n;B[je]BL[494.794]\r\n;W[im]WL[55.45]\r\n;B[jm]BL[491.35]\r\n;W[hn]WL[53.421]\r\n;B[ho]BL[483.2]\r\n;W[io]WL[41.659]\r\n;B[jn]BL[472.605]\r\n;W[go]WL[38.475]\r\n;B[el]BL[437.443]\r\n;W[fn]WL[23.164]\r\n;B[do]BL[431.873]\r\n;W[co]WL[13.324]\r\n;B[eo]BL[403.925]\r\n;W[gj]WL[30]OW[4]\r\n;B[gk]BL[307.964]\r\n;W[hj]WL[30]OW[4]\r\n;B[hk]BL[298.028]\r\n;W[ik]WL[30]OW[4]\r\n;B[il]BL[295.715]\r\n;W[hi]WL[30]OW[4]\r\n;B[fj]BL[289.899]\r\n;W[gh]WL[30]OW[4]\r\n;B[fi]BL[286.363]\r\n;W[fh]WL[30]OW[4]\r\n;B[eh]BL[282.368]\r\n;W[gg]WL[30]OW[4]\r\n;B[gf]BL[281.064]\r\n;W[hh]WL[30]OW[4]\r\n;B[ff]BL[279.84]\r\n;W[fe]WL[30]OW[4]\r\n;B[ec]BL[266.62]\r\n;W[ee]WL[30]OW[4]\r\n;B[ra]BL[230.224]\r\n;W[ka]WL[30]OW[4]\r\n;B[lb]BL[226.092]\r\n;W[ol]WL[30]OW[4]\r\n;B[no]BL[202.13]\r\n;W[mj]WL[30]OW[4]\r\n;B[mi]BL[200.094]\r\n;W[ij]WL[30]OW[4]\r\n;B[hl]BL[196.515]\r\n;W[kk]WL[30]OW[4]\r\n;B[jk]BL[194.825]\r\n;W[li]WL[30]OW[4]\r\n;B[jj]BL[177.709]\r\n;W[mp]WL[30]OW[4]\r\n;B[np]BL[173.081]\r\n;W[sb]WL[30]OW[4]\r\n;B[ea]BL[170.493]\r\n;W[ga]WL[30]OW[4]\r\n;B[ac]BL[167.042]\r\n;W[ad]WL[30]OW[4]\r\n;B[hp]BL[153.683]\r\n;W[gp]WL[30]OW[4]\r\n;B[ip]BL[152.714]\r\n;W[iq]WL[30]OW[4]\r\n;B[jp]BL[148.148]\r\n;W[dh]WL[30]OW[4]\r\n;B[hf]BL[144.38]\r\n;W[po]WL[30]OW[4]\r\n;B[oo]BL[141.888]\r\n;W[qn]WL[30]OW[4]\r\n;B[om]BL[126.306]\r\n;W[gs]WL[30]OW[4]\r\n;B[is]BL[110.762]\r\n;W[la]WL[30]OW[4]\r\n;B[ma]BL[108.072]\r\n;W[ja]WL[30]OW[4]\r\n;B[hs]BL[106.744]\r\n;W[ir]WL[30]OW[4]\r\n;B[js]BL[104.12]\r\n;W[jq]WL[30]OW[4]\r\n;B[ks]BL[102.521]\r\n;W[gn]WL[30]OW[4]\r\n;B[nj]BL[89.41]\r\n;W[nk]WL[30]OW[4]\r\n;B[pk]BL[86.064]\r\n;W[pl]WL[30]OW[4]\r\n;B[pj]BL[84.864]\r\n;W[qk]WL[30]OW[4]\r\n;B[mn]BL[70.484]\r\n;W[fa]WL[30]OW[4]\r\n;B[da]BL[66.687]\r\n;W[sd]WL[30]OW[4]\r\n;B[qa]BL[64.116]\r\n;W[oj]WL[30]OW[4]\r\n;B[em]BL[13.909]\r\n;W[le]WL[30]OW[4]\r\n;B[md]BL[12.175]\r\n;W[mh]WL[30]OW[4]\r\n;B[nh]BL[7.956]\r\n;W[ep]WL[30]OW[4]\r\n;B[fl]BL[30]OB[5]\r\n;W[gr]WL[30]OW[4]\r\n;B[]BL[30]OB[5]\r\n;W[]WL[30]OW[4]TW[ha][ia][gb][hb][ae][be][ce][de][re][se][af][bf][df][sf][ag][bg][cg][sg][ah][bh][ch][sh][ai][bi][ci][ri][si][aj][bj][dj][rj][sj][ak][bk][ck][rk][sk][al][bl][rl][sl][am][bm][rm][sm][an][bn][rn][sn][ao][bo][ap][bp][cp][aq][bq][cq][dq][ar][br][cr][er][as][bs][cs][ds][es][fs]TB[aa][ba][na][oa][pa][cb][mb][nb][ob][pb][kc][lc][nc][pc][kd][ld][ke][le][if][jf][kf][lf][mf][gg][ig][jg][kg][lg][og][pg][fh][gh][hh][ih][jh][kh][lh][mh][oh][hi][ii][ji][ki][li][gj][hj][ij][ik][nn][on][io][jo][op][nq][oq][pq][qq][rq][kr][nr][or][pr][qr][sr][ls][ms][ns][os][ps][qs][rs][ss]C[historment [?\\]: thx\r\nRincewind [3k\\]: thank you\r\n])",
+    "urlto": "http://",
+    "wplayer": "historment",
+    "bplayer": "Rincewind",
+    "place": "The KGS Go Server at http://www.gokgs.com/",
+    "result": "B+12.50",
+    "league_valid": true,
+    "date": "2017-02-19T00:00:00Z",
+    "board_size": 19,
+    "handicap": 0,
+    "komi": "6.50",
+    "byo": "5x30 byo-yomi",
+    "time": 1800,
+    "game_type": "Free",
+    "message": "",
+    "number_moves": 234,
+    "p_status": 0
+  }
+},
+{
+  "model": "league.sgf",
+  "pk": 4,
+  "fields": {
+    "sgf_text": "(;GM[1]FF[4]CA[UTF-8]AP[CGoban:3]ST[2]\r\nRU[Japanese]SZ[19]KM[6.50]TM[1800]OT[5x30 byo-yomi]\r\nPW[TrueMB]PB[EdwinSelan]WR[3d]BR[2k]DT[2017-03-06]PC[The KGS Go Server at http://www.gokgs.com/]C[EdwinSelan [2k\\]: Have a good game!\r\nTrueMB [3d\\]: you too\r\nEdwinSelan [2k\\]: #OSR\r\n]RE[W+34.50]\r\n;B[pd]BL[1776.363]\r\n;W[eo]WL[1798.156]\r\n;B[pq]BL[1766.727]\r\n;W[ee]WL[1796.272]\r\n;B[cq]BL[1728.098]\r\n;W[co]WL[1790.879]\r\n;B[fq]BL[1720.814]\r\n;W[gp]WL[1788.751]\r\n;B[gq]BL[1718.188]\r\n;W[hp]WL[1787.079]\r\n;B[iq]BL[1676.771]\r\n;W[jj]WL[1779.99]\r\n;B[nc]BL[1631.083]\r\n;W[dj]WL[1764.217]\r\n;B[ch]BL[1468.614]\r\n;W[eh]WL[1740.172]\r\n;B[jd]BL[1425.18]\r\n;W[cf]WL[1726.181]\r\n;B[pk]BL[1346.693]\r\n;W[po]WL[1704.746]\r\n;B[np]BL[1264.38]\r\n;W[qq]WL[1698.904]\r\n;B[qr]BL[1260.468]\r\n;W[qp]WL[1697.704]\r\n;B[rr]BL[1255.673]\r\n;W[qm]WL[1685.977]\r\n;B[rl]BL[1253.728]\r\n;W[nn]WL[1629.849]\r\n;B[jg]BL[1166.414]\r\n;W[jo]WL[1604.577]\r\n;B[qe]BL[1022.075]\r\n;W[nk]WL[1548.313]\r\n;B[ec]BL[920.723]\r\n;W[dc]WL[1533.622]\r\n;B[db]BL[914.283]\r\n;W[dd]WL[1530.613]\r\n;B[gc]BL[897.667]\r\n;W[cb]WL[1519.675]\r\n;B[nj]BL[865.245]\r\n;W[mj]WL[1510.032]\r\n;B[ni]BL[862.967]\r\n;W[ok]WL[1497.004]\r\n;B[pj]BL[860.762]\r\n;W[lh]WL[1471.471]\r\n;B[cj]BL[836.994]\r\n;W[ck]WL[1466.03]\r\n;B[bk]BL[835.444]\r\n;W[bj]WL[1386.843]\r\n;B[ci]BL[833.202]\r\n;W[bl]WL[1385.428]\r\n;B[gi]BL[729.429]\r\n;W[ih]WL[1326.455]\r\n;B[dk]BL[719.66]\r\n;W[cl]WL[1318.182]\r\n;B[eg]BL[706.906]\r\n;W[fg]WL[1260.373]\r\n;B[ej]BL[666.578]\r\n;W[fh]WL[1190.724]\r\n;B[ei]BL[650.353]\r\n;W[ek]WL[1163.411]\r\n;B[dl]BL[648.23]\r\n;W[dm]WL[1161.766]\r\n;B[el]BL[646.213]\r\n;W[fk]WL[1158.108]\r\n;B[bi]BL[632.965]\r\n;W[fl]WL[1122.164]\r\n;B[aj]BL[625.443]\r\n;W[bg]WL[1107.269]\r\n;B[em]BL[592.096]\r\n;W[fm]WL[1104.807]\r\n;B[di]BL[584.623]\r\n;W[en]WL[1102.991]\r\n;B[ig]BL[392.738]\r\n;W[hh]WL[1087.201]\r\n;B[jh]BL[350.829]\r\n;W[gh]WL[1042.802]\r\n;B[mi]BL[339.285]\r\n;W[li]WL[1037.272]\r\n;B[lj]BL[337.749]\r\n;W[mk]WL[1036.042]\r\n;B[ji]BL[322.979]\r\n;W[kj]WL[1022.409]\r\n;B[ii]BL[311.487]\r\n;W[hi]WL[1021.026]\r\n;B[ij]BL[282.063]\r\n;W[lf]WL[949.682]\r\n;B[mg]BL[251.798]\r\n;W[lg]WL[943.858]\r\n;B[ld]BL[250.686]\r\n;W[mf]WL[938.8]\r\n;B[il]BL[228.019]\r\n;W[oj]WL[893.194]\r\n;B[oi]BL[224.351]\r\n;W[pi]WL[891.724]\r\n;B[qi]BL[175.232]\r\n;W[ph]WL[889.777]\r\n;B[og]BL[174.028]\r\n;W[pg]WL[876.608]\r\n;B[of]BL[172.492]\r\n;W[pf]WL[865.016]\r\n;B[oe]BL[163.867]\r\n;W[ri]WL[859.278]\r\n;B[qj]BL[145.199]\r\n;W[rh]WL[851.33]\r\n;B[qh]BL[141.156]\r\n;W[qg]WL[847.149]\r\n;B[rf]BL[139.313]\r\n;W[rj]WL[843.751]\r\n;B[pl]BL[86.284]\r\n;W[rg]WL[787.192]\r\n;B[rm]BL[52.274]\r\n;W[ql]WL[747.962]\r\n;B[qn]BL[30]OB[5]\r\n;W[pm]WL[744.564]\r\n;B[pn]BL[30]OB[5]\r\n;W[om]WL[741.237]\r\n;B[rk]BL[30]OB[5]\r\n;W[qk]WL[737.952]\r\n;B[oo]BL[30]OB[5]\r\n;W[on]WL[734.786]\r\n;B[qo]BL[30]OB[5]\r\n;W[hk]WL[682.842]\r\n;B[ik]BL[30]OB[5]\r\n;W[hd]WL[653.414]\r\n;B[ic]BL[30]OB[5]\r\n;W[hc]WL[651.726]\r\n;B[hb]BL[30]OB[5]\r\n;W[gd]WL[647.112]\r\n;B[ib]BL[30]OB[5]\r\n;W[fc]WL[643.398]\r\n;B[gb]BL[30]OB[5]\r\n;W[fb]WL[641.634]\r\n;B[kp]BL[30]OB[5]\r\n;W[ko]WL[630.734]\r\n;B[lp]BL[30]OB[4]\r\n;W[lo]WL[629.176]\r\n;B[je]BL[30]OB[4]\r\n;W[no]WL[608.055]\r\n;B[pp]BL[30]OB[4]\r\n;W[eq]WL[584.998]\r\n;B[er]BL[30]OB[4]\r\n;W[hq]WL[582.098]\r\n;B[ep]BL[30]OB[4]\r\n;W[ir]WL[573.4]\r\n;B[kr]BL[30]OB[4]\r\n;W[gr]WL[557.064]\r\n;B[bp]BL[30]OB[4]\r\n;W[bo]WL[543.692]\r\n;B[kl]BL[30]OB[4]\r\n;W[ll]WL[537.57]\r\n;B[gf]BL[30]OB[4]\r\n;W[ff]WL[531.814]\r\n;B[ip]BL[30]OB[3]\r\n;W[io]WL[527.589]\r\n;B[jr]BL[30]OB[3]\r\n;W[fr]WL[522.669]\r\n;B[dq]BL[30]OB[3]\r\n;W[fp]WL[519.769]\r\n;B[hm]BL[30]OB[3]\r\n;W[eq]WL[511.247]\r\n;B[fq]BL[30]OB[3]\r\n;W[jp]WL[495.63]\r\n;B[jq]BL[30]OB[3]\r\n;W[hn]WL[494.592]\r\n;B[kk]BL[30]OB[3]\r\n;W[lk]WL[492.251]\r\n;B[fa]BL[30]OB[3]\r\n;W[eb]WL[488.521]\r\n;B[ng]BL[30]OB[3]\r\n;W[ea]WL[472.685]\r\n;B[ga]BL[30]OB[2]\r\n;W[hj]WL[372.868]\r\n;B[cp]BL[30]OB[2]\r\n;W[ap]WL[368.809]\r\n;B[aq]BL[30]OB[2]\r\n;W[ao]WL[368.031]\r\n;B[br]BL[30]OB[2]\r\n;W[md]WL[363.142]\r\n;B[mc]BL[30]OB[2]\r\n;W[nd]WL[362.08]\r\n;B[od]BL[30]OB[2]\r\n;W[le]WL[361.299]\r\n;B[ke]BL[30]OB[2]\r\n;W[hf]WL[356.848]\r\n;B[dn]BL[30]OB[2]\r\n;W[dj]WL[337.478]\r\n;B[do]BL[30]OB[2]\r\n;W[cn]WL[335.706]\r\n;B[hg]BL[30]OB[2]\r\n;W[gg]WL[333.455]\r\n;B[he]BL[30]OB[2]\r\n;W[ge]WL[330.65]\r\n;B[ie]BL[30]OB[2]\r\n;W[mp]WL[325.648]\r\n;B[mq]BL[30]OB[2]\r\n;W[mo]WL[324.503]\r\n;B[lq]BL[30]OB[2]\r\n;W[js]WL[319.082]\r\n;B[ks]BL[30]OB[2]\r\n;W[is]WL[318.26]\r\n;B[gm]BL[30]OB[2]\r\n;W[gn]WL[312.712]\r\n;B[jm]BL[30]OB[2]\r\n;W[km]WL[309.374]\r\n;B[kn]BL[30]OB[2]\r\n;W[lm]WL[307.912]\r\n;B[jn]BL[30]OB[2]\r\n;W[ln]WL[303.764]\r\n;B[dp]BL[30]OB[2]\r\n;W[sk]WL[295.264]\r\n;B[rn]BL[30]OB[2]\r\n;W[sl]WL[293.682]\r\n;B[sm]BL[30]OB[2]\r\n;W[sj]WL[292.293]\r\n;B[qf]BL[30]OB[2]\r\n;W[sf]WL[288.243]\r\n;B[se]BL[30]OB[2]\r\n;W[sg]WL[287.142]\r\n;B[pe]BL[30]OB[2]\r\n;W[jk]WL[277.296]\r\n;B[jl]BL[30]OB[2]\r\n;W[in]WL[276.292]\r\n;B[fs]BL[30]OB[2]\r\n;W[gs]WL[274.599]\r\n;B[es]BL[30]OB[2]\r\n;W[gq]WL[268.145]\r\n;B[eq]BL[30]OB[2]\r\n;W[oh]WL[264.89]\r\n;B[mh]BL[30]OB[2]\r\n;W[kf]WL[258.695]\r\n;B[if]BL[30]OB[2]\r\n;W[gf]WL[256.01]\r\n;B[ne]BL[30]OB[2]\r\n;W[me]WL[253.959]\r\n;B[gl]BL[30]OB[2]\r\n;W[gk]WL[250.288]\r\n;B[id]BL[30]OB[2]\r\n;W[ki]WL[240.562]\r\n;B[kg]BL[30]OB[2]\r\n;W[hl]WL[237.161]\r\n;B[im]BL[30]OB[2]\r\n;W[kh]WL[233.069]\r\n;B[nf]BL[30]OB[2]\r\n;W[lj]WL[231.137]\r\n;B[kc]BL[30]OB[2]\r\n;W[jf]WL[222.35]\r\n;B[nh]BL[30]OB[2]\r\n;W[]WL[222.35]\r\n;B[]BL[30]OB[2]TW[aa][ba][ca][da][ab][bb][db][ac][bc][cc][ec][ad][bd][cd][ed][fd][ae][be][ce][de][fe][af][bf][df][ef][ag][cg][dg][eg][ah][bh][ch][dh][qh][sh][ai][bi][ci][di][ei][fi][gi][qi][si][aj][bj][cj][ej][fj][gj][pj][qj][ak][bk][dk][pk][al][dl][el][ml][nl][ol][pl][am][bm][cm][em][mm][nm][an][bn][fn][mn][fo][go][ho][hr][hs]TB[ha][ia][ja][ka][la][ma][na][oa][pa][qa][ra][sa][jb][kb][lb][mb][nb][ob][pb][qb][rb][sb][jc][lc][oc][pc][qc][rc][sc][kd][qd][rd][sd][re][sn][po][ro][so][op][qp][rp][sp][bq][kq][nq][oq][qq][rq][sq][ar][cr][dr][lr][mr][nr][or][pr][sr][as][bs][cs][ds][ls][ms][ns][os][ps][qs][rs][ss]C[EdwinSelan [2k\\]: oops\r\nTrueMB [3d\\]: gg\r\nEdwinSelan [2k\\]: thanks for the game\r\nTrueMB [3d\\]: that was a fun game\r\nEdwinSelan [2k\\]: that was a difficult one ><\r\nTrueMB [3d\\]: strated very peacefull\r\nTrueMB [3d\\]: started*\r\nTrueMB [3d\\]: then boom\r\nEdwinSelan [2k\\]: yeah\r\nTrueMB [3d\\]: I think you could have kept building tho\r\nTrueMB [3d\\]: instead of trying to make d11 live\r\nEdwinSelan [2k\\]: yeah, I think too, but you know, fear is always the strongest with kyu player x)\r\nTrueMB [3d\\]: well, we can review in 2 h if its fine with you?\r\nEdwinSelan [2k\\]: ok, fine, thanks\r\nTrueMB [3d\\]: or maybe another day\r\nTrueMB [3d\\]: your choice\r\nEdwinSelan [2k\\]: as you prefer\r\nEdwinSelan [2k\\]: I can both\r\nTrueMB [3d\\]: ok we will see\r\n])",
+    "urlto": "http://",
+    "wplayer": "TrueMB",
+    "bplayer": "EdwinSelan",
+    "place": "The KGS Go Server at http://www.gokgs.com/",
+    "result": "W+34.50",
+    "league_valid": true,
+    "date": "2017-03-06T00:00:00Z",
+    "board_size": 19,
+    "handicap": 0,
+    "komi": "6.50",
+    "byo": "5x30 byo-yomi",
+    "time": 1800,
+    "game_type": "Free",
+    "message": "",
+    "number_moves": 250,
+    "p_status": 0
+  }
+},
+{
   "model": "league.division",
   "pk": 1,
   "fields": {
     "league_event": 1,
     "name": "First OSR division",
     "order": 0
+  }
+},
+{
+  "model": "league.division",
+  "pk": 2,
+  "fields": {
+    "league_event": 1,
+    "name": "B group",
+    "order": 1
+  }
+},
+{
+  "model": "league.division",
+  "pk": 3,
+  "fields": {
+    "league_event": 2,
+    "name": "ponuki",
+    "order": 0
+  }
+},
+{
+  "model": "league.division",
+  "pk": 4,
+  "fields": {
+    "league_event": 2,
+    "name": "empty triangle",
+    "order": 1
+  }
+},
+{
+  "model": "league.game",
+  "pk": 1,
+  "fields": {
+    "sgf": 1,
+    "event": 1,
+    "black": 6,
+    "white": 2,
+    "winner": 6
+  }
+},
+{
+  "model": "league.game",
+  "pk": 2,
+  "fields": {
+    "sgf": 2,
+    "event": 1,
+    "black": 3,
+    "white": 6,
+    "winner": 3
+  }
+},
+{
+  "model": "league.game",
+  "pk": 3,
+  "fields": {
+    "sgf": 3,
+    "event": 1,
+    "black": 1,
+    "white": 6,
+    "winner": 1
+  }
+},
+{
+  "model": "league.game",
+  "pk": 4,
+  "fields": {
+    "sgf": 4,
+    "event": 1,
+    "black": 9,
+    "white": 8,
+    "winner": 8
   }
 },
 {
@@ -750,6 +1018,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 1,
   "fields": {
     "name": "Can add image",
     "content_type": 2,
@@ -758,6 +1027,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 2,
   "fields": {
     "name": "Can change image",
     "content_type": 2,
@@ -766,6 +1036,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 3,
   "fields": {
     "name": "Can delete image",
     "content_type": 2,
@@ -774,6 +1045,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 4,
   "fields": {
     "name": "Can access Wagtail admin",
     "content_type": 3,
@@ -782,6 +1054,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 5,
   "fields": {
     "name": "Can add document",
     "content_type": 4,
@@ -790,6 +1063,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 6,
   "fields": {
     "name": "Can change document",
     "content_type": 4,
@@ -798,6 +1072,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 7,
   "fields": {
     "name": "Can delete document",
     "content_type": 4,
@@ -806,126 +1081,142 @@
 },
 {
   "model": "auth.permission",
-  "fields": {
-    "name": "Can add home page",
-    "content_type": 5,
-    "codename": "add_homepage"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change home page",
-    "content_type": 5,
-    "codename": "change_homepage"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete home page",
-    "content_type": 5,
-    "codename": "delete_homepage"
-  }
-},
-{
-  "model": "auth.permission",
+  "pk": 8,
   "fields": {
     "name": "Can add left sidebar page",
-    "content_type": 6,
+    "content_type": 5,
     "codename": "add_leftsidebarpage"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 9,
   "fields": {
     "name": "Can change left sidebar page",
-    "content_type": 6,
+    "content_type": 5,
     "codename": "change_leftsidebarpage"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 10,
   "fields": {
     "name": "Can delete left sidebar page",
-    "content_type": 6,
+    "content_type": 5,
     "codename": "delete_leftsidebarpage"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 11,
   "fields": {
-    "name": "Can add full width page",
-    "content_type": 7,
-    "codename": "add_fullwidthpage"
+    "name": "Can add home page",
+    "content_type": 6,
+    "codename": "add_homepage"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 12,
   "fields": {
-    "name": "Can change full width page",
-    "content_type": 7,
-    "codename": "change_fullwidthpage"
+    "name": "Can change home page",
+    "content_type": 6,
+    "codename": "change_homepage"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 13,
   "fields": {
-    "name": "Can delete full width page",
-    "content_type": 7,
-    "codename": "delete_fullwidthpage"
+    "name": "Can delete home page",
+    "content_type": 6,
+    "codename": "delete_homepage"
   }
 },
 {
   "model": "auth.permission",
-  "fields": {
-    "name": "Can add right sidebar page",
-    "content_type": 8,
-    "codename": "add_rightsidebarpage"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change right sidebar page",
-    "content_type": 8,
-    "codename": "change_rightsidebarpage"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete right sidebar page",
-    "content_type": 8,
-    "codename": "delete_rightsidebarpage"
-  }
-},
-{
-  "model": "auth.permission",
+  "pk": 14,
   "fields": {
     "name": "Can add stream field entry page",
-    "content_type": 9,
+    "content_type": 7,
     "codename": "add_streamfieldentrypage"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 15,
   "fields": {
     "name": "Can change stream field entry page",
-    "content_type": 9,
+    "content_type": 7,
     "codename": "change_streamfieldentrypage"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 16,
   "fields": {
     "name": "Can delete stream field entry page",
-    "content_type": 9,
+    "content_type": 7,
     "codename": "delete_streamfieldentrypage"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 17,
+  "fields": {
+    "name": "Can add full width page",
+    "content_type": 8,
+    "codename": "add_fullwidthpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 18,
+  "fields": {
+    "name": "Can change full width page",
+    "content_type": 8,
+    "codename": "change_fullwidthpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 19,
+  "fields": {
+    "name": "Can delete full width page",
+    "content_type": 8,
+    "codename": "delete_fullwidthpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 20,
+  "fields": {
+    "name": "Can add right sidebar page",
+    "content_type": 9,
+    "codename": "add_rightsidebarpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 21,
+  "fields": {
+    "name": "Can change right sidebar page",
+    "content_type": 9,
+    "codename": "change_rightsidebarpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 22,
+  "fields": {
+    "name": "Can delete right sidebar page",
+    "content_type": 9,
+    "codename": "delete_rightsidebarpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 23,
   "fields": {
     "name": "Can add form submission",
     "content_type": 10,
@@ -934,6 +1225,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 24,
   "fields": {
     "name": "Can change form submission",
     "content_type": 10,
@@ -942,6 +1234,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 25,
   "fields": {
     "name": "Can delete form submission",
     "content_type": 10,
@@ -950,6 +1243,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 26,
   "fields": {
     "name": "Can add redirect",
     "content_type": 11,
@@ -958,6 +1252,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 27,
   "fields": {
     "name": "Can change redirect",
     "content_type": 11,
@@ -966,6 +1261,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 28,
   "fields": {
     "name": "Can delete redirect",
     "content_type": 11,
@@ -974,6 +1270,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 29,
   "fields": {
     "name": "Can add embed",
     "content_type": 12,
@@ -982,6 +1279,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 30,
   "fields": {
     "name": "Can change embed",
     "content_type": 12,
@@ -990,6 +1288,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 31,
   "fields": {
     "name": "Can delete embed",
     "content_type": 12,
@@ -998,6 +1297,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 32,
   "fields": {
     "name": "Can add user profile",
     "content_type": 13,
@@ -1006,6 +1306,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 33,
   "fields": {
     "name": "Can change user profile",
     "content_type": 13,
@@ -1014,6 +1315,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 34,
   "fields": {
     "name": "Can delete user profile",
     "content_type": 13,
@@ -1022,150 +1324,250 @@
 },
 {
   "model": "auth.permission",
-  "fields": {
-    "name": "Can add filter",
-    "content_type": 14,
-    "codename": "add_filter"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change filter",
-    "content_type": 14,
-    "codename": "change_filter"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete filter",
-    "content_type": 14,
-    "codename": "delete_filter"
-  }
-},
-{
-  "model": "auth.permission",
+  "pk": 35,
   "fields": {
     "name": "Can add rendition",
-    "content_type": 15,
+    "content_type": 14,
     "codename": "add_rendition"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 36,
   "fields": {
     "name": "Can change rendition",
-    "content_type": 15,
+    "content_type": 14,
     "codename": "change_rendition"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 37,
   "fields": {
     "name": "Can delete rendition",
-    "content_type": 15,
+    "content_type": 14,
     "codename": "delete_rendition"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 38,
   "fields": {
-    "name": "Can add Query Daily Hits",
-    "content_type": 16,
-    "codename": "add_querydailyhits"
+    "name": "Can add filter",
+    "content_type": 15,
+    "codename": "add_filter"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 39,
   "fields": {
-    "name": "Can change Query Daily Hits",
-    "content_type": 16,
-    "codename": "change_querydailyhits"
+    "name": "Can change filter",
+    "content_type": 15,
+    "codename": "change_filter"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 40,
   "fields": {
-    "name": "Can delete Query Daily Hits",
-    "content_type": 16,
-    "codename": "delete_querydailyhits"
+    "name": "Can delete filter",
+    "content_type": 15,
+    "codename": "delete_filter"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 41,
   "fields": {
     "name": "Can add query",
-    "content_type": 17,
+    "content_type": 16,
     "codename": "add_query"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 42,
   "fields": {
     "name": "Can change query",
-    "content_type": 17,
+    "content_type": 16,
     "codename": "change_query"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 43,
   "fields": {
     "name": "Can delete query",
-    "content_type": 17,
+    "content_type": 16,
     "codename": "delete_query"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 44,
+  "fields": {
+    "name": "Can add Query Daily Hits",
+    "content_type": 17,
+    "codename": "add_querydailyhits"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 45,
+  "fields": {
+    "name": "Can change Query Daily Hits",
+    "content_type": 17,
+    "codename": "change_querydailyhits"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 46,
+  "fields": {
+    "name": "Can delete Query Daily Hits",
+    "content_type": 17,
+    "codename": "delete_querydailyhits"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 47,
+  "fields": {
+    "name": "Can add page revision",
+    "content_type": 18,
+    "codename": "add_pagerevision"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 48,
+  "fields": {
+    "name": "Can change page revision",
+    "content_type": 18,
+    "codename": "change_pagerevision"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 49,
+  "fields": {
+    "name": "Can delete page revision",
+    "content_type": 18,
+    "codename": "delete_pagerevision"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 50,
+  "fields": {
+    "name": "Can add collection",
+    "content_type": 19,
+    "codename": "add_collection"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 51,
+  "fields": {
+    "name": "Can change collection",
+    "content_type": 19,
+    "codename": "change_collection"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 52,
+  "fields": {
+    "name": "Can delete collection",
+    "content_type": 19,
+    "codename": "delete_collection"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 53,
+  "fields": {
+    "name": "Can add group collection permission",
+    "content_type": 20,
+    "codename": "add_groupcollectionpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 54,
+  "fields": {
+    "name": "Can change group collection permission",
+    "content_type": 20,
+    "codename": "change_groupcollectionpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 55,
+  "fields": {
+    "name": "Can delete group collection permission",
+    "content_type": 20,
+    "codename": "delete_groupcollectionpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 56,
+  "fields": {
+    "name": "Can add site",
+    "content_type": 21,
+    "codename": "add_site"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 57,
+  "fields": {
+    "name": "Can change site",
+    "content_type": 21,
+    "codename": "change_site"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 58,
+  "fields": {
+    "name": "Can delete site",
+    "content_type": 21,
+    "codename": "delete_site"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 59,
   "fields": {
     "name": "Can add page view restriction",
-    "content_type": 18,
+    "content_type": 22,
     "codename": "add_pageviewrestriction"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 60,
   "fields": {
     "name": "Can change page view restriction",
-    "content_type": 18,
+    "content_type": 22,
     "codename": "change_pageviewrestriction"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 61,
   "fields": {
     "name": "Can delete page view restriction",
-    "content_type": 18,
+    "content_type": 22,
     "codename": "delete_pageviewrestriction"
   }
 },
 {
   "model": "auth.permission",
-  "fields": {
-    "name": "Can add group page permission",
-    "content_type": 19,
-    "codename": "add_grouppagepermission"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change group page permission",
-    "content_type": 19,
-    "codename": "change_grouppagepermission"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete group page permission",
-    "content_type": 19,
-    "codename": "delete_grouppagepermission"
-  }
-},
-{
-  "model": "auth.permission",
+  "pk": 62,
   "fields": {
     "name": "Can add page",
     "content_type": 1,
@@ -1174,6 +1576,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 63,
   "fields": {
     "name": "Can change page",
     "content_type": 1,
@@ -1182,6 +1585,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 64,
   "fields": {
     "name": "Can delete page",
     "content_type": 1,
@@ -1190,150 +1594,88 @@
 },
 {
   "model": "auth.permission",
+  "pk": 65,
   "fields": {
-    "name": "Can add site",
-    "content_type": 20,
-    "codename": "add_site"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change site",
-    "content_type": 20,
-    "codename": "change_site"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete site",
-    "content_type": 20,
-    "codename": "delete_site"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can add page revision",
-    "content_type": 21,
-    "codename": "add_pagerevision"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change page revision",
-    "content_type": 21,
-    "codename": "change_pagerevision"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete page revision",
-    "content_type": 21,
-    "codename": "delete_pagerevision"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can add group collection permission",
-    "content_type": 22,
-    "codename": "add_groupcollectionpermission"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change group collection permission",
-    "content_type": 22,
-    "codename": "change_groupcollectionpermission"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete group collection permission",
-    "content_type": 22,
-    "codename": "delete_groupcollectionpermission"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can add collection",
+    "name": "Can add group page permission",
     "content_type": 23,
-    "codename": "add_collection"
+    "codename": "add_grouppagepermission"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 66,
   "fields": {
-    "name": "Can change collection",
+    "name": "Can change group page permission",
     "content_type": 23,
-    "codename": "change_collection"
+    "codename": "change_grouppagepermission"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 67,
   "fields": {
-    "name": "Can delete collection",
+    "name": "Can delete group page permission",
     "content_type": 23,
-    "codename": "delete_collection"
+    "codename": "delete_grouppagepermission"
   }
 },
 {
   "model": "auth.permission",
-  "fields": {
-    "name": "Can add Tag",
-    "content_type": 24,
-    "codename": "add_tag"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change Tag",
-    "content_type": 24,
-    "codename": "change_tag"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete Tag",
-    "content_type": 24,
-    "codename": "delete_tag"
-  }
-},
-{
-  "model": "auth.permission",
+  "pk": 68,
   "fields": {
     "name": "Can add Tagged Item",
-    "content_type": 25,
+    "content_type": 24,
     "codename": "add_taggeditem"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 69,
   "fields": {
     "name": "Can change Tagged Item",
-    "content_type": 25,
+    "content_type": 24,
     "codename": "change_taggeditem"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 70,
   "fields": {
     "name": "Can delete Tagged Item",
-    "content_type": 25,
+    "content_type": 24,
     "codename": "delete_taggeditem"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 71,
+  "fields": {
+    "name": "Can add Tag",
+    "content_type": 25,
+    "codename": "add_tag"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 72,
+  "fields": {
+    "name": "Can change Tag",
+    "content_type": 25,
+    "codename": "change_tag"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 73,
+  "fields": {
+    "name": "Can delete Tag",
+    "content_type": 25,
+    "codename": "delete_tag"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 74,
   "fields": {
     "name": "Can add log entry",
     "content_type": 26,
@@ -1342,6 +1684,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 75,
   "fields": {
     "name": "Can change log entry",
     "content_type": 26,
@@ -1350,6 +1693,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 76,
   "fields": {
     "name": "Can delete log entry",
     "content_type": 26,
@@ -1358,54 +1702,61 @@
 },
 {
   "model": "auth.permission",
-  "fields": {
-    "name": "Can add group",
-    "content_type": 27,
-    "codename": "add_group"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change group",
-    "content_type": 27,
-    "codename": "change_group"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete group",
-    "content_type": 27,
-    "codename": "delete_group"
-  }
-},
-{
-  "model": "auth.permission",
+  "pk": 77,
   "fields": {
     "name": "Can add permission",
-    "content_type": 28,
+    "content_type": 27,
     "codename": "add_permission"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 78,
   "fields": {
     "name": "Can change permission",
-    "content_type": 28,
+    "content_type": 27,
     "codename": "change_permission"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 79,
   "fields": {
     "name": "Can delete permission",
-    "content_type": 28,
+    "content_type": 27,
     "codename": "delete_permission"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 80,
+  "fields": {
+    "name": "Can add group",
+    "content_type": 28,
+    "codename": "add_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 81,
+  "fields": {
+    "name": "Can change group",
+    "content_type": 28,
+    "codename": "change_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 82,
+  "fields": {
+    "name": "Can delete group",
+    "content_type": 28,
+    "codename": "delete_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 83,
   "fields": {
     "name": "Can add content type",
     "content_type": 29,
@@ -1414,6 +1765,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 84,
   "fields": {
     "name": "Can change content type",
     "content_type": 29,
@@ -1422,6 +1774,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 85,
   "fields": {
     "name": "Can delete content type",
     "content_type": 29,
@@ -1430,6 +1783,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 86,
   "fields": {
     "name": "Can add session",
     "content_type": 30,
@@ -1438,6 +1792,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 87,
   "fields": {
     "name": "Can change session",
     "content_type": 30,
@@ -1446,6 +1801,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 88,
   "fields": {
     "name": "Can delete session",
     "content_type": 30,
@@ -1454,6 +1810,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 89,
   "fields": {
     "name": "Can add site",
     "content_type": 31,
@@ -1462,6 +1819,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 90,
   "fields": {
     "name": "Can change site",
     "content_type": 31,
@@ -1470,6 +1828,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 91,
   "fields": {
     "name": "Can delete site",
     "content_type": 31,
@@ -1478,30 +1837,34 @@
 },
 {
   "model": "auth.permission",
+  "pk": 92,
   "fields": {
-    "name": "Can add league player",
+    "name": "Can add league event",
     "content_type": 32,
-    "codename": "add_leagueplayer"
+    "codename": "add_leagueevent"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 93,
   "fields": {
-    "name": "Can change league player",
+    "name": "Can change league event",
     "content_type": 32,
-    "codename": "change_leagueplayer"
+    "codename": "change_leagueevent"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 94,
   "fields": {
-    "name": "Can delete league player",
+    "name": "Can delete league event",
     "content_type": 32,
-    "codename": "delete_leagueplayer"
+    "codename": "delete_leagueevent"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 95,
   "fields": {
     "name": "Can add division",
     "content_type": 33,
@@ -1510,6 +1873,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 96,
   "fields": {
     "name": "Can change division",
     "content_type": 33,
@@ -1518,6 +1882,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 97,
   "fields": {
     "name": "Can delete division",
     "content_type": 33,
@@ -1526,174 +1891,196 @@
 },
 {
   "model": "auth.permission",
-  "fields": {
-    "name": "Can add game",
-    "content_type": 34,
-    "codename": "add_game"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change game",
-    "content_type": 34,
-    "codename": "change_game"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete game",
-    "content_type": 34,
-    "codename": "delete_game"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can add sgf",
-    "content_type": 35,
-    "codename": "add_sgf"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change sgf",
-    "content_type": 35,
-    "codename": "change_sgf"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete sgf",
-    "content_type": 35,
-    "codename": "delete_sgf"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can add registry",
-    "content_type": 36,
-    "codename": "add_registry"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change registry",
-    "content_type": 36,
-    "codename": "change_registry"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete registry",
-    "content_type": 36,
-    "codename": "delete_registry"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can add league event",
-    "content_type": 37,
-    "codename": "add_leagueevent"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change league event",
-    "content_type": 37,
-    "codename": "change_leagueevent"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete league event",
-    "content_type": 37,
-    "codename": "delete_leagueevent"
-  }
-},
-{
-  "model": "auth.permission",
+  "pk": 98,
   "fields": {
     "name": "Can add user",
-    "content_type": 38,
+    "content_type": 34,
     "codename": "add_user"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 99,
   "fields": {
     "name": "Can change user",
-    "content_type": 38,
+    "content_type": 34,
     "codename": "change_user"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 100,
   "fields": {
     "name": "Can delete user",
-    "content_type": 38,
+    "content_type": 34,
     "codename": "delete_user"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 101,
+  "fields": {
+    "name": "Can add league player",
+    "content_type": 35,
+    "codename": "add_leagueplayer"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 102,
+  "fields": {
+    "name": "Can change league player",
+    "content_type": 35,
+    "codename": "change_leagueplayer"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 103,
+  "fields": {
+    "name": "Can delete league player",
+    "content_type": 35,
+    "codename": "delete_leagueplayer"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 104,
+  "fields": {
+    "name": "Can add sgf",
+    "content_type": 36,
+    "codename": "add_sgf"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 105,
+  "fields": {
+    "name": "Can change sgf",
+    "content_type": 36,
+    "codename": "change_sgf"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 106,
+  "fields": {
+    "name": "Can delete sgf",
+    "content_type": 36,
+    "codename": "delete_sgf"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 107,
+  "fields": {
+    "name": "Can add registry",
+    "content_type": 37,
+    "codename": "add_registry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 108,
+  "fields": {
+    "name": "Can change registry",
+    "content_type": 37,
+    "codename": "change_registry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 109,
+  "fields": {
+    "name": "Can delete registry",
+    "content_type": 37,
+    "codename": "delete_registry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 110,
+  "fields": {
+    "name": "Can add game",
+    "content_type": 38,
+    "codename": "add_game"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 111,
+  "fields": {
+    "name": "Can change game",
+    "content_type": 38,
+    "codename": "change_game"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 112,
+  "fields": {
+    "name": "Can delete game",
+    "content_type": 38,
+    "codename": "delete_game"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 113,
+  "fields": {
+    "name": "Can add flat menu item",
+    "content_type": 39,
+    "codename": "add_flatmenuitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 114,
+  "fields": {
+    "name": "Can change flat menu item",
+    "content_type": 39,
+    "codename": "change_flatmenuitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 115,
+  "fields": {
+    "name": "Can delete flat menu item",
+    "content_type": 39,
+    "codename": "delete_flatmenuitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 116,
   "fields": {
     "name": "Can add main menu item",
-    "content_type": 39,
+    "content_type": 40,
     "codename": "add_mainmenuitem"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 117,
   "fields": {
     "name": "Can change main menu item",
-    "content_type": 39,
+    "content_type": 40,
     "codename": "change_mainmenuitem"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 118,
   "fields": {
     "name": "Can delete main menu item",
-    "content_type": 39,
+    "content_type": 40,
     "codename": "delete_mainmenuitem"
   }
 },
 {
   "model": "auth.permission",
-  "fields": {
-    "name": "Can add flat menu",
-    "content_type": 40,
-    "codename": "add_flatmenu"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change flat menu",
-    "content_type": 40,
-    "codename": "change_flatmenu"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete flat menu",
-    "content_type": 40,
-    "codename": "delete_flatmenu"
-  }
-},
-{
-  "model": "auth.permission",
+  "pk": 119,
   "fields": {
     "name": "Can add main menu",
     "content_type": 41,
@@ -1702,6 +2089,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 120,
   "fields": {
     "name": "Can change main menu",
     "content_type": 41,
@@ -1710,6 +2098,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 121,
   "fields": {
     "name": "Can delete main menu",
     "content_type": 41,
@@ -1718,30 +2107,34 @@
 },
 {
   "model": "auth.permission",
+  "pk": 122,
   "fields": {
-    "name": "Can add flat menu item",
+    "name": "Can add flat menu",
     "content_type": 42,
-    "codename": "add_flatmenuitem"
+    "codename": "add_flatmenu"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 123,
   "fields": {
-    "name": "Can change flat menu item",
+    "name": "Can change flat menu",
     "content_type": 42,
-    "codename": "change_flatmenuitem"
+    "codename": "change_flatmenu"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 124,
   "fields": {
-    "name": "Can delete flat menu item",
+    "name": "Can delete flat menu",
     "content_type": 42,
-    "codename": "delete_flatmenuitem"
+    "codename": "delete_flatmenu"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 125,
   "fields": {
     "name": "Can add tag entry page",
     "content_type": 43,
@@ -1750,6 +2143,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 126,
   "fields": {
     "name": "Can change tag entry page",
     "content_type": 43,
@@ -1758,6 +2152,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 127,
   "fields": {
     "name": "Can delete tag entry page",
     "content_type": 43,
@@ -1766,6 +2161,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 128,
   "fields": {
     "name": "Can add entry page related",
     "content_type": 44,
@@ -1774,6 +2170,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 129,
   "fields": {
     "name": "Can change entry page related",
     "content_type": 44,
@@ -1782,6 +2179,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 130,
   "fields": {
     "name": "Can delete entry page related",
     "content_type": 44,
@@ -1790,150 +2188,169 @@
 },
 {
   "model": "auth.permission",
-  "fields": {
-    "name": "Can add Category",
-    "content_type": 45,
-    "codename": "add_category"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change Category",
-    "content_type": 45,
-    "codename": "change_category"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete Category",
-    "content_type": 45,
-    "codename": "delete_category"
-  }
-},
-{
-  "model": "auth.permission",
+  "pk": 131,
   "fields": {
     "name": "Can add category entry page",
-    "content_type": 46,
+    "content_type": 45,
     "codename": "add_categoryentrypage"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 132,
   "fields": {
     "name": "Can change category entry page",
-    "content_type": 46,
+    "content_type": 45,
     "codename": "change_categoryentrypage"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 133,
   "fields": {
     "name": "Can delete category entry page",
-    "content_type": 46,
+    "content_type": 45,
     "codename": "delete_categoryentrypage"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 134,
   "fields": {
-    "name": "Can add Blog",
-    "content_type": 47,
-    "codename": "add_blogpage"
+    "name": "Can add Category",
+    "content_type": 46,
+    "codename": "add_category"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 135,
   "fields": {
-    "name": "Can change Blog",
-    "content_type": 47,
-    "codename": "change_blogpage"
+    "name": "Can change Category",
+    "content_type": 46,
+    "codename": "change_category"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 136,
   "fields": {
-    "name": "Can delete Blog",
-    "content_type": 47,
-    "codename": "delete_blogpage"
+    "name": "Can delete Category",
+    "content_type": 46,
+    "codename": "delete_category"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 137,
   "fields": {
     "name": "Can add Entry",
-    "content_type": 48,
+    "content_type": 47,
     "codename": "add_entrypage"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 138,
   "fields": {
     "name": "Can change Entry",
-    "content_type": 48,
+    "content_type": 47,
     "codename": "change_entrypage"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 139,
   "fields": {
     "name": "Can delete Entry",
-    "content_type": 48,
+    "content_type": 47,
     "codename": "delete_entrypage"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 140,
   "fields": {
-    "name": "Can add email confirmation",
-    "content_type": 50,
-    "codename": "add_emailconfirmation"
+    "name": "Can add Blog",
+    "content_type": 48,
+    "codename": "add_blogpage"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 141,
   "fields": {
-    "name": "Can change email confirmation",
-    "content_type": 50,
-    "codename": "change_emailconfirmation"
+    "name": "Can change Blog",
+    "content_type": 48,
+    "codename": "change_blogpage"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 142,
   "fields": {
-    "name": "Can delete email confirmation",
-    "content_type": 50,
-    "codename": "delete_emailconfirmation"
+    "name": "Can delete Blog",
+    "content_type": 48,
+    "codename": "delete_blogpage"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 143,
   "fields": {
     "name": "Can add email address",
-    "content_type": 51,
+    "content_type": 50,
     "codename": "add_emailaddress"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 144,
   "fields": {
     "name": "Can change email address",
-    "content_type": 51,
+    "content_type": 50,
     "codename": "change_emailaddress"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 145,
   "fields": {
     "name": "Can delete email address",
-    "content_type": 51,
+    "content_type": 50,
     "codename": "delete_emailaddress"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 146,
+  "fields": {
+    "name": "Can add email confirmation",
+    "content_type": 51,
+    "codename": "add_emailconfirmation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 147,
+  "fields": {
+    "name": "Can change email confirmation",
+    "content_type": 51,
+    "codename": "change_emailconfirmation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 148,
+  "fields": {
+    "name": "Can delete email confirmation",
+    "content_type": 51,
+    "codename": "delete_emailconfirmation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 149,
   "fields": {
     "name": "Can add cron job log",
     "content_type": 52,
@@ -1942,6 +2359,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 150,
   "fields": {
     "name": "Can change cron job log",
     "content_type": 52,
@@ -1950,6 +2368,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 151,
   "fields": {
     "name": "Can delete cron job log",
     "content_type": 52,
@@ -1958,6 +2377,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 152,
   "fields": {
     "name": "Can add Forum",
     "content_type": 53,
@@ -1966,6 +2386,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 153,
   "fields": {
     "name": "Can change Forum",
     "content_type": 53,
@@ -1974,6 +2395,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 154,
   "fields": {
     "name": "Can delete Forum",
     "content_type": 53,
@@ -1982,6 +2404,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 155,
   "fields": {
     "name": "Can add Post",
     "content_type": 54,
@@ -1990,6 +2413,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 156,
   "fields": {
     "name": "Can change Post",
     "content_type": 54,
@@ -1998,6 +2422,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 157,
   "fields": {
     "name": "Can delete Post",
     "content_type": 54,
@@ -2006,6 +2431,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 158,
   "fields": {
     "name": "Can add Topic",
     "content_type": 55,
@@ -2014,6 +2440,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 159,
   "fields": {
     "name": "Can change Topic",
     "content_type": 55,
@@ -2022,6 +2449,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 160,
   "fields": {
     "name": "Can delete Topic",
     "content_type": 55,
@@ -2030,6 +2458,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 161,
   "fields": {
     "name": "Can add Attachment",
     "content_type": 56,
@@ -2038,6 +2467,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 162,
   "fields": {
     "name": "Can change Attachment",
     "content_type": 56,
@@ -2046,6 +2476,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 163,
   "fields": {
     "name": "Can delete Attachment",
     "content_type": 56,
@@ -2054,78 +2485,88 @@
 },
 {
   "model": "auth.permission",
-  "fields": {
-    "name": "Can add Topic poll vote",
-    "content_type": 57,
-    "codename": "add_topicpollvote"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change Topic poll vote",
-    "content_type": 57,
-    "codename": "change_topicpollvote"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete Topic poll vote",
-    "content_type": 57,
-    "codename": "delete_topicpollvote"
-  }
-},
-{
-  "model": "auth.permission",
+  "pk": 164,
   "fields": {
     "name": "Can add Topic poll",
-    "content_type": 58,
+    "content_type": 57,
     "codename": "add_topicpoll"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 165,
   "fields": {
     "name": "Can change Topic poll",
-    "content_type": 58,
+    "content_type": 57,
     "codename": "change_topicpoll"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 166,
   "fields": {
     "name": "Can delete Topic poll",
-    "content_type": 58,
+    "content_type": 57,
     "codename": "delete_topicpoll"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 167,
   "fields": {
     "name": "Can add Topic poll option",
-    "content_type": 59,
+    "content_type": 58,
     "codename": "add_topicpolloption"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 168,
   "fields": {
     "name": "Can change Topic poll option",
-    "content_type": 59,
+    "content_type": 58,
     "codename": "change_topicpolloption"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 169,
   "fields": {
     "name": "Can delete Topic poll option",
-    "content_type": 59,
+    "content_type": 58,
     "codename": "delete_topicpolloption"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 170,
+  "fields": {
+    "name": "Can add Topic poll vote",
+    "content_type": 59,
+    "codename": "add_topicpollvote"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 171,
+  "fields": {
+    "name": "Can change Topic poll vote",
+    "content_type": 59,
+    "codename": "change_topicpollvote"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 172,
+  "fields": {
+    "name": "Can delete Topic poll vote",
+    "content_type": 59,
+    "codename": "delete_topicpollvote"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 173,
   "fields": {
     "name": "Can add Topic track",
     "content_type": 60,
@@ -2134,6 +2575,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 174,
   "fields": {
     "name": "Can change Topic track",
     "content_type": 60,
@@ -2142,6 +2584,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 175,
   "fields": {
     "name": "Can delete Topic track",
     "content_type": 60,
@@ -2150,6 +2593,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 176,
   "fields": {
     "name": "Can add Forum track",
     "content_type": 61,
@@ -2158,6 +2602,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 177,
   "fields": {
     "name": "Can change Forum track",
     "content_type": 61,
@@ -2166,6 +2611,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 178,
   "fields": {
     "name": "Can delete Forum track",
     "content_type": 61,
@@ -2174,6 +2620,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 179,
   "fields": {
     "name": "Can add Forum profile",
     "content_type": 62,
@@ -2182,6 +2629,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 180,
   "fields": {
     "name": "Can change Forum profile",
     "content_type": 62,
@@ -2190,6 +2638,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 181,
   "fields": {
     "name": "Can delete Forum profile",
     "content_type": 62,
@@ -2198,54 +2647,61 @@
 },
 {
   "model": "auth.permission",
-  "fields": {
-    "name": "Can add User forum permission",
-    "content_type": 63,
-    "codename": "add_userforumpermission"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change User forum permission",
-    "content_type": 63,
-    "codename": "change_userforumpermission"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete User forum permission",
-    "content_type": 63,
-    "codename": "delete_userforumpermission"
-  }
-},
-{
-  "model": "auth.permission",
+  "pk": 182,
   "fields": {
     "name": "Can add Forum permission",
-    "content_type": 64,
+    "content_type": 63,
     "codename": "add_forumpermission"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 183,
   "fields": {
     "name": "Can change Forum permission",
-    "content_type": 64,
+    "content_type": 63,
     "codename": "change_forumpermission"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 184,
   "fields": {
     "name": "Can delete Forum permission",
-    "content_type": 64,
+    "content_type": 63,
     "codename": "delete_forumpermission"
   }
 },
 {
   "model": "auth.permission",
+  "pk": 185,
+  "fields": {
+    "name": "Can add User forum permission",
+    "content_type": 64,
+    "codename": "add_userforumpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 186,
+  "fields": {
+    "name": "Can change User forum permission",
+    "content_type": 64,
+    "codename": "change_userforumpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 187,
+  "fields": {
+    "name": "Can delete User forum permission",
+    "content_type": 64,
+    "codename": "delete_userforumpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 188,
   "fields": {
     "name": "Can add Group forum permission",
     "content_type": 65,
@@ -2254,6 +2710,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 189,
   "fields": {
     "name": "Can change Group forum permission",
     "content_type": 65,
@@ -2262,6 +2719,7 @@
 },
 {
   "model": "auth.permission",
+  "pk": 190,
   "fields": {
     "name": "Can delete Group forum permission",
     "content_type": 65,
@@ -2269,7 +2727,1061 @@
   }
 },
 {
+  "model": "auth.permission",
+  "pk": 191,
+  "fields": {
+    "name": "Can add home page",
+    "content_type": 5,
+    "codename": "add_homepage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 192,
+  "fields": {
+    "name": "Can change home page",
+    "content_type": 5,
+    "codename": "change_homepage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 193,
+  "fields": {
+    "name": "Can delete home page",
+    "content_type": 5,
+    "codename": "delete_homepage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 194,
+  "fields": {
+    "name": "Can add left sidebar page",
+    "content_type": 6,
+    "codename": "add_leftsidebarpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 195,
+  "fields": {
+    "name": "Can change left sidebar page",
+    "content_type": 6,
+    "codename": "change_leftsidebarpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 196,
+  "fields": {
+    "name": "Can delete left sidebar page",
+    "content_type": 6,
+    "codename": "delete_leftsidebarpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 197,
+  "fields": {
+    "name": "Can add full width page",
+    "content_type": 7,
+    "codename": "add_fullwidthpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 198,
+  "fields": {
+    "name": "Can change full width page",
+    "content_type": 7,
+    "codename": "change_fullwidthpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 199,
+  "fields": {
+    "name": "Can delete full width page",
+    "content_type": 7,
+    "codename": "delete_fullwidthpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 200,
+  "fields": {
+    "name": "Can add right sidebar page",
+    "content_type": 8,
+    "codename": "add_rightsidebarpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 201,
+  "fields": {
+    "name": "Can change right sidebar page",
+    "content_type": 8,
+    "codename": "change_rightsidebarpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 202,
+  "fields": {
+    "name": "Can delete right sidebar page",
+    "content_type": 8,
+    "codename": "delete_rightsidebarpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 203,
+  "fields": {
+    "name": "Can add stream field entry page",
+    "content_type": 9,
+    "codename": "add_streamfieldentrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 204,
+  "fields": {
+    "name": "Can change stream field entry page",
+    "content_type": 9,
+    "codename": "change_streamfieldentrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 205,
+  "fields": {
+    "name": "Can delete stream field entry page",
+    "content_type": 9,
+    "codename": "delete_streamfieldentrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 206,
+  "fields": {
+    "name": "Can add filter",
+    "content_type": 14,
+    "codename": "add_filter"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 207,
+  "fields": {
+    "name": "Can change filter",
+    "content_type": 14,
+    "codename": "change_filter"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 208,
+  "fields": {
+    "name": "Can delete filter",
+    "content_type": 14,
+    "codename": "delete_filter"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 209,
+  "fields": {
+    "name": "Can add rendition",
+    "content_type": 15,
+    "codename": "add_rendition"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 210,
+  "fields": {
+    "name": "Can change rendition",
+    "content_type": 15,
+    "codename": "change_rendition"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 211,
+  "fields": {
+    "name": "Can delete rendition",
+    "content_type": 15,
+    "codename": "delete_rendition"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 212,
+  "fields": {
+    "name": "Can add Query Daily Hits",
+    "content_type": 16,
+    "codename": "add_querydailyhits"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 213,
+  "fields": {
+    "name": "Can change Query Daily Hits",
+    "content_type": 16,
+    "codename": "change_querydailyhits"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 214,
+  "fields": {
+    "name": "Can delete Query Daily Hits",
+    "content_type": 16,
+    "codename": "delete_querydailyhits"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 215,
+  "fields": {
+    "name": "Can add query",
+    "content_type": 17,
+    "codename": "add_query"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 216,
+  "fields": {
+    "name": "Can change query",
+    "content_type": 17,
+    "codename": "change_query"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 217,
+  "fields": {
+    "name": "Can delete query",
+    "content_type": 17,
+    "codename": "delete_query"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 218,
+  "fields": {
+    "name": "Can add page view restriction",
+    "content_type": 18,
+    "codename": "add_pageviewrestriction"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 219,
+  "fields": {
+    "name": "Can change page view restriction",
+    "content_type": 18,
+    "codename": "change_pageviewrestriction"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 220,
+  "fields": {
+    "name": "Can delete page view restriction",
+    "content_type": 18,
+    "codename": "delete_pageviewrestriction"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 221,
+  "fields": {
+    "name": "Can add group page permission",
+    "content_type": 19,
+    "codename": "add_grouppagepermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 222,
+  "fields": {
+    "name": "Can change group page permission",
+    "content_type": 19,
+    "codename": "change_grouppagepermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 223,
+  "fields": {
+    "name": "Can delete group page permission",
+    "content_type": 19,
+    "codename": "delete_grouppagepermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 224,
+  "fields": {
+    "name": "Can add site",
+    "content_type": 20,
+    "codename": "add_site"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 225,
+  "fields": {
+    "name": "Can change site",
+    "content_type": 20,
+    "codename": "change_site"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 226,
+  "fields": {
+    "name": "Can delete site",
+    "content_type": 20,
+    "codename": "delete_site"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 227,
+  "fields": {
+    "name": "Can add page revision",
+    "content_type": 21,
+    "codename": "add_pagerevision"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 228,
+  "fields": {
+    "name": "Can change page revision",
+    "content_type": 21,
+    "codename": "change_pagerevision"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 229,
+  "fields": {
+    "name": "Can delete page revision",
+    "content_type": 21,
+    "codename": "delete_pagerevision"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 230,
+  "fields": {
+    "name": "Can add group collection permission",
+    "content_type": 22,
+    "codename": "add_groupcollectionpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 231,
+  "fields": {
+    "name": "Can change group collection permission",
+    "content_type": 22,
+    "codename": "change_groupcollectionpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 232,
+  "fields": {
+    "name": "Can delete group collection permission",
+    "content_type": 22,
+    "codename": "delete_groupcollectionpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 233,
+  "fields": {
+    "name": "Can add collection",
+    "content_type": 23,
+    "codename": "add_collection"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 234,
+  "fields": {
+    "name": "Can change collection",
+    "content_type": 23,
+    "codename": "change_collection"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 235,
+  "fields": {
+    "name": "Can delete collection",
+    "content_type": 23,
+    "codename": "delete_collection"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 236,
+  "fields": {
+    "name": "Can add Tag",
+    "content_type": 24,
+    "codename": "add_tag"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 237,
+  "fields": {
+    "name": "Can change Tag",
+    "content_type": 24,
+    "codename": "change_tag"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 238,
+  "fields": {
+    "name": "Can delete Tag",
+    "content_type": 24,
+    "codename": "delete_tag"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 239,
+  "fields": {
+    "name": "Can add Tagged Item",
+    "content_type": 25,
+    "codename": "add_taggeditem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 240,
+  "fields": {
+    "name": "Can change Tagged Item",
+    "content_type": 25,
+    "codename": "change_taggeditem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 241,
+  "fields": {
+    "name": "Can delete Tagged Item",
+    "content_type": 25,
+    "codename": "delete_taggeditem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 242,
+  "fields": {
+    "name": "Can add group",
+    "content_type": 27,
+    "codename": "add_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 243,
+  "fields": {
+    "name": "Can change group",
+    "content_type": 27,
+    "codename": "change_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 244,
+  "fields": {
+    "name": "Can delete group",
+    "content_type": 27,
+    "codename": "delete_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 245,
+  "fields": {
+    "name": "Can add permission",
+    "content_type": 28,
+    "codename": "add_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 246,
+  "fields": {
+    "name": "Can change permission",
+    "content_type": 28,
+    "codename": "change_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 247,
+  "fields": {
+    "name": "Can delete permission",
+    "content_type": 28,
+    "codename": "delete_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 248,
+  "fields": {
+    "name": "Can add league player",
+    "content_type": 32,
+    "codename": "add_leagueplayer"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 249,
+  "fields": {
+    "name": "Can change league player",
+    "content_type": 32,
+    "codename": "change_leagueplayer"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 250,
+  "fields": {
+    "name": "Can delete league player",
+    "content_type": 32,
+    "codename": "delete_leagueplayer"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 251,
+  "fields": {
+    "name": "Can add game",
+    "content_type": 34,
+    "codename": "add_game"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 252,
+  "fields": {
+    "name": "Can change game",
+    "content_type": 34,
+    "codename": "change_game"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 253,
+  "fields": {
+    "name": "Can delete game",
+    "content_type": 34,
+    "codename": "delete_game"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 254,
+  "fields": {
+    "name": "Can add sgf",
+    "content_type": 35,
+    "codename": "add_sgf"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 255,
+  "fields": {
+    "name": "Can change sgf",
+    "content_type": 35,
+    "codename": "change_sgf"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 256,
+  "fields": {
+    "name": "Can delete sgf",
+    "content_type": 35,
+    "codename": "delete_sgf"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 257,
+  "fields": {
+    "name": "Can add registry",
+    "content_type": 36,
+    "codename": "add_registry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 258,
+  "fields": {
+    "name": "Can change registry",
+    "content_type": 36,
+    "codename": "change_registry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 259,
+  "fields": {
+    "name": "Can delete registry",
+    "content_type": 36,
+    "codename": "delete_registry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 260,
+  "fields": {
+    "name": "Can add league event",
+    "content_type": 37,
+    "codename": "add_leagueevent"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 261,
+  "fields": {
+    "name": "Can change league event",
+    "content_type": 37,
+    "codename": "change_leagueevent"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 262,
+  "fields": {
+    "name": "Can delete league event",
+    "content_type": 37,
+    "codename": "delete_leagueevent"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 263,
+  "fields": {
+    "name": "Can add user",
+    "content_type": 38,
+    "codename": "add_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 264,
+  "fields": {
+    "name": "Can change user",
+    "content_type": 38,
+    "codename": "change_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 265,
+  "fields": {
+    "name": "Can delete user",
+    "content_type": 38,
+    "codename": "delete_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 266,
+  "fields": {
+    "name": "Can add main menu item",
+    "content_type": 39,
+    "codename": "add_mainmenuitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 267,
+  "fields": {
+    "name": "Can change main menu item",
+    "content_type": 39,
+    "codename": "change_mainmenuitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 268,
+  "fields": {
+    "name": "Can delete main menu item",
+    "content_type": 39,
+    "codename": "delete_mainmenuitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 269,
+  "fields": {
+    "name": "Can add flat menu",
+    "content_type": 40,
+    "codename": "add_flatmenu"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 270,
+  "fields": {
+    "name": "Can change flat menu",
+    "content_type": 40,
+    "codename": "change_flatmenu"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 271,
+  "fields": {
+    "name": "Can delete flat menu",
+    "content_type": 40,
+    "codename": "delete_flatmenu"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 272,
+  "fields": {
+    "name": "Can add flat menu item",
+    "content_type": 42,
+    "codename": "add_flatmenuitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 273,
+  "fields": {
+    "name": "Can change flat menu item",
+    "content_type": 42,
+    "codename": "change_flatmenuitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 274,
+  "fields": {
+    "name": "Can delete flat menu item",
+    "content_type": 42,
+    "codename": "delete_flatmenuitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 275,
+  "fields": {
+    "name": "Can add Category",
+    "content_type": 45,
+    "codename": "add_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 276,
+  "fields": {
+    "name": "Can change Category",
+    "content_type": 45,
+    "codename": "change_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 277,
+  "fields": {
+    "name": "Can delete Category",
+    "content_type": 45,
+    "codename": "delete_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 278,
+  "fields": {
+    "name": "Can add category entry page",
+    "content_type": 46,
+    "codename": "add_categoryentrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 279,
+  "fields": {
+    "name": "Can change category entry page",
+    "content_type": 46,
+    "codename": "change_categoryentrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 280,
+  "fields": {
+    "name": "Can delete category entry page",
+    "content_type": 46,
+    "codename": "delete_categoryentrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 281,
+  "fields": {
+    "name": "Can add Blog",
+    "content_type": 47,
+    "codename": "add_blogpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 282,
+  "fields": {
+    "name": "Can change Blog",
+    "content_type": 47,
+    "codename": "change_blogpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 283,
+  "fields": {
+    "name": "Can delete Blog",
+    "content_type": 47,
+    "codename": "delete_blogpage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 284,
+  "fields": {
+    "name": "Can add Entry",
+    "content_type": 48,
+    "codename": "add_entrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 285,
+  "fields": {
+    "name": "Can change Entry",
+    "content_type": 48,
+    "codename": "change_entrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 286,
+  "fields": {
+    "name": "Can delete Entry",
+    "content_type": 48,
+    "codename": "delete_entrypage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 287,
+  "fields": {
+    "name": "Can add email confirmation",
+    "content_type": 50,
+    "codename": "add_emailconfirmation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 288,
+  "fields": {
+    "name": "Can change email confirmation",
+    "content_type": 50,
+    "codename": "change_emailconfirmation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 289,
+  "fields": {
+    "name": "Can delete email confirmation",
+    "content_type": 50,
+    "codename": "delete_emailconfirmation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 290,
+  "fields": {
+    "name": "Can add email address",
+    "content_type": 51,
+    "codename": "add_emailaddress"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 291,
+  "fields": {
+    "name": "Can change email address",
+    "content_type": 51,
+    "codename": "change_emailaddress"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 292,
+  "fields": {
+    "name": "Can delete email address",
+    "content_type": 51,
+    "codename": "delete_emailaddress"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 293,
+  "fields": {
+    "name": "Can add Topic poll vote",
+    "content_type": 57,
+    "codename": "add_topicpollvote"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 294,
+  "fields": {
+    "name": "Can change Topic poll vote",
+    "content_type": 57,
+    "codename": "change_topicpollvote"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 295,
+  "fields": {
+    "name": "Can delete Topic poll vote",
+    "content_type": 57,
+    "codename": "delete_topicpollvote"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 296,
+  "fields": {
+    "name": "Can add Topic poll",
+    "content_type": 58,
+    "codename": "add_topicpoll"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 297,
+  "fields": {
+    "name": "Can change Topic poll",
+    "content_type": 58,
+    "codename": "change_topicpoll"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 298,
+  "fields": {
+    "name": "Can delete Topic poll",
+    "content_type": 58,
+    "codename": "delete_topicpoll"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 299,
+  "fields": {
+    "name": "Can add Topic poll option",
+    "content_type": 59,
+    "codename": "add_topicpolloption"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 300,
+  "fields": {
+    "name": "Can change Topic poll option",
+    "content_type": 59,
+    "codename": "change_topicpolloption"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 301,
+  "fields": {
+    "name": "Can delete Topic poll option",
+    "content_type": 59,
+    "codename": "delete_topicpolloption"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 302,
+  "fields": {
+    "name": "Can add User forum permission",
+    "content_type": 63,
+    "codename": "add_userforumpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 303,
+  "fields": {
+    "name": "Can change User forum permission",
+    "content_type": 63,
+    "codename": "change_userforumpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 304,
+  "fields": {
+    "name": "Can delete User forum permission",
+    "content_type": 63,
+    "codename": "delete_userforumpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 305,
+  "fields": {
+    "name": "Can add Forum permission",
+    "content_type": 64,
+    "codename": "add_forumpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 306,
+  "fields": {
+    "name": "Can change Forum permission",
+    "content_type": 64,
+    "codename": "change_forumpermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 307,
+  "fields": {
+    "name": "Can delete Forum permission",
+    "content_type": 64,
+    "codename": "delete_forumpermission"
+  }
+},
+{
   "model": "auth.group",
+  "pk": 1,
   "fields": {
     "name": "Moderators",
     "permissions": [
@@ -2285,6 +3797,7 @@
 },
 {
   "model": "auth.group",
+  "pk": 2,
   "fields": {
     "name": "Editors",
     "permissions": [
@@ -2300,6 +3813,7 @@
 },
 {
   "model": "auth.group",
+  "pk": 3,
   "fields": {
     "name": "new_user",
     "permissions": []
@@ -2307,6 +3821,7 @@
 },
 {
   "model": "auth.group",
+  "pk": 4,
   "fields": {
     "name": "league_member",
     "permissions": []
@@ -2314,6 +3829,7 @@
 },
 {
   "model": "auth.group",
+  "pk": 5,
   "fields": {
     "name": "league_admin",
     "permissions": []
@@ -2321,9 +3837,10 @@
 },
 {
   "model": "league.user",
+  "pk": 1,
   "fields": {
     "password": "pbkdf2_sha256$30000$DSMtSXVGzPWu$ULLWd+akqteRsYb03CsReE1AptyefN/7xgdXEocKKAs=",
-    "last_login": "2017-02-20T19:45:49Z",
+    "last_login": "2017-03-07T17:33:22.596Z",
     "is_superuser": true,
     "username": "admin",
     "first_name": "",
@@ -2341,6 +3858,7 @@
 },
 {
   "model": "league.user",
+  "pk": 2,
   "fields": {
     "password": "foo",
     "last_login": null,
@@ -2361,6 +3879,7 @@
 },
 {
   "model": "league.user",
+  "pk": 3,
   "fields": {
     "password": "foo",
     "last_login": null,
@@ -2381,6 +3900,7 @@
 },
 {
   "model": "league.user",
+  "pk": 4,
   "fields": {
     "password": "foo",
     "last_login": null,
@@ -2401,6 +3921,7 @@
 },
 {
   "model": "league.user",
+  "pk": 5,
   "fields": {
     "password": "foo",
     "last_login": null,
@@ -2421,6 +3942,7 @@
 },
 {
   "model": "league.user",
+  "pk": 6,
   "fields": {
     "password": "foo",
     "last_login": null,
@@ -2441,6 +3963,7 @@
 },
 {
   "model": "league.user",
+  "pk": 7,
   "fields": {
     "password": "foo",
     "last_login": null,
@@ -2461,6 +3984,7 @@
 },
 {
   "model": "league.user",
+  "pk": 8,
   "fields": {
     "password": "foo",
     "last_login": null,
@@ -2481,6 +4005,7 @@
 },
 {
   "model": "league.user",
+  "pk": 9,
   "fields": {
     "password": "foo",
     "last_login": null,
@@ -2500,6 +4025,48 @@
   }
 },
 {
+  "model": "league.user",
+  "pk": 10,
+  "fields": {
+    "password": "TrueMB",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "TrueMB",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2017-03-07T17:46:25Z",
+    "kgs_username": "TrueMB",
+    "groups": [
+      4
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "league.user",
+  "pk": 11,
+  "fields": {
+    "password": "EdwinSelan",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "EdwinSelan",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2017-03-07T17:47:54Z",
+    "kgs_username": "EdwinSelan",
+    "groups": [
+      4
+    ],
+    "user_permissions": []
+  }
+},
+{
   "model": "league.leagueplayer",
   "pk": 1,
   "fields": {
@@ -2507,10 +4074,10 @@
     "kgs_username": "Rincewind",
     "event": 1,
     "division": 1,
-    "nb_win": 0,
+    "nb_win": 1,
     "nb_loss": 0,
-    "score": "0.0",
-    "results": "{}",
+    "score": "1.5",
+    "results": "{'historment': [{'r': 1, 'id': 3}]}",
     "p_status": 0
   }
 },
@@ -2523,9 +4090,9 @@
     "event": 1,
     "division": 1,
     "nb_win": 0,
-    "nb_loss": 0,
-    "score": "0.0",
-    "results": "{}",
+    "nb_loss": 1,
+    "score": "0.5",
+    "results": "{'historment': [{'r': 0, 'id': 1}]}",
     "p_status": 0
   }
 },
@@ -2537,10 +4104,10 @@
     "kgs_username": "nas",
     "event": 1,
     "division": 1,
-    "nb_win": 0,
+    "nb_win": 1,
     "nb_loss": 0,
-    "score": "0.0",
-    "results": "{}",
+    "score": "1.5",
+    "results": "{'historment': [{'r': 1, 'id': 2}]}",
     "p_status": 1
   }
 },
@@ -2582,10 +4149,10 @@
     "kgs_username": "historment",
     "event": 1,
     "division": 1,
-    "nb_win": 0,
-    "nb_loss": 0,
-    "score": "0.0",
-    "results": "{}",
+    "nb_win": 1,
+    "nb_loss": 2,
+    "score": "2.5",
+    "results": "{'climu': [{'r': 1, 'id': 1}], 'Rincewind': [{'r': 0, 'id': 3}], 'nas': [{'r': 0, 'id': 2}]}",
     "p_status": 1
   }
 },
@@ -2602,6 +4169,36 @@
     "score": "0.0",
     "results": "{}",
     "p_status": 1
+  }
+},
+{
+  "model": "league.leagueplayer",
+  "pk": 8,
+  "fields": {
+    "user": 10,
+    "kgs_username": "TrueMB",
+    "event": 1,
+    "division": 2,
+    "nb_win": 1,
+    "nb_loss": 0,
+    "score": "1.5",
+    "results": "{'EdwinSelan': [{'r': 1, 'id': 4}]}",
+    "p_status": 0
+  }
+},
+{
+  "model": "league.leagueplayer",
+  "pk": 9,
+  "fields": {
+    "user": 11,
+    "kgs_username": "EdwinSelan",
+    "event": 1,
+    "division": 2,
+    "nb_win": 0,
+    "nb_loss": 1,
+    "score": "0.5",
+    "results": "{'TrueMB': [{'r': 0, 'id': 4}]}",
+    "p_status": 0
   }
 },
 {
@@ -2628,7 +4225,7 @@
   "model": "puput.entrypage",
   "pk": 5,
   "fields": {
-    "body": "<p>You manage to have a osr website run locally !<br/></p>",
+    "body": "<p>You manage to have a osr website run locally !</p><p>We have better datas now.<br/></p><p>Forum is at <a href=\"/forum\">/forum ;)</a> Check-out <a href=\"/league/rollover/\">/league/rollover/</a><br/></p>",
     "date": "2017-02-20T19:48:00Z",
     "header_image": null,
     "excerpt": "",
@@ -2883,6 +4480,162 @@
   }
 },
 {
+  "model": "admin.logentry",
+  "pk": 20,
+  "fields": {
+    "action_time": "2017-03-07T17:33:53.927Z",
+    "user": 1,
+    "content_type": 1,
+    "object_id": "3",
+    "object_repr": "osr",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"content_type\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 21,
+  "fields": {
+    "action_time": "2017-03-07T17:34:09.011Z",
+    "user": 1,
+    "content_type": 1,
+    "object_id": "4",
+    "object_repr": "blog",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"content_type\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 22,
+  "fields": {
+    "action_time": "2017-03-07T17:34:27.985Z",
+    "user": 1,
+    "content_type": 1,
+    "object_id": "5",
+    "object_repr": "1st blog page",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"content_type\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 23,
+  "fields": {
+    "action_time": "2017-03-07T17:34:37.736Z",
+    "user": 1,
+    "content_type": 1,
+    "object_id": "6",
+    "object_repr": "League",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"content_type\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 24,
+  "fields": {
+    "action_time": "2017-03-07T17:35:09.951Z",
+    "user": 1,
+    "content_type": 1,
+    "object_id": "2",
+    "object_repr": "Welcome to your new Wagtail site!",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 25,
+  "fields": {
+    "action_time": "2017-03-07T17:45:43.804Z",
+    "user": 1,
+    "content_type": 33,
+    "object_id": "2",
+    "object_repr": "B group",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 26,
+  "fields": {
+    "action_time": "2017-03-07T17:46:53.369Z",
+    "user": 1,
+    "content_type": 34,
+    "object_id": "10",
+    "object_repr": "TrueMB",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 27,
+  "fields": {
+    "action_time": "2017-03-07T17:47:12.263Z",
+    "user": 1,
+    "content_type": 34,
+    "object_id": "10",
+    "object_repr": "TrueMB",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 28,
+  "fields": {
+    "action_time": "2017-03-07T17:48:07.601Z",
+    "user": 1,
+    "content_type": 34,
+    "object_id": "11",
+    "object_repr": "EdwinSelan",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 29,
+  "fields": {
+    "action_time": "2017-03-07T17:51:01.541Z",
+    "user": 1,
+    "content_type": 32,
+    "object_id": "2",
+    "object_repr": "2nd test league",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 30,
+  "fields": {
+    "action_time": "2017-03-07T18:07:09.616Z",
+    "user": 1,
+    "content_type": 33,
+    "object_id": "3",
+    "object_repr": "ponuki",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 31,
+  "fields": {
+    "action_time": "2017-03-07T18:08:55.777Z",
+    "user": 1,
+    "content_type": 33,
+    "object_id": "4",
+    "object_repr": "empty triangle",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
   "model": "wagtailcore.groupcollectionpermission",
   "pk": 1,
   "fields": {
@@ -3081,12 +4834,36 @@
   }
 },
 {
+  "model": "wagtailcore.pagerevision",
+  "pk": 7,
+  "fields": {
+    "page": 5,
+    "submitted_for_moderation": false,
+    "created_at": "2017-03-07T17:36:15.587Z",
+    "user": 1,
+    "content_json": "{\"go_live_at\": null, \"num_comments\": 0, \"show_in_menus\": false, \"date\": \"2017-02-20T19:48:00Z\", \"live\": true, \"streamfield\": \"[]\", \"search_description\": \"\", \"body\": \"<p>You manage to have a osr website run locally !</p><p>Forum is at <a href=\\\"/forum\\\">/forum ;)</a><br/></p>\", \"locked\": false, \"excerpt\": \"\", \"first_published_at\": \"2017-02-20T19:48:56.338Z\", \"related_entrypage_to\": [], \"header_image\": null, \"expire_at\": null, \"path\": \"0001000200010001\", \"latest_revision_created_at\": \"2017-02-20T19:48:56.322Z\", \"owner\": 1, \"seo_title\": \"\", \"numchild\": 0, \"entry_categories\": [], \"url_path\": \"/osr/blog/1st-blog-page/\", \"slug\": \"1st-blog-page\", \"title\": \"1st blog page\", \"related_entrypage_from\": [], \"entry_tags\": [], \"depth\": 4, \"content_type\": 7, \"pk\": 5, \"expired\": false, \"has_unpublished_changes\": false}",
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.pagerevision",
+  "pk": 8,
+  "fields": {
+    "page": 5,
+    "submitted_for_moderation": false,
+    "created_at": "2017-03-07T18:08:27.470Z",
+    "user": 1,
+    "content_json": "{\"go_live_at\": null, \"num_comments\": 0, \"show_in_menus\": false, \"date\": \"2017-02-20T19:48:00Z\", \"live\": true, \"streamfield\": \"[]\", \"search_description\": \"\", \"body\": \"<p>You manage to have a osr website run locally !</p><p>We have better datas now.<br/></p><p>Forum is at <a href=\\\"/forum\\\">/forum ;)</a> Check-out <a href=\\\"/league/rollover/\\\">/league/rollover/</a><br/></p>\", \"locked\": false, \"excerpt\": \"\", \"first_published_at\": \"2017-02-20T19:48:56.338Z\", \"related_entrypage_to\": [], \"header_image\": null, \"expire_at\": null, \"path\": \"0001000200010001\", \"latest_revision_created_at\": \"2017-03-07T17:36:15.587Z\", \"owner\": 1, \"seo_title\": \"\", \"numchild\": 0, \"entry_categories\": [], \"url_path\": \"/osr/blog/1st-blog-page/\", \"slug\": \"1st-blog-page\", \"title\": \"1st blog page\", \"related_entrypage_from\": [], \"entry_tags\": [], \"depth\": 4, \"content_type\": 7, \"pk\": 5, \"expired\": false, \"has_unpublished_changes\": false}",
+    "approved_go_live_at": null
+  }
+},
+{
   "model": "wagtailcore.page",
   "pk": 1,
   "fields": {
     "path": "0001",
     "depth": 1,
-    "numchild": 1,
+    "numchild": 0,
     "title": "Root",
     "slug": "root",
     "content_type": 1,
@@ -3114,7 +4891,7 @@
     "numchild": 2,
     "title": "osr",
     "slug": "osr",
-    "content_type": 5,
+    "content_type": 6,
     "live": true,
     "has_unpublished_changes": false,
     "url_path": "/osr/",
@@ -3139,7 +4916,7 @@
     "numchild": 1,
     "title": "blog",
     "slug": "blog",
-    "content_type": 47,
+    "content_type": 48,
     "live": true,
     "has_unpublished_changes": false,
     "url_path": "/osr/blog/",
@@ -3164,7 +4941,7 @@
     "numchild": 0,
     "title": "1st blog page",
     "slug": "1st-blog-page",
-    "content_type": 9,
+    "content_type": 7,
     "live": true,
     "has_unpublished_changes": false,
     "url_path": "/osr/blog/1st-blog-page/",
@@ -3177,7 +4954,7 @@
     "expired": false,
     "locked": false,
     "first_published_at": "2017-02-20T19:48:56.338Z",
-    "latest_revision_created_at": "2017-02-20T19:48:56.322Z"
+    "latest_revision_created_at": "2017-03-07T18:08:27.470Z"
   }
 },
 {
@@ -3189,7 +4966,7 @@
     "numchild": 0,
     "title": "League",
     "slug": "league",
-    "content_type": 7,
+    "content_type": 8,
     "live": true,
     "has_unpublished_changes": false,
     "url_path": "/osr/league/",
