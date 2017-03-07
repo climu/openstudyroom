@@ -386,13 +386,13 @@ class Game(models.Model):
 			game.event = event
 			game.sgf = sgf
 			game.save() #we need to save it to be able to add a OnetoOnefield
-			whites = LeaguePlayer.objects.filter(kgs_username = sgf.wplayer).filter(event=event)
+			whites = LeaguePlayer.objects.filter(kgs_username__iexact = sgf.wplayer).filter(event=event)
 			if len(whites) == 1:
 				 game.white = whites.first()
 			else :
 				game.delete()
 				return False
-			blacks = LeaguePlayer.objects.filter(kgs_username = sgf.bplayer).filter(event=event)
+			blacks = LeaguePlayer.objects.filter(kgs_username__iexact = sgf.bplayer).filter(event=event)
 			if len(blacks) == 1:
 				 game.black = blacks.first()
 			else :
