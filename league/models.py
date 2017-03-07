@@ -130,7 +130,7 @@ class Sgf(models.Model):
 	#					2 require checking with priority,sgf added/changed by admin
 
 	def __str__(self):
-		return self.urlto
+		return self.wplayer + ' vs ' + self.bplayer
 
 
 	def parse(self):
@@ -369,6 +369,8 @@ class Game(models.Model):
 	white = models.ForeignKey('LeaguePlayer',related_name='white',blank=True,null=True)
 	winner = models.ForeignKey('LeaguePlayer',related_name='winner',blank=True,null=True)
 
+	def __str__(self):
+		return self.black.kgs_username + ' vs ' + self.white.kgs_username
 
 	@staticmethod
 	def create_game(sgf):
