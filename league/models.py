@@ -125,6 +125,7 @@ class Sgf(models.Model):
 	message = models.CharField(max_length=100,default='nothing',blank=True)
 	number_moves = models.SmallIntegerField(default=100)
 	p_status = models.SmallIntegerField(default=1)
+	check_code = models.CharField(max_length=100,default='nothing',blank=True)
 	# status of the sgf:0 already checked
 	#					1 require checking, sgf added from kgs archive link
 	#					2 require checking with priority,sgf added/changed by admin
@@ -175,6 +176,7 @@ class Sgf(models.Model):
 		#no result shouldn't happen automaticly, but with admin upload, who knows
 		if self.result == '?':(b,m) = (False,m+'; no result')
 		if self.number_moves < 50 : (b,m) = (False,m+'; number moves')
+		if Sgf.objects.filter(check_code=self.check_code).exists():(b,m) = (False,m+'; same sgf already in db')
 		self.message = m
 		self.league_valid = b
 		return self
