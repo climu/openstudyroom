@@ -99,9 +99,11 @@ Logout</a>
 </ul>
 {% endif %}
 
+
 <div class="container">
   <div class="row">
       {% block heading %}
+
                 <div class="page-header">
                     <h1>{{ self.title }}</h1>
                 </div>
@@ -131,7 +133,9 @@ Logout</a>
         {% block extra_js %}
             {# Override this in templates to add extra javascript #}
         {% endblock %}
-
+          {# for machina templates we needs a js block #}
+        {% block js %}
+        {% endblock %}
         <script src="//static.getclicky.com/js" type="text/javascript"></script>
         <script type="text/javascript">try{ clicky.init(101029164); }catch(e){}</script>
         <noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/101029164ns.gif" /></p></noscript>
