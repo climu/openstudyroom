@@ -158,7 +158,7 @@ class Sgf(models.Model):
 		b = True
 		m = ''
 		if self.game_type == 'review': (b,m) = (False,m+' review gametype')
-		if self.sgf_text.find('#OSR') == -1 : (b,m)= (False,m+'; Tag missing')
+		if not('#OSR' in self.sgf_text or '#osr' in self.sgf_text): (b,m)= (False,m+'; Tag missing')
 		event = Registry.get_primary_event()
 		wplayer = LeaguePlayer.objects.filter(kgs_username__iexact = self.wplayer, event = event).first()
 		bplayer = LeaguePlayer.objects.filter(kgs_username__iexact = self.bplayer, event = event).first()
