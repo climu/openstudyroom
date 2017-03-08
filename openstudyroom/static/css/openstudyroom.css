@@ -82,3 +82,4 @@ blockquote{
         font-size:0.8em;
     }
 }
+.sidebar>li>.rich-text>ul{padding-left:0px;}

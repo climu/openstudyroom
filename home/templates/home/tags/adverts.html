@@ -1,0 +1,13 @@
+{% load wagtailcore_tags  %}
+
+{% for advert in adverts %}
+<ul class="sidebar">
+<h4>
+  {% if advert.url  %}<a href="{{advert.url}}"> {{ advert.title }} </a>
+  {% else %}{{ advert.title }}  {%endif%} 
+
+</h4>
+      <li>  {{ advert.body|richtext}}</li>
+
+</ul>
+{% endfor %}
