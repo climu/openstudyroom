@@ -73,7 +73,7 @@ def scraper_view(request):
 
 def games(request,event_id=None):
 	if event_id == None:
-		games=Game.objects.all()
+		games=Game.objects.all().order_by('-sgf__date')
 		context = {
 			'games': games,
 				}
@@ -82,7 +82,7 @@ def games(request,event_id=None):
 	else:
 		event = get_object_or_404(LeagueEvent,pk=event_id)
 		close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
-		games=Game.objects.filter(white__event=event)
+		games=Game.objects.filter(white__event=event).order_by('-sgf__date')
 		template = loader.get_template('league/games.html')
 		context = {
 			'games': games,
