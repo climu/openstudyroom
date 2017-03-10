@@ -73,7 +73,7 @@ def scraper_view(request):
 
 def games(request,event_id=None):
 	if event_id == None:
-		games=Game.objects.all()
+		games=Game.objects.all().order_by('-sgf__date')
 		context = {
 			'games': games,
 				}
@@ -82,7 +82,7 @@ def games(request,event_id=None):
 	else:
 		event = get_object_or_404(LeagueEvent,pk=event_id)
 		close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
-		games=Game.objects.filter(white__event=event)
+		games=Game.objects.filter(white__event=event).order_by('-sgf__date')
 		template = loader.get_template('league/games.html')
 		context = {
 			'games': games,
@@ -359,14 +359,24 @@ def admin(request):
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
 def rollover(request):
+	'''
+	A view that helps admin to do rollover at the end of the month.
+	It displays users from primary_event and let the admin choose to which division they will be in next event.
+	This view can perform a preview loading data from the form. Actual db populating happen in proceed_rollover view
+
+	'''
 	from_event = Registry.get_primary_event()
 	to_event = LeagueEvent.objects.filter(pk=from_event.pk+1).first()
 
+	# One day we should have a better way to select to_event from a form.
+	# For now it's just the next event in db (if admin create/delete event, this doesn't work)
+	# Anyway, if to_event is None, we abort.
 	if to_event == None:
 		message =" You must create a new event and his divisions before processing rollover."
 		messages.success(request,message)
 		return HttpResponseRedirect(reverse('league:admin'))
 
+	# We shouldn't populate an event that already have players in it.
 	if to_event.number_players()>0:
 		message = "Something strange: you tryed to rollover to a league with players already in it"
 		messages.success(request,message)
@@ -385,9 +395,11 @@ def rollover(request):
 					new_player = LeaguePlayer(user=player.user,event = to_event,kgs_username = player.kgs_username,division=new_division)
 					new_player.previous_division=player.division
 					new_players[new_division.name].append(new_player)
+			#Admin have a preview so we are sure form is not dumber than the admin. We will display the save button in template
 			preview=True
 	else:
 		form = LeagueRolloverForm(from_event,to_event)
+		# Having preview at false prevent the save button to be displayed in tempalte
 		preview=False
 
 	context = {
@@ -403,6 +415,12 @@ def rollover(request):
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
 def proceed_rollover(request):
+	''' Here we actually populate the db with the form from rollover view.
+	We assume the admin have seen the new events structure in a preview before being here.
+	'''
+
+	# As before, to_event should not be that way.
+	# rollover view should have the admin select this event and sending this here in the form.
 	from_event = Registry.get_primary_event()
 	to_event = LeagueEvent.objects.filter(pk=from_event.pk+1).first()
 	if request.method == 'POST':
@@ -423,11 +441,14 @@ def proceed_rollover(request):
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
 def send_user_mail(request):
+	'''
+	Just a test mail view. Add your email and see if you have it.
+	'''
 	send_mail(
     	'Subject here',
     	'Here is the message.',
     	'from@example.com',
-    	['climmu@gmail.com'],
+    	['youremail@yourhost.com'],
     	fail_silently=False,
 		)
 	return HttpResponse('sent')
@@ -442,3 +463,31 @@ def discord_redirect(request):
 		message ="OSR discord server is for members only."
 		messages.success(request,message)
 		return HttpResponseRedirect('/')
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def update_all_sgf(request):
+	'''
+	Reparse all sgf from db. This can be usefull after adding a new field to sgf models.
+	We just display a confirmation page with a warning if no post request.
+	For now, we will just update the check_code field.
+	Latter, we might add a select form to select what field(s) we want update
+	'''
+	if request.method == 'POST':
+		form = form=ActionForm(request.POST)
+		if form.is_valid():
+			sgfs= Sgf.objects.all()
+			for sgf in sgfs:
+				sgf_prop=utils.parse_sgf_string(sgf.sgf_text)
+				sgf.check_code=sgf_prop['check_code']
+				sgf.save()
+			message ="Successfully updated " + str(sgfs.count()) + " sgfs."
+			messages.success(request,message)
+			return HttpResponseRedirect(reverse('league:admin'))
+		else:
+			message ="Something went wrong (form is not valid)"
+			messages.success(request,message)
+			return HttpResponseRedirect(reverse('league:admin'))
+	else:
+
+		return render(request,'league/update_all_sgf.html')

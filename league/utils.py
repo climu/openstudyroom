@@ -101,5 +101,16 @@ def parse_sgf_string(sgf_string):
 		out['date']=datetime.datetime.strptime(out['date'],"%Y-%m-%d")
 	else:
 		 out['date']=None
+	#counting the number of moves. Note that there could be a +-1 diff, but we don't really care
 	out['number_moves'] = 2*sgf_string.count(';B[')
+	# We create a unique string based on exact time (ms) 5 first black moves where played.
+	code=""
+	q=0
+	for n in range(0,5):
+		p=sgf_string.find('BL[')
+		if p!=-1:
+			q=sgf_string.find(']',p)
+			code+=sgf_string[p+3:q]
+	out['check_code']=code
+
 	return out

@@ -1,12 +1,12 @@
 {% load static i18n wagtailcore_tags wagtailimages_tags puput_tags compress wagtailroutablepage_tags %}
-{% load league_tags %}
+{% load league_tags osr_tags %}
     <div class="blog_sidebar">
         <div class="rss-sitemap">
             <a href="{% feeds_url blog_page %}" target="_blank" title="RSS">
                  <i class="fa fa-rss-square"></i> <span>Feed RSS</span>
             </a>
         </div>
-
+{% adverts %}
         <ul class="sidebar">
         <h4> Being discussed in our forums </h4>
         {% for topic in topics %}

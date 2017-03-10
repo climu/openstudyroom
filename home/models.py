@@ -1,11 +1,11 @@
 from __future__ import absolute_import, unicode_literals
 
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 from django import forms
 from wagtail.wagtailcore.models import Page, Orderable
 from wagtail.wagtailcore.fields import RichTextField, StreamField
-from wagtail.wagtailadmin.edit_handlers import FieldPanel, FieldRowPanel, MultiFieldPanel, \
-    InlinePanel, PageChooserPanel, StreamFieldPanel
+from wagtail.wagtailadmin.edit_handlers import FieldPanel, FieldRowPanel, MultiFieldPanel, InlinePanel, PageChooserPanel, StreamFieldPanel
 from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 from wagtail.wagtaildocs.edit_handlers import DocumentChooserPanel
 from wagtail.wagtailsnippets.models import register_snippet
@@ -27,6 +27,31 @@ import json
 
 Forum = get_model('forum', 'Forum')
 Topic = get_model('forum_conversation', 'Topic')
+
+@register_snippet
+@python_2_unicode_compatible  # provide equivalent __unicode__ and __str__ methods on Python 2
+class Advert(models.Model):
+    title = models.CharField(max_length=255)
+    url = models.URLField(null=True, blank=True)
+    body = RichTextField(blank=True)
+
+    panels = [
+        FieldPanel('title'),
+        FieldPanel('url'),
+        FieldPanel('body', classname="full"),
+    ]
+
+    def __str__(self):
+        return self.title
+
+
+
+
+
+
+
+
+
 
 # Global Streamfield definition
 

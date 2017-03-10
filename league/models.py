@@ -125,12 +125,13 @@ class Sgf(models.Model):
 	message = models.CharField(max_length=100,default='nothing',blank=True)
 	number_moves = models.SmallIntegerField(default=100)
 	p_status = models.SmallIntegerField(default=1)
+	check_code = models.CharField(max_length=100,default='nothing',blank=True)
 	# status of the sgf:0 already checked
 	#					1 require checking, sgf added from kgs archive link
 	#					2 require checking with priority,sgf added/changed by admin
 
 	def __str__(self):
-		return self.urlto
+		return self.wplayer + ' vs ' + self.bplayer
 
 
 	def parse(self):
@@ -157,7 +158,7 @@ class Sgf(models.Model):
 		b = True
 		m = ''
 		if self.game_type == 'review': (b,m) = (False,m+' review gametype')
-		if self.sgf_text.find('#OSR') == -1 : (b,m)= (False,m+'; Tag missing')
+		if not('#OSR' in self.sgf_text or '#osr' in self.sgf_text): (b,m)= (False,m+'; Tag missing')
 		event = Registry.get_primary_event()
 		wplayer = LeaguePlayer.objects.filter(kgs_username__iexact = self.wplayer, event = event).first()
 		bplayer = LeaguePlayer.objects.filter(kgs_username__iexact = self.bplayer, event = event).first()
@@ -175,6 +176,7 @@ class Sgf(models.Model):
 		#no result shouldn't happen automaticly, but with admin upload, who knows
 		if self.result == '?':(b,m) = (False,m+'; no result')
 		if self.number_moves < 50 : (b,m) = (False,m+'; number moves')
+		if Sgf.objects.filter(check_code=self.check_code).exists():(b,m) = (False,m+'; same sgf already in db')
 		self.message = m
 		self.league_valid = b
 		return self
@@ -278,7 +280,7 @@ class LeaguePlayer(models.Model):
 	division = models.ForeignKey('Division')
 	nb_win = models.SmallIntegerField(default=0)
 	nb_loss = models.SmallIntegerField(default=0)
-	score = models.DecimalField(default=0, max_digits=2, decimal_places=1)
+	score = models.DecimalField(default=0, max_digits =4, decimal_places=1)
 	results = models.CharField(max_length=200,default='{}',blank=True)
 	p_status = models.SmallIntegerField(default=0)
 #Note that results is a dirty string formated as a dict.
@@ -369,6 +371,8 @@ class Game(models.Model):
 	white = models.ForeignKey('LeaguePlayer',related_name='white',blank=True,null=True)
 	winner = models.ForeignKey('LeaguePlayer',related_name='winner',blank=True,null=True)
 
+	def __str__(self):
+		return self.black.kgs_username + ' vs ' + self.white.kgs_username
 
 	@staticmethod
 	def create_game(sgf):
