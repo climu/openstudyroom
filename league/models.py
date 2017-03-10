@@ -281,7 +281,7 @@ class LeaguePlayer(models.Model):
 	nb_win = models.SmallIntegerField(default=0)
 	nb_loss = models.SmallIntegerField(default=0)
 	score = models.DecimalField(default=0, max_digits =4, decimal_places=1)
-	results = models.CharField(max_length=200,default='{}',blank=True)
+	results = models.CharField(max_length=2000,default='{}',blank=True)
 	p_status = models.SmallIntegerField(default=0)
 #Note that results is a dirty string formated as a dict.
 # we will eval() to get it and str() to store.
