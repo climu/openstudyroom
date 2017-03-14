@@ -19,6 +19,13 @@
     table#example th:nth-of-type(2){
         text-align: left;
     }
+    tr.even-row,
+    td.even-column{
+        background-color:#f8f8f8;
+    }
+    td.table-league-highlight {
+        background-color: LightGray;
+    }
     .kgs_username{
         transform: rotate(-60deg);
         transform-origin: 0 0;
@@ -66,15 +73,15 @@
         </thead>
         <tbody>
         {% for player in players %}
-        <tr>
+        <tr class="{% cycle 'even-row' 'odd-row' %}">
             <td class='table-league-player'>{{forloop.counter}}. {{player.user | user_link}}</td>
             <td class='table-league-score-highlight'>{{player.score}}</td>
             {% for opponent in players %}
 
             {% if forloop.counter == forloop.parentloop.counter %}
-            <td class='table-league-highlight'>
+            <td class="table-league-highlight {% cycle 'even-column' 'odd-column' %}">
                 {% else %}
-            <td>
+            <td class="{% cycle 'even-column' 'odd-column' %}">
                 {% if opponent.kgs_username in player.get_results %}
 
                 {% html_one_result %}
