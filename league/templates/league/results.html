@@ -3,26 +3,30 @@
 {% block title %}{{event}}- Results{% endblock %}
 {% block content %}
 <style>
+    body .container{
+        width: auto;
+        margin: 0 20px;
+    }
+    table#example{
+        width:auto;
+        margin-top:60px;
+    }
     table#example th{
         text-align: center;
-        width:10px;
+        min-width:20px;
     }
-    table#example th:nth-of-type(1){
-        text-align: left;
-        width:12em;
-    }
+    table#example th:nth-of-type(1),
     table#example th:nth-of-type(2){
         text-align: left;
-        width:0em;
     }
-    table#example th div{
+    .kgs_username{
         transform: rotate(-60deg);
         transform-origin: 0 0;
         position: absolute;
         margin-top: -10px;
     }
-    thead.table-league-highlight{
-        height:20px;
+    .table-league-score-highlight{
+        text-align: center;
     }
     iframe[name="wgo_iframe"]{
         height:700px;
@@ -53,24 +57,24 @@
         <thead class='table-league-highlight'>
         <tr>
             <th>player</th>
-            <th> score</th>
+            <th>score</th>
             {% for player in players %}
             <th>
-                <div>{{ player.kgs_username }}</div>
+                <div class="kgs_username">{{ player.kgs_username }}</div>
             </th>
             {% endfor %}
         </thead>
         <tbody>
         {% for player in players %}
         <tr>
-            <td class='table-league-player'>{{forloop.counter}}. {{player.user | user_link}} </td>
-            <td class='table-league-score-highlight'>{{player.score}} </td>
+            <td class='table-league-player'>{{forloop.counter}}. {{player.user | user_link}}</td>
+            <td class='table-league-score-highlight'>{{player.score}}</td>
             {% for opponent in players %}
 
             {% if forloop.counter == forloop.parentloop.counter %}
-            <td style='text-align: center;' class='table-league-highlight'>
+            <td class='table-league-highlight'>
                 {% else %}
-            <td style='text-align: center;'>
+            <td>
                 {% if opponent.kgs_username in player.get_results %}
 
                 {% html_one_result %}
