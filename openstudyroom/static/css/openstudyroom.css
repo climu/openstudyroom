@@ -1,18 +1,4 @@
 
-#table-players tbody tr:hover {
-    background-color: WhiteSmoke;
-}
-#table-players tbody th:hover {
-    background-color: WhiteSmoke;
-}
-.table-league {
-    background-color: WhiteSmoke;
-}
-.table-league-score-highlight {
-    background-color: #d9edf7;
-}
-.table-league.td{
-text-align: center;}
 .post-info{width:50px}
 .ancestor > a {
 background-color: #080808;
