@@ -1,10 +1,8 @@
 {% extends "league/base.html" %}
-{% load league_tags static%}
+{% load league_tags %}
 {% block title %}{{event}}- Results{% endblock %}
 
-{% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/results.css' %}"/>
-{% endblock %}
+
 {% block content %}
 <nav class="navbar navbar-default">
     <ul class="nav navbar-nav navbar-left">
@@ -60,6 +58,6 @@
         </tbody>
     </table>
 </div>
-<iframe name="wgo_iframe" scrolling="no"></iframe>
+
 
 {% endblock %}

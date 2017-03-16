@@ -10,6 +10,11 @@ def html_one_result(context):
 	# this filter only works called from a context where player an opponent exists
 	player=context['player']
 	opponent = context['opponent']
+	if 'event' in context:
+		event=str(context['event'].pk)+'/'
+	else:
+		event=''
+
 	results=player.get_results()
 	opponent_kgs=opponent.kgs_username
 	html=""
@@ -17,7 +22,7 @@ def html_one_result(context):
 		result=results[opponent_kgs]
 		for game in result:
 			#here, game['id'] would get you the id of the game to add a link
-			html += '<a href="/wgo/game/' + str(game['id']) + '"target="wgo_iframe">'
+			html += '<a href="/league/'+ event + 'games/' + str(game['id']) + '">'
 			if game['r']==1 :
 				 html += '<i class="fa fa-circle-o" aria-hidden="true" style="color:green"></i></a>'
 			#will be glyphicon glyphicon-ok-circle or fontawesome thing
@@ -37,8 +42,17 @@ def user_link(user):
     return mark_safe(link)
 
 @register.filter
-def game_link(game):
+def game_iframe_link(game):
 	html= '<a href="/wgo/game/' + str(game.pk) + '"target="wgo_iframe">'+ str(game.sgf.result) + '</a>'
+	return mark_safe(html)
+
+@register.filter
+def game_link(game,event=None):
+	if event==None:
+		html= '<a href="/league/games/' + str(game.pk) + '">'+ str(game.sgf.result) + '</a>'
+	else:
+		html= '<a href="/league/' + str(event.pk) + '/games/' + str(game.pk) + '">'+ str(game.sgf.result) + '</a>'
+
 	return mark_safe(html)
 
 @register.filter

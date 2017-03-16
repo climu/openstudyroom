@@ -15,7 +15,9 @@ urlpatterns = [
     url(r'^(?P<event_id>[0-9]+)/$',views.event,name='event'),
 
     url(r'^games/$', views.games, name='games'),
+    url(r'^games/(?P<game_id>[0-9]+)/$', views.games, name='game'),
     url(r'^(?P<event_id>[0-9]+)/games/$', views.games, name='games'),
+    url(r'^(?P<event_id>[0-9]+)/games/(?P<game_id>[0-9]+)/$', views.games, name='game'),
 
     url(r'^players/$', views.players, name='players'),
     url(r'^(?P<event_id>[0-9]+)/players/$', views.players, name='players'),

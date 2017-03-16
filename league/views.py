@@ -7,6 +7,7 @@ from .forms import  SgfAdminForm,ActionForm,LeagueRolloverForm,UploadFileForm
 import datetime
 from django.http import Http404
 from django.core.urlresolvers import reverse
+from django.core.files import File
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django import forms
@@ -71,12 +72,16 @@ def scraper_view(request):
 	scraper()
 	return httpResponse('scraped')
 
-def games(request,event_id=None):
+
+def games(request,event_id=None,game_id=None):
+	context = {}
+	if game_id != None:
+		game = get_object_or_404(Game,pk = game_id)
+		context.update({'game':game})
+
 	if event_id == None:
 		games=Game.objects.all().order_by('-sgf__date')
-		context = {
-			'games': games,
-				}
+		context.update({'games': games})
 		template = loader.get_template('league/archives_games.html')
 
 	else:
@@ -84,11 +89,11 @@ def games(request,event_id=None):
 		close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
 		games=Game.objects.filter(white__event=event).order_by('-sgf__date')
 		template = loader.get_template('league/games.html')
-		context = {
+		context.update( {
 			'games': games,
 			'event':event,
 			'close':close,
-			}
+			})
 	return HttpResponse(template.render(context, request))
 
 

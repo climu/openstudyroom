@@ -22,7 +22,7 @@
     <td> {{ game.white.user | user_link }}</td>
     <td><b> {{ game.black.user | user_link }}</b></td>
     {%endif%}
-    <td> {%if event %}{{ game |game_link:event }} {%else%}{{ game |game_link}}{%endif%}</td>
+    <td> {{ game |game_iframe_link }}</td>
   </tr>
   {% endfor %}
 </tbody>
