@@ -24,9 +24,11 @@ urlpatterns = [
 
     url(r'^discord/$', views.discord_redirect, name='discord_redirect'),
 
+    url(r'^sgf/(?P<sgf_id>[0-9]+)/$', views.sgf, name='sgf'),
+
     url(r'^account/$', views.account, name='league_account'),
     url(r'^account/(?P<user_name>[\w.@+-]+)/$', views.account,name='league_account'),
-    url(r'^scraper/$', views.scraper, name='scraper'),
+    url(r'^scraper/$', views.scraper_view, name='scraper'),
 
     url(r'^admin/$', views.admin, name='admin'),
     url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/$', views.sgf_view, name='sgf_edit'),

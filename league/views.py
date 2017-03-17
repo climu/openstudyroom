@@ -34,7 +34,8 @@ def scraper():
 	delta_sec = delta.total_seconds()
 	kgs_delay = Registry.get_kgs_delay()
 	if delta_sec < kgs_delay: #we can't scrape yet
-		return
+		out='too soon'
+		return out
 	#2 look for some sgfs that we analyse and maybe record as games
 	sgfs=Sgf.objects.filter(p_status=2)
 	if len(sgfs)==0 :
@@ -61,17 +62,23 @@ def scraper():
 		if players.filter(p_status =2).exists():
 			player=player.filter(p_status = 2)[0]
 			player.check_player()
+			out=player
 		else:
 			player = players.filter(p_status = 1)[0]
 			player.check_player()
 		out=player
 	Registry.set_time_kgs(now)
-	return
+	return out
 
 def scraper_view(request):
-	scraper()
-	return httpResponse('scraped')
+	out=scraper()
+	return HttpResponse(out)
 
+def sgf(request,sgf_id):
+	sgf=get_object_or_404(Sgf,pk = sgf_id)
+	response = HttpResponse(sgf.sgf_text, content_type='application/octet-stream')
+	response['Content-Disposition'] = 'attachment; filename="'+ sgf.wplayer + '-' + sgf.bplayer + '-'+ sgf.date.strftime('%m/%d/%Y')+'.sgf"'
+	return response
 
 def games(request,event_id=None,game_id=None):
 	context = {}

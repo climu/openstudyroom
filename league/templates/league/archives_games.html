@@ -1,5 +1,5 @@
 {% extends "league/base.html" %}
-{% load league_tags %}
+{% load league_tags wgo_tags%}
 {% block title %}Archives - Games{% if game %} {{game.black}} vs {{game.white}} {%endif %}{% endblock %}
 {% block content %}
 <nav class="navbar navbar-default">
@@ -16,24 +16,7 @@
 <div class ="row">
 <div class="col-md-4">
   {% if game %}
-  <div class="panel panel-default">
-  <div class="panel-heading">Game infos</div>
-  <div class="panel-body">
-    <div class="col-md-6">
-  <p>White: {{game.white.user |user_link}}</p>
-  <p>Date: {{game.sgf.date|date:"M d, Y" }}</p>
-  <p>League: {{game.white.event|event_link}}</p>
-
-</div>
-<div class="col-md-6">
-  <p>Black: {{game.black.user |user_link}}</p>
-  <p>Result: {{game.sgf.result}}</p>
-  <p>Group: {{game.white.division| division_link}}</p>
-
-  <p> <a href="/league/games/{{game.pk}}"> Link to this game</a></p>
-</div>
-</div>
-</div>
+  {% include "league/includes/game_info.html" with game=game %}
 {% endif %}
 <div class="panel panel-default">
 <div class="panel-heading">Games</div>
@@ -43,7 +26,7 @@
 
 <div class="col-md-8">
   {% if game %}
-  <div data-wgo="{{ game.sgf.sgf_text }}" >
+  <div data-wgo="{{ game.sgf.sgf_text |prepare_sgf }}" >
   {% endif %}
 {% endblock %}
 </div>
