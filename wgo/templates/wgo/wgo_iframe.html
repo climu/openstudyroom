@@ -1,4 +1,4 @@
-{% load static %}
+{% load static wgo_tags%}
 <!DOCTYPE html>
 
 <html class="no-js">
@@ -9,7 +9,7 @@
     </head>
 <body>
 
-    <div data-wgo="{{ sgf_data }}" >
+    <div data-wgo="{{ sgf_data |prepare_sgf }}" >
     </div>
 
 
