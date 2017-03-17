@@ -1,59 +1,63 @@
 {% extends "league/base.html" %}
 {% load league_tags %}
 {% block title %}{{event}}- Results{% endblock %}
+
+
 {% block content %}
 <nav class="navbar navbar-default">
-<ul class="nav navbar-nav navbar-left">
-  <li><a href="{% url 'league:event' event.pk %}">Overview</a></li>
-  <li class = active ><a href="{% url 'league:results' event.pk %}">Results</a></li>
-  <li><a href="{% url 'league:players' event.pk %}">Players</a></li>
-  <li><a href="{% url 'league:games' event.pk %}">Games</a></li>
-</ul>
-<ul class="nav navbar-nav navbar-right" style="margin-right:5px;">
-  <li {%if not close %}class ="active"{%endif%}><a href="{% url 'league:event' %}">Current league</a></li>
-  <li><a href="{% url 'league:archives' %}">Archives</a></li>
-</ul>
+    <ul class="nav navbar-nav navbar-left">
+        <li><a href="{% url 'league:event' event.pk %}">Overview</a></li>
+        <li class = active ><a href="{% url 'league:results' event.pk %}">Results</a></li>
+        <li><a href="{% url 'league:players' event.pk %}">Players</a></li>
+        <li><a href="{% url 'league:games' event.pk %}">Games</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right" style="margin-right:5px;">
+        <li {%if not close %}class ="active"{%endif%}><a href="{% url 'league:event' %}">Current league</a></li>
+        <li><a href="{% url 'league:archives' %}">Archives</a></li>
+    </ul>
 </nav>
 <ul class="nav nav-tabs">
-{% for div in event.get_divisions %}
-<li {% if div == division %}class='active'{%endif%} > {{div|division_link}}</li>
-{% endfor %}
+    {% for div in event.get_divisions %}
+    <li {% if div == division %}class='active'{%endif%} > {{div|division_link}}</li>
+    {% endfor %}
 </ul>
 
 <div class='table-responsive'>
-  <table id='example' class='table table-bordered  table-hover table-condensed' >
-     <thead class='table-league-highlight' style='heigh:20px'
-       <tr>
-         <th style="width:12em;">player</th>
-         <th style="width:0em;"> score</th>
-        {% for player in players %}
-       		<th style='text-align: center;width:10px;'> <div style ='transform: rotate(-60deg);transform-origin: 0 0;position: absolute;margin-top: -10px;'>{{ player.kgs_username }}</div></th>
-        {% endfor %}
+    <table id='example' class='table table-bordered  table-hover table-condensed' >
+        <thead class='table-league-highlight'>
+        <tr>
+            <th>player</th>
+            <th>score</th>
+            {% for player in players %}
+            <th>
+                <div class="kgs_username">{{ player.kgs_username }}</div>
+            </th>
+            {% endfor %}
         </thead>
         <tbody>
-          {% for player in players %}
-        		<tr>
-              <td class='table-league-player'>{{forloop.counter}}. {{player.user | user_link}} </td>
-        		<td class='table-league-score-highlight'>{{player.score}} </td>
-        		{% for opponent in players %}
+        {% for player in players %}
+        <tr class="{% cycle 'even-row' 'odd-row' %}">
+            <td class='table-league-player'>{{forloop.counter}}. {{player.user | user_link}}</td>
+            <td class='table-league-score-highlight'>{{player.score}}</td>
+            {% for opponent in players %}
 
-        			{% if forloop.counter == forloop.parentloop.counter %}
-              <td style='text-align: center;' class='table-league-highlight'>
-        			{% else %}
-              <td style='text-align: center;'>
-              {% if opponent.kgs_username in player.get_results %}
+            {% if forloop.counter == forloop.parentloop.counter %}
+            <td class="table-league-highlight {% cycle 'even-column' 'odd-column' %}">
+                {% else %}
+            <td class="{% cycle 'even-column' 'odd-column' %}">
+                {% if opponent.kgs_username in player.get_results %}
 
-              {% html_one_result %}
+                {% html_one_result %}
 
-              {% endif %}
-              </td>
-              {% endif %}
+                {% endif %}
+            </td>
+            {% endif %}
             {% endfor %}
-              </tr>
-            {% endfor %}
-        	</tbody>
-        </table>
-      </div>
-<iframe name="wgo_iframe" scrolling="no" style= "height:700px;width: 700px;border:none;"></iframe>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 
 {% endblock %}

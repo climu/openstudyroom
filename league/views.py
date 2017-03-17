@@ -7,6 +7,7 @@ from .forms import  SgfAdminForm,ActionForm,LeagueRolloverForm,UploadFileForm
 import datetime
 from django.http import Http404
 from django.core.urlresolvers import reverse
+from django.core.files import File
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django import forms
@@ -33,7 +34,8 @@ def scraper():
 	delta_sec = delta.total_seconds()
 	kgs_delay = Registry.get_kgs_delay()
 	if delta_sec < kgs_delay: #we can't scrape yet
-		return
+		out='too soon'
+		return out
 	#2 look for some sgfs that we analyse and maybe record as games
 	sgfs=Sgf.objects.filter(p_status=2)
 	if len(sgfs)==0 :
@@ -60,23 +62,33 @@ def scraper():
 		if players.filter(p_status =2).exists():
 			player=player.filter(p_status = 2)[0]
 			player.check_player()
+			out=player
 		else:
 			player = players.filter(p_status = 1)[0]
 			player.check_player()
 		out=player
 	Registry.set_time_kgs(now)
-	return
+	return out
 
 def scraper_view(request):
-	scraper()
-	return httpResponse('scraped')
+	out=scraper()
+	return HttpResponse(out)
 
-def games(request,event_id=None):
+def sgf(request,sgf_id):
+	sgf=get_object_or_404(Sgf,pk = sgf_id)
+	response = HttpResponse(sgf.sgf_text, content_type='application/octet-stream')
+	response['Content-Disposition'] = 'attachment; filename="'+ sgf.wplayer + '-' + sgf.bplayer + '-'+ sgf.date.strftime('%m/%d/%Y')+'.sgf"'
+	return response
+
+def games(request,event_id=None,game_id=None):
+	context = {}
+	if game_id != None:
+		game = get_object_or_404(Game,pk = game_id)
+		context.update({'game':game})
+
 	if event_id == None:
 		games=Game.objects.all().order_by('-sgf__date')
-		context = {
-			'games': games,
-				}
+		context.update({'games': games})
 		template = loader.get_template('league/archives_games.html')
 
 	else:
@@ -84,11 +96,11 @@ def games(request,event_id=None):
 		close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
 		games=Game.objects.filter(white__event=event).order_by('-sgf__date')
 		template = loader.get_template('league/games.html')
-		context = {
+		context.update( {
 			'games': games,
 			'event':event,
 			'close':close,
-			}
+			})
 	return HttpResponse(template.render(context, request))
 
 

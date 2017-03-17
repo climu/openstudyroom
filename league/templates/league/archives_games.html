@@ -1,5 +1,6 @@
 {% extends "league/base.html" %}
-{% block title %}Archives - Games{% endblock %}
+{% load league_tags wgo_tags%}
+{% block title %}Archives - Games{% if game %} {{game.black}} vs {{game.white}} {%endif %}{% endblock %}
 {% block content %}
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav navbar-left">
@@ -14,12 +15,21 @@
 </nav>
 <div class ="row">
 <div class="col-md-4">
+  {% if game %}
+  {% include "league/includes/game_info.html" with game=game %}
+{% endif %}
+<div class="panel panel-default">
+<div class="panel-heading">Games</div>
 {% include "league/includes/games.html" with games=games %}
 </div>
-<div class="col-md-8">
-  <iframe name="wgo_iframe" scrolling="no" style= "height:700px;width: 100%;border:none;"></iframe>
-{% endblock %}
+</div>
 
+<div class="col-md-8">
+  {% if game %}
+  <div data-wgo="{{ game.sgf.sgf_text |prepare_sgf }}" >
+  {% endif %}
+{% endblock %}
+</div>
 {% block extra_js %}
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
 <script type="text/javascript">

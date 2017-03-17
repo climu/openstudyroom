@@ -2,8 +2,14 @@ from django import template
 
 register = template.Library()
 
+
 @register.filter
-def prepare_sgf(value):
+def prepare_sgf(sgf):
+    sgf=sgf.replace(';B[]',"").replace(';W[]',"")
+    return sgf
+
+@register.filter
+def prepare_sgf_file(value):
     f=value.file
     f.open(mode='rb')
     sgf=f.read()

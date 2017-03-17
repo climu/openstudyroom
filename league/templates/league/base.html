@@ -1,6 +1,10 @@
 {% extends "full_width.html" %}
+{% load static %}
 {% block heading%}
   <div class="page-header">
-      <h1>OSR League - {%if event %}{{event}}{% else%}Archives{% endif %} </h1>
+      <h1>OSR League - {%if event %}{{event}}{% else%}Archives{% endif %}{%if game %} - {{game.black}} vs {{game.white}} {%endif%} </h1>
   </div>
   {%endblock%}
+  {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
+  {% endblock %}

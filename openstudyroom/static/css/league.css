@@ -1,0 +1,40 @@
+body .container{
+        width: auto;
+        margin: 0 60px;
+    }
+    table#example{
+        width:auto;
+        margin-top:60px;
+    }
+    .table-responsive{
+        overflow-x: visible;
+    }
+    table#example th{
+        text-align: center;
+        min-width:20px;
+    }
+    table#example th:nth-of-type(1),
+    table#example th:nth-of-type(2){
+        text-align: left;
+    }
+    tr.even-row,
+    td.even-column{
+        background-color:#f8f8f8;
+    }
+    td.table-league-highlight {
+        background-color: LightGray;
+    }
+    .kgs_username{
+        transform: rotate(-60deg);
+        transform-origin: 0 0;
+        position: absolute;
+        margin-top: -10px;
+    }
+    .table-league-score-highlight{
+        text-align: center;
+    }
+    iframe[name="wgo_iframe"]{
+        height:700px;
+        width: 700px;
+        border:none;
+    }
