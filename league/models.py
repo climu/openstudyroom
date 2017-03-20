@@ -175,7 +175,7 @@ class Sgf(models.Model):
 		if int(self.time) < 1800: (b,m) = (False,m+'; main time')
 		#no result shouldn't happen automaticly, but with admin upload, who knows
 		if self.result == '?':(b,m) = (False,m+'; no result')
-		if self.number_moves < 50 : (b,m) = (False,m+'; number moves')
+		if self.number_moves < 20 : (b,m) = (False,m+'; number moves')
 		if Sgf.objects.filter(check_code=self.check_code).exists():(b,m) = (False,m+'; same sgf already in db')
 		self.message = m
 		self.league_valid = b
@@ -344,7 +344,7 @@ class LeaguePlayer(models.Model):
 				#check if both players are in the league
 				players = utils.extract_players_from_url(url)
 				#no need to check the self to be in the league
-				if players['white']==self.kgs_username:
+				if players['white'].lower() == self.kgs_username.lower() :
 					player = players['black']
 				else:
 					player = players['white']
