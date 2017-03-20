@@ -175,7 +175,7 @@ class Sgf(models.Model):
 		if int(self.time) < 1800: (b,m) = (False,m+'; main time')
 		#no result shouldn't happen automaticly, but with admin upload, who knows
 		if self.result == '?':(b,m) = (False,m+'; no result')
-		if self.number_moves < 50 : (b,m) = (False,m+'; number moves')
+		if self.number_moves < 20 : (b,m) = (False,m+'; number moves')
 		if Sgf.objects.filter(check_code=self.check_code).exists():(b,m) = (False,m+'; same sgf already in db')
 		self.message = m
 		self.league_valid = b
