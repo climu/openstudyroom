@@ -344,7 +344,7 @@ class LeaguePlayer(models.Model):
 				#check if both players are in the league
 				players = utils.extract_players_from_url(url)
 				#no need to check the self to be in the league
-				if players['white']==self.kgs_username:
+				if players['white'].lower() == self.kgs_username.lower() :
 					player = players['black']
 				else:
 					player = players['white']
