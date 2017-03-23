@@ -6,6 +6,8 @@ import requests
 from django.contrib.auth.models import AbstractUser
 from collections import defaultdict
 from django.db.models import Q
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 
 # Create your models here.
 class LeagueEvent(models.Model):
@@ -284,6 +286,8 @@ class LeaguePlayer(models.Model):
 	def __str__(self):
 		return self.kgs_username
 
+
+
 	def get_results(self):
 		# results are formated as:
 		#  {'opponent1':[{'id':game1.pk, 'r':1/0},{'id':game2.pk, 'r':1/0},...],'opponent2':[...]}
@@ -336,7 +340,7 @@ class LeaguePlayer(models.Model):
 		self.save()
 
 	def unscore_loss(self):
-		self.score -= self.pploss
+		self.score -= self.event.pploss
 		self.save()
 
 
@@ -382,6 +386,10 @@ class LeaguePlayer(models.Model):
 		return self.nb_games() >= self.event.min_matchs
 
 
+
+
+
+
 class Game(models.Model):
 	sgf = models.OneToOneField('Sgf')
 	event = models.ForeignKey('LeagueEvent',blank=True,null=True)
@@ -389,8 +397,12 @@ class Game(models.Model):
 	white = models.ForeignKey('LeaguePlayer',related_name='white',blank=True,null=True)
 	winner = models.ForeignKey('LeaguePlayer',related_name='winner',blank=True,null=True)
 
+
+
 	def __str__(self):
 		return self.black.kgs_username + ' vs ' + self.white.kgs_username
+
+
 
 	@staticmethod
 	def create_game(sgf):
@@ -436,3 +448,13 @@ class Game(models.Model):
 				return False
 			game.save()
 			return True
+
+@receiver(pre_delete, sender=Game)
+def unscore_game(sender, instance, *args, **kwargs):
+	''' unscore a instance before deleting it'''
+	if instance.winner == instance.black:
+		instance.black.unscore_win()
+		instance.white.unscore_loss()
+	else:
+		instance.white.unscore_win()
+		instance.black.unscore_loss()
