@@ -1,0 +1,20 @@
+<table id='events-table' class='display table' cellspacing='0' width='100%' >
+	<thead>
+	<tr>
+		<th>Name</th>
+		<th>Begin</th>
+		<th>End</th>
+		<th>Players</th>
+	</thead>
+	<tbody>
+	{% for event in events %}
+	<tr>
+		<td> <a href= "{% url 'league:admin_events' event.pk %}"> {{ event.name }} </a> </td>
+		<td> {{ event.begin_time | date:"M d, Y" }} </td>
+		<td> {{ event.end_time | date:"M d, Y" }} </td>
+		
+		<td> {{ event.number_players }} </td>
+	</tr>
+	{% endfor %}
+	</tbody>
+</table>

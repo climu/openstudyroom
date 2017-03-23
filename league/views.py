@@ -365,8 +365,20 @@ def admin(request):
 		template = loader.get_template('league/admin.html')
 		return HttpResponse(template.render(context, request))
 
-
-
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name=None)
+def admin_events(request, event_id=None):
+	events = LeagueEvent.objects.all()
+	current = None
+	if event_id is None:
+		current = get_object_or_404(LeagueEvent, pk=Registry.get_primary_event().pk)
+	else:
+		current = get_object_or_404(LeagueEvent, pk=event_id)
+	
+	template = loader.get_template('league/admin_events.html')
+	context = { 'events': events,
+				'current': current}
+	return HttpResponse(template.render(context, request))
 
 
 @login_required()

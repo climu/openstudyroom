@@ -37,4 +37,6 @@ urlpatterns = [
     url(r'^admin/create-sgf/$', views.create_sgf, name='create_sgf'),
     url(r'^admin/send-mail/$', views.send_user_mail, name='send_email'),
     url(r'^admin/update-all-sgf/$', views.update_all_sgf, name='update_all_sgf'),
+    url(r'^admin/events/$', views.admin_events, name='admin_events'),
+    url(r'^admin/events/(?P<event_id>[0-9]+)/$', views.admin_events, name='admin_events'),
 ]

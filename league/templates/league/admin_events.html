@@ -1,0 +1,24 @@
+{% extends "full_width.html" %}
+{% load wagtailcore_tags bootstrap3 %}
+{% block title %}OSR league admin - Events{% endblock %}
+{% block content %}
+
+<div class="panel-body">
+	<div class ="row">
+		<div class="col-md-4">
+			<div class="panel panel-default">
+			<div class="panel-heading"><h3>List of events</h3></div>
+			{% include "league/includes/admin_events.html" with events=events %}
+			</div>
+		</div>
+		
+		<div class="col-md-8">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3>Edit "{{ current.name }}"</h3></div>
+				{% include "league/includes/admin_edit_event.html" %}
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

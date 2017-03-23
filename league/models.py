@@ -15,8 +15,8 @@ class LeagueEvent(models.Model):
 	end_time =  models.DateTimeField(blank=True)
 	name = models.TextField(max_length=20)
 	nb_matchs = models.SmallIntegerField(default=2)
-	ppwin = models.DecimalField(default=1.5, max_digits=2, decimal_places=1)
-	pploss = models.DecimalField(default=0.5, max_digits=2, decimal_places=1)
+	ppwin = models.DecimalField(default=1.5, max_digits=2, decimal_places=1) #points per win
+	pploss = models.DecimalField(default=0.5, max_digits=2, decimal_places=1) #points per loss
 	min_matchs = models.SmallIntegerField(default=1)
 	class Meta:
 		ordering = ['-begin_time']
