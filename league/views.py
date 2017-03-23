@@ -115,7 +115,7 @@ def results(request,event_id=None,division_id=None):
 	else:
 		division = get_object_or_404(Division,pk=division_id)
 	template = loader.get_template('league/results.html')
-	players = LeaguePlayer.objects.filter(division=division).order_by('score')
+	players = LeaguePlayer.objects.filter(division=division).order_by('-score')
 
 	close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
 	context = {
@@ -168,7 +168,7 @@ def players(request,event_id=None,division_id=None):
 		event=get_object_or_404(LeagueEvent,pk=event_id)
 		#if no division is provided, we show all players from this event
 		if division_id == None:
-			players = LeaguePlayer.objects.filter(event=event).order_by('score')
+			players = LeaguePlayer.objects.filter(event=event).order_by('-score')
 			divisions=event.division_set.all()
 		else:
 			division = get_object_or_404(Division,pk=division_id)
@@ -218,7 +218,7 @@ def account(request,user_name=None):
 		games = Game.objects.filter(Q(black__in = players)|Q(white__in = players))
 		if user.is_in_primary_event():
 			active_player = user.get_primary_event_player()
-			opponents = LeaguePlayer.objects.filter(division=active_player.division).order_by('score')
+			opponents = LeaguePlayer.objects.filter(division=active_player.division).order_by('-score')
 		else:
 			active_player = False
 			opponents = []

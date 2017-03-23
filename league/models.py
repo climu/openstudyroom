@@ -262,7 +262,7 @@ class Division(models.Model):
 		return self.name
 
 	def get_players(self):
-		return	self.leagueplayer_set.all().order_by('score')
+		return	self.leagueplayer_set.all().order_by('-score')
 
 	def number_players(self):
 		return self.leagueplayer_set.count()
