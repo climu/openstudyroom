@@ -262,9 +262,7 @@ class Division(models.Model):
 		return self.name
 
 	def get_players(self):
-		players=self.leagueplayer_set.all()
-		players = sorted(players, key= lambda s: s.score(),reverse=True)
-		return players
+		return	self.leagueplayer_set.all().order_by('score')
 
 	def number_players(self):
 		return self.leagueplayer_set.count()
@@ -282,7 +280,7 @@ class LeaguePlayer(models.Model):
 	division = models.ForeignKey('Division')
 #	nb_win = models.SmallIntegerField(default=0)
 #	nb_loss = models.SmallIntegerField(default=0)
-#	score = models.DecimalField(default=0, max_digits =4, decimal_places=1)
+	score = models.DecimalField(default=0, max_digits =4, decimal_places=1)
 #	results = models.CharField(max_length=2000,default='{}',blank=True)
 	p_status = models.SmallIntegerField(default=0)
 #Note that results is a dirty string formated as a dict.
@@ -319,15 +317,6 @@ class LeaguePlayer(models.Model):
 		return resultsDict
 
 
-	def score(self):
-		games = Game.objects.filter(Q(black = self)|Q(white = self))
-		n = 0
-		for game in games:
-			if game.winner == self:
-				 n+= self.event.ppwin
-			else :
-				n+= self.event.pploss
-		return n
 
 	def nb_win(self):
 		return Game.objects.filter(Q(black = self)|Q(white = self)).filter(winner=self).count()
@@ -338,7 +327,21 @@ class LeaguePlayer(models.Model):
 	def nb_games(self):
 		return Game.objects.filter(Q(black = self)|Q(white = self)).count()
 
+	def score_win(self):
+		self.score += self.event.ppwin
+		self.save()
 
+	def score_loss(self):
+		self.score += self.event.pploss
+		self.save()
+
+	def unscore_win(self):
+		self.score -= self.event.ppwin
+		self.save()
+
+	def unscore_loss(self):
+		self.score -= self.pploss
+		self.save()
 
 
 	def check_player(self):
@@ -425,10 +428,13 @@ class Game(models.Model):
 			#add the winner field and score the results :
 			if sgf.result.find('B+') == 0:
 				game.winner = blacks.first()
+				game.winner.score_win()
+				game.white.score_loss()
 
 			elif sgf.result.find('W+') == 0:
 				game.winner = whites.first()
-
+				game.winner.score_win()
+				game.black.score_loss()
 			else:
 				game.delete()
 				return False
