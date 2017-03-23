@@ -115,7 +115,8 @@ def results(request,event_id=None,division_id=None):
 	else:
 		division = get_object_or_404(Division,pk=division_id)
 	template = loader.get_template('league/results.html')
-	players=LeaguePlayer.objects.filter(division=division).order_by('-score')
+	players = LeaguePlayer.objects.filter(division=division).order_by('-score')
+
 	close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
 	context = {
 		'players':players,

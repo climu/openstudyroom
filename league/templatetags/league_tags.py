@@ -5,17 +5,18 @@ from django.utils.safestring import mark_safe
 register = template.Library()
 
 @register.simple_tag(takes_context=True)
-def html_one_result(context):
+def html_one_result(context,results):
 	# note the use of takes_context = true.
 	# this filter only works called from a context where player an opponent exists
 	player=context['player']
 	opponent = context['opponent']
+
 	if 'event' in context:
 		event=str(context['event'].pk)+'/'
 	else:
 		event=''
 
-	results=player.get_results()
+	#results=player.get_results_old()
 	opponent_kgs=opponent.kgs_username
 	html=""
 	if opponent_kgs in results:
@@ -31,10 +32,7 @@ def html_one_result(context):
 
 	return mark_safe(html)
 
-@register.filter
-def nb_games(player):
-	n = player.nb_win + player.nb_loss
-	return n
+
 
 @register.filter
 def user_link(user):

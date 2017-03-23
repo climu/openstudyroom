@@ -4,8 +4,8 @@ import datetime
 from . import utils
 import requests
 from django.contrib.auth.models import AbstractUser
-
-
+from collections import defaultdict
+from django.db.models import Q
 
 # Create your models here.
 class LeagueEvent(models.Model):
@@ -230,14 +230,14 @@ class User(AbstractUser):
 		players = self.leagueplayer_set.all()
 		n = 0
 		for player in players:
-			n += player.nb_win
+			n += player.nb_win()
 		return n
 
 	def nb_loss(self):
 		players = self.leagueplayer_set.all()
 		n = 0
 		for player in players:
-			n += player.nb_loss
+			n += player.nb_loss()
 		return n
 
 
@@ -262,7 +262,7 @@ class Division(models.Model):
 		return self.name
 
 	def get_players(self):
-		return self.leagueplayer_set.all().order_by('-score')
+		return	self.leagueplayer_set.all().order_by('-score')
 
 	def number_players(self):
 		return self.leagueplayer_set.count()
@@ -278,47 +278,67 @@ class LeaguePlayer(models.Model):
 	kgs_username = models.CharField(max_length=20,default='') #it's redundent with user, but let say a user change his kgs_username...
 	event = models.ForeignKey('LeagueEvent')
 	division = models.ForeignKey('Division')
-	nb_win = models.SmallIntegerField(default=0)
-	nb_loss = models.SmallIntegerField(default=0)
 	score = models.DecimalField(default=0, max_digits =4, decimal_places=1)
-	results = models.CharField(max_length=2000,default='{}',blank=True)
 	p_status = models.SmallIntegerField(default=0)
-#Note that results is a dirty string formated as a dict.
-# we will eval() to get it and str() to store.
-# results is formated as:
-#  {'opponent1':[{'id':game1.pk, 'r':1/0},{'id':game2.pk, 'r':1/0},...],'opponent2':[...]}
-# r: 1 for win, 0 for loss
+
 	def __str__(self):
 		return self.kgs_username
 
 	def get_results(self):
-		return eval(self.results)
+		# results are formated as:
+		#  {'opponent1':[{'id':game1.pk, 'r':1/0},{'id':game2.pk, 'r':1/0},...],'opponent2':[...]}
+		# r: 1 for win, 0 for loss
+		blackGames = self.black.get_queryset()
+		whiteGames = self.white.get_queryset()
 
-	def score_victory(self,opponent,game_id):
-		#score a victory for self again opponent (a LeaguePlayer)
-		# update score, nb_win and results
-		self.nb_win +=  1
+		resultsDict = defaultdict(list)
+
+		for game in blackGames:
+			opponent = game.white
+			won = game.winner == self
+			record = {
+				'id':game.pk,
+				'r': 1 if won else 0
+			}
+			resultsDict [opponent.kgs_username].append(record)
+
+		for game in whiteGames:
+			opponent = game.black
+			won = game.winner == self
+			record = {
+				'id':game.pk,
+				'r': 1 if won else 0
+			}
+			resultsDict [opponent.kgs_username].append(record)
+		return resultsDict
+
+
+
+	def nb_win(self):
+		return Game.objects.filter(Q(black = self)|Q(white = self)).filter(winner=self).count()
+
+	def nb_loss(self):
+		return Game.objects.filter(Q(black = self)|Q(white = self)).exclude(winner=self).count()
+
+	def nb_games(self):
+		return Game.objects.filter(Q(black = self)|Q(white = self)).count()
+
+	def score_win(self):
 		self.score += self.event.ppwin
-		dict_results = eval(self.results)
-		opponent=opponent.kgs_username
-		if opponent in dict_results :
-			 dict_results[opponent].append({'id':game_id, 'r':1})
-		else : dict_results[opponent]= [{'id':game_id, 'r':1}]
-		str_results = str(dict_results)
-		self.results = str_results
 		self.save()
 
-	def score_defeat(self,opponent,game_id):
-		self.nb_loss +=  1
+	def score_loss(self):
 		self.score += self.event.pploss
-		dict_results = eval(self.results)
-		opponent=opponent.kgs_username
-		if opponent in dict_results :
-			dict_results[opponent].append({'id':game_id, 'r':0})
-		else : dict_results[opponent]=[{'id':game_id, 'r':0}]
-		str_results = str(dict_results)
-		self.results = str_results
 		self.save()
+
+	def unscore_win(self):
+		self.score -= self.event.ppwin
+		self.save()
+
+	def unscore_loss(self):
+		self.score -= self.pploss
+		self.save()
+
 
 	def check_player(self):
 		# check if a player have play new games:
@@ -357,8 +377,6 @@ class LeaguePlayer(models.Model):
 					sgf.game_type = game_type
 					sgf.save()
 
-	def nb_games(self):
-		return(self.nb_win+self.nb_loss)
 
 	def is_active(self):
 		return self.nb_games() >= self.event.min_matchs
@@ -406,13 +424,13 @@ class Game(models.Model):
 			#add the winner field and score the results :
 			if sgf.result.find('B+') == 0:
 				game.winner = blacks.first()
-				game.winner.score_victory(game.white,game.pk)
-				game.white.score_defeat(game.black,game.pk)
+				game.winner.score_win()
+				game.white.score_loss()
+
 			elif sgf.result.find('W+') == 0:
 				game.winner = whites.first()
-				game.winner.score_victory(game.black,game.pk)
-				game.black.score_defeat(game.white,game.pk)
-
+				game.winner.score_win()
+				game.black.score_loss()
 			else:
 				game.delete()
 				return False
