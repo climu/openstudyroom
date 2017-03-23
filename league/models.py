@@ -278,20 +278,16 @@ class LeaguePlayer(models.Model):
 	kgs_username = models.CharField(max_length=20,default='') #it's redundent with user, but let say a user change his kgs_username...
 	event = models.ForeignKey('LeagueEvent')
 	division = models.ForeignKey('Division')
-#	nb_win = models.SmallIntegerField(default=0)
-#	nb_loss = models.SmallIntegerField(default=0)
 	score = models.DecimalField(default=0, max_digits =4, decimal_places=1)
-#	results = models.CharField(max_length=2000,default='{}',blank=True)
 	p_status = models.SmallIntegerField(default=0)
-#Note that results is a dirty string formated as a dict.
-# we will eval() to get it and str() to store.
-# results is formated as:
-#  {'opponent1':[{'id':game1.pk, 'r':1/0},{'id':game2.pk, 'r':1/0},...],'opponent2':[...]}
-# r: 1 for win, 0 for loss
+
 	def __str__(self):
 		return self.kgs_username
 
 	def get_results(self):
+		# results are formated as:
+		#  {'opponent1':[{'id':game1.pk, 'r':1/0},{'id':game2.pk, 'r':1/0},...],'opponent2':[...]}
+		# r: 1 for win, 0 for loss
 		blackGames = self.black.get_queryset()
 		whiteGames = self.white.get_queryset()
 
