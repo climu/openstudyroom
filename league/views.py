@@ -405,7 +405,7 @@ def admin_events(request, event_id=None):
 	else:
 		current = get_object_or_404(LeagueEvent, pk=event_id)
 
-	template = loader.get_template('league/admin_events.html')
+	template = loader.get_template('league/admin/events.html')
 	context = { 'events': events,
 				'current': current}
 	return HttpResponse(template.render(context, request))
