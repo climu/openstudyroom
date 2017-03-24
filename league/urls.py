@@ -31,7 +31,7 @@ urlpatterns = [
     url(r'^scraper/$', views.scraper_view, name='scraper'),
 
     url(r'^admin/$', views.admin, name='admin'),
-    url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/$', views.sgf_view, name='sgf_edit'),
+    url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/$', views.admin_edit_sgf, name='edit_sgf'),
     url(r'^admin/handle-upload-sgf/$', views.handle_upload_sgf, name='handle_upload_sgf'),
     url(r'^admin/upload-sgf/$', views.upload_sgf, name='upload_sgf'),
     url(r'^admin/create-sgf/$', views.create_sgf, name='create_sgf'),
@@ -39,4 +39,8 @@ urlpatterns = [
     url(r'^admin/update-all-sgf/$', views.update_all_sgf, name='update_all_sgf'),
     url(r'^admin/events/$', views.admin_events, name='admin_events'),
     url(r'^admin/events/(?P<event_id>[0-9]+)/$', views.admin_events, name='admin_events'),
+    url(r'^admin/sgf/$', views.admin_sgf_list, name='admin_sgf'),
+    url(r'^admin/game/(?P<game_id>[0-9]+)/delete/$', views.admin_delete_game, name='delete_game'),
+
+
 ]

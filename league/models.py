@@ -135,6 +135,14 @@ class Sgf(models.Model):
 	def __str__(self):
 		return self.wplayer + ' vs ' + self.bplayer
 
+	def has_game(self):
+		return Game.objects.filter(sgf=self).exists()
+
+	def get_messages(self):
+		''' Return a list of erros pasring message field'''
+		return self.message.split(';')[1:]
+
+
 
 	def parse(self):
 		#parse one sgf :

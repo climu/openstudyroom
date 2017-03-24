@@ -1,0 +1,156 @@
+{% extends "league/admin/base.html" %}
+{% load bootstrap3 wgo_tags league_tags%}
+{% block title %}Edit a sgf{% endblock %}
+
+{% block heading %}
+<div class="page-header">
+    <h1>{{sgf.wplayer}} vs {{sgf.bplayer}} the {{sgf.date |date:"M d, Y"}}</h1>
+</div>
+{%endblock%}
+{% block content %}
+<form  method="post" class="form">
+{% csrf_token %}
+<div class="row">
+  <div class="col-lg-4">
+    <p><a href="{% url 'league:admin' %}"class="btn btn-danger text-left">Back to admin</a><p>
+  </div>
+  <div class="col-lg-4">
+    <button type="submit" class="btn btn-info " formaction="{%url 'league:edit_sgf' sgf.pk%}" >
+      {% bootstrap_icon "refresh" %}  Check sgf
+    </button>
+  </div>
+  <div class="col-lg-4">
+    <button type="submit" class="btn btn-success " formaction="{%url 'league:create_sgf'%}"onclick="return confirm('Save the sgf and create a league game ?')" >
+      {% bootstrap_icon "ok" %} Save sgf
+    </button>
+  </div>
+</div>
+
+<div class="row">
+
+   <div class="col-md-3">
+     <div class="panel panel-default">
+       <div class="panel-heading"> Sgf infos</div>
+     <table class="table table-condensed">
+    <tbody>
+      <tr>
+        <th>ID</th>
+        <td> {{sgf.pk}}</td>
+      </tr>
+        <tr>
+          <th>White</th>
+            <td>{{sgf.wplayer}}</td>
+        </tr>
+        <tr>
+          <th>Black</th>
+            <td>{{sgf.bplayer}}</td>
+        </tr>
+        <tr>
+          <th>Date</th>
+          <td> {{sgf.date |date:"M d, Y"}}</td>
+        </tr>
+        <tr>
+          <th>Result</th>
+          <td> {{sgf.result}}</td>
+        </tr>
+        <tr>
+          <th>Type</th>
+          <td> {{sgf.game_type}}</td>
+        </tr>
+        <tr>
+          <th>p_status</th>
+          <td> {{sgf.p_status | p_status}}</td>
+        </tr>
+        <tr>
+          <th>Download </th>
+          <td>   <a href="{% url 'league:sgf' sgf.pk%}">{% bootstrap_icon 'save' %} </a></td>
+        </tr>
+
+
+      </tbody>
+    </table>
+</div>
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+{% if sgf.league_valid %}
+
+     This SGF is valid !
+
+{% else %}
+This SGF is not valid :
+
+{% endif %}
+</div>
+<table class="table table-condensed">
+{% with sgf.get_messages as messages %}
+{% for message in messages %}
+<tr><td>{{message}}</td></tr>
+{% endfor %}
+{% endwith %}
+</table>
+
+   </div>
+
+
+   <div class="panel panel-default">
+{% if sgf.has_game %}
+     <div class="panel-heading">
+This SGF has a league game:
+     </div>
+     <table class="table table-condensed">
+     <tr>
+       <th> Game ID </th>
+       <td>{{sgf.game.pk}}</td>
+     </tr>
+     <tr>
+       <th> League </th>
+       <td>{{sgf.game.event}}</td>
+     </tr>
+     <tr>
+       <th> Group </th>
+       <td>{{sgf.game.white.division}}</td>
+     </tr>
+     <tr>
+       <th>  Permalink </th>
+       <td><a href="/league/games/{{sgf.game.pk}}">{% bootstrap_icon 'link' %}</a></td>
+     </tr>
+     <tr>
+       <th> Delete</th>
+       <td>
+        <button type="submit" class="btn btn-danger btn-xs" formaction="{%url 'league:delete_game' sgf.game.pk%}"onclick="return confirm('Deleting this game will adjust players scores but will NOT delete the SGF.')" >
+          {% bootstrap_icon 'remove'%}
+          Delete game
+        </button>
+       </td>
+     </tr>
+
+     </table>
+     {% else %}
+     <div class="panel-heading">
+This SGF does NOT have a league game
+  </div>
+     {% endif %}
+   </div>
+
+</div>
+
+
+
+
+<div class="col-md-4">
+
+    {% bootstrap_form form %}
+
+    </button>
+
+
+</form>
+</div>
+<div class="col-md-5">
+  <div data-wgo="{{ sgf.sgf_text  | prepare_sgf}}">
+</div>
+</div>
+</div>
+</form>
+{% endblock %}

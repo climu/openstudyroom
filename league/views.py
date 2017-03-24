@@ -233,7 +233,12 @@ def account(request,user_name=None):
 		template = loader.get_template('league/account.html')
 		return HttpResponse(template.render(context, request))
 
-
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_sgf_list(request):
+	sgfs=Sgf.objects.all()
+	context={'sgfs':sgfs}
+	return render(request,'league/admin/sgf_list.html', context)
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
@@ -309,24 +314,49 @@ def upload_sgf(request):
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
-def sgf_view(request,sgf_id):
+def admin_delete_game(request,game_id):
+	''' delete a game and add the message " deleted by admin to the sgf"'''
+	game = get_object_or_404(Game,pk = game_id)
+	if request.method == 'POST':
+		sgf=game.sgf
+		game.delete()
+		sgf.message += ";deleted by admin"
+		sgf.save()
+		form = SgfAdminForm(initial={'sgf':sgf.sgf_text})
+		context = {
+		'sgf':sgf,
+		'form': form,
+		}
+		message ="The game " + str(game) + "has been deleted"
+		messages.success(request,message)
+	return HttpResponseRedirect(reverse('league:edit_sgf',args=[sgf.pk]))
+
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_edit_sgf(request,sgf_id):
 	sgf = get_object_or_404(Sgf, pk=sgf_id)
 	if request.method == 'POST':
 		form = SgfAdminForm(request.POST)
 		if form.is_valid():
 			sgf.sgf_text = form.cleaned_data['sgf']
 			sgf.p_status = 2
-			sgf.save()
-			message =" You just modified the sgf " + sgf.wplayer + " Vs "+ sgf.bplayer
-			messages.success(request,message)
-		return HttpResponseRedirect(reverse('league:admin'))
+			sgf=sgf.parse()
+			sgf = sgf.check_validity()
+			form = SgfAdminForm(initial={'sgf':sgf.sgf_text})
+			context = {
+			'sgf':sgf,
+			'form': form,
+			}
+			template = loader.get_template('league/admin/sgf_edit.html')
+			return HttpResponse(template.render(context, request))
 	else:
 		form = SgfAdminForm(initial={'sgf':sgf.sgf_text})
 		context={
 		'form' : form,
 		'sgf' : sgf,
 		}
-		return render(request,'league/sgf.html', context)
+		return render(request,'league/admin/sgf_edit.html', context)
 
 
 @login_required()
@@ -374,7 +404,7 @@ def admin_events(request, event_id=None):
 		current = get_object_or_404(LeagueEvent, pk=Registry.get_primary_event().pk)
 	else:
 		current = get_object_or_404(LeagueEvent, pk=event_id)
-	
+
 	template = loader.get_template('league/admin_events.html')
 	context = { 'events': events,
 				'current': current}

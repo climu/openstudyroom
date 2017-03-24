@@ -1,0 +1,52 @@
+{% extends 'league/admin/base.html' %}
+{% load bootstrap3 league_tags%}
+{% block heading %}
+<div class="page-header">
+    <h1>All sgfs</h1>
+</div>
+{%endblock%}
+
+{% block content %}
+
+<table id='sgf-table' class='table' >
+  <thead>
+    <th>Id</th>
+    <th> Date</th>
+    <th> White</th>
+    <th>BLack</th>
+    <th>Result</th>
+    <th> Type </th>
+    <th>League valid?</th>
+    <th>Has game ?</th>
+    <th>p_status</th>
+    <th>Edit</th>
+  </thead>
+</tbody>
+{% for sgf in sgfs%}
+<tr>
+<td>{{sgf.pk}}</td>
+<td>{{sgf.date | date:"M d, Y"}}</td>
+<td>{{sgf.wplayer}}</td>
+<td>{{sgf.bplayer}}</td>
+<td>{{sgf.result}}</td>
+<td>{{sgf.game_type}}</td>
+<td>{{sgf.league_valid | boolean_icon}}</td>
+<td>{{sgf.has_game | boolean_icon}}</td>
+<td>{{sgf.p_status}}</td>
+<td><a href= "{% url 'league:edit_sgf' sgf.pk %}"> <span class="glyphicon glyphicon-menu-right"></span></a></td>
+
+</tr>
+  {% endfor %}
+</tbody>
+</table>
+
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+$('#sgf-table').DataTable();
+} );
+</script>
+{% endblock %}
