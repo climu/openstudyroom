@@ -1,0 +1,5 @@
+{% load bootstrap3 league_tags%}
+<form action="" method="POST">{% csrf_token %}
+	{{ form.as_p }}
+	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
+</form>
