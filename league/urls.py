@@ -38,7 +38,8 @@ urlpatterns = [
     url(r'^admin/send-mail/$', views.send_user_mail, name='send_email'),
     url(r'^admin/update-all-sgf/$', views.update_all_sgf, name='update_all_sgf'),
     url(r'^admin/events/$', views.admin_events, name='admin_events'),
-    url(r'^admin/events/(?P<event_id>[0-9]+)/$', views.admin_events, name='admin_events'),
+    #url(r'^admin/events/(?P<event_id>[0-9]+)/$', views.admin_events, name='admin_events'),
+    url(r'^admin/events/(?P<pk>[0-9]+)/$', views.LeagueEventUpdate.as_view(), name='admin_events'),
     url(r'^admin/sgf/$', views.admin_sgf_list, name='admin_sgf'),
     url(r'^admin/game/(?P<game_id>[0-9]+)/delete/$', views.admin_delete_game, name='delete_game'),
 

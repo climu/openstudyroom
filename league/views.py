@@ -17,6 +17,8 @@ from django.contrib.auth.decorators import user_passes_test
 from collections import OrderedDict
 from . import utils
 
+from django.views.generic.edit import UpdateView
+
 discord_url_file = "/etc/discord_url.txt"
 
 def scraper():
@@ -395,19 +397,24 @@ def admin(request):
 		template = loader.get_template('league/admin.html')
 		return HttpResponse(template.render(context, request))
 
+class LeagueEventUpdate(UpdateView):
+	model = LeagueEvent
+	fields = ['name', 'end_time']
+	template_name_suffix = '_update_form'
+
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name=None)
 def admin_events(request, event_id=None):
-	events = LeagueEvent.objects.all()
-	current = None
-	if event_id is None:
-		current = get_object_or_404(LeagueEvent, pk=Registry.get_primary_event().pk)
-	else:
-		current = get_object_or_404(LeagueEvent, pk=event_id)
-
+	events = LeagueEvent.objects.all().order_by("-begin_time")
+	primary_event = Registry.get_primary_event().pk
+	edit_event = -1
+	if not event_id is None:
+		edit_event = get_object_or_404(LeagueEvent, pk=event_id)
+	
 	template = loader.get_template('league/admin/events.html')
 	context = { 'events': events,
-				'current': current}
+				'edit_event': edit_event,
+				'primary_pk': primary_event}
 	return HttpResponse(template.render(context, request))
 
 

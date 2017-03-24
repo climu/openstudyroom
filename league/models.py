@@ -24,6 +24,9 @@ class LeagueEvent(models.Model):
 	def __str__(self):
 		return self.name
 
+	def get_absolut_url(self):
+		return reverse('league', kwargs={'pk': self.pk})
+
 	def get_year(self):
 		return self.begin_time.year
 
