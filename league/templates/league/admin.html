@@ -63,7 +63,7 @@
          <td> {{sgf.bplayer }}</td>
          <td> {{sgf.result}} </td>
          <td>{{sgf.message}}</td>
-         <td><a href= "{% url 'league:sgf_edit' sgf.pk %}"> <span class="glyphicon glyphicon-menu-right"></span></a></td>
+         <td><a href= "{% url 'league:edit_sgf' sgf.pk %}"> <span class="glyphicon glyphicon-menu-right"></span></a></td>
        </tr>
 {% endfor %}
 </tbody></table>
