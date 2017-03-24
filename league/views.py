@@ -410,7 +410,7 @@ def admin_events(request, event_id=None):
 	edit_event = -1
 	if not event_id is None:
 		edit_event = get_object_or_404(LeagueEvent, pk=event_id)
-	
+
 	template = loader.get_template('league/admin/events.html')
 	context = { 'events': events,
 				'edit_event': edit_event,

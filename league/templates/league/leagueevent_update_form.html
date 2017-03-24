@@ -1,5 +1,8 @@
+{% extends 'league/admin/base.html' %}
 {% load bootstrap3 league_tags%}
+{% block content %}
 <form action="" method="POST">{% csrf_token %}
-	{{ form.as_p }}
+	{% bootstrap_form form layout='inline' %}
 	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
 </form>
+{% endblock %}
