@@ -399,7 +399,13 @@ def admin(request):
 
 class LeagueEventUpdate(UpdateView):
 	model = LeagueEvent
-	fields = ['name', 'end_time']
+	fields = ['name',
+			'begin_time',
+			'end_time',
+			'nb_matchs',
+			'ppwin',
+			'pploss',
+			'min_matchs']
 	template_name_suffix = '_update_form'
 
 @login_required()
@@ -417,6 +423,14 @@ def admin_events(request, event_id=None):
 				'primary_pk': primary_event}
 	return HttpResponse(template.render(context, request))
 
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name=None)
+def admin_events_set_primary(request, event_id):
+	r=Registry.objects.get(pk=1)
+	r.primary_event = LeagueEvent.objects.get(pk=event_id)
+	message ="Changed primary event to \"{}\"".format(r.primary_event.name)
+	messages.success(request,message)
+	return HttpResponseRedirect(reverse('league:admin_events'))
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)

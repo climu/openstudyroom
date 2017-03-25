@@ -1,8 +1,19 @@
 {% extends 'league/admin/base.html' %}
 {% load bootstrap3 league_tags%}
+{% block title %}OSR league admin - Events{% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1>Edit Event "{{ object.name }}"</h1>
+</div>
+{%endblock%}
 {% block content %}
+
 <form action="" method="POST">{% csrf_token %}
-	{% bootstrap_form form layout='inline' %}
+	{% bootstrap_form form %}
 	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
+	<button button_type="submit" formaction="{% url 'league:set_primary' object.pk %}" class="btn btn-primary btn-xs">
+		Set as primary
+	</button>
 </form>
+
 {% endblock %}
