@@ -324,7 +324,7 @@ def admin_delete_game(request,game_id):
 		sgf.message += ";deleted by admin ("+ str(game.pk) +")"
 		sgf.save()
 		game.delete()
-		form = SgfAdminForm(initial={'sgf':sgf.sgf_text})
+		form = SgfAdminForm(initial={'sgf':sgf.sgf_text,'url':sgf.urlto})
 		context = {
 		'sgf':sgf,
 		'form': form,
@@ -357,13 +357,25 @@ def admin_save_sgf(request,sgf_id):
 		form = SgfAdminForm(request.POST)
 		if form.is_valid():
 			sgf.sgf_text = form.cleaned_data['sgf']
+			sgf.urlto = form.cleaned_data['url']
 			sgf.p_status = 2
 			sgf = sgf.parse()
+			sgf = sgf.check_validity()
 			sgf.save()
 	message = 'successfully saved the sgf in the db'
 	messages.success(request,message)
 	return HttpResponseRedirect(reverse('league:edit_sgf',args=[sgf.pk]))
 
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_delete_sgf(request,sgf_id):
+	sgf = get_object_or_404(Sgf, pk=sgf_id)
+	if request.method == 'POST':
+		message = 'successfully deleted the sgf ' + str(sgf)
+		messages.success(request,message)
+		sgf.delete()
+		return HttpResponseRedirect(reverse('league:admin'))
+	else:raise Http404("What are you doing here ?")
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
@@ -373,10 +385,11 @@ def admin_edit_sgf(request,sgf_id):
 		form = SgfAdminForm(request.POST)
 		if form.is_valid():
 			sgf.sgf_text = form.cleaned_data['sgf']
+			sgf.urlto = form.cleaned_data['url']
 			sgf.p_status = 2
 			sgf = sgf.parse()
 			sgf = sgf.check_validity()
-			form = SgfAdminForm(initial={'sgf':sgf.sgf_text})
+			form = SgfAdminForm(initial={'sgf':sgf.sgf_text, 'url':sgf.urlto})
 			context = {
 			'sgf':sgf,
 			'form': form,
@@ -385,7 +398,7 @@ def admin_edit_sgf(request,sgf_id):
 			template = loader.get_template('league/admin/sgf_edit.html')
 			return HttpResponse(template.render(context, request))
 	else:
-		form = SgfAdminForm(initial={'sgf':sgf.sgf_text})
+		form = SgfAdminForm(initial={'sgf':sgf.sgf_text, 'url':sgf.urlto})
 		context={
 		'form' : form,
 		'sgf' : sgf,

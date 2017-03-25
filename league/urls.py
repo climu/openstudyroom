@@ -43,5 +43,7 @@ urlpatterns = [
     url(r'^admin/game/(?P<game_id>[0-9]+)/delete/$', views.admin_delete_game, name='delete_game'),
     url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/create-game/$', views.admin_create_game, name='create_game'),
     url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/save/$', views.admin_save_sgf, name='save_sgf'),
+    url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/delete/$', views.admin_delete_sgf, name='delete_sgf'),
+
 
 ]

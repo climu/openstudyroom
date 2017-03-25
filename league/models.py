@@ -133,7 +133,7 @@ class Sgf(models.Model):
 	#					2 require checking with priority,sgf added/changed by admin
 
 	def __str__(self):
-		return self.wplayer + ' vs ' + self.bplayer
+		return str(self.pk) +': ' + self.wplayer + ' vs ' + self.bplayer
 
 	def has_game(self):
 		return Game.objects.filter(sgf=self).exists()
@@ -403,8 +403,6 @@ class LeaguePlayer(models.Model):
 
 
 
-
-
 class Game(models.Model):
 	sgf = models.OneToOneField('Sgf')
 	event = models.ForeignKey('LeagueEvent',blank=True,null=True)
@@ -415,7 +413,7 @@ class Game(models.Model):
 
 
 	def __str__(self):
-		return self.black.kgs_username + ' vs ' + self.white.kgs_username
+		return str(self.pk) +': ' + self.black.kgs_username + ' vs ' + self.white.kgs_username
 
 
 
