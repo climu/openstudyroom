@@ -7,13 +7,28 @@
 </div>
 {%endblock%}
 {% block content %}
-
+<div class="row">
+<div class="col-md-4">
+  <legend>Edit {{object}} </legend>
 <form action="" method="POST">{% csrf_token %}
 	{% bootstrap_form form %}
 	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
-	<button button_type="submit" formaction="{% url 'league:set_primary' object.pk %}" class="btn btn-primary btn-xs">
+	<button button_type="submit" formaction="{% url 'league:set_primary' object.pk %}" class="btn btn-primary btn-xs pull-right">
 		Set as primary
 	</button>
 </form>
-
+</div>
+<div class="col-md-8">
+  <legend>{{object}} divisions</legend>
+  {% for division in object.get_divisions %}
+  <div class="panel panel-default">
+    <div class="panel-heading"> <b>{{division }}</b> <div class="pull-right"> {{division.number_players}} players | {{division.number_games}} games</div></div>
+    <div class="panel-body">
+    <p>Here we could have edit and  delete buttons.</p>
+    <p> I am also thinking having a up/down arrow buton that would deal with division order</p>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+</div>
 {% endblock %}

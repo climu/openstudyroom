@@ -397,6 +397,7 @@ def admin(request):
 		template = loader.get_template('league/admin.html')
 		return HttpResponse(template.render(context, request))
 
+
 class LeagueEventUpdate(UpdateView):
 	model = LeagueEvent
 	fields = ['name',
@@ -407,6 +408,8 @@ class LeagueEventUpdate(UpdateView):
 			'pploss',
 			'min_matchs']
 	template_name_suffix = '_update_form'
+
+
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name=None)
@@ -426,11 +429,16 @@ def admin_events(request, event_id=None):
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name=None)
 def admin_events_set_primary(request, event_id):
-	r=Registry.objects.get(pk=1)
-	r.primary_event = LeagueEvent.objects.get(pk=event_id)
-	message ="Changed primary event to \"{}\"".format(r.primary_event.name)
-	messages.success(request,message)
-	return HttpResponseRedirect(reverse('league:admin_events'))
+	event = get_object_or_404(LeagueEvent,pk=event_id)
+	if request.method =='POST':
+		r=Registry.objects.get(pk=1)
+		r.primary_event = event
+		r.save()
+		message ="Changed primary event to \"{}\"".format(r.primary_event.name)
+		messages.success(request,message)
+		return HttpResponseRedirect(reverse('league:admin_events'))
+	else: raise Http404("What are you doing here ?")
+
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)

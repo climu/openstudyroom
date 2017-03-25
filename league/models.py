@@ -274,6 +274,9 @@ class Division(models.Model):
 	def __str__(self):
 		return self.name
 
+	def number_games(self):
+		return Game.objects.filter(white__division=self).count()
+
 	def get_players(self):
 		return	self.leagueplayer_set.all().order_by('-score')
 
