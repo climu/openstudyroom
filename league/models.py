@@ -186,7 +186,14 @@ class Sgf(models.Model):
 		#no result shouldn't happen automaticly, but with admin upload, who knows
 		if self.result == '?':(b,m) = (False,m+'; no result')
 		if self.number_moves < 20 : (b,m) = (False,m+'; number moves')
-		if Sgf.objects.filter(check_code=self.check_code).exists():(b,m) = (False,m+'; same sgf already in db')
+		#if game is already in db, we need to be check only with others sgfs
+		sgfs= Sgf.objects.filter(check_code=self.check_code)
+		if self.pk is None:
+			if len(sgfs)>0:(b,m) = (False,m+'; same sgf already in db : '+ str(sgfs.first().pk))
+		else:
+			sgfs = sgfs.exclude(pk=self.pk)
+			if len(sgfs)>0:(b,m) = (False,m+'; same sgf already in db : ' + str(sgfs.first().pk))
+
 		self.message = m
 		self.league_valid = b
 		return self

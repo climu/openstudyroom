@@ -20,9 +20,11 @@
     </button>
   </div>
   <div class="col-lg-4">
-    <button type="submit" class="btn btn-success " formaction="{%url 'league:create_sgf'%}"onclick="return confirm('Save the sgf and create a league game ?')" >
+    {% if preview %}
+    <button type="submit" class="btn btn-success " formaction="{%url 'league:save_sgf' sgf.pk%}"onclick="return confirm('Save the sgf and create a league game ?')" >
       {% bootstrap_icon "ok" %} Save sgf
     </button>
+    {% endif %}
   </div>
 </div>
 
@@ -116,7 +118,7 @@ This SGF has a league game:
        <td><a href="/league/games/{{sgf.game.pk}}">{% bootstrap_icon 'link' %}</a></td>
      </tr>
      <tr>
-       <th> Delete</th>
+       <th>Delete</th>
        <td>
         <button type="submit" class="btn btn-danger btn-xs" formaction="{%url 'league:delete_game' sgf.game.pk%}"onclick="return confirm('Deleting this game will adjust players scores but will NOT delete the SGF.')" >
           {% bootstrap_icon 'remove'%}
@@ -128,11 +130,19 @@ This SGF has a league game:
      </table>
      {% else %}
      <div class="panel-heading">
-This SGF does NOT have a league game
-  </div>
-     {% endif %}
-   </div>
+This SGF is NOT a league game
+</div>
+{% if preview %}
+You should save sgf changes before creating a game.
+{% elif sgf.league_valid %}
+<button type="submit" class="btn btn-success btn-xs" formaction="{%url 'league:create_game' sgf.pk%}" onclick="return confirm('Create a league game for this SGF ?')" >
+{% bootstrap_icon "plus"%} Create a league game
+</button>
+{% endif %}
+  
 
+{% endif %}
+</div>
 </div>
 
 

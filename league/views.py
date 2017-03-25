@@ -240,6 +240,8 @@ def admin_sgf_list(request):
 	context={'sgfs':sgfs}
 	return render(request,'league/admin/sgf_list.html', context)
 
+
+
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
 def handle_upload_sgf(request):
@@ -319,9 +321,9 @@ def admin_delete_game(request,game_id):
 	game = get_object_or_404(Game,pk = game_id)
 	if request.method == 'POST':
 		sgf=game.sgf
-		game.delete()
-		sgf.message += ";deleted by admin"
+		sgf.message += ";deleted by admin ("+ str(game.pk) +")"
 		sgf.save()
+		game.delete()
 		form = SgfAdminForm(initial={'sgf':sgf.sgf_text})
 		context = {
 		'sgf':sgf,
@@ -329,6 +331,37 @@ def admin_delete_game(request,game_id):
 		}
 		message ="The game " + str(game) + "has been deleted"
 		messages.success(request,message)
+	return HttpResponseRedirect(reverse('league:edit_sgf',args=[sgf.pk]))
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_create_game(request,sgf_id):
+	sgf = get_object_or_404(Sgf,pk=sgf_id)
+	if request.method =='POST':
+		form = ActionForm(request.POST)
+		sgf = sgf.check_validity()
+		if sgf.league_valid:
+			if Game.create_game(sgf): message='Successfully created the game ' + sgf.wplayer + ' vs ' + sgf.bplayer +' !'
+			else: message="We coudln't create a league game for this sgf"
+		else:
+				message="The sgf is not valid so we can't create a game"
+	else :raise Http404("What are you doing here ?")
+	messages.success(request,message)
+	return HttpResponseRedirect(reverse('league:edit_sgf',args=[sgf.pk]))
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_save_sgf(request,sgf_id):
+	sgf = get_object_or_404(Sgf, pk=sgf_id)
+	if request.method == 'POST':
+		form = SgfAdminForm(request.POST)
+		if form.is_valid():
+			sgf.sgf_text = form.cleaned_data['sgf']
+			sgf.p_status = 2
+			sgf = sgf.parse()
+			sgf.save()
+	message = 'successfully saved the sgf in the db'
+	messages.success(request,message)
 	return HttpResponseRedirect(reverse('league:edit_sgf',args=[sgf.pk]))
 
 
@@ -341,12 +374,13 @@ def admin_edit_sgf(request,sgf_id):
 		if form.is_valid():
 			sgf.sgf_text = form.cleaned_data['sgf']
 			sgf.p_status = 2
-			sgf=sgf.parse()
+			sgf = sgf.parse()
 			sgf = sgf.check_validity()
 			form = SgfAdminForm(initial={'sgf':sgf.sgf_text})
 			context = {
 			'sgf':sgf,
 			'form': form,
+			'preview': True
 			}
 			template = loader.get_template('league/admin/sgf_edit.html')
 			return HttpResponse(template.render(context, request))
@@ -355,6 +389,7 @@ def admin_edit_sgf(request,sgf_id):
 		context={
 		'form' : form,
 		'sgf' : sgf,
+		'preview': False
 		}
 		return render(request,'league/admin/sgf_edit.html', context)
 
@@ -366,7 +401,6 @@ def admin(request):
 	if request.method =='POST':
 		form = ActionForm(request.POST)
 		if form.is_valid():
-			print(form.cleaned_data['action'])
 			if form.cleaned_data['action'] == "welcome_new_user":
 				user=User.objects.get(pk=form.cleaned_data['user_id'])
 				user.groups.clear()
