@@ -1,6 +1,11 @@
 {% extends "league/admin/base.html" %}
 {% load wagtailcore_tags bootstrap3 %}
 {% block title %}OSR league admin{% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1>Dashboard</h1>
+</div>
+{%endblock%}
 {% block content %}
 <div class="panel panel-default">
 <div class="panel-heading"><h3> List of new users </h3></div>

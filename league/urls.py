@@ -44,5 +44,4 @@ urlpatterns = [
     url(r'^admin/sgf/$', views.admin_sgf_list, name='admin_sgf'),
     url(r'^admin/game/(?P<game_id>[0-9]+)/delete/$', views.admin_delete_game, name='delete_game'),
 
-
 ]
