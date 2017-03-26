@@ -1,0 +1,45 @@
+{% extends 'league/admin/base.html' %}
+{% load bootstrap3 league_tags%}
+{% block title %}OSR league admin - Events{% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1>Edit Event "{{ object.name }}"</h1>
+</div>
+{%endblock%}
+{% block content %}
+<div class="row">
+<div class="col-md-4">
+  <legend>Edit {{object}} </legend>
+<form action="" method="POST">{% csrf_token %}
+	{% bootstrap_form form %}
+	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
+	<button button_type="submit" formaction="{% url 'league:set_primary' object.pk %}" class="btn btn-primary btn-xs pull-right">
+		Set as primary
+	</button>
+</form>
+</div>
+<div class="col-md-8">
+  <legend>{{object}} divisions</legend>
+  <div class="panel panel-default">
+    <div class="panel-heading"> Create a new division</div>
+    <div class="panel-body">
+  <form action="" method="POST" class="form-inline" >{% csrf_token %}
+  <input id="name" class="form-control" name="name" placeholder="New division name" title=""  type="text">
+  <button type="submit" formaction="{% url 'league:admin_create_division' object.pk %}" class="btn btn-primary  pull-right">
+    {% bootstrap_icon "plus" %} Create new division
+  </button>
+  </form>
+   </div>
+ </div>
+  {% for division in object.get_divisions %}
+  <div class="panel panel-default">
+    <div class="panel-heading"> <b>{{division }}</b> <div class="pull-right"> {{division.number_players}} players | {{division.number_games}} games</div></div>
+    <div class="panel-body">
+    <p>Here we could have edit and  delete buttons.</p>
+    <p>I am also thinking having a up/down arrow buton that would deal with division order</p>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+</div>
+{% endblock %}

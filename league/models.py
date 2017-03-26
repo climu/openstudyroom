@@ -24,6 +24,9 @@ class LeagueEvent(models.Model):
 	def __str__(self):
 		return self.name
 
+	def get_absolut_url(self):
+		return reverse('league', kwargs={'pk': self.pk})
+
 	def get_year(self):
 		return self.begin_time.year
 
@@ -70,7 +73,10 @@ class LeagueEvent(models.Model):
 	def number_inactives_players(self):
 		return (self.number_players()-self.number_actives_players())
 
-
+	def last_division_order(self):
+		if self.division_set.exists():
+			return self.division_set.last().order
+		else: return -1
 
 
 
@@ -277,6 +283,9 @@ class Division(models.Model):
 
 	def __str__(self):
 		return self.name
+
+	def number_games(self):
+		return Game.objects.filter(white__division=self).count()
 
 	def get_players(self):
 		return	self.leagueplayer_set.all().order_by('-score')

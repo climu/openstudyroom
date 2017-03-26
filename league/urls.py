@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.core.urlresolvers import reverse
 
 from . import views
 
@@ -38,12 +39,14 @@ urlpatterns = [
     url(r'^admin/send-mail/$', views.send_user_mail, name='send_email'),
     url(r'^admin/update-all-sgf/$', views.update_all_sgf, name='update_all_sgf'),
     url(r'^admin/events/$', views.admin_events, name='admin_events'),
-    url(r'^admin/events/(?P<event_id>[0-9]+)/$', views.admin_events, name='admin_events'),
+    url(r'^admin/events/(?P<pk>[0-9]+)/$', views.LeagueEventUpdate.as_view(success_url='/league/admin/events/'), name='admin_events_update' ),
+    url(r'^admin/events/(?P<event_id>[0-9]+)/set_primary/$', views.admin_events_set_primary, name='set_primary'),
     url(r'^admin/sgf/$', views.admin_sgf_list, name='admin_sgf'),
     url(r'^admin/game/(?P<game_id>[0-9]+)/delete/$', views.admin_delete_game, name='delete_game'),
+
     url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/create-game/$', views.admin_create_game, name='create_game'),
     url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/save/$', views.admin_save_sgf, name='save_sgf'),
     url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/delete/$', views.admin_delete_sgf, name='delete_sgf'),
-
+    url(r'^admin/events/(?P<event_id>[0-9]+)/create-division/$', views.admin_create_division, name='admin_create_division' ),
 
 ]

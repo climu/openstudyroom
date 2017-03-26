@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import  Group
-from .models import User
+from .models import User,Division
+from django.forms import ModelForm
 
 class SgfAdminForm(forms.Form):
     sgf = forms.CharField(label='sgf data',widget=forms.Textarea(attrs={'cols': 60, 'rows': 20}))
@@ -43,3 +44,8 @@ class LeagueRolloverForm(forms.Form):
             #division =divisions.filter(order=player.division.order).first()
             #if division != None:
             #    self.fields['player_'+str(player.pk)].inital = (division.pk,division.name)
+
+class DivisionForm(ModelForm):
+    class Meta:
+        model = Division
+        fields = ['name']

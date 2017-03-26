@@ -1,0 +1,32 @@
+<table id='events-table' class='display table' cellspacing='0' width='100%' >
+	<thead>
+	<tr>
+		<th>Status</th>
+		<th>Name</th>
+		<th>Begin</th>
+		<th>End</th>
+		<th>Players</th>
+		<th>#Divisions</th>
+		<th>#Games</th>
+		<th>ppw</th>
+		<th>ppl</th>
+		<th>min match</th>
+	</thead>
+	<tbody>
+	{% for event in events %}
+	<tr>
+		<td> {% if event.pk == primary_pk %} <b>Open</b> {% else %} Closed {% endif %}</td>
+		<td> <a href= "{% url 'league:admin_events_update' event.pk %}"> {{ event.name }} </a> </td>
+		<td> {{ event.begin_time | date:"M d, Y" }} </td>
+		<td> {{ event.end_time | date:"M d, Y" }} </td>
+
+		<td> {{ event.number_players }} </td>
+		<td> {{ event.number_divisions }}</td>
+		<td> {{ event.nb_matchs }} </td>
+		<td> {{ event.ppwin }} </td>
+		<td> {{ event.pploss }} </td>
+		<td> {{ event.min_matchs }} </td>
+	</tr>
+	{% endfor %}
+	</tbody>
+</table>

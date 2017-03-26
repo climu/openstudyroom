@@ -3,7 +3,7 @@ from django.template import loader
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect,Http404
 from .models import Sgf,LeaguePlayer,User,LeagueEvent,Division,Game,Registry, User, is_league_admin, is_league_member
-from .forms import  SgfAdminForm,ActionForm,LeagueRolloverForm,UploadFileForm
+from .forms import  SgfAdminForm,ActionForm,LeagueRolloverForm,UploadFileForm,DivisionForm
 import datetime
 from django.http import Http404
 from django.core.urlresolvers import reverse
@@ -16,6 +16,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from collections import OrderedDict
 from . import utils
+
+from django.views.generic.edit import UpdateView
 
 discord_url_file = "/etc/discord_url.txt"
 
@@ -407,6 +409,7 @@ def admin_edit_sgf(request,sgf_id):
 		return render(request,'league/admin/sgf_edit.html', context)
 
 
+
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
 def admin(request):
@@ -442,21 +445,62 @@ def admin(request):
 		template = loader.get_template('league/admin.html')
 		return HttpResponse(template.render(context, request))
 
+
+class LeagueEventUpdate(UpdateView):
+	model = LeagueEvent
+	fields = ['name',
+			'begin_time',
+			'end_time',
+			'nb_matchs',
+			'ppwin',
+			'pploss',
+			'min_matchs']
+	template_name_suffix = '_update_form'
+
+
+
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name=None)
 def admin_events(request, event_id=None):
-	events = LeagueEvent.objects.all()
-	current = None
-	if event_id is None:
-		current = get_object_or_404(LeagueEvent, pk=Registry.get_primary_event().pk)
-	else:
-		current = get_object_or_404(LeagueEvent, pk=event_id)
+	events = LeagueEvent.objects.all().order_by("-begin_time")
+	primary_event = Registry.get_primary_event().pk
+	edit_event = -1
+	if not event_id is None:
+		edit_event = get_object_or_404(LeagueEvent, pk=event_id)
 
-	template = loader.get_template('league/admin_events.html')
+	template = loader.get_template('league/admin/events.html')
 	context = { 'events': events,
-				'current': current}
+				'edit_event': edit_event,
+				'primary_pk': primary_event}
 	return HttpResponse(template.render(context, request))
 
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name=None)
+def admin_events_set_primary(request, event_id):
+	event = get_object_or_404(LeagueEvent,pk=event_id)
+	if request.method =='POST':
+		r=Registry.objects.get(pk=1)
+		r.primary_event = event
+		r.save()
+		message ="Changed primary event to \"{}\"".format(r.primary_event.name)
+		messages.success(request,message)
+		return HttpResponseRedirect(reverse('league:admin_events'))
+	else: raise Http404("What are you doing here ?")
+
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_create_division(request,event_id):
+	event=get_object_or_404(LeagueEvent,pk=event_id)
+	if request.method =='POST':
+		form = DivisionForm(request.POST)
+		if form.is_valid():
+			division = form.save(commit=False)
+			division.league_event = event
+			division.order = event.last_division_order() +1
+			division.save()
+		return HttpResponseRedirect(reverse('league:admin_events_update',kwargs={'pk':event_id}))
+	else : raise Http404("What are you doing here ?")
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
