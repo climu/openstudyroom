@@ -73,7 +73,10 @@ class LeagueEvent(models.Model):
 	def number_inactives_players(self):
 		return (self.number_players()-self.number_actives_players())
 
-
+	def last_division_order(self):
+		if self.division_set.exists():
+			return self.division_set.last().order
+		else: return -1
 
 
 

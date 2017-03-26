@@ -3,7 +3,7 @@ from django.template import loader
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect,Http404
 from .models import Sgf,LeaguePlayer,User,LeagueEvent,Division,Game,Registry, User, is_league_admin, is_league_member
-from .forms import  SgfAdminForm,ActionForm,LeagueRolloverForm,UploadFileForm
+from .forms import  SgfAdminForm,ActionForm,LeagueRolloverForm,UploadFileForm,DivisionForm
 import datetime
 from django.http import Http404
 from django.core.urlresolvers import reverse
@@ -361,6 +361,7 @@ def admin_edit_sgf(request,sgf_id):
 		return render(request,'league/admin/sgf_edit.html', context)
 
 
+
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
 def admin(request):
@@ -439,6 +440,20 @@ def admin_events_set_primary(request, event_id):
 		return HttpResponseRedirect(reverse('league:admin_events'))
 	else: raise Http404("What are you doing here ?")
 
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_create_division(request,event_id):
+	event=get_object_or_404(LeagueEvent,pk=event_id)
+	if request.method =='POST':
+		form = DivisionForm(request.POST)
+		if form.is_valid():
+			division = form.save(commit=False)
+			division.league_event = event
+			division.order = event.last_division_order() +1
+			division.save()
+		return HttpResponseRedirect(reverse('league:admin_events_update',kwargs={'pk':event_id}))
+	else : raise Http404("What are you doing here ?")
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
