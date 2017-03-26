@@ -64,7 +64,7 @@
       <form action="" method="POST" class="form-inline" >{% csrf_token %}
         <input type="hidden" name="action" value="delete_division">
         <button type="submit" formaction="{% url 'league:admin_delete_division' division.pk %}" class="btn btn-danger"
-        onclick="return alert('Delete the {% if division.number_players > 0 %}division {{division}} and all its players/games?'{% else %}empty division {{division}}?'{% endif %} )">
+        onclick="return confirm('Delete the {% if division.number_players > 0 %}division {{division}} and all its players/games?'{% else %}empty division {{division}}?'{% endif %} )">
           {% bootstrap_icon "remove" %} Delete
         </button>
       </form>
