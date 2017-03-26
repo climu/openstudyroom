@@ -324,18 +324,22 @@ def admin_delete_game(request,game_id):
 	''' delete a game and add the message " deleted by admin to the sgf"'''
 	game = get_object_or_404(Game,pk = game_id)
 	if request.method == 'POST':
-		sgf=game.sgf
-		sgf.message += ";deleted by admin ("+ str(game.pk) +")"
-		sgf.save()
-		game.delete()
-		form = SgfAdminForm(initial={'sgf':sgf.sgf_text,'url':sgf.urlto})
-		context = {
-		'sgf':sgf,
-		'form': form,
-		}
-		message ="The game " + str(game) + "has been deleted"
-		messages.success(request,message)
-	return HttpResponseRedirect(reverse('league:edit_sgf',args=[sgf.pk]))
+		form=ActionForm(request.POST)
+		if form.is_valid():
+			if form.cleaned_data['action'] == 'delete_game':
+				sgf=game.sgf
+				sgf.message += ";deleted by admin ("+ str(game.pk) +")"
+				sgf.save()
+				game.delete()
+				form = SgfAdminForm(initial={'sgf':sgf.sgf_text,'url':sgf.urlto})
+				context = {
+				'sgf':sgf,
+				'form': form,
+				}
+				message ="The game " + str(game) + "has been deleted"
+				messages.success(request,message)
+				return HttpResponseRedirect(reverse('league:edit_sgf',args=[sgf.pk]))
+	raise Http404("What are you doing here ?")
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
@@ -343,13 +347,14 @@ def admin_create_game(request,sgf_id):
 	sgf = get_object_or_404(Sgf,pk=sgf_id)
 	if request.method =='POST':
 		form = ActionForm(request.POST)
-		sgf = sgf.check_validity()
-		if sgf.league_valid:
-			if Game.create_game(sgf): message='Successfully created the game ' + sgf.wplayer + ' vs ' + sgf.bplayer +' !'
-			else: message="We coudln't create a league game for this sgf"
-		else:
+		if form.is_valid():
+			sgf = sgf.check_validity()
+			if sgf.league_valid:
+				if Game.create_game(sgf): message='Successfully created the game ' + sgf.wplayer + ' vs ' + sgf.bplayer +' !'
+				else: message="We coudln't create a league game for this sgf"
+			else:
 				message="The sgf is not valid so we can't create a game"
-	else :raise Http404("What are you doing here ?")
+		else :raise Http404("What are you doing here ?")
 	messages.success(request,message)
 	return HttpResponseRedirect(reverse('league:edit_sgf',args=[sgf.pk]))
 
@@ -458,10 +463,10 @@ class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 			'pploss',
 			'min_matchs']
 	template_name_suffix = '_update_form'
-	
+
 	def test_func(self):
 		return self.request.user.is_authenticated() and self.request.user.user_is_league_admin()
-	
+
 	def get_login_url(self):
 		return '/'
 
@@ -505,13 +510,36 @@ def admin_events(request, event_id=None):
 def admin_events_set_primary(request, event_id):
 	event = get_object_or_404(LeagueEvent,pk=event_id)
 	if request.method =='POST':
-		r=Registry.objects.get(pk=1)
-		r.primary_event = event
-		r.save()
-		message ="Changed primary event to \"{}\"".format(r.primary_event.name)
-		messages.success(request,message)
-		return HttpResponseRedirect(reverse('league:admin_events'))
-	else: raise Http404("What are you doing here ?")
+		form = ActionForm(request.POST)
+		if form.is_valid():
+			if form.cleaned_data['action'] == "set_primary":
+				r=Registry.objects.get(pk=1)
+				r.primary_event = event
+				r.save()
+				message ="Changed primary event to \"{}\"".format(r.primary_event.name)
+				messages.success(request,message)
+				return HttpResponseRedirect(reverse('league:admin_events'))
+	raise Http404("What are you doing here ?")
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_delete_division(request,division_id):
+	division = get_object_or_404(Division, pk=division_id)
+	event = division.league_event
+	if request.method =='POST':
+		form = ActionForm(request.POST)
+		if form.is_valid():
+			if form.cleaned_data['action'] == "delete_division":
+				nb_players= division.number_players()
+				if nb_players >0:
+					message="You just deleted the division" + str(division) +" and the " + str(nb_players) +" players in it."
+				else:
+					message="You just deleted the empty division" + str(division) +"."
+				division.delete()
+				messages.success(request,message)
+				return HttpResponseRedirect(reverse('league:admin_events_update',kwargs={'pk':event.pk}))
+
+	raise Http404("What are you doing here ?")
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
@@ -542,6 +570,58 @@ def admin_create_division(request,event_id):
 			division.save()
 		return HttpResponseRedirect(reverse('league:admin_events_update',kwargs={'pk':event_id}))
 	else : raise Http404("What are you doing here ?")
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name=None)
+def admin_rename_division(request,division_id):
+	division=get_object_or_404(Division,pk=division_id)
+	event = division.league_event
+
+	if request.method =='POST':
+		form = DivisionForm(request.POST)
+		if form.is_valid():
+			message = "You renamed " + str(division) + " to " + form.cleaned_data['name']
+			division.name=form.cleaned_data['name']
+			division.save()
+			messages.success(request,message)
+			return HttpResponseRedirect(reverse('league:admin_events_update',kwargs={'pk':event.pk}))
+	raise Http404("What are you doing here ?")
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name=None)
+def admin_division_up_down(request,division_id):
+	'''changing division order. Note that if admin have deleted a division, the order change might not be just +-1'''
+	division_1 = get_object_or_404(Division,pk=division_id)
+	event = division_1.league_event
+	if request.method =='POST':
+		form = ActionForm(request.POST)
+		if form.is_valid():
+			if form.cleaned_data['action'] == "division_up" and not division_1.is_first():
+				order=division_1.order
+				while not event.division_set.exclude(pk=division_1.pk).filter(order=order).exists():
+					order -= 1
+				division_2 = Division.objects.get(league_event=division_1.league_event,order=order)
+				order_2 = division_1.order
+				division_2.order = -1
+				division_2.save()
+				division_1.order = order
+				division_1.save()
+				division_2.order = order_2
+				division_2.save()
+			if form.cleaned_data['action'] == "division_down" and not division_1.is_last():
+				order=division_1.order
+				while not event.division_set.exclude(pk=division_1.pk).filter(order=order).exists():
+					order += 1
+				division_2 = Division.objects.get(league_event=division_1.league_event,order=order)
+				order_2 = division_1.order
+				division_2.order = -1
+				division_2.save()
+				division_1.order = order
+				division_1.save()
+				division_2.order = order_2
+				division_2.save()
+			return HttpResponseRedirect(reverse('league:admin_events_update',kwargs={'pk':event.pk}))
+	raise Http404("What are you doing here ?")
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)

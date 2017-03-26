@@ -13,16 +13,23 @@
 <form action="" method="POST">{% csrf_token %}
 	{% bootstrap_form form %}
 	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
-	<button button_type="submit" formaction="{% url 'league:set_primary' object.pk %}" class="btn btn-primary btn-xs pull-right">
-		Set as primary
-	</button>
 </form>
+
+<form action="" method="POST">{% csrf_token %}
+<input type="hidden" name="action" value="set_primary">
+<button type="submit" formaction="{% url 'league:set_primary' object.pk %}" class="btn btn-primary btn-xs pull-right">
+  Set as primary
+</button>
+</form>
+
+
 <form action="{% url 'league:delete_event' object.pk %}" method="POST">{% csrf_token %}
 	<input type="hidden" name="action" value="delete_event" />
 	<button type="submit" class="btn btn-danger btn-xs pull-right"  onclick="return confirm('Are you sure you want to delete this Event?')">
 		Delete
 	</button>
 </form>
+
 </div>
 <div class="col-md-8">
   <legend>{{object}} divisions</legend>
@@ -39,12 +46,52 @@
  </div>
   {% for division in object.get_divisions %}
   <div class="panel panel-default">
-    <div class="panel-heading"> <b>{{division }}</b> <div class="pull-right"> {{division.number_players}} players | {{division.number_games}} games</div></div>
+    <div class="panel-heading clearfix">
+<b>{{division}}</b>
+       <div class="pull-right"> {{division.number_players}} players | {{division.number_games}} games</div>
+     </div>
     <div class="panel-body">
-    <p>Here we could have edit and  delete buttons.</p>
-    <p>I am also thinking having a up/down arrow buton that would deal with division order</p>
+      <div class="col-md-6">
+      <form action="" method="POST" class="form-inline" >{% csrf_token %}
+
+      <input id="name" class="form-control" name="name" placeholder="Division name" value="{{division}}" title=""  type="text">
+<button type="submit" formaction="{% url 'league:admin_rename_division' division.pk %}" class="btn btn-primary">
+  Rename
+</button>
+</form>
+</div>
+<div class="col-md-4">
+      <form action="" method="POST" class="form-inline" >{% csrf_token %}
+        <input type="hidden" name="action" value="delete_division">
+        <button type="submit" formaction="{% url 'league:admin_delete_division' division.pk %}" class="btn btn-danger"
+        onclick="return alert('Delete the {% if division.number_players > 0 %}division {{division}} and all its players/games?'{% else %}empty division {{division}}?'{% endif %} )">
+          {% bootstrap_icon "remove" %} Delete
+        </button>
+      </form>
+    </div>
+    <div class="col-md-1">
+      {% if not division.is_first %}
+      <form action="" method="POST" class="form-inline" >{% csrf_token %}
+        <input type="hidden" name="action" value="division_up">
+        <button type="submit" formaction="{% url 'league:admin_division_up_down' division.pk %}" class="btn btn-primary">
+          {% bootstrap_icon "arrow-up" %}
+        </button>
+      </form>
+      {% endif %}
+    </div>
+    <div class="col-md-1">
+      {% if not division.is_last %}
+      <form action="" method="POST" class="form-inline" >{% csrf_token %}
+        <input type="hidden" name="action" value="division_down">
+        <button type="submit" formaction="{% url 'league:admin_division_up_down' division.pk %}" class="btn btn-primary">
+          {% bootstrap_icon "arrow-down" %}
+        </button>
+      </form>
+      {% endif %}
+    </div>
     </div>
   </div>
+
   {% endfor %}
 </div>
 </div>

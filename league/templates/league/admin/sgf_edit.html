@@ -23,9 +23,13 @@
       {% bootstrap_icon "remove" %}  Delete SGF
     </div>
     {% else %}
+    <form  method="post" class="form">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="delete_sgf">
     <button form="sgf-form" type="submit" class="btn btn-danger " formaction="{%url 'league:delete_sgf' sgf.pk%}" onclick="return confirm('Are you sure you want to delete this SGF ?')" >
       {% bootstrap_icon "remove" %}  Delete SGF
     </button>
+    </form>
     {% endif %}
   </div>
 </div>
@@ -128,8 +132,8 @@ This SGF has a league game:
      <tr>
        <th>Delete</th>
        <td>
-         <form   method="post" class="form">
-         {% csrf_token %}
+         <form action="" method="POST" class="form-inline" >{% csrf_token %}
+           <input type="hidden" name="action" value="delete_game">
         <button type="submit" class="btn btn-danger btn-xs" formaction="{%url 'league:delete_game' sgf.game.pk%}"onclick="return confirm('Deleting this game will adjust players scores but will NOT delete the SGF.')" >
           {% bootstrap_icon 'remove'%}
           Delete game
@@ -146,8 +150,8 @@ This SGF is NOT a league game
 {% if preview %}
 You should save sgf changes before creating a game.
 {% elif sgf.league_valid %}
-<form  method="post" class="form">
-{% csrf_token %}
+<form action="" method="POST" class="form-inline" >{% csrf_token %}
+  <input type="hidden" name="action" value="create_game">
 <button type="submit" class="btn btn-success btn-xs" formaction="{%url 'league:create_game' sgf.pk%}" onclick="return confirm('Create a league game for this SGF ?')" >
 {% bootstrap_icon "plus"%} Create a league game
 </button>
