@@ -513,6 +513,21 @@ def admin_events_set_primary(request, event_id):
 		return HttpResponseRedirect(reverse('league:admin_events'))
 	else: raise Http404("What are you doing here ?")
 
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_events_delete(request,event_id):
+	event = get_object_or_404(LeagueEvent, pk=event_id)
+	if not request.method == 'POST':
+		raise Http404("What are you doing here ?")
+	
+	form = ActionForm(request.POST)
+	if not form.is_valid():
+		raise Http404("What are you doing here ? (Token Error)")
+	
+	message = 'Successfully deleted the event ' + str(event)
+	messages.success(request,message)
+	event.delete()
+	return HttpResponseRedirect(reverse('league:admin_events'))
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
