@@ -297,6 +297,13 @@ class Division(models.Model):
 		n = self.number_players()
 		return int(n*(n-1)*self.league_event.nb_matchs/2)
 
+	def is_first(self):
+		return not Division.objects.filter(league_event=self.league_event, order__lt = self.order).exists()
+
+	def is_last(self):
+		return not Division.objects.filter(league_event=self.league_event, order__gt = self.order).exists()
+
+
 
 
 class LeaguePlayer(models.Model):
