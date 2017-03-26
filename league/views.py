@@ -323,18 +323,22 @@ def admin_delete_game(request,game_id):
 	''' delete a game and add the message " deleted by admin to the sgf"'''
 	game = get_object_or_404(Game,pk = game_id)
 	if request.method == 'POST':
-		sgf=game.sgf
-		sgf.message += ";deleted by admin ("+ str(game.pk) +")"
-		sgf.save()
-		game.delete()
-		form = SgfAdminForm(initial={'sgf':sgf.sgf_text,'url':sgf.urlto})
-		context = {
-		'sgf':sgf,
-		'form': form,
-		}
-		message ="The game " + str(game) + "has been deleted"
-		messages.success(request,message)
-	return HttpResponseRedirect(reverse('league:edit_sgf',args=[sgf.pk]))
+		form=ActionForm(request.POST)
+		if form.is_valid():
+			if form.cleaned_data['action'] == 'delete_game':
+				sgf=game.sgf
+				sgf.message += ";deleted by admin ("+ str(game.pk) +")"
+				sgf.save()
+				game.delete()
+				form = SgfAdminForm(initial={'sgf':sgf.sgf_text,'url':sgf.urlto})
+				context = {
+				'sgf':sgf,
+				'form': form,
+				}
+				message ="The game " + str(game) + "has been deleted"
+				messages.success(request,message)
+				return HttpResponseRedirect(reverse('league:edit_sgf',args=[sgf.pk]))
+	raise Http404("What are you doing here ?")
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
@@ -342,13 +346,14 @@ def admin_create_game(request,sgf_id):
 	sgf = get_object_or_404(Sgf,pk=sgf_id)
 	if request.method =='POST':
 		form = ActionForm(request.POST)
-		sgf = sgf.check_validity()
-		if sgf.league_valid:
-			if Game.create_game(sgf): message='Successfully created the game ' + sgf.wplayer + ' vs ' + sgf.bplayer +' !'
-			else: message="We coudln't create a league game for this sgf"
-		else:
+		if form.is_valid():
+			sgf = sgf.check_validity()
+			if sgf.league_valid:
+				if Game.create_game(sgf): message='Successfully created the game ' + sgf.wplayer + ' vs ' + sgf.bplayer +' !'
+				else: message="We coudln't create a league game for this sgf"
+			else:
 				message="The sgf is not valid so we can't create a game"
-	else :raise Http404("What are you doing here ?")
+		else :raise Http404("What are you doing here ?")
 	messages.success(request,message)
 	return HttpResponseRedirect(reverse('league:edit_sgf',args=[sgf.pk]))
 
