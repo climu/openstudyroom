@@ -1,0 +1,18 @@
+{% extends 'league/admin/base.html' %}
+{% load bootstrap3 league_tags%}
+{% block title %}OSR league admin - Create new Event{% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1>Create new Event</h1>
+</div>
+{%endblock%}
+{% block content %}
+<div class="row">
+<div class="col-md-4">
+  <legend>Create new Event </legend>
+<form action="" method="POST">{% csrf_token %}
+	{% bootstrap_form form %}
+	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
+</form>
+</div>
+{% endblock %}

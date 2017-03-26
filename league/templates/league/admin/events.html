@@ -11,10 +11,10 @@
 <div class="panel-body">
 	<div class ="row">
 		<div class="panel panel-default">
-			<form action="" method="POST">{% csrf_token %}
-			<button type="submit" class="btn btn-xs" formaction="">
+			<form action="" method="GET">{% csrf_token %}
+			<button type="submit" class="btn btn-xs" formaction="{% url 'league:admin_events_create' %}">
 			  {% bootstrap_icon 'plus'%}
-			  Add Event
+			  Create Event
 			</button>
 			</form>
 			<div class="panel-heading"><h3>List of events</h3></div>

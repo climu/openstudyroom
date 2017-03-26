@@ -19,6 +19,7 @@ from collections import OrderedDict
 from . import utils
 
 from django.views.generic.edit import UpdateView
+from django.views.generic.edit import CreateView
 
 discord_url_file = "/etc/discord_url.txt"
 
@@ -457,6 +458,25 @@ class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 			'pploss',
 			'min_matchs']
 	template_name_suffix = '_update_form'
+	
+	def test_func(self):
+		return self.request.user.is_authenticated() and self.request.user.user_is_league_admin()
+	
+	def get_login_url(self):
+		return '/'
+
+class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+	model = LeagueEvent
+	fields = ['name',
+			'begin_time',
+			'end_time',
+			'nb_matchs',
+			'ppwin',
+			'pploss',
+			'min_matchs']
+	template_name_suffix = '_create_form'
+	initial = { 'begin_time': datetime.datetime.now(),
+				'end_time': datetime.datetime.now() }
 	
 	def test_func(self):
 		return self.request.user.is_authenticated() and self.request.user.user_is_league_admin()
