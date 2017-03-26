@@ -12,6 +12,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django import forms
 from django.contrib.auth.models import  Group
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from collections import OrderedDict
@@ -446,7 +447,7 @@ def admin(request):
 		return HttpResponse(template.render(context, request))
 
 
-class LeagueEventUpdate(UpdateView):
+class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 	model = LeagueEvent
 	fields = ['name',
 			'begin_time',
@@ -456,7 +457,12 @@ class LeagueEventUpdate(UpdateView):
 			'pploss',
 			'min_matchs']
 	template_name_suffix = '_update_form'
-
+	
+	def test_func(self):
+		return self.request.user.is_authenticated() and self.request.user.user_is_league_admin()
+	
+	def get_login_url(self):
+		return '/'
 
 
 @login_required()
