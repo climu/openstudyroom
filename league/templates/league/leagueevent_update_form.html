@@ -14,11 +14,20 @@
 	{% bootstrap_form form %}
 	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
 </form>
+
 <form action="" method="POST">{% csrf_token %}
 <input type="hidden" name="action" value="set_primary">
 <button type="submit" formaction="{% url 'league:set_primary' object.pk %}" class="btn btn-primary btn-xs pull-right">
   Set as primary
 </button>
+</form>
+
+
+<form action="{% url 'league:delete_event' object.pk %}" method="POST">{% csrf_token %}
+	<input type="hidden" name="action" value="delete_event" />
+	<button type="submit" class="btn btn-danger btn-xs pull-right"  onclick="return confirm('Are you sure you want to delete this Event?')">
+		Delete
+	</button>
 </form>
 
 </div>
