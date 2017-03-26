@@ -457,10 +457,10 @@ class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 			'pploss',
 			'min_matchs']
 	template_name_suffix = '_update_form'
-	
+
 	def test_func(self):
 		return self.request.user.is_authenticated() and self.request.user.user_is_league_admin()
-	
+
 	def get_login_url(self):
 		return '/'
 
@@ -491,6 +491,27 @@ def admin_events_set_primary(request, event_id):
 		message ="Changed primary event to \"{}\"".format(r.primary_event.name)
 		messages.success(request,message)
 		return HttpResponseRedirect(reverse('league:admin_events'))
+	else: raise Http404("What are you doing here ?")
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_delete_division(request,division_id):
+	division = get_object_or_404(Division, pk=division_id)
+	event = division.league_event
+	if request.method =='POST':
+		form = ActionForm(request.POST)
+		if form.is_valid():
+			if form.cleaned_data['action'] == "delete_division":
+				nb_players= division.number_players()
+				if nb_players >0:
+					message="You just deleted the division" + str(division) +" and the " + str(nb_players) +" players in it."
+				else:
+					message="You just deleted the empty division" + str(division) +"."
+				division.delete()
+				messages.success(request,message)
+				return HttpResponseRedirect(reverse('league:admin_events_update',kwargs={'pk':event.pk}))
+			else: raise Http404("What are you doing here ?")
+		else: raise Http404("What are you doing here ?")
 	else: raise Http404("What are you doing here ?")
 
 

@@ -35,6 +35,13 @@
   <div class="panel panel-default">
     <div class="panel-heading"> <b>{{division }}</b> <div class="pull-right"> {{division.number_players}} players | {{division.number_games}} games</div></div>
     <div class="panel-body">
+      <form action="" method="POST" class="form-inline" >{% csrf_token %}
+        <input type="hidden" name="action" value="delete_division">
+        <button type="submit" formaction="{% url 'league:admin_delete_division' division.pk %}" class="btn btn-danger"
+        onclick="return alert('Delete the {% if division.number_players > 0 %}division {{division}} and all its players/games?'{% else %}empty division {{division}}?'{% endif %} )">
+          {% bootstrap_icon "remove" %} Delete
+        </button>
+      </form>
     <p>Here we could have edit and  delete buttons.</p>
     <p>I am also thinking having a up/down arrow buton that would deal with division order</p>
     </div>
