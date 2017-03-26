@@ -6,6 +6,7 @@ from django.forms import ModelForm
 
 class SgfAdminForm(forms.Form):
     sgf = forms.CharField(label='sgf data',widget=forms.Textarea(attrs={'cols': 60, 'rows': 20}))
+    url = forms.CharField(label ="KGS archive link",required=False)
 
 class ActionForm(forms.Form):
     action = forms.CharField(label ='action',widget=forms.HiddenInput())

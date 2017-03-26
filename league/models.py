@@ -139,7 +139,7 @@ class Sgf(models.Model):
 	#					2 require checking with priority,sgf added/changed by admin
 
 	def __str__(self):
-		return self.wplayer + ' vs ' + self.bplayer
+		return str(self.pk) +': ' + self.wplayer + ' vs ' + self.bplayer
 
 	def has_game(self):
 		return Game.objects.filter(sgf=self).exists()
@@ -192,7 +192,14 @@ class Sgf(models.Model):
 		#no result shouldn't happen automaticly, but with admin upload, who knows
 		if self.result == '?':(b,m) = (False,m+'; no result')
 		if self.number_moves < 20 : (b,m) = (False,m+'; number moves')
-		if Sgf.objects.filter(check_code=self.check_code).exists():(b,m) = (False,m+'; same sgf already in db')
+		#if game is already in db, we need to be check only with others sgfs
+		sgfs= Sgf.objects.filter(check_code=self.check_code)
+		if self.pk is None:
+			if len(sgfs)>0:(b,m) = (False,m+'; same sgf already in db : '+ str(sgfs.first().pk))
+		else:
+			sgfs = sgfs.exclude(pk=self.pk)
+			if len(sgfs)>0:(b,m) = (False,m+'; same sgf already in db : ' + str(sgfs.first().pk))
+
 		self.message = m
 		self.league_valid = b
 		return self
@@ -405,8 +412,6 @@ class LeaguePlayer(models.Model):
 
 
 
-
-
 class Game(models.Model):
 	sgf = models.OneToOneField('Sgf')
 	event = models.ForeignKey('LeagueEvent',blank=True,null=True)
@@ -417,7 +422,7 @@ class Game(models.Model):
 
 
 	def __str__(self):
-		return self.black.kgs_username + ' vs ' + self.white.kgs_username
+		return str(self.pk) +': ' + self.black.kgs_username + ' vs ' + self.white.kgs_username
 
 
 
