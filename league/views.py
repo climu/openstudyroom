@@ -3,7 +3,7 @@ from django.template import loader
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect,Http404
 from .models import Sgf,LeaguePlayer,User,LeagueEvent,Division,Game,Registry, User, is_league_admin, is_league_member
-from .forms import  SgfAdminForm,ActionForm,LeagueRolloverForm,UploadFileForm,DivisionForm
+from .forms import  SgfAdminForm,ActionForm,LeagueRolloverForm,UploadFileForm,DivisionForm,LeagueEventForm
 import datetime
 from django.http import Http404
 from django.core.urlresolvers import reverse
@@ -454,14 +454,8 @@ def admin(request):
 
 
 class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+	form_class = LeagueEventForm
 	model = LeagueEvent
-	fields = ['name',
-			'begin_time',
-			'end_time',
-			'nb_matchs',
-			'ppwin',
-			'pploss',
-			'min_matchs']
 	template_name_suffix = '_update_form'
 
 	def test_func(self):
@@ -471,21 +465,16 @@ class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 		return '/'
 
 class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+	form_class = LeagueEventForm
 	model = LeagueEvent
-	fields = ['name',
-			'begin_time',
-			'end_time',
-			'nb_matchs',
-			'ppwin',
-			'pploss',
-			'min_matchs']
 	template_name_suffix = '_create_form'
 	initial = { 'begin_time': datetime.datetime.now(),
 				'end_time': datetime.datetime.now() }
-	
+
+
 	def test_func(self):
 		return self.request.user.is_authenticated() and self.request.user.user_is_league_admin()
-	
+
 	def get_login_url(self):
 		return '/'
 
@@ -547,11 +536,11 @@ def admin_events_delete(request,event_id):
 	event = get_object_or_404(LeagueEvent, pk=event_id)
 	if not request.method == 'POST':
 		raise Http404("What are you doing here ?")
-	
+
 	form = ActionForm(request.POST)
 	if not form.is_valid():
 		raise Http404("What are you doing here ? (Token Error)")
-	
+
 	message = 'Successfully deleted the event ' + str(event)
 	messages.success(request,message)
 	event.delete()

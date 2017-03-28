@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import  Group
-from .models import User,Division
+from .models import User,Division,LeagueEvent
 from django.forms import ModelForm
 
 class SgfAdminForm(forms.Form):
@@ -49,3 +49,21 @@ class DivisionForm(ModelForm):
     class Meta:
         model = Division
         fields = ['name']
+
+
+
+class LeagueEventForm(forms.ModelForm):
+    class Meta:
+        model = LeagueEvent
+        fields = ['name',
+    			'begin_time',
+    			'end_time',
+    			'nb_matchs',
+    			'ppwin',
+    			'pploss',
+    			'min_matchs']
+        widgets = {
+            'name':forms.TextInput(),
+            'begin_time': forms.SelectDateWidget(),
+            'end_time':forms.SelectDateWidget(),
+        }
