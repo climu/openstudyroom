@@ -7,7 +7,24 @@
 {%endblock%}
 
 {% block content %}
-
+<div class="panel panel-default">
+  <div class="panel-heading">
+    Upload a sgf
+  </div>
+  <div class="panel-body">
+    <form enctype="multipart/form-data" class="form-inline"action=" {% url 'league:handle_upload_sgf' %}" method="post" class="form">
+  {% csrf_token %}
+  <div class="form-group"><label class="sr-only" for="id_file">File</label><div class="row bootstrap3-multi-input"><div class="col-xs-12"><input class="" id="id_file" name="file" title="" type="file" required /></div></div></div>
+  <button type="submit" class="btn btn-success btn-sm" >
+    {% bootstrap_icon "ok" %}  Submit
+  </button>
+  </form>
+  </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    List of all OSR sgfs
+  </div>
 <table id='sgf-table' class='table' >
   <thead>
     <th>Id</th>
