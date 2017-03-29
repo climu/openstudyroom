@@ -78,6 +78,9 @@ class LeagueEvent(models.Model):
 			return self.division_set.last().order
 		else: return -1
 
+	def get_other_events(self):
+		return LeagueEvent.objects.all().exclude(pk=self.pk)
+
 
 
 

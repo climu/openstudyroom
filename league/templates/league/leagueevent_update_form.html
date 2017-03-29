@@ -8,6 +8,32 @@
 {%endblock%}
 {% block content %}
 <div class="row">
+  {% if object.number_players == 0 and object.number_divisions > 0%}
+  <div class="alert alert-info clearfix">
+    <div class=pull-left>
+    <h4>Populate empty event</h4>
+
+    This event has no player in it. You can populate it easily from a previous event :
+    </div>
+    <div>
+    <form action="" method="GET" class="form-inline pull-right">
+      <div class="form-group">
+      <button type="submit" class="btn btn-primary" formaction="{% url 'league:admin_event_populate' object.pk %}">
+
+        Populate this event
+      </button>
+       <label class="control-label">from</label>
+      <select class="form-control" name="from_event" >
+        {% for event in object.get_other_events %}
+  <option value="{{event.pk}}">{{event}}</option>
+  {% endfor %}
+</select>
+    </div>
+    </form>
+  </div>
+  </div>
+  {% endif %}
+
 <div class="col-md-4">
   <legend>Edit {{object}} </legend>
 <form action="" method="POST">{% csrf_token %}

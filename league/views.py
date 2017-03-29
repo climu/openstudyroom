@@ -3,7 +3,7 @@ from django.template import loader
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect,Http404
 from .models import Sgf,LeaguePlayer,User,LeagueEvent,Division,Game,Registry, User, is_league_admin, is_league_member
-from .forms import  SgfAdminForm,ActionForm,LeagueRolloverForm,UploadFileForm,DivisionForm,LeagueEventForm
+from .forms import  SgfAdminForm,ActionForm,LeaguePopulateForm,UploadFileForm,DivisionForm,LeagueEventForm
 import datetime
 from django.http import Http404
 from django.core.urlresolvers import reverse
@@ -614,36 +614,23 @@ def admin_division_up_down(request,division_id):
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
-def rollover(request):
+def populate(request,to_event_id,from_event_id=None):
 	'''
-	A view that helps admin to do rollover at the end of the month.
+	A view that helps admin to do populate at the end of the month.
 	It displays users from primary_event and let the admin choose to which division they will be in next event.
-	This view can perform a preview loading data from the form. Actual db populating happen in proceed_rollover view
+	This view can perform a preview loading data from the form. Actual db populating happen in proceed_populate view
 
 	'''
-	from_event = Registry.get_primary_event()
-	to_event = LeagueEvent.objects.filter(pk=from_event.pk+1).first()
-
-	# One day we should have a better way to select to_event from a form.
-	# For now it's just the next event in db (if admin create/delete event, this doesn't work)
-	# Anyway, if to_event is None, we abort.
-	if to_event == None:
-		message =" You must create a new event and his divisions before processing rollover."
-		messages.success(request,message)
-		return HttpResponseRedirect(reverse('league:admin'))
-
-	# We shouldn't populate an event that already have players in it.
-	if to_event.number_players()>0:
-		message = "Something strange: you tryed to rollover to a league with players already in it"
-		messages.success(request,message)
-		return HttpResponseRedirect(reverse('league:admin'))
-
+	to_event = get_object_or_404(LeagueEvent,pk=to_event_id)
 	new_players= OrderedDict()
 	for division in to_event.get_divisions():
 		new_players[division.name]=[]
 
 	if request.method == 'POST':
-		form = LeagueRolloverForm(from_event,to_event,request.POST)
+		if from_event_id is None:
+			 raise Http404("What are you doing here ?")
+		else: from_event = get_object_or_404(LeagueEvent,pk = from_event_id)
+		form = LeaguePopulateForm(from_event,to_event,request.POST)
 		if form.is_valid():
 			for player in from_event.get_players():
 				if player.is_active():
@@ -654,7 +641,11 @@ def rollover(request):
 			#Admin have a preview so we are sure form is not dumber than the admin. We will display the save button in template
 			preview=True
 	else:
-		form = LeagueRolloverForm(from_event,to_event)
+		if 'from_event' in request.GET :
+			from_event = get_object_or_404(LeagueEvent,pk=request.GET['from_event'])
+		else:
+			raise Http404("What are you doing here ?")
+		form = LeaguePopulateForm(from_event,to_event)
 		# Having preview at false prevent the save button to be displayed in tempalte
 		preview=False
 
@@ -665,22 +656,22 @@ def rollover(request):
 			'new_players' : new_players,
 			'preview' : preview,
 		}
-	template = loader.get_template('league/rollover.html')
+	template = loader.get_template('league/admin/populate.html')
 	return HttpResponse(template.render(context, request))
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
-def proceed_rollover(request):
-	''' Here we actually populate the db with the form from rollover view.
+def proceed_populate(request,from_event_id,to_event_id):
+	''' Here we actually populate the db with the form from populate view.
 	We assume the admin have seen the new events structure in a preview before being here.
 	'''
 
-	# As before, to_event should not be that way.
-	# rollover view should have the admin select this event and sending this here in the form.
-	from_event = Registry.get_primary_event()
-	to_event = LeagueEvent.objects.filter(pk=from_event.pk+1).first()
+	# populate view should have the admin select this event and sending this here in the form.
+
+	to_event = get_object_or_404(LeagueEvent,pk=to_event_id)
+	from_event = get_object_or_404(LeagueEvent,pk=from_event_id)
 	if request.method == 'POST':
-		form = LeagueRolloverForm(from_event,to_event,request.POST)
+		form = LeaguePopulateForm(from_event,to_event,request.POST)
 		if form.is_valid():
 			n=0
 			for player in from_event.get_players():
@@ -690,7 +681,7 @@ def proceed_rollover(request):
 						new_player = LeaguePlayer.objects.create(user=player.user,event = to_event,kgs_username = player.kgs_username,division=new_division)
 		message ="The new "+ to_event.name +" was populated with "+ str(n) +" players."
 		messages.success(request,message)
-		return HttpResponseRedirect(reverse('league:admin'))
+		return HttpResponseRedirect(reverse('league:admin_events' ))
 	else:
 		raise Http404("What are you doing here ?")
 

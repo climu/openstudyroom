@@ -32,10 +32,10 @@ class LeagueSignupForm(forms.Form):
 class UploadFileForm(forms.Form):
     file = forms.FileField()
 
-class LeagueRolloverForm(forms.Form):
+class LeaguePopulateForm(forms.Form):
     # a form related to a set of leagueplayers with one field per player.
     def __init__(self, from_event,to_event,  *args, **kwargs):
-        super(LeagueRolloverForm, self).__init__(*args, **kwargs)
+        super(LeaguePopulateForm, self).__init__(*args, **kwargs)
         players = from_event.get_players()
         divisions = to_event.get_divisions()
         for player in players:
