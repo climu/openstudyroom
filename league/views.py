@@ -298,7 +298,7 @@ def upload_sgf(request):
 			'sgf':sgf,
 			'form': form,
 			}
-			template = loader.get_template('league/upload_sgf.html')
+			template = loader.get_template('league/admin/upload_sgf.html')
 			return HttpResponse(template.render(context, request))
 	else:
 		if 'sgf_data' in request.session:
@@ -314,7 +314,7 @@ def upload_sgf(request):
 			'sgf':sgf,
 			'form': form,
 			}
-			template = loader.get_template('league/upload_sgf.html')
+			template = loader.get_template('league/admin/upload_sgf.html')
 			return HttpResponse(template.render(context, request))
 		else : raise Http404("What are you doing here ?")
 

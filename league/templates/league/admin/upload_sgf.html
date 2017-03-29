@@ -1,4 +1,4 @@
-{% extends "full_width.html" %}
+{% extends "league/admin/base.html" %}
 {% load bootstrap3 wgo_tags %}
 {% block title %}Upload a sgf{% endblock %}
 {% block heading%}
@@ -7,20 +7,19 @@
   </div>
   {%endblock%}
 {% block content %}
-<form method="post" class="form">
-  {% csrf_token %}
+
 <div class="row">
   <div class="col-lg-4">
     <a href="{% url 'league:admin' %}"class="btn btn-danger text-left">Back to admin</a>
   </div>
   <div class="col-lg-4">
-    <button type="submit" class="btn btn-info " formaction="{%url 'league:upload_sgf'%}" >
+    <button form="sgf-form" type="submit" class="btn btn-info " formaction="{%url 'league:upload_sgf'%}" >
       {% bootstrap_icon "refresh" %}  Check sgf
     </button>
   </div>
   <div class="col-lg-4">
     {%if sgf.league_valid %}
-    <button type="submit" class="btn btn-success " formaction="{%url 'league:create_sgf'%}"onclick="return confirm('Save the sgf and create a league game ?')" >
+    <button form="sgf-form" type="submit" class="btn btn-success " formaction="{%url 'league:create_sgf'%}"onclick="return confirm('Save the sgf and create a league game ?')" >
       {% bootstrap_icon "ok" %} Save sgf
     </button>
     {% endif %}
@@ -88,14 +87,15 @@ This SGF is not valid :
 </div>
 </div>
 <div class="col-md-4">
-
-{% bootstrap_field form.sgf  %}
+  <form id="sgf-form" method="post" class="form">
+    {% csrf_token %}
+    {% bootstrap_field form.sgf  %}
+</form>
 </div>
 <div class="col-md-5">
   <div data-wgo="{{ sgf.sgf_text  |prepare_sgf}}">
 </div>
 </div>
 
-</form>
 
 {% endblock %}
