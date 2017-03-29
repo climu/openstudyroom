@@ -25,7 +25,7 @@
   <div class="panel-heading">
     List of all OSR sgfs
   </div>
-<table id='sgf-table' class='table' >
+<table id='sgf-table' class='table table-over' >
   <thead>
     <th>Id</th>
     <th> Date</th>
@@ -63,7 +63,7 @@
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-$('#sgf-table').DataTable();
+$('#sgf-table').DataTable({"order": [[ 0, "desc" ]]});
 } );
 </script>
 {% endblock %}
