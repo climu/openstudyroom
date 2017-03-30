@@ -3,7 +3,7 @@ from django.template import loader
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect,Http404
 from .models import Sgf,LeaguePlayer,User,LeagueEvent,Division,Game,Registry, User, is_league_admin, is_league_member
-from .forms import  SgfAdminForm,ActionForm,LeaguePopulateForm,UploadFileForm,DivisionForm,LeagueEventForm
+from .forms import  SgfAdminForm,ActionForm,LeaguePopulateForm,UploadFileForm,DivisionForm,LeagueEventForm,EmailForm
 import datetime
 from django.http import Http404
 from django.core.urlresolvers import reverse
@@ -17,7 +17,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from collections import OrderedDict
 from . import utils
-
+from django.core.mail import send_mail
 from django.views.generic.edit import UpdateView
 from django.views.generic.edit import CreateView
 
@@ -687,18 +687,29 @@ def proceed_populate(request,from_event_id,to_event_id):
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
-def send_user_mail(request):
+def admin_user_send_mail(request,user_id):
 	'''
-	Just a test mail view. Add your email and see if you have it.
+	send an email to a user
 	'''
-	send_mail(
-    	'Subject here',
-    	'Here is the message.',
-    	'from@example.com',
-    	['youremail@yourhost.com'],
-    	fail_silently=False,
-		)
-	return HttpResponse('sent')
+	user = get_object_or_404(User,pk=user_id)
+
+	if request.method == 'POST':
+		form = EmailForm(request.POST)
+		if form.is_valid():
+			send_mail(
+	    	form.cleaned_data['subject'],
+			form.cleaned_data['message'],
+			'openstudyroom@gmail.com',
+			[user.get_primary_email().email,form.cleaned_data['copy_to']],
+			fail_silently=False,
+			)
+			message="Successfully sent an email to "+ str(user)
+			messages.success(request,message)
+			return HttpResponseRedirect(reverse('league:admin' ))
+	else:
+		form = EmailForm()
+		context = {'form':form,'user':user}
+		return render(request,'league/admin/user_send_mail.html',context)
 
 def discord_redirect(request):
 	'''loads discord invite url from discord_url_file and redirects the user if he passes the tests.'''
@@ -738,3 +749,25 @@ def update_all_sgf(request):
 	else:
 
 		return render(request,'league/update_all_sgf.html')
+
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_users_list(request,event_id=None,division_id=None):
+	event = None
+	division = None
+	if event_id is None:
+		users = User.objects.all()
+	else:
+		event = get_object_or_404(LeagueEvent,pk=event_id)
+		if division_id is None:
+			users = event.players.user.get_queryset()
+		else:
+			division = get_object_or_404(Division,pk=division_id)
+			users = division.players.user.get_queryset()
+	context = {
+	'users': users,
+	'event': event,
+	'division': division,
+	}
+	return render(request,'league/admin/users.html',context)

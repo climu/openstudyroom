@@ -67,3 +67,8 @@ class LeagueEventForm(forms.ModelForm):
             'begin_time': forms.SelectDateWidget(),
             'end_time':forms.SelectDateWidget(),
         }
+
+class EmailForm(forms.Form):
+    subject = forms.CharField(required=True)
+    copy_to = forms.CharField(required=False)
+    message = forms.CharField(widget=forms.Textarea())

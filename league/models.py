@@ -266,6 +266,8 @@ class User(AbstractUser):
 			n += player.nb_loss()
 		return n
 
+	def get_primary_email(self):
+		return self.emailaddress_set.filter(primary=True).first()
 
 
 def is_league_admin(user):

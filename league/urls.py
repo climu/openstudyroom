@@ -38,7 +38,6 @@ urlpatterns = [
     url(r'^admin/handle-upload-sgf/$', views.handle_upload_sgf, name='handle_upload_sgf'),
     url(r'^admin/upload-sgf/$', views.upload_sgf, name='upload_sgf'),
     url(r'^admin/create-sgf/$', views.create_sgf, name='create_sgf'),
-    url(r'^admin/send-mail/$', views.send_user_mail, name='send_email'),
     url(r'^admin/update-all-sgf/$', views.update_all_sgf, name='update_all_sgf'),
     url(r'^admin/events/$', views.admin_events, name='admin_events'),
     url(r'^admin/events/(?P<pk>[0-9]+)/$', views.LeagueEventUpdate.as_view(success_url='/league/admin/events/'), name='admin_events_update' ),
@@ -55,5 +54,9 @@ urlpatterns = [
     url(r'^admin/division/(?P<division_id>[0-9]+)/delete-division/$', views.admin_delete_division, name='admin_delete_division' ),
     url(r'^admin/division/(?P<division_id>[0-9]+)/rename/$', views.admin_rename_division, name='admin_rename_division' ),
     url(r'^admin/division/(?P<division_id>[0-9]+)/up-down/$', views.admin_division_up_down, name='admin_division_up_down' ),
+    url(r'^admin/users/$', views.admin_users_list, name='admin_users_list' ),
+    url(r'^admin/users/event/(?P<event_id>[0-9]+)/$', views.admin_users_list, name='admin_users_list' ),
+    url(r'^admin/users/event/(?P<event_id>[0-9]+)/division/(?P<division_id>[0-9]+)/$', views.admin_users_list, name='admin_users_list' ),
+    url(r'^admin/users/(?P<user_id>[0-9]+)/send-mail/$', views.admin_user_send_mail, name='admin_user_send_mail' ),
 
 ]
