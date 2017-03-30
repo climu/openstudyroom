@@ -3,12 +3,18 @@
 {% block title %}OSR league admin - Users{% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1>Users</h1>
+  {% if event is None %}
+    <h1>All OSR users</h1>
+    {% elif division is None %}
+    <h1>All OSR users from {{event}}</h1>
+    {% else %}
+    <h1>All OSR users from {{event}} in {{division}}</h1>
+    {% endif %}
 </div>
 {%endblock%}
 {% block content %}
 
-<table id='events-table' class='display table' cellspacing='0' width='100%' >
+<table id='users-table' class='display table' cellspacing='0' width='100%' >
 	<thead>
 	<tr>
 		<th>User</th>
@@ -21,12 +27,21 @@
 	<tr>
     <td>{{user|user_link}}</td>
     <td>{{user.kgs_username}}</td>
-    <td><a href="{% url 'league:admin_user_send_mail' user.pk%}" > {%bootstrap_icon "envelope"%}</a></td>
+    <td><a href="{% url 'league:admin_user_send_mail' user.pk%}" > {%bootstrap_icon "send"%}</a></td>
     <td>{% if user.is_in_primary_event %} {{user.get_primary_event_player.division}}{%endif%}</td>
-    <td>
+
   </tr>
   {%endfor %}
 </tbody>
 </table>
 
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+$('#users-table').DataTable();
+} );
+</script>
 {% endblock %}

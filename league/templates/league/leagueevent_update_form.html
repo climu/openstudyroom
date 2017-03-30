@@ -74,7 +74,8 @@
   <div class="panel panel-default">
     <div class="panel-heading clearfix">
 <b>{{division}}</b>
-       <div class="pull-right"> {{division.number_players}} players | {{division.number_games}} games</div>
+       <div class="pull-right">
+          <a href="{% url 'league:admin_users_list' object.pk division.pk %}">{{division.number_players}} players </a>| {{division.number_games}} games</div>
      </div>
     <div class="panel-body">
       <div class="col-md-6">

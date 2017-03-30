@@ -761,10 +761,12 @@ def admin_users_list(request,event_id=None,division_id=None):
 	else:
 		event = get_object_or_404(LeagueEvent,pk=event_id)
 		if division_id is None:
-			users = event.players.user.get_queryset()
+			players = event.leagueplayer_set.all()
+			users = User.objects.filter(leagueplayer__in  =players)
 		else:
 			division = get_object_or_404(Division,pk=division_id)
-			users = division.players.user.get_queryset()
+			players = division.leagueplayer_set.all()
+			users = User.objects.filter(leagueplayer__in  =players)
 	context = {
 	'users': users,
 	'event': event,

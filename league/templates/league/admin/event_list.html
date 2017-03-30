@@ -20,7 +20,7 @@
 		<td> {{ event.begin_time | date:"M d, Y" }} </td>
 		<td> {{ event.end_time | date:"M d, Y" }} </td>
 
-		<td> {{ event.number_players }} </td>
+		<td><a href="{% url 'league:admin_users_list' event.pk %}">	{{ event.number_players }} </a></td>
 		<td> {{ event.number_divisions }}</td>
 		<td> {{ event.number_games }} </td>
 		<td> {{ event.ppwin }} </td>

@@ -12,7 +12,7 @@
 {% csrf_token %}
   {% bootstrap_form form %}
   <button  type="submit" class="btn btn-primary" onclick="return confirm('Send this email to {{user}} ?')" >
-    {% bootstrap_icon "ok" %} Send mail
+    {% bootstrap_icon "send" %} Send mail
   </button>
 </form>
 
