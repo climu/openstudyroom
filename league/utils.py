@@ -60,7 +60,7 @@ def ask_kgs(kgs_username,year,month):
 	l=[]
 	for tr in trs[1:]:
 		tds=tr.find_all('td')
-		if tds[0].a.get_text()=='Yes':
+		if tds[0].get_text()=='Yes':
 			url = tds[0].a.get('href')
 			#crappy way to detect if a game is a review the #of row in the table... :(
 			if len(tds)==6 : #it's a review !
