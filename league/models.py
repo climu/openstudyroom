@@ -82,7 +82,7 @@ class LeagueEvent(models.Model):
 		return LeagueEvent.objects.all().exclude(pk=self.pk)
 
 	def is_close(self):
-		return Registry.get_primary_event == self
+		return not Registry.get_primary_event() == self
 
 
 
