@@ -4,8 +4,10 @@ import datetime
 from . import utils
 import requests
 from django.contrib.auth.models import AbstractUser
-
-
+from collections import defaultdict
+from django.db.models import Q
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 
 # Create your models here.
 class LeagueEvent(models.Model):
@@ -13,14 +15,17 @@ class LeagueEvent(models.Model):
 	end_time =  models.DateTimeField(blank=True)
 	name = models.TextField(max_length=20)
 	nb_matchs = models.SmallIntegerField(default=2)
-	ppwin = models.DecimalField(default=1.5, max_digits=2, decimal_places=1)
-	pploss = models.DecimalField(default=0.5, max_digits=2, decimal_places=1)
+	ppwin = models.DecimalField(default=1.5, max_digits=2, decimal_places=1) #points per win
+	pploss = models.DecimalField(default=0.5, max_digits=2, decimal_places=1) #points per loss
 	min_matchs = models.SmallIntegerField(default=1)
 	class Meta:
 		ordering = ['-begin_time']
 
 	def __str__(self):
 		return self.name
+
+	def get_absolut_url(self):
+		return reverse('league', kwargs={'pk': self.pk})
 
 	def get_year(self):
 		return self.begin_time.year
@@ -68,7 +73,16 @@ class LeagueEvent(models.Model):
 	def number_inactives_players(self):
 		return (self.number_players()-self.number_actives_players())
 
+	def last_division_order(self):
+		if self.division_set.exists():
+			return self.division_set.last().order
+		else: return -1
 
+	def get_other_events(self):
+		return LeagueEvent.objects.all().exclude(pk=self.pk)
+
+	def is_close(self):
+		return not Registry.get_primary_event() == self
 
 
 
@@ -131,7 +145,15 @@ class Sgf(models.Model):
 	#					2 require checking with priority,sgf added/changed by admin
 
 	def __str__(self):
-		return self.wplayer + ' vs ' + self.bplayer
+		return str(self.pk) +': ' + self.wplayer + ' vs ' + self.bplayer
+
+	def has_game(self):
+		return Game.objects.filter(sgf=self).exists()
+
+	def get_messages(self):
+		''' Return a list of erros pasring message field'''
+		return self.message.split(';')[1:]
+
 
 
 	def parse(self):
@@ -176,7 +198,14 @@ class Sgf(models.Model):
 		#no result shouldn't happen automaticly, but with admin upload, who knows
 		if self.result == '?':(b,m) = (False,m+'; no result')
 		if self.number_moves < 20 : (b,m) = (False,m+'; number moves')
-		if Sgf.objects.filter(check_code=self.check_code).exists():(b,m) = (False,m+'; same sgf already in db')
+		#if game is already in db, we need to be check only with others sgfs
+		sgfs= Sgf.objects.filter(check_code=self.check_code)
+		if self.pk is None:
+			if len(sgfs)>0:(b,m) = (False,m+'; same sgf already in db : '+ str(sgfs.first().pk))
+		else:
+			sgfs = sgfs.exclude(pk=self.pk)
+			if len(sgfs)>0:(b,m) = (False,m+'; same sgf already in db : ' + str(sgfs.first().pk))
+
 		self.message = m
 		self.league_valid = b
 		return self
@@ -230,16 +259,18 @@ class User(AbstractUser):
 		players = self.leagueplayer_set.all()
 		n = 0
 		for player in players:
-			n += player.nb_win
+			n += player.nb_win()
 		return n
 
 	def nb_loss(self):
 		players = self.leagueplayer_set.all()
 		n = 0
 		for player in players:
-			n += player.nb_loss
+			n += player.nb_loss()
 		return n
 
+	def get_primary_email(self):
+		return self.emailaddress_set.filter(primary=True).first()
 
 
 def is_league_admin(user):
@@ -261,8 +292,11 @@ class Division(models.Model):
 	def __str__(self):
 		return self.name
 
+	def number_games(self):
+		return Game.objects.filter(white__division=self).count()
+
 	def get_players(self):
-		return self.leagueplayer_set.all().order_by('-score')
+		return	self.leagueplayer_set.all().order_by('-score')
 
 	def number_players(self):
 		return self.leagueplayer_set.count()
@@ -271,6 +305,13 @@ class Division(models.Model):
 		n = self.number_players()
 		return int(n*(n-1)*self.league_event.nb_matchs/2)
 
+	def is_first(self):
+		return not Division.objects.filter(league_event=self.league_event, order__lt = self.order).exists()
+
+	def is_last(self):
+		return not Division.objects.filter(league_event=self.league_event, order__gt = self.order).exists()
+
+
 
 
 class LeaguePlayer(models.Model):
@@ -278,47 +319,69 @@ class LeaguePlayer(models.Model):
 	kgs_username = models.CharField(max_length=20,default='') #it's redundent with user, but let say a user change his kgs_username...
 	event = models.ForeignKey('LeagueEvent')
 	division = models.ForeignKey('Division')
-	nb_win = models.SmallIntegerField(default=0)
-	nb_loss = models.SmallIntegerField(default=0)
 	score = models.DecimalField(default=0, max_digits =4, decimal_places=1)
-	results = models.CharField(max_length=2000,default='{}',blank=True)
 	p_status = models.SmallIntegerField(default=0)
-#Note that results is a dirty string formated as a dict.
-# we will eval() to get it and str() to store.
-# results is formated as:
-#  {'opponent1':[{'id':game1.pk, 'r':1/0},{'id':game2.pk, 'r':1/0},...],'opponent2':[...]}
-# r: 1 for win, 0 for loss
+
 	def __str__(self):
 		return self.kgs_username
 
+
+
 	def get_results(self):
-		return eval(self.results)
+		# results are formated as:
+		#  {'opponent1':[{'id':game1.pk, 'r':1/0},{'id':game2.pk, 'r':1/0},...],'opponent2':[...]}
+		# r: 1 for win, 0 for loss
+		blackGames = self.black.get_queryset()
+		whiteGames = self.white.get_queryset()
 
-	def score_victory(self,opponent,game_id):
-		#score a victory for self again opponent (a LeaguePlayer)
-		# update score, nb_win and results
-		self.nb_win +=  1
+		resultsDict = defaultdict(list)
+
+		for game in blackGames:
+			opponent = game.white
+			won = game.winner == self
+			record = {
+				'id':game.pk,
+				'r': 1 if won else 0
+			}
+			resultsDict [opponent.kgs_username].append(record)
+
+		for game in whiteGames:
+			opponent = game.black
+			won = game.winner == self
+			record = {
+				'id':game.pk,
+				'r': 1 if won else 0
+			}
+			resultsDict [opponent.kgs_username].append(record)
+		return resultsDict
+
+
+
+	def nb_win(self):
+		return Game.objects.filter(Q(black = self)|Q(white = self)).filter(winner=self).count()
+
+	def nb_loss(self):
+		return Game.objects.filter(Q(black = self)|Q(white = self)).exclude(winner=self).count()
+
+	def nb_games(self):
+		return Game.objects.filter(Q(black = self)|Q(white = self)).count()
+
+	def score_win(self):
 		self.score += self.event.ppwin
-		dict_results = eval(self.results)
-		opponent=opponent.kgs_username
-		if opponent in dict_results :
-			 dict_results[opponent].append({'id':game_id, 'r':1})
-		else : dict_results[opponent]= [{'id':game_id, 'r':1}]
-		str_results = str(dict_results)
-		self.results = str_results
 		self.save()
 
-	def score_defeat(self,opponent,game_id):
-		self.nb_loss +=  1
+	def score_loss(self):
 		self.score += self.event.pploss
-		dict_results = eval(self.results)
-		opponent=opponent.kgs_username
-		if opponent in dict_results :
-			dict_results[opponent].append({'id':game_id, 'r':0})
-		else : dict_results[opponent]=[{'id':game_id, 'r':0}]
-		str_results = str(dict_results)
-		self.results = str_results
 		self.save()
+
+	def unscore_win(self):
+		self.score -= self.event.ppwin
+		self.save()
+
+	def unscore_loss(self):
+		self.score -= self.event.pploss
+		self.save()
+
 
 	def check_player(self):
 		# check if a player have play new games:
@@ -357,11 +420,11 @@ class LeaguePlayer(models.Model):
 					sgf.game_type = game_type
 					sgf.save()
 
-	def nb_games(self):
-		return(self.nb_win+self.nb_loss)
 
 	def is_active(self):
 		return self.nb_games() >= self.event.min_matchs
+
+
 
 
 class Game(models.Model):
@@ -371,8 +434,12 @@ class Game(models.Model):
 	white = models.ForeignKey('LeaguePlayer',related_name='white',blank=True,null=True)
 	winner = models.ForeignKey('LeaguePlayer',related_name='winner',blank=True,null=True)
 
+
+
 	def __str__(self):
-		return self.black.kgs_username + ' vs ' + self.white.kgs_username
+		return str(self.pk) +': ' + self.black.kgs_username + ' vs ' + self.white.kgs_username
+
+
 
 	@staticmethod
 	def create_game(sgf):
@@ -406,15 +473,25 @@ class Game(models.Model):
 			#add the winner field and score the results :
 			if sgf.result.find('B+') == 0:
 				game.winner = blacks.first()
-				game.winner.score_victory(game.white,game.pk)
-				game.white.score_defeat(game.black,game.pk)
+				game.winner.score_win()
+				game.white.score_loss()
+
 			elif sgf.result.find('W+') == 0:
 				game.winner = whites.first()
-				game.winner.score_victory(game.black,game.pk)
-				game.black.score_defeat(game.white,game.pk)
-
+				game.winner.score_win()
+				game.black.score_loss()
 			else:
 				game.delete()
 				return False
 			game.save()
 			return True
+
+@receiver(pre_delete, sender=Game)
+def unscore_game(sender, instance, *args, **kwargs):
+	''' unscore a instance before deleting it'''
+	if instance.winner == instance.black:
+		instance.black.unscore_win()
+		instance.white.unscore_loss()
+	else:
+		instance.white.unscore_win()
+		instance.black.unscore_loss()

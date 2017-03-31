@@ -55,7 +55,14 @@
       <td>{{forloop.counter}}</td>
       <td>{{opponent.user | user_link}}</td>
       <td>{{opponent.score}}
-      <td>{% autoescape off%}{% html_one_result%}{%endautoescape%}</td>
+      <td>  {% with player.get_results as results %}
+
+        {% if opponent.kgs_username in results %}
+
+          {% html_one_result results%}
+
+        {% endif %}
+        {% endwith %}</td>
 
     </tr>
 
@@ -99,7 +106,7 @@
     <td>{{player.division |division_link}}</td>
     <td>{{player.nb_win}}</td>
     <td>{{player.nb_loss}}</td>
-    <td>{{player | nb_games}}</td>
+    <td>{{player.nb_games}}</td>
   </tr>
 {% endfor %}
 </tbody>
@@ -124,7 +131,7 @@
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-  $('#game-table').DataTable({"bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>'});
+  $('#game-table').DataTable({"bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',"order": [[ 0, "desc" ]]});
 
 $('#opponents-table').DataTable({});
 } );

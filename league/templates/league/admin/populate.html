@@ -9,18 +9,18 @@
   <div class="panel-heading"><h4>Rollover overview</h4></div>
   <div class="panel-body">
     <div class='col-md-8'>
-    <p>You are processing rollover from <b>{{from_event}}</b> to <b>{{to_event}}</b>.</p>
+    <p>You are populating <b>{{to_event}}</b> with players from <b>{{from_event}}</b> </p>
     <p>Out of {{from_event.number_players}} players, {{from_event.number_actives_players}} were active and {{from_event.number_inactives_players}} will get drop.</p>
     <p> The minimum number of games to stay in the league is set to <b>{{from_event.min_matchs}}</b><p>
     </div>
     <div class='col-md-2'>
-      <button type="submit" class="btn btn-info" formaction="{% url 'league:rollover' %}" >
+      <button type="submit" class="btn btn-info" formaction="{% url 'league:admin_event_populate' to_event.pk from_event.pk%}" >
     {% bootstrap_icon "refresh" %}  Preview
   </button>
     </div>
     <div class='col-md-2'>
       {%if preview%}
-    <button type="submit" class="btn btn-success" formaction="{% url 'league:proceed_rollover'  %}"onclick="return confirm('Populate the new {{to_event}} with above players ?')" >
+    <button type="submit" class="btn btn-success" formaction="{% url 'league:admin_proceed_populate' to_event.pk from_event.pk  %}"onclick="return confirm('Populate the new {{to_event}} with above players ?')" >
       {% bootstrap_icon "ok" %}  save
     </button>
     {%endif%}
@@ -36,8 +36,10 @@
     <legend> {{from_event}} </legend>
 
   {% for division in from_event.get_divisions %}
-  <div class="panel panel-default">
-  <div class="panel-heading">{{division}}</div>
+  <div class="panel panel-default clearfix">
+  <div class="panel-heading">{{division}}
+    <div class="pull-right"> {{division.number_players}} players | {{division.number_games}} games</div>
+  </div>
   <div class="panel-body">
 
     <table class='table table-condensed'  >
@@ -80,7 +82,9 @@
   <legend> {{to_event}} preview </legend>
   {%  for division, players in new_players.items %}
   <div class="panel panel-default">
-  <div class="panel-heading">{{division}}</div>
+  <div class="panel-heading clearfix">{{division}}
+    <div class="pull-right"> {{players|length}} players</div>
+  </div>
   <div class="panel-body">
   <table class='table table-condensed'  >
      <thead>

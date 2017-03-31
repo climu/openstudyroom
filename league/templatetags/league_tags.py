@@ -5,17 +5,18 @@ from django.utils.safestring import mark_safe
 register = template.Library()
 
 @register.simple_tag(takes_context=True)
-def html_one_result(context):
+def html_one_result(context,results):
 	# note the use of takes_context = true.
 	# this filter only works called from a context where player an opponent exists
 	player=context['player']
 	opponent = context['opponent']
+
 	if 'event' in context:
 		event=str(context['event'].pk)+'/'
 	else:
 		event=''
 
-	results=player.get_results()
+	#results=player.get_results_old()
 	opponent_kgs=opponent.kgs_username
 	html=""
 	if opponent_kgs in results:
@@ -31,10 +32,7 @@ def html_one_result(context):
 
 	return mark_safe(html)
 
-@register.filter
-def nb_games(player):
-	n = player.nb_win + player.nb_loss
-	return n
+
 
 @register.filter
 def user_link(user):
@@ -74,3 +72,26 @@ def player_field_tag(context):
 	form=context['form']
 	player = context['player']
 	return form['player_'+str(player.pk)]
+
+@register.filter
+def boolean_icon(b):
+	if b:
+		 html = '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>'
+	else:
+		html = '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>'
+	return mark_safe(html)
+
+@register.filter()
+def p_status(p_status):
+	if p_status == 0:
+		return mark_safe("0 : already scraped")
+	elif p_status == 1:
+		return mark_safe("1 : to be scraped")
+	elif p_status == 2:
+		return mark_safe("2 : to be scraped soon")
+	else:
+		return mark_safe(str(p_status) +" : something wrong")
+
+@register.filter()
+def scrap_time(n):
+	return n*5

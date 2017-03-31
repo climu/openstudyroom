@@ -1,0 +1,20 @@
+{% extends 'league/admin/base.html' %}
+{% load bootstrap3 league_tags%}
+{% block title %}OSR league admin - send mail{% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1>Send an email to {{user}}</h1>
+</div>
+{%endblock%}
+{% block content %}
+
+<form action="{% url 'league:admin_user_send_mail' user.pk %}"  method="post" class="form">
+{% csrf_token %}
+  {% bootstrap_form form %}
+  <button  type="submit" class="btn btn-primary" onclick="return confirm('Send this email to {{user}} ?')" >
+    {% bootstrap_icon "send" %} Send mail
+  </button>
+</form>
+
+
+{% endblock %}

@@ -60,7 +60,7 @@ def ask_kgs(kgs_username,year,month):
 	l=[]
 	for tr in trs[1:]:
 		tds=tr.find_all('td')
-		if tds[0].a.get_text()=='Yes':
+		if tds[0].get_text()=='Yes':
 			url = tds[0].a.get('href')
 			#crappy way to detect if a game is a review the #of row in the table... :(
 			if len(tds)==6 : #it's a review !
@@ -109,8 +109,8 @@ def parse_sgf_string(sgf_string):
 	for n in range(0,5):
 		p=sgf_string.find('BL[')
 		if p!=-1:
-			q=sgf_string.find(']',p)
-			code+=sgf_string[p+3:q]
+			q = sgf_string.find(']',p)
+			code += sgf_string[p+3:q]
 	out['check_code']=code
 
 	return out

@@ -10,6 +10,9 @@
         <li class = active ><a href="{% url 'league:results' event.pk %}">Results</a></li>
         <li><a href="{% url 'league:players' event.pk %}">Players</a></li>
         <li><a href="{% url 'league:games' event.pk %}">Games</a></li>
+        {% if not close %}
+        <li ><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
+        {% endif %}
     </ul>
     <ul class="nav navbar-nav navbar-right" style="margin-right:5px;">
         <li {%if not close %}class ="active"{%endif%}><a href="{% url 'league:event' %}">Current league</a></li>
@@ -45,11 +48,14 @@
             <td class="table-league-highlight {% cycle 'even-column' 'odd-column' %}">
                 {% else %}
             <td class="{% cycle 'even-column' 'odd-column' %}">
-                {% if opponent.kgs_username in player.get_results %}
+              {% with player.get_results as results %}
 
-                {% html_one_result %}
+                {% if opponent.kgs_username in results %}
+
+                  {% html_one_result results%}
 
                 {% endif %}
+                {% endwith %}
             </td>
             {% endif %}
             {% endfor %}
