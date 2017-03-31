@@ -13,6 +13,7 @@ def html_one_result(context):
 	if not player.kgs_username in context['results']:
 		return ""
 	results = context['results'][player.kgs_username]['results']
+	print(str(results))
 	if 'event' in context:
 		event=str(context['event'].pk)+'/'
 	else:

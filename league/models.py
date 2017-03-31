@@ -323,18 +323,26 @@ class Division(models.Model):
 				loser =game.white.kgs_username
 			if winner in results:
 				results[winner]['score'] = results[winner]['score'] + self.league_event.ppwin
-				results[winner]['results'].append({'id': game.pk, 'r': 1})
+				if loser in results[winner]['results']:
+					results[winner]['results'][loser].append({'id': game.pk, 'r': 1})
+				else:
+					results[winner]['results'][loser] = [{'id': game.pk, 'r': 1}]
 			else:
 				results[winner] = {}
 				results[winner]['score'] = self.league_event.ppwin
-				results[winner]['results'] = [{'id': game.pk, 'r': 1}]
+				results[winner]['results'] = {}
+				results[winner]['results'][loser] = [{'id': game.pk, 'r': 1}]
 			if loser in results:
 				results[loser]['score'] = results[winner]['score'] + self.league_event.pploss
-				results[loser]['results'].append({'id': game.pk, 'r': 0})
+				if loser in results[winner]['results']:
+					results[loser]['results'][winer].append({'id': game.pk, 'r': 0})
+				else:
+					resutls[loser]['results'][winer] = {'id': game.pk, 'r': 0}
 			else:
 				results[loser] = {}
 				results[loser]['score'] = self.league_event.pploss
-				results[loser]['results'] = [{'id': game.pk, 'r': 0}]
+				results[winner]['results'] = {}
+				results[loser]['results'][winer] = [{'id': game.pk, 'r': 0}]
 		return results
 
 
