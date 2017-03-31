@@ -64,7 +64,7 @@ def scraper():
 		if not(players.filter(p_status__gt =0).exists()):
 			players.update(p_status=1)
 		if players.filter(p_status =2).exists():
-			player=player.filter(p_status = 2)[0]
+			player=players.filter(p_status = 2)[0]
 			player.check_player()
 			out=player
 		else:
