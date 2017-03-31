@@ -448,7 +448,7 @@ def admin(request):
 		'new_users': new_users,
 		'form':form,
 		}
-		template = loader.get_template('league/admin.html')
+		template = loader.get_template('league/admin/dashboard.html')
 		return HttpResponse(template.render(context, request))
 
 
@@ -747,7 +747,7 @@ def update_all_sgf(request):
 			return HttpResponseRedirect(reverse('league:admin'))
 	else:
 
-		return render(request,'league/update_all_sgf.html')
+		return render(request,'league/admin/update_all_sgf.html')
 
 
 @login_required()
