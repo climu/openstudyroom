@@ -46,6 +46,7 @@
       </thead>
       <tbody>
     {% with player=players.0 %}
+    {% with player.get_results as results %}
     {% for opponent in opponents %}
     {% if opponent == player %}
     <tr class="info">
@@ -55,18 +56,19 @@
       <td>{{forloop.counter}}</td>
       <td>{{opponent.user | user_link}}</td>
       <td>{{opponent.score}}
-      <td>  {% with player.get_results as results %}
+      <td>
 
         {% if opponent.kgs_username in results %}
 
-          {% html_one_result results%}
+          {% html_one_result%}
 
         {% endif %}
-        {% endwith %}</td>
+        </td>
 
     </tr>
 
     {% endfor %}
+    {% endwith %}
         {% endwith%}
 </tbody>
 </table>
