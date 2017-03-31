@@ -97,7 +97,7 @@ def games(request,event_id=None,game_id=None):
 
 	else:
 		event = get_object_or_404(LeagueEvent,pk=event_id)
-		close = event.is_close
+		close = event.is_close()
 		games=Game.objects.filter(white__event=event).order_by('-sgf__date')
 		template = loader.get_template('league/games.html')
 		context.update( {
@@ -121,7 +121,7 @@ def results(request,event_id=None,division_id=None):
 	results = division.get_results()
 	template = loader.get_template('league/results.html')
 	players = LeaguePlayer.objects.filter(division=division).order_by('-score')
-	close = event.is_close
+	close = event.is_close()
 	context = {
 		'players':players,
 		'event':event,
@@ -152,7 +152,7 @@ def event(request,event_id=None,division_id=None,):
 		division = Division.objects.filter(league_event=event).first()
 	else:
 		division = get_object_or_404(Division,pk=division_id)
-	close = event.is_close
+	close = event.is_close()
 	context = {
 		'event':event,
 		'close':close,
