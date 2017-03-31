@@ -1,10 +1,23 @@
-{% extends "full_width.html" %}
+{% extends "league/admin/base.html" %}
 {% load wagtailcore_tags bootstrap3 %}
 {% block title %}OSR league admin{% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1>Dashboard</h1>
+</div>
+{%endblock%}
 {% block content %}
+<div class="row">
+<div class="col-md-7">
+<div class="panel panel-default">
+<div class="panel-heading"><h3> Admin board </h3></div>
+<iframe name="embed_readwrite" frameBorder="0" src="https://mensuel.framapad.org/p/1N0qTQCsk6?showControls=true&showChat=false&showLineNumbers=false&useMonospaceFont=false" width="100%" height="500px"></iframe>
+</div>
+</div>
+
+<div class="col-md-5">
 <div class="panel panel-default">
 <div class="panel-heading"><h3> List of new users </h3></div>
-<div class="panel-body">
   <table id='new_user-table' class='display table' >
     <thead>
       <tr><th>username</th><th>email</th><th>kgs_username</th><th>Delete</th><th>Accept</th>
@@ -20,7 +33,7 @@
             <input type="hidden" name="action" value="delete_new_user">
             <input type="hidden" name="user_id" value="{{new_user.pk}}">
               <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('You are about to delete the new user {{new_user.username}}. Allright?')" >
-                {% bootstrap_icon "remove" %}  delete
+                {% bootstrap_icon "remove" %}  
               </button>
             </form>
           </td>
@@ -29,7 +42,7 @@
             <input type="hidden" name="action" value="welcome_new_user">
             <input type="hidden" name="user_id" value="{{new_user.pk}}">
               <button type="submit" class="btn btn-success btn-xs" onclick="return confirm('Accept the new user  {{new_user.username}} as a league memeber ?')">
-                {% bootstrap_icon "ok" %}  Accept
+                {% bootstrap_icon "ok" %}
               </button></form></td>
         </tr>
         {% endfor %}
@@ -37,45 +50,6 @@
   </table>
 </div>
 </div>
-<div class="panel panel-default">
-<div class="panel-heading clearfix"><h3 class=" pull-left"> List of Sgf that didn't pass the test </h3>
-<div class="btn-group pull-right">
-  <legent> Upload a sgf</legend>
-  <form enctype="multipart/form-data" class="form-inline"action=" {% url 'league:handle_upload_sgf' %}" method="post" class="form">
-{% csrf_token %}
-{% bootstrap_form form layout='inline'%}
-<button type="submit" class="btn btn-success btn-sm" >
-  {% bootstrap_icon "ok" %}  Submit
-</button>
-</form></div>
 </div>
-<div class="panel-body">
 
-<table id='sgf-table' class='display table' cellspacing='0' width='100%' >
-   <thead>
-     <tr><th>date</th><th>white</th><th>black</th><th>result</th><th>message</th><th>Edit</th>
-     </thead>
-     <tbody>
-       {% for sgf in sgfs %}
-       <tr>
-         <td> {{sgf.date |date:"M d, Y"}} </td>
-         <td> {{sgf.wplayer }}</td>
-         <td> {{sgf.bplayer }}</td>
-         <td> {{sgf.result}} </td>
-         <td>{{sgf.message}}</td>
-         <td><a href= "{% url 'league:sgf_edit' sgf.pk %}"> <span class="glyphicon glyphicon-menu-right"></span></a></td>
-       </tr>
-{% endfor %}
-</tbody></table>
-</div>
-</div>
-{% endblock %}
-
-{% block extra_js %}
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
-<script type="text/javascript">
-$(document).ready(function() {
-$('#sgf-table').DataTable();
-} );
-</script>
 {% endblock %}

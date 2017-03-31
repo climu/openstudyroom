@@ -3,7 +3,7 @@ from django.template import loader
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect,Http404
 from .models import Sgf,LeaguePlayer,User,LeagueEvent,Division,Game,Registry, User, is_league_admin, is_league_member
-from .forms import  SgfAdminForm,ActionForm,LeagueRolloverForm,UploadFileForm
+from .forms import  SgfAdminForm,ActionForm,LeaguePopulateForm,UploadFileForm,DivisionForm,LeagueEventForm,EmailForm
 import datetime
 from django.http import Http404
 from django.core.urlresolvers import reverse
@@ -12,10 +12,14 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django import forms
 from django.contrib.auth.models import  Group
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from collections import OrderedDict
 from . import utils
+from django.core.mail import send_mail
+from django.views.generic.edit import UpdateView
+from django.views.generic.edit import CreateView
 
 discord_url_file = "/etc/discord_url.txt"
 
@@ -93,7 +97,7 @@ def games(request,event_id=None,game_id=None):
 
 	else:
 		event = get_object_or_404(LeagueEvent,pk=event_id)
-		close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
+		close = event.is_close
 		games=Game.objects.filter(white__event=event).order_by('-sgf__date')
 		template = loader.get_template('league/games.html')
 		context.update( {
@@ -116,8 +120,7 @@ def results(request,event_id=None,division_id=None):
 		division = get_object_or_404(Division,pk=division_id)
 	template = loader.get_template('league/results.html')
 	players = LeaguePlayer.objects.filter(division=division).order_by('-score')
-
-	close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
+	close = event.is_close
 	context = {
 		'players':players,
 		'event':event,
@@ -147,7 +150,7 @@ def event(request,event_id=None,division_id=None,):
 		division = Division.objects.filter(league_event=event).first()
 	else:
 		division = get_object_or_404(Division,pk=division_id)
-	close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
+	close = event.is_close
 	context = {
 		'event':event,
 		'close':close,
@@ -173,8 +176,8 @@ def players(request,event_id=None,division_id=None):
 		else:
 			division = get_object_or_404(Division,pk=division_id)
 			divisions = [division]
-			players = LeaguePlayer.objects.filter(event=event,division = division)
-		close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
+			players = LeaguePlayer.objects.filter(event=event,division = division).order_by('-p_score')
+		close = event.is_close
 		context = {
 			'event':event,
 			'players':players,
@@ -233,6 +236,13 @@ def account(request,user_name=None):
 		template = loader.get_template('league/account.html')
 		return HttpResponse(template.render(context, request))
 
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_sgf_list(request):
+	sgfs=Sgf.objects.all()
+	context={'sgfs':sgfs}
+	return render(request,'league/admin/sgf_list.html', context)
+
 
 
 @login_required()
@@ -287,7 +297,7 @@ def upload_sgf(request):
 			'sgf':sgf,
 			'form': form,
 			}
-			template = loader.get_template('league/upload_sgf.html')
+			template = loader.get_template('league/admin/upload_sgf.html')
 			return HttpResponse(template.render(context, request))
 	else:
 		if 'sgf_data' in request.session:
@@ -303,30 +313,107 @@ def upload_sgf(request):
 			'sgf':sgf,
 			'form': form,
 			}
-			template = loader.get_template('league/upload_sgf.html')
+			template = loader.get_template('league/admin/upload_sgf.html')
 			return HttpResponse(template.render(context, request))
 		else : raise Http404("What are you doing here ?")
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
-def sgf_view(request,sgf_id):
+def admin_delete_game(request,game_id):
+	''' delete a game and add the message " deleted by admin to the sgf"'''
+	game = get_object_or_404(Game,pk = game_id)
+	if request.method == 'POST':
+		form=ActionForm(request.POST)
+		if form.is_valid():
+			if form.cleaned_data['action'] == 'delete_game':
+				sgf=game.sgf
+				sgf.message += ";deleted by admin ("+ str(game.pk) +")"
+				sgf.save()
+				game.delete()
+				form = SgfAdminForm(initial={'sgf':sgf.sgf_text,'url':sgf.urlto})
+				context = {
+				'sgf':sgf,
+				'form': form,
+				}
+				message ="The game " + str(game) + "has been deleted"
+				messages.success(request,message)
+				return HttpResponseRedirect(reverse('league:edit_sgf',args=[sgf.pk]))
+	raise Http404("What are you doing here ?")
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_create_game(request,sgf_id):
+	sgf = get_object_or_404(Sgf,pk=sgf_id)
+	if request.method =='POST':
+		form = ActionForm(request.POST)
+		if form.is_valid():
+			sgf = sgf.check_validity()
+			if sgf.league_valid:
+				if Game.create_game(sgf): message='Successfully created the game ' + sgf.wplayer + ' vs ' + sgf.bplayer +' !'
+				else: message="We coudln't create a league game for this sgf"
+			else:
+				message="The sgf is not valid so we can't create a game"
+		else :raise Http404("What are you doing here ?")
+	messages.success(request,message)
+	return HttpResponseRedirect(reverse('league:edit_sgf',args=[sgf.pk]))
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_save_sgf(request,sgf_id):
 	sgf = get_object_or_404(Sgf, pk=sgf_id)
 	if request.method == 'POST':
 		form = SgfAdminForm(request.POST)
 		if form.is_valid():
 			sgf.sgf_text = form.cleaned_data['sgf']
+			sgf.urlto = form.cleaned_data['url']
 			sgf.p_status = 2
+			sgf = sgf.parse()
+			sgf = sgf.check_validity()
 			sgf.save()
-			message =" You just modified the sgf " + sgf.wplayer + " Vs "+ sgf.bplayer
-			messages.success(request,message)
+	message = 'successfully saved the sgf in the db'
+	messages.success(request,message)
+	return HttpResponseRedirect(reverse('league:edit_sgf',args=[sgf.pk]))
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_delete_sgf(request,sgf_id):
+	sgf = get_object_or_404(Sgf, pk=sgf_id)
+	if request.method == 'POST':
+		message = 'successfully deleted the sgf ' + str(sgf)
+		messages.success(request,message)
+		sgf.delete()
 		return HttpResponseRedirect(reverse('league:admin'))
+	else:raise Http404("What are you doing here ?")
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_edit_sgf(request,sgf_id):
+	sgf = get_object_or_404(Sgf, pk=sgf_id)
+	if request.method == 'POST':
+		form = SgfAdminForm(request.POST)
+		if form.is_valid():
+			sgf.sgf_text = form.cleaned_data['sgf']
+			sgf.urlto = form.cleaned_data['url']
+			sgf.p_status = 2
+			sgf = sgf.parse()
+			sgf = sgf.check_validity()
+			form = SgfAdminForm(initial={'sgf':sgf.sgf_text, 'url':sgf.urlto})
+			context = {
+			'sgf':sgf,
+			'form': form,
+			'preview': True
+			}
+			template = loader.get_template('league/admin/sgf_edit.html')
+			return HttpResponse(template.render(context, request))
 	else:
-		form = SgfAdminForm(initial={'sgf':sgf.sgf_text})
+		form = SgfAdminForm(initial={'sgf':sgf.sgf_text, 'url':sgf.urlto})
 		context={
 		'form' : form,
 		'sgf' : sgf,
+		'preview': False
 		}
-		return render(request,'league/sgf.html', context)
+		return render(request,'league/admin/sgf_edit.html', context)
+
 
 
 @login_required()
@@ -336,7 +423,6 @@ def admin(request):
 	if request.method =='POST':
 		form = ActionForm(request.POST)
 		if form.is_valid():
-			print(form.cleaned_data['action'])
 			if form.cleaned_data['action'] == "welcome_new_user":
 				user=User.objects.get(pk=form.cleaned_data['user_id'])
 				user.groups.clear()
@@ -362,45 +448,188 @@ def admin(request):
 		'new_users': new_users,
 		'form':form,
 		}
-		template = loader.get_template('league/admin.html')
+		template = loader.get_template('league/admin/dashboard.html')
 		return HttpResponse(template.render(context, request))
 
 
+class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+	form_class = LeagueEventForm
+	model = LeagueEvent
+	template_name_suffix = '_update_form'
 
+	def test_func(self):
+		return self.request.user.is_authenticated() and self.request.user.user_is_league_admin()
+
+	def get_login_url(self):
+		return '/'
+
+class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+	form_class = LeagueEventForm
+	model = LeagueEvent
+	template_name_suffix = '_create_form'
+	initial = { 'begin_time': datetime.datetime.now(),
+				'end_time': datetime.datetime.now() }
+
+
+	def test_func(self):
+		return self.request.user.is_authenticated() and self.request.user.user_is_league_admin()
+
+	def get_login_url(self):
+		return '/'
 
 
 @login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name=None)
+def admin_events(request, event_id=None):
+	events = LeagueEvent.objects.all().order_by("-begin_time")
+	primary_event = Registry.get_primary_event().pk
+	edit_event = -1
+	if not event_id is None:
+		edit_event = get_object_or_404(LeagueEvent, pk=event_id)
+
+	template = loader.get_template('league/admin/events.html')
+	context = { 'events': events,
+				'edit_event': edit_event,
+				'primary_pk': primary_event}
+	return HttpResponse(template.render(context, request))
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name=None)
+def admin_events_set_primary(request, event_id):
+	event = get_object_or_404(LeagueEvent,pk=event_id)
+	if request.method =='POST':
+		form = ActionForm(request.POST)
+		if form.is_valid():
+			if form.cleaned_data['action'] == "set_primary":
+				r=Registry.objects.get(pk=1)
+				r.primary_event = event
+				r.save()
+				message ="Changed primary event to \"{}\"".format(r.primary_event.name)
+				messages.success(request,message)
+				return HttpResponseRedirect(reverse('league:admin_events'))
+	raise Http404("What are you doing here ?")
+
+@login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
-def rollover(request):
+def admin_delete_division(request,division_id):
+	division = get_object_or_404(Division, pk=division_id)
+	event = division.league_event
+	if request.method =='POST':
+		form = ActionForm(request.POST)
+		if form.is_valid():
+			if form.cleaned_data['action'] == "delete_division":
+				nb_players= division.number_players()
+				if nb_players >0:
+					message="You just deleted the division" + str(division) +" and the " + str(nb_players) +" players in it."
+				else:
+					message="You just deleted the empty division" + str(division) +"."
+				division.delete()
+				messages.success(request,message)
+				return HttpResponseRedirect(reverse('league:admin_events_update',kwargs={'pk':event.pk}))
+
+	raise Http404("What are you doing here ?")
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_events_delete(request,event_id):
+	event = get_object_or_404(LeagueEvent, pk=event_id)
+	if not request.method == 'POST':
+		raise Http404("What are you doing here ?")
+
+	form = ActionForm(request.POST)
+	if not form.is_valid():
+		raise Http404("What are you doing here ? (Token Error)")
+
+	message = 'Successfully deleted the event ' + str(event)
+	messages.success(request,message)
+	event.delete()
+	return HttpResponseRedirect(reverse('league:admin_events'))
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_create_division(request,event_id):
+	event=get_object_or_404(LeagueEvent,pk=event_id)
+	if request.method =='POST':
+		form = DivisionForm(request.POST)
+		if form.is_valid():
+			division = form.save(commit=False)
+			division.league_event = event
+			division.order = event.last_division_order() +1
+			division.save()
+		return HttpResponseRedirect(reverse('league:admin_events_update',kwargs={'pk':event_id}))
+	else : raise Http404("What are you doing here ?")
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name=None)
+def admin_rename_division(request,division_id):
+	division=get_object_or_404(Division,pk=division_id)
+	event = division.league_event
+
+	if request.method =='POST':
+		form = DivisionForm(request.POST)
+		if form.is_valid():
+			message = "You renamed " + str(division) + " to " + form.cleaned_data['name']
+			division.name=form.cleaned_data['name']
+			division.save()
+			messages.success(request,message)
+			return HttpResponseRedirect(reverse('league:admin_events_update',kwargs={'pk':event.pk}))
+	raise Http404("What are you doing here ?")
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name=None)
+def admin_division_up_down(request,division_id):
+	'''changing division order. Note that if admin have deleted a division, the order change might not be just +-1'''
+	division_1 = get_object_or_404(Division,pk=division_id)
+	event = division_1.league_event
+	if request.method =='POST':
+		form = ActionForm(request.POST)
+		if form.is_valid():
+			if form.cleaned_data['action'] == "division_up" and not division_1.is_first():
+				order=division_1.order
+				while not event.division_set.exclude(pk=division_1.pk).filter(order=order).exists():
+					order -= 1
+				division_2 = Division.objects.get(league_event=division_1.league_event,order=order)
+				order_2 = division_1.order
+				division_2.order = -1
+				division_2.save()
+				division_1.order = order
+				division_1.save()
+				division_2.order = order_2
+				division_2.save()
+			if form.cleaned_data['action'] == "division_down" and not division_1.is_last():
+				order=division_1.order
+				while not event.division_set.exclude(pk=division_1.pk).filter(order=order).exists():
+					order += 1
+				division_2 = Division.objects.get(league_event=division_1.league_event,order=order)
+				order_2 = division_1.order
+				division_2.order = -1
+				division_2.save()
+				division_1.order = order
+				division_1.save()
+				division_2.order = order_2
+				division_2.save()
+			return HttpResponseRedirect(reverse('league:admin_events_update',kwargs={'pk':event.pk}))
+	raise Http404("What are you doing here ?")
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def populate(request,to_event_id,from_event_id=None):
 	'''
-	A view that helps admin to do rollover at the end of the month.
+	A view that helps admin to do populate at the end of the month.
 	It displays users from primary_event and let the admin choose to which division they will be in next event.
-	This view can perform a preview loading data from the form. Actual db populating happen in proceed_rollover view
+	This view can perform a preview loading data from the form. Actual db populating happen in proceed_populate view
 
 	'''
-	from_event = Registry.get_primary_event()
-	to_event = LeagueEvent.objects.filter(pk=from_event.pk+1).first()
-
-	# One day we should have a better way to select to_event from a form.
-	# For now it's just the next event in db (if admin create/delete event, this doesn't work)
-	# Anyway, if to_event is None, we abort.
-	if to_event == None:
-		message =" You must create a new event and his divisions before processing rollover."
-		messages.success(request,message)
-		return HttpResponseRedirect(reverse('league:admin'))
-
-	# We shouldn't populate an event that already have players in it.
-	if to_event.number_players()>0:
-		message = "Something strange: you tryed to rollover to a league with players already in it"
-		messages.success(request,message)
-		return HttpResponseRedirect(reverse('league:admin'))
-
+	to_event = get_object_or_404(LeagueEvent,pk=to_event_id)
 	new_players= OrderedDict()
 	for division in to_event.get_divisions():
 		new_players[division.name]=[]
 
 	if request.method == 'POST':
-		form = LeagueRolloverForm(from_event,to_event,request.POST)
+		if from_event_id is None:
+			 raise Http404("What are you doing here ?")
+		else: from_event = get_object_or_404(LeagueEvent,pk = from_event_id)
+		form = LeaguePopulateForm(from_event,to_event,request.POST)
 		if form.is_valid():
 			for player in from_event.get_players():
 				if player.is_active():
@@ -411,7 +640,11 @@ def rollover(request):
 			#Admin have a preview so we are sure form is not dumber than the admin. We will display the save button in template
 			preview=True
 	else:
-		form = LeagueRolloverForm(from_event,to_event)
+		if 'from_event' in request.GET :
+			from_event = get_object_or_404(LeagueEvent,pk=request.GET['from_event'])
+		else:
+			raise Http404("What are you doing here ?")
+		form = LeaguePopulateForm(from_event,to_event)
 		# Having preview at false prevent the save button to be displayed in tempalte
 		preview=False
 
@@ -422,22 +655,22 @@ def rollover(request):
 			'new_players' : new_players,
 			'preview' : preview,
 		}
-	template = loader.get_template('league/rollover.html')
+	template = loader.get_template('league/admin/populate.html')
 	return HttpResponse(template.render(context, request))
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
-def proceed_rollover(request):
-	''' Here we actually populate the db with the form from rollover view.
+def proceed_populate(request,from_event_id,to_event_id):
+	''' Here we actually populate the db with the form from populate view.
 	We assume the admin have seen the new events structure in a preview before being here.
 	'''
 
-	# As before, to_event should not be that way.
-	# rollover view should have the admin select this event and sending this here in the form.
-	from_event = Registry.get_primary_event()
-	to_event = LeagueEvent.objects.filter(pk=from_event.pk+1).first()
+	# populate view should have the admin select this event and sending this here in the form.
+
+	to_event = get_object_or_404(LeagueEvent,pk=to_event_id)
+	from_event = get_object_or_404(LeagueEvent,pk=from_event_id)
 	if request.method == 'POST':
-		form = LeagueRolloverForm(from_event,to_event,request.POST)
+		form = LeaguePopulateForm(from_event,to_event,request.POST)
 		if form.is_valid():
 			n=0
 			for player in from_event.get_players():
@@ -447,24 +680,35 @@ def proceed_rollover(request):
 						new_player = LeaguePlayer.objects.create(user=player.user,event = to_event,kgs_username = player.kgs_username,division=new_division)
 		message ="The new "+ to_event.name +" was populated with "+ str(n) +" players."
 		messages.success(request,message)
-		return HttpResponseRedirect(reverse('league:admin'))
+		return HttpResponseRedirect(reverse('league:admin_events' ))
 	else:
 		raise Http404("What are you doing here ?")
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
-def send_user_mail(request):
+def admin_user_send_mail(request,user_id):
 	'''
-	Just a test mail view. Add your email and see if you have it.
+	send an email to a user
 	'''
-	send_mail(
-    	'Subject here',
-    	'Here is the message.',
-    	'from@example.com',
-    	['youremail@yourhost.com'],
-    	fail_silently=False,
-		)
-	return HttpResponse('sent')
+	user = get_object_or_404(User,pk=user_id)
+
+	if request.method == 'POST':
+		form = EmailForm(request.POST)
+		if form.is_valid():
+			send_mail(
+	    	form.cleaned_data['subject'],
+			form.cleaned_data['message'],
+			'openstudyroom@gmail.com',
+			[user.get_primary_email().email,form.cleaned_data['copy_to']],
+			fail_silently=False,
+			)
+			message="Successfully sent an email to "+ str(user)
+			messages.success(request,message)
+			return HttpResponseRedirect(reverse('league:admin' ))
+	else:
+		form = EmailForm()
+		context = {'form':form,'user':user}
+		return render(request,'league/admin/user_send_mail.html',context)
 
 def discord_redirect(request):
 	'''loads discord invite url from discord_url_file and redirects the user if he passes the tests.'''
@@ -487,7 +731,7 @@ def update_all_sgf(request):
 	Latter, we might add a select form to select what field(s) we want update
 	'''
 	if request.method == 'POST':
-		form = form=ActionForm(request.POST)
+		form = ActionForm(request.POST)
 		if form.is_valid():
 			sgfs= Sgf.objects.all()
 			for sgf in sgfs:
@@ -503,4 +747,60 @@ def update_all_sgf(request):
 			return HttpResponseRedirect(reverse('league:admin'))
 	else:
 
-		return render(request,'league/update_all_sgf.html')
+		return render(request,'league/admin/update_all_sgf.html')
+
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def admin_users_list(request,event_id=None,division_id=None):
+	event = None
+	division = None
+	if event_id is None:
+		users = User.objects.all()
+	else:
+		event = get_object_or_404(LeagueEvent,pk=event_id)
+		if division_id is None:
+			players = event.leagueplayer_set.all()
+			users = User.objects.filter(leagueplayer__in  =players)
+		else:
+			division = get_object_or_404(Division,pk=division_id)
+			players = division.leagueplayer_set.all()
+			users = User.objects.filter(leagueplayer__in  =players)
+	context = {
+	'users': users,
+	'event': event,
+	'division': division,
+	}
+	return render(request,'league/admin/users.html',context)
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def scrap_list(request):
+	event = Registry.get_primary_event()
+	players = event.leagueplayer_set.all().order_by('-p_status')
+	context = {
+	'event':event,
+	'players':players
+	}
+	return render(request,'league/scrap_list.html',context)
+
+@login_required()
+@user_passes_test(is_league_member,login_url="/",redirect_field_name = None)
+def scrap_list_up(request,player_id):
+	''' Set player p_status to 2 so this player will be checked soon'''
+	player = get_object_or_404(LeaguePlayer,pk=player_id)
+	if player.p_status == 2:
+		message = str(player) + ' will already be scraped with hight priority'
+		messages.success(request,message)
+		return HttpResponseRedirect(reverse('league:scrap_list'))
+
+	if request.method == 'POST':
+		form = ActionForm (request.POST)
+		if form.is_valid():
+			if form.cleaned_data['action'] == 'p_status_up':
+				player.p_status = 2
+				player.save()
+				message = 'You just moved ' + str(player) + ' up the scrap list'
+				messages.success(request,message)
+				return HttpResponseRedirect(reverse('league:scrap_list'))
+	raise Http404("What are you doing here ?")
