@@ -118,6 +118,7 @@ def results(request,event_id=None,division_id=None):
 		division = Division.objects.filter(league_event=event).first()
 	else:
 		division = get_object_or_404(Division,pk=division_id)
+	results = division.get_results()
 	template = loader.get_template('league/results.html')
 	players = LeaguePlayer.objects.filter(division=division).order_by('-score')
 	close = event.is_close
@@ -126,6 +127,7 @@ def results(request,event_id=None,division_id=None):
 		'event':event,
 		'division':division,
 		'close' : close,
+		'results' :results,
 		}
 	return HttpResponse(template.render(context, request))
 

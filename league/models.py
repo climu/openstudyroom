@@ -311,6 +311,39 @@ class Division(models.Model):
 	def is_last(self):
 		return not Division.objects.filter(league_event=self.league_event, order__gt = self.order).exists()
 
+	def get_results(self):
+		games= Game.objects.filter(white__division=self)
+		results = {}
+		for game in games:
+			if game.winner == game.white:
+				winner = game.white.kgs_username
+				loser =game. black.kgs_username
+			else:
+				winner = game.black.kgs_username
+				loser =game.white.kgs_username
+			if winner in results:
+				results[winner]['score'] = results[winner]['score'] + self.league_event.ppwin
+				if loser in results[winner]['results']:
+					results[winner]['results'][loser].append({'id': game.pk, 'r': 1})
+				else:
+					results[winner]['results'][loser] = [{'id': game.pk, 'r': 1}]
+			else:
+				results[winner] = {}
+				results[winner]['score'] = self.league_event.ppwin
+				results[winner]['results'] = {}
+				results[winner]['results'][loser] = [{'id': game.pk, 'r': 1}]
+			if loser in results:
+				results[loser]['score'] = results[winner]['score'] + self.league_event.pploss
+				if winner in results[loser]['results']:
+					results[loser]['results'][winner].append({'id': game.pk, 'r': 0})
+				else:
+					results[loser]['results'][winner] = [{'id': game.pk, 'r': 0}]
+			else:
+				results[loser] = {}
+				results[loser]['score'] = self.league_event.pploss
+				results[loser]['results'] = {}
+				results[loser]['results'][winner] = [{'id': game.pk, 'r': 0}]
+		return results
 
 
 

@@ -10,9 +10,6 @@
         <li class = active ><a href="{% url 'league:results' event.pk %}">Results</a></li>
         <li><a href="{% url 'league:players' event.pk %}">Players</a></li>
         <li><a href="{% url 'league:games' event.pk %}">Games</a></li>
-        {% if not close %}
-        <li ><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
-        {% endif %}
     </ul>
     <ul class="nav navbar-nav navbar-right" style="margin-right:5px;">
         <li {%if not close %}class ="active"{%endif%}><a href="{% url 'league:event' %}">Current league</a></li>
@@ -24,7 +21,6 @@
     <li {% if div == division %}class='active'{%endif%} > {{div|division_link}}</li>
     {% endfor %}
 </ul>
-
 <div class='table-responsive'>
     <table id='example' class='table table-bordered  table-hover table-condensed' >
         <thead class='table-league-highlight'>
@@ -41,21 +37,14 @@
         {% for player in players %}
         <tr class="{% cycle 'even-row' 'odd-row' %}">
             <td class='table-league-player'>{{forloop.counter}}. {{player.user | user_link}}</td>
-            <td class='table-league-score-highlight'>{{player.score}}</td>
+            <td class='table-league-score-highlight'>{{ player | player_score:results }}</td>
             {% for opponent in players %}
 
             {% if forloop.counter == forloop.parentloop.counter %}
             <td class="table-league-highlight {% cycle 'even-column' 'odd-column' %}">
                 {% else %}
             <td class="{% cycle 'even-column' 'odd-column' %}">
-              {% with player.get_results as results %}
-
-                {% if opponent.kgs_username in results %}
-
-                  {% html_one_result results%}
-
-                {% endif %}
-                {% endwith %}
+              {% html_one_result %}
             </td>
             {% endif %}
             {% endfor %}
