@@ -97,3 +97,10 @@ def p_status(p_status):
 @register.filter()
 def scrap_time(n):
 	return n*5
+
+@register.filter()
+def player_score(player, results):
+	if player.kgs_username in results:
+		return results[player.kgs_username]['score']
+	else:
+		return 0

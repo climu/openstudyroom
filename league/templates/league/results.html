@@ -37,7 +37,7 @@
         {% for player in players %}
         <tr class="{% cycle 'even-row' 'odd-row' %}">
             <td class='table-league-player'>{{forloop.counter}}. {{player.user | user_link}}</td>
-            <td class='table-league-score-highlight'>{{player.score}}</td>
+            <td class='table-league-score-highlight'>{{ player | player_score:results }}</td>
             {% for opponent in players %}
 
             {% if forloop.counter == forloop.parentloop.counter %}
