@@ -5,12 +5,14 @@ from django.utils.safestring import mark_safe
 register = template.Library()
 
 @register.simple_tag(takes_context=True)
-def html_one_result(context,results):
+def html_one_result(context):
 	# note the use of takes_context = true.
 	# this filter only works called from a context where player an opponent exists
 	player=context['player']
 	opponent = context['opponent']
-
+	if not player.kgs_username in context['results']:
+		return ""
+	results = context['results'][player.kgs_username]['results']
 	if 'event' in context:
 		event=str(context['event'].pk)+'/'
 	else:
