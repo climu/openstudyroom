@@ -335,14 +335,14 @@ class Division(models.Model):
 			if loser in results:
 				results[loser]['score'] = results[winner]['score'] + self.league_event.pploss
 				if loser in results[winner]['results']:
-					results[loser]['results'][winer].append({'id': game.pk, 'r': 0})
+					results[loser]['results'][winner].append({'id': game.pk, 'r': 0})
 				else:
-					resutls[loser]['results'][winer] = {'id': game.pk, 'r': 0}
+					resutls[loser]['results'][winner] = {'id': game.pk, 'r': 0}
 			else:
 				results[loser] = {}
 				results[loser]['score'] = self.league_event.pploss
-				results[winner]['results'] = {}
-				results[loser]['results'][winer] = [{'id': game.pk, 'r': 0}]
+				results[loser]['results'] = {}
+				results[loser]['results'][winner] = [{'id': game.pk, 'r': 0}]
 		return results
 
 
