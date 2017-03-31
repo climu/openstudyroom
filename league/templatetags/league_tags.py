@@ -91,3 +91,7 @@ def p_status(p_status):
 		return mark_safe("2 : to be scraped soon")
 	else:
 		return mark_safe(str(p_status) +" : something wrong")
+
+@register.filter()
+def scrap_time(n):
+	return n*5

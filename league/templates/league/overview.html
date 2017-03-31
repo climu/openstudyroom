@@ -5,6 +5,9 @@
   <li><a href="{% url 'league:results' event.pk %}">Results</a></li>
   <li><a href="#">Players</a></li>
   <li><a href="{% url 'league:games' event.pk %}">Games</a></li>
+  {% if not close %}
+  <li ><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
+  {% endif %}
 </ul>
 
 

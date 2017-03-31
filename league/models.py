@@ -81,6 +81,9 @@ class LeagueEvent(models.Model):
 	def get_other_events(self):
 		return LeagueEvent.objects.all().exclude(pk=self.pk)
 
+	def is_close(self):
+		return Registry.get_primary_event == self
+
 
 
 

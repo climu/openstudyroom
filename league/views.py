@@ -97,7 +97,7 @@ def games(request,event_id=None,game_id=None):
 
 	else:
 		event = get_object_or_404(LeagueEvent,pk=event_id)
-		close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
+		close = event.is_close
 		games=Game.objects.filter(white__event=event).order_by('-sgf__date')
 		template = loader.get_template('league/games.html')
 		context.update( {
@@ -120,8 +120,7 @@ def results(request,event_id=None,division_id=None):
 		division = get_object_or_404(Division,pk=division_id)
 	template = loader.get_template('league/results.html')
 	players = LeaguePlayer.objects.filter(division=division).order_by('-score')
-
-	close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
+	close = event.is_close
 	context = {
 		'players':players,
 		'event':event,
@@ -151,7 +150,7 @@ def event(request,event_id=None,division_id=None,):
 		division = Division.objects.filter(league_event=event).first()
 	else:
 		division = get_object_or_404(Division,pk=division_id)
-	close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
+	close = event.is_close
 	context = {
 		'event':event,
 		'close':close,
@@ -177,8 +176,8 @@ def players(request,event_id=None,division_id=None):
 		else:
 			division = get_object_or_404(Division,pk=division_id)
 			divisions = [division]
-			players = LeaguePlayer.objects.filter(event=event,division = division)
-		close = event.end_time.replace(tzinfo=None) < datetime.datetime.now().replace(tzinfo=None)
+			players = LeaguePlayer.objects.filter(event=event,division = division).order_by('-p_score')
+		close = event.is_close
 		context = {
 			'event':event,
 			'players':players,
@@ -732,7 +731,7 @@ def update_all_sgf(request):
 	Latter, we might add a select form to select what field(s) we want update
 	'''
 	if request.method == 'POST':
-		form = form=ActionForm(request.POST)
+		form = ActionForm(request.POST)
 		if form.is_valid():
 			sgfs= Sgf.objects.all()
 			for sgf in sgfs:
@@ -773,3 +772,35 @@ def admin_users_list(request,event_id=None,division_id=None):
 	'division': division,
 	}
 	return render(request,'league/admin/users.html',context)
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def scrap_list(request):
+	event = Registry.get_primary_event()
+	players = event.leagueplayer_set.all().order_by('-p_status')
+	context = {
+	'event':event,
+	'players':players
+	}
+	return render(request,'league/scrap_list.html',context)
+
+@login_required()
+@user_passes_test(is_league_member,login_url="/",redirect_field_name = None)
+def scrap_list_up(request,player_id):
+	''' Set player p_status to 2 so this player will be checked soon'''
+	player = get_object_or_404(LeaguePlayer,pk=player_id)
+	if player.p_status == 2:
+		message = str(player) + ' will already be scraped with hight priority'
+		messages.success(request,message)
+		return HttpResponseRedirect(reverse('league:scrap_list'))
+
+	if request.method == 'POST':
+		form = ActionForm (request.POST)
+		if form.is_valid():
+			if form.cleaned_data['action'] == 'p_status_up':
+				player.p_status = 2
+				player.save()
+				message = 'You just moved ' + str(player) + ' up the scrap list'
+				messages.success(request,message)
+				return HttpResponseRedirect(reverse('league:scrap_list'))
+	raise Http404("What are you doing here ?")

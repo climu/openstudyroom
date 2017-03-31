@@ -58,5 +58,8 @@ urlpatterns = [
     url(r'^admin/users/event/(?P<event_id>[0-9]+)/$', views.admin_users_list, name='admin_users_list' ),
     url(r'^admin/users/event/(?P<event_id>[0-9]+)/division/(?P<division_id>[0-9]+)/$', views.admin_users_list, name='admin_users_list' ),
     url(r'^admin/users/(?P<user_id>[0-9]+)/send-mail/$', views.admin_user_send_mail, name='admin_user_send_mail' ),
+    url(r'^scrap-list/$', views.scrap_list, name='scrap_list'),
+    url(r'^scrap-list/(?P<player_id>[0-9]+)/up/$', views.scrap_list_up, name='scrap_list_up'),
+
 
 ]
