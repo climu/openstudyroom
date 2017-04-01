@@ -11,7 +11,7 @@ body .container{
     }
     table#example th{
         text-align: center;
-        min-width:20px;
+        min-width:30px;
     }
     table#example th:nth-of-type(1),
     table#example th:nth-of-type(2){
