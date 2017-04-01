@@ -18,7 +18,6 @@ def html_one_result(context):
 	else:
 		event=''
 
-	#results=player.get_results_old()
 	opponent_kgs=opponent.kgs_username
 	html=""
 	if opponent_kgs in results:
@@ -34,7 +33,27 @@ def html_one_result(context):
 
 	return mark_safe(html)
 
+@register.simple_tag(takes_context=True)
+def html_one_player_result(context):
+	# note the use of takes_context = true.
+	# this filter only works called from a context where player an opponent exists
+	player=context['player']
+	opponent = context['opponent']
+	results = context['results']
+	opponent_kgs=opponent.kgs_username
+	html=""
+	if opponent_kgs in results:
+		result=results[opponent_kgs]
+		for game in result:
+			#here, game['id'] would get you the id of the game to add a link
+			html += '<a href="/league/games/' + str(game['id']) + '">'
+			if game['r']==1 :
+				 html += '<i class="fa fa-circle-o" aria-hidden="true" style="color:green"></i></a>'
+			#will be glyphicon glyphicon-ok-circle or fontawesome thing
+			else :
+			 html += '<i class="fa fa-circle" aria-hidden="true" style="color:blue"></i></a>'
 
+	return mark_safe(html)
 
 @register.filter
 def user_link(user):

@@ -36,6 +36,7 @@
 {% if active_player %}
 <p><b>{{user.username}}</b> is currently playing for the <b>{{active_player.event}}</b> in the <b>{{active_player.division}}</b> with the kgs username <b>{{user.kgs_username}}</b>.</p>
 </div>
+
   <table id='opponents-table' class=' table table-hover table-condensed'  >
      <thead>
        <tr>
@@ -60,7 +61,7 @@
 
         {% if opponent.kgs_username in results %}
 
-          {% html_one_result%}
+          {% html_one_player_result%}
 
         {% endif %}
         </td>
