@@ -253,6 +253,9 @@ def game_api(request,game_id):
 	data['sgf'] = sgf.sgf_text.replace(';B[]',"").replace(';W[]',"")
 	data['permalink'] = '/league/games/'+ str(game.pk)
 	data['game_infos'] = html
+	data['white'] = str(game.white)
+	data['black'] = str(game.black)
+
 	return HttpResponse(json.dumps(data), content_type = "application/json")
 
 

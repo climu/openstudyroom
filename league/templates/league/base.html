@@ -2,7 +2,7 @@
 {% load static %}
 {% block heading%}
   <div class="page-header">
-      <h1>OSR League - {%if event %}{{event}}{% else%}Archives{% endif %}{%if game %} - {{game.black}} vs {{game.white}} {%endif%} </h1>
+      <h1>OSR League - {%if event %}{{event}}{% else%}Archives{% endif %}<span id='game-header'>{%if game %} - {{game.black}} vs {{game.white}} {%endif%} </span></h1>
   </div>
   {%endblock%}
   {% block extra_css %}
