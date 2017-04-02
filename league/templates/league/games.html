@@ -1,6 +1,30 @@
 {% extends "league/base.html" %}
 {% load league_tags wgo_tags%}
 {% block title %}{% if game %} {{game.black}} vs {{game.white}} {% else %}{{event}}- Games{% endif %}{% endblock %}
+{% block extra_head_js %}
+<script type="text/javascript">
+function load_game(game_id) {
+    $.ajax({
+    type: "GET",
+    url: "/league/game/json/" + game_id,
+    dataType: "json",
+    success: processData,
+    error: function(){ alert("failed"); }
+});
+
+function processData(data)
+{
+    document.getElementById("game_infos").innerHTML= data.game_infos ;
+    var elem = document.getElementById("player");
+    var player = new WGo.BasicPlayer(elem, {
+      sgf: data.sgf
+      });
+    window.history.pushState('page2', 'Title', data.permalink);
+
+};
+return false;};
+</script>
+{% endblock %}
 {% block content %}
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav navbar-left">
@@ -18,22 +42,31 @@
 </ul>
 </nav>
 <div class ="row">
-<div class="col-md-4">
-{% if game %}
-  {% include "league/includes/game_info.html" with game=game %}
-{% endif %}
+<div  class="col-md-4">
+  <div id ="game_infos">
+    {% if game %}
+  {% include "league/includes/game_info.html"  %}
+    {% endif %}
+</div>
 <div class="panel panel-default">
 <div class="panel-heading">Games from {{event}}</div>
+
 {% include "league/includes/games.html" with games=games %}
+
 </div>
 </div>
 
 <div class="col-md-8">
   {% if game %}
-  <div data-wgo="{{ game.sgf.sgf_text | prepare_sgf}}" >
+  <div id="player" data-wgo="{{ game.sgf.sgf_text | prepare_sgf}}" >
+    </div>
+    {% else %}
+    <div id="player"></div>
   {% endif %}
+
+  </div>
 {% endblock %}
-</div>
+
 {% block extra_js %}
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
 <script type="text/javascript">
@@ -41,4 +74,5 @@ $(document).ready(function() {
 $('#game-table').DataTable({"bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>', "order": [[ 0, "desc" ]]});
 } );
 </script>
+
 {% endblock %}

@@ -20,6 +20,7 @@ from . import utils
 from django.core.mail import send_mail
 from django.views.generic.edit import UpdateView
 from django.views.generic.edit import CreateView
+import json
 
 discord_url_file = "/etc/discord_url.txt"
 
@@ -237,6 +238,23 @@ def account(request,user_name=None):
 		}
 		template = loader.get_template('league/account.html')
 		return HttpResponse(template.render(context, request))
+
+def game_api(request,game_id):
+	''' will return a json containing:
+	'infos': players, date, league, group, permalink, download link.
+	'sgf': sgf datas as plain text string
+	'''
+	game = get_object_or_404(Game, pk= game_id)
+	event = game.event
+	division = game.white.division
+	sgf = game.sgf
+	html=loader.render_to_string("league/includes/game_info.html",{'game':game})
+	data = {}
+	data['sgf'] = sgf.sgf_text.replace(';B[]',"").replace(';W[]',"")
+	data['permalink'] = '/league/games/'+ str(game.pk)
+	data['game_infos'] = html
+	return HttpResponse(json.dumps(data), content_type = "application/json")
+
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)

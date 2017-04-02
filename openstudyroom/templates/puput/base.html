@@ -25,20 +25,15 @@
 
 {% block sidebar %}
             <div class="blog_sidebar">
-                <div class="rss-sitemap">
-                    <a href="{% feeds_url blog_page %}" target="_blank" title="RSS">
-                         <i class="fa fa-rss-square"></i> <span>Feed RSS</span>
-                    </a>
-                </div>
                 <form name="search_form" class="search_form" method="get" action="{% routablepageurl blog_page "entries_search" %}">
                     <div class="input-group">
-                         <input type="search" name="q" placeholder="{% trans 'Search' %}">
+                         <input type="search" name="q" placeholder="{% trans 'Search OSR blog' %}">
                          <span class="input-group-btn">
                             <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
                          </span>
                     </div>
                 </form>
-
+                {% include 'sidebar.html'%}
                 {% if blog_page.display_last_entries %}
                     <ul class="sidebar">
                         <h4>{% trans 'Last Entries' %}</h4>
@@ -51,18 +46,6 @@
                         {% popular_entries blog_page.num_popular_entries %}
                     </ul>
                 {% endif %}
-                {% if blog_page.display_categories %}
-                    <ul class="sidebar">
-                        <h4>{% trans 'Categories' %}</h4>
-                        {% categories_list %}
-                    </ul>
-                {% endif %}
-                {% if blog_page.display_tags %}
-                    <ul class="sidebar">
-                        <h4>{% trans 'Tags' %}</h4>
-                        {% tags_list %}
-                    </ul>
-                {% endif %}
                 {% if blog_page.display_archive %}
                     <ul class="sidebar widget menu">
                         <h4>{% trans 'Archive' %}</h4>
@@ -70,12 +53,11 @@
                     </ul>
                 {% endif %}
             </div>
-        
+
   {% endblock  %}
   {% block extra_js %}
 {% compress js %}
 
-      <script src="{% static 'puput/js/jquery.min.js' %}"></script>
-      <script src="{% static 'puput/js/puput.js' %}"></script>
+        <script src="{% static 'puput/js/puput.js' %}"></script>
 {% endcompress js %}
 {% endblock extra_js %}

@@ -3,6 +3,30 @@
 {% load league_tags %}
 {% load bootstrap3 %}
 
+{% block extra_head_js %}
+<script type="text/javascript">
+function load_game(game_id) {
+    $.ajax({
+    type: "GET",
+    url: "/league/game/json/" + game_id,
+    dataType: "json",
+    success: processData,
+    error: function(){ alert("failed"); }
+});
+
+function processData(data)
+{
+    document.getElementById("game_infos").innerHTML= data.game_infos ;
+    var elem = document.getElementById("player");
+    var player = new WGo.BasicPlayer(elem, {
+      sgf: data.sgf
+      });
+    
+
+};
+return false;};
+</script>
+{% endblock %}
 {% block body_class %}user{% endblock %}
 
 {% block title %}{{user.username}}'s league profile{% endblock %}
@@ -115,16 +139,20 @@
 </tbody>
 </table>
 </div>
+
 <div class="panel panel-default">
-<div class="panel-heading"><h3>Games</h4></div>
+<div class="panel-heading"><h3>{{user}} Games</h4></div>
 <div class ="row">
 <div class="col-md-4">
-{% include "league/includes/games_iframe.html" with games=games %}
+  <div id ="game_infos">
+</div>
+
+{% include "league/includes/games.html" with games=games %}
 </div>
 
 <div class="col-md-8">
-  <iframe name="wgo_iframe" scrolling="no" style= "height:700px;width: 100%;border:none;"></iframe>
 
+    <div id="player"></div>
 </div>
 </div>
 </div>

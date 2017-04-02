@@ -67,10 +67,7 @@ def game_iframe_link(game):
 
 @register.filter
 def game_link(game,event=None):
-	if event==None:
-		html= '<a href="/league/games/' + str(game.pk) + '">'+ str(game.sgf.result) + '</a>'
-	else:
-		html= '<a href="/league/' + str(event.pk) + '/games/' + str(game.pk) + '">'+ str(game.sgf.result) + '</a>'
+	html= '<a role="button" onclick="load_game(' + str(game.pk) +')">'+ str(game.sgf.result) + '</a>'
 
 	return mark_safe(html)
 
