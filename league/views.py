@@ -53,7 +53,7 @@ def scraper():
 		if sgf.result == '?':
 			sgf.delete()
 		else:
-			sgf = sgf.check_validity()
+			sgf.check_validity()
 			sgf.save()
 			if sgf.league_valid:
 				Game.create_game(sgf)
@@ -291,8 +291,7 @@ def create_sgf(request):
 			sgf.sgf_text = form.cleaned_data['sgf']
 			sgf.p_status = 2
 			sgf=sgf.parse()
-			sgf = sgf.check_validity()
-			if sgf.league_valid:
+			if sgf.check_validity():
 				sgf.save()
 				Game.create_game(sgf)
 				message =" Succesfully created a sgf and a league game"
@@ -313,7 +312,7 @@ def upload_sgf(request):
 			sgf.sgf_text = form.cleaned_data['sgf']
 			sgf.p_status = 2
 			sgf=sgf.parse()
-			sgf = sgf.check_validity()
+			sgf.check_validity()
 			form = SgfAdminForm(initial={'sgf':sgf.sgf_text})
 
 			context = {
@@ -330,7 +329,7 @@ def upload_sgf(request):
 			request.session['sgf_data']=None
 			sgf.p_status = 2
 			sgf=sgf.parse()
-			sgf = sgf.check_validity()
+			sgf.check_validity()
 			form = SgfAdminForm(initial={'sgf':sgf.sgf_text})
 			context = {
 			'sgf':sgf,
@@ -370,7 +369,7 @@ def admin_create_game(request,sgf_id):
 	if request.method =='POST':
 		form = ActionForm(request.POST)
 		if form.is_valid():
-			sgf = sgf.check_validity()
+			sgf.check_validity()
 			if sgf.league_valid:
 				if Game.create_game(sgf): message='Successfully created the game ' + sgf.wplayer + ' vs ' + sgf.bplayer +' !'
 				else: message="We coudln't create a league game for this sgf"
@@ -391,7 +390,7 @@ def admin_save_sgf(request,sgf_id):
 			sgf.urlto = form.cleaned_data['url']
 			sgf.p_status = 2
 			sgf = sgf.parse()
-			sgf = sgf.check_validity()
+			sgf.check_validity()
 			sgf.save()
 	message = 'successfully saved the sgf in the db'
 	messages.success(request,message)
@@ -419,7 +418,7 @@ def admin_edit_sgf(request,sgf_id):
 			sgf.urlto = form.cleaned_data['url']
 			sgf.p_status = 2
 			sgf = sgf.parse()
-			sgf = sgf.check_validity()
+			sgf.check_validity()
 			form = SgfAdminForm(initial={'sgf':sgf.sgf_text, 'url':sgf.urlto})
 			context = {
 			'sgf':sgf,

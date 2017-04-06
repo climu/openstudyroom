@@ -61,7 +61,12 @@ class LeagueEventForm(forms.ModelForm):
     			'nb_matchs',
     			'ppwin',
     			'pploss',
-    			'min_matchs']
+    			'min_matchs',
+                'is_open',
+                'tag',
+                'server',
+                'main_time',
+                'byo_time']
         widgets = {
             'name':forms.TextInput(),
             'begin_time': forms.SelectDateWidget(),

@@ -18,6 +18,13 @@ class LeagueEvent(models.Model):
 	ppwin = models.DecimalField(default=1.5, max_digits=2, decimal_places=1) #points per win
 	pploss = models.DecimalField(default=0.5, max_digits=2, decimal_places=1) #points per loss
 	min_matchs = models.SmallIntegerField(default=1)
+	is_open = models.BooleanField(default=False)
+	server = models.CharField(max_length=10,default= 'KGS') #KGS, OGS
+	event_type = models.CharField(max_length=10,default='ladder') # ladder, tournament, league
+	tag = models.CharField(max_length=10,default='#OSR')
+	main_time = models.PositiveSmallIntegerField(default=1800) #main time in minutes
+	byo_time = models.PositiveSmallIntegerField(default=30) #byo yomi time in sec
+
 	class Meta:
 		ordering = ['-begin_time']
 
@@ -31,7 +38,7 @@ class LeagueEvent(models.Model):
 		return self.begin_time.year
 
 	def get_month(self):
-		return self.begin_time.month
+			return self.begin_time.month
 
 	def number_players(self):
 		return self.leagueplayer_set.count()
@@ -82,7 +89,12 @@ class LeagueEvent(models.Model):
 		return LeagueEvent.objects.all().exclude(pk=self.pk)
 
 	def is_close(self):
-		return not Registry.get_primary_event() == self
+		return self.is_close
+
+	def nb_month(self):
+		delta = self.end_time - self.begin_time
+		return delta.total_seconds()/2678400
+
 
 
 
@@ -94,6 +106,7 @@ class Registry(models.Model):
 	#EDIT: Breaking news !!! django-setting would do it just fine. Maybe latter...
 
 	primary_event = models.ForeignKey(LeagueEvent)
+	x_byo = models.PositiveSmallIntegerField(default=5) # number of byo yomi periods
 	time_kgs = models.DateTimeField(default=datetime.datetime.now,blank=True) #last time we request kgs
 	kgs_delay = models.SmallIntegerField(default=19) #time between 2 kgs get
 
@@ -140,6 +153,7 @@ class Sgf(models.Model):
 	number_moves = models.SmallIntegerField(default=100)
 	p_status = models.SmallIntegerField(default=1)
 	check_code = models.CharField(max_length=100,default='nothing',blank=True)
+	event = models.ForeignKey(LeagueEvent,blank=True,null=True)
 	# status of the sgf:0 already checked
 	#					1 require checking, sgf added from kgs archive link
 	#					2 require checking with priority,sgf added/changed by admin
@@ -172,16 +186,19 @@ class Sgf(models.Model):
 
 
 
-	def check_validity(self):
-		# check sgf validity: oponents in same Division, tag , timesetting,not a review
+	def check_validity_event(self,event):
+		# check sgf validity for a given event: oponents in same Division, tag , timesetting,not a review
 		# We will reperform check on players division because a user could have upload a sgf by hand
 		# hence such a sgf wouldn't have been check during check_player
-		#flag it
+		# we don't touch the sgf but return a dict {'message': m , 'valid' : b}
 		b = True
 		m = ''
 		if self.game_type == 'review': (b,m) = (False,m+' review gametype')
-		if not('#OSR' in self.sgf_text or '#osr' in self.sgf_text): (b,m)= (False,m+'; Tag missing')
-		event = Registry.get_primary_event()
+		if event.tag in self.sgf_text or str.lower(event.tag) in self.sgf_text:
+			tag = True
+		else:
+			tag = False
+			(b,m)= (False,m+'; Tag missing')
 		wplayer = LeaguePlayer.objects.filter(kgs_username__iexact = self.wplayer, event = event).first()
 		bplayer = LeaguePlayer.objects.filter(kgs_username__iexact = self.bplayer, event = event).first()
 		if wplayer != None and bplayer != None :
@@ -194,23 +211,73 @@ class Sgf(models.Model):
 
 		if not utils.check_byoyomi(self.byo):
 			(b,m) = (False,m+'; byo-yomi')
-		if int(self.time) < 1800: (b,m) = (False,m+'; main time')
+		if int(self.time) < event.main_time: (b,m) = (False,m+'; main time')
 		#no result shouldn't happen automaticly, but with admin upload, who knows
 		if self.result == '?':(b,m) = (False,m+'; no result')
 		if self.number_moves < 20 : (b,m) = (False,m+'; number moves')
-		#if game is already in db, we need to be check only with others sgfs
+
+		return {'message':m, 'valid':b,'tag':tag}
+
+	def check_validity(self):
+		'''check sgf validity for all open events.
+		If it's valid for only one event, we mark the sgf as valid.
+		If it's valid for more than one event, we mark the sgf as invalid with message:'valid for multiple events'
+		If it's not valid at all, we just keep last event messages.
+		Update the sgf but do NOT save it to db
+		Return true is the sgf is valid and False if not
+		I think the way we deal with message could be better: maybe a dict with {'event1':'message', 'event2'...}
+		'''
+		# First we check if we have same sgf in db comparing check_code
 		sgfs= Sgf.objects.filter(check_code=self.check_code)
 		if self.pk is None:
-			if len(sgfs)>0:(b,m) = (False,m+'; same sgf already in db : '+ str(sgfs.first().pk))
-		else:
+			if len(sgfs)>0:
+				self.league_valid =False
+				self.message = 'same sgf already in db : '+ str(sgfs.first().pk)
+				return False
+		else: #If self is already in db, we need to be check only with others sgfs
 			sgfs = sgfs.exclude(pk=self.pk)
-			if len(sgfs)>0:(b,m) = (False,m+'; same sgf already in db : ' + str(sgfs.first().pk))
+			if len(sgfs)>0:
+				self.league_valid =False
+				self.message = ';same sgf already in db : '+ str(sgfs.first().pk)
+				return False
+		# if sgf already in db, no need to perform further: We are out already returning False.
+		events = LeagueEvent.objects.filter(is_open=True)
+		message = ''
+		if len(events) == 0: return False
+		n = 0
+		for event in events:
+			print(str(event))
+			check = self.check_validity_event(event)
+			print(str(check))
+			if check['tag']:
+				message = check['message']
+				if check['valid']:
+					n += 1
+					valid_event = event
 
-		self.message = m
-		self.league_valid = b
-		return self
+		if n == 0:
+			# here sgf is valid for no event.
+			# if the sgf was tagged for an event, we display this event message.
+			# Otherwise, just the last one.
+			if len(message)>0 :
+				self.message = message
+			else:
+				self.message = check['message']
 
-
+			self.league_valid = False
+			self.event = None
+			return False
+		elif n == 1 :
+			#sgf is valid for one event only. We set the event foreign key field.
+			self.message = ''
+			self.league_valid = True
+			self.event = valid_event
+			return True
+		else: # n>1
+			self.message = 'valid for multiple events'
+			self.event = None
+			self.league_valid = False
+			return False
 
 
 
@@ -420,7 +487,7 @@ class LeaguePlayer(models.Model):
 		# check if a player have play new games:
 		# get a list of games from kgs (only 1 request to kgs)
 		# for each game we check if it's already in db (comparing urlto)
-		# then we check if both players are in the same division(hence event)
+		# then, for we check if both players are in the same division(hence event)
 		# if both we add them to db with p-status = 1 => to be scraped
 		# if no do nothing
 		# we can't get more info on the game yet cause we need the sgf datas for that.
@@ -430,6 +497,9 @@ class LeaguePlayer(models.Model):
 		self.save()
 		kgs_username = self.user.kgs_username
 		year = self.event.get_year()
+		#if an event last more than one month, the 1st of the month, we check last month archives.
+		# otherwise, game played just before 00:00 GMT won't ever get scraped
+
 		month = self.event.get_month()
 		list_urlto_games=utils.ask_kgs(kgs_username,year,month)
 		#list_urlto_games=[{url:'url',game_type:'game_type'},{...},...]
