@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect,Http404
-from .models import Sgf,LeaguePlayer,User,LeagueEvent,Division,Game,Registry, User, is_league_admin, is_league_member
+from .models import Sgf,LeaguePlayer,User,LeagueEvent,Division,Game,Registry, User, is_league_admin, is_league_member,Profile
 from .forms import  SgfAdminForm,ActionForm,LeaguePopulateForm,UploadFileForm,DivisionForm,LeagueEventForm,EmailForm
 import datetime
 from django.http import Http404
@@ -76,7 +76,11 @@ def scraper():
 	return out
 
 def scraper_view(request):
-	out=scraper()
+	user=User.objects.get(pk=10)
+	#user.check_user()
+
+	print(str(users))
+	#out=scraper()
 	return HttpResponse(out)
 
 def sgf(request,sgf_id):
@@ -826,3 +830,23 @@ def scrap_list_up(request,player_id):
 				messages.success(request,message)
 				return HttpResponseRedirect(reverse('league:scrap_list'))
 	raise Http404("What are you doing here ?")
+
+@login_required()
+@user_passes_test(is_league_member,login_url="/",redirect_field_name = None)
+def create_all_profiles(request):
+	if request.method == 'POST':
+		form = ActionForm(request.POST)
+		if form.is_valid():
+			users=User.objects.filter(profile__isnull=True)
+			for user in users:
+				profile = Profile(user=user,kgs_username=user.kgs_username)
+				profile.save()
+			message ="Successfully created " + str(users.count()) + " profiles."
+			messages.success(request,message)
+			return HttpResponseRedirect(reverse('league:admin'))
+		else:
+			message ="Something went wrong (form is not valid)"
+			messages.success(request,message)
+			return HttpResponseRedirect(reverse('league:admin'))
+	else:
+		return render(request,'league/admin/create_all_profiles.html')

@@ -61,6 +61,7 @@ urlpatterns = [
     url(r'^scrap-list/$', views.scrap_list, name='scrap_list'),
     url(r'^scrap-list/(?P<player_id>[0-9]+)/up/$', views.scrap_list_up, name='scrap_list_up'),
     url(r'^game/json/(?P<game_id>[0-9]+)/$', views.game_api, name='game_api'),
+    url(r'^admin/create-all-profiles/$', views.create_all_profiles, name='create_all_profiles'),
 
 
 ]

@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 import datetime
+import time
+from dateutil.rrule import rrule, MONTHLY
 from . import utils
 import requests
 from django.contrib.auth.models import AbstractUser
@@ -8,6 +10,7 @@ from collections import defaultdict
 from django.db.models import Q
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
+
 
 # Create your models here.
 class LeagueEvent(models.Model):
@@ -37,8 +40,24 @@ class LeagueEvent(models.Model):
 	def get_year(self):
 		return self.begin_time.year
 
-	def get_month(self):
-			return self.begin_time.month
+	def get_months(self):
+		'''Return a list of dates representing months to check for this event:
+		If the event last more than one month:
+		check current month and past month from the 1st of the month
+		'''
+		# first we create a list of {'month':dt.month,'year':dt.year} from self.begin_time to self.end_time
+		months = [{'month':dt.month,'year':dt.year} for dt in rrule(MONTHLY, dtstart=self.begin_time, until=self.end_time)]
+		# This list is too big: no need to check future months
+		now = datetime.datetime.today()
+		# s is a set with current month
+		s = [{'month':now.month,'year':now.year}]
+		if now.day == 1 :
+		#if we are the 1st of the month, we check both previous month an current
+			prev = date.today().replace(day=1) - timedelta(days=1)
+			s.append({'month':now.month,'year':now.year})
+		# we get the intersection of months and s
+		[x for x in s if x in months]
+		return months
 
 	def number_players(self):
 		return self.leagueplayer_set.count()
@@ -92,8 +111,12 @@ class LeagueEvent(models.Model):
 		return self.is_close
 
 	def nb_month(self):
+		''' return a decimal representing the number of month in the event
+		'''
+
+		#return (self.end_time.year - self.begin_time.year)*12+ self.end_time.month - self.begin_time.month
 		delta = self.end_time - self.begin_time
-		return delta.total_seconds()/2678400
+		return round(delta.total_seconds()/2678400)
 
 
 
@@ -339,12 +362,73 @@ class User(AbstractUser):
 	def get_primary_email(self):
 		return self.emailaddress_set.filter(primary=True).first()
 
+	def get_divisions(self):
+		players = self.leagueplayer_set.all()
+		return Division.objects.filter(leagueplayer__in = players)
+
+	def check_user(self):
+		''' Since we support multiple events, we need to check a user instead of a player.
+		 check if a user have play new games:
+		 get a list of games from kgs (only 1 request to kgs)
+		 for each game we check if it's already in db (comparing urlto)
+		 then, for each user.players, for we check if both players are in the same division(hence event)
+		 if both we add them to db with p-status = 1 => to be scraped
+		 if no do nothing
+		 we can't get more info on the game yet cause we need the sgf datas for that.
+		 So that would imply one additional kgs request per game in very short time.
+		 '''
+
+		kgs_username = self.kgs_username
+		self.profile.update(p_status = 0)
+		now = datetime.datetime.today()
+		# months is a set with current month
+		months = [{'month':now.month,'year':now.year}]
+		if now.day == 1 :
+		#if we are the 1st of the month, we check both previous month an current
+			prev = date.today().replace(day=1) - timedelta(days=1)
+			months.append({'month':now.month,'year':now.year})
+		list_urlto_games = utils.ask_kgs(kgs_username,months[0]['year'],months[0]['month'])
+		if len(months)>1:
+			time.sleep(5)
+			list_urlto_games += utils.ask_kgs(kgs_username,months[1]['year'],months[1]['month'])
+		#list_urlto_games=[{url:'url',game_type:'game_type'},{...},...]
+		divisions = self.get_divisions()
+		for d in list_urlto_games:
+			url=d['url']
+			game_type=d['game_type']
+			print(str(d))
+			if  not Sgf.objects.filter(urlto = url).exists():
+				#check if both players are in the league
+				players = utils.extract_players_from_url(url)
+				#no need to check the self to be in the league
+				if players['white'].lower() == self.kgs_username.lower() :
+					player = players['black']
+				else:
+					player = players['white']
+				# For each open events the user is in, we need to check if the oponent is in the same division too.
+				if LeaguePlayer.objects.filter(kgs_username__iexact=player,division__in=divisions).exists():
+					sgf = Sgf()
+					sgf.wplayer = players['white']
+					sgf.bplayer = players['black']
+					sgf.urlto = url
+					sgf.p_status = 1
+					sgf.game_type = game_type
+					#sgf.save()
 
 def is_league_admin(user):
 	return user.groups.filter(name='league_admin').exists()
 def is_league_member(user):
 	return user.groups.filter(name='league_member').exists()
 
+class Profile(models.Model):
+	user=models.OneToOneField(User)
+	kgs_username = models.CharField(max_length=10,blank=True)
+	ogs_username = models.CharField(max_length=10,blank=True)
+	bio = models.TextField(blank=True)
+	p_status = models.PositiveSmallIntegerField(default=0)
+	last_kgs_online = models.DateTimeField(blank=True,null=True)
+	def __str__(self):
+		return self.user.username
 
 
 class Division(models.Model):
@@ -496,12 +580,16 @@ class LeaguePlayer(models.Model):
 		self.p_status =0
 		self.save()
 		kgs_username = self.user.kgs_username
-		year = self.event.get_year()
-		#if an event last more than one month, the 1st of the month, we check last month archives.
-		# otherwise, game played just before 00:00 GMT won't ever get scraped
 
-		month = self.event.get_month()
-		list_urlto_games=utils.ask_kgs(kgs_username,year,month)
+		months = self.event.get_months()
+		if len(months)==1:
+			month = months[0]
+			list_urlto_games=utils.ask_kgs(kgs_username,month['year'],month['month'])
+		else:
+			list_urlto_games = []
+			for month in months:
+				list_urlto_games += utils.ask_kgs(kgs_username,month['year'],month['month'])
+				time.sleep(5)
 		#list_urlto_games=[{url:'url',game_type:'game_type'},{...},...]
 		for d in list_urlto_games:
 			url=d['url']
