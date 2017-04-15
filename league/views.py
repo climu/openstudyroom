@@ -31,8 +31,8 @@ def scraper():
 	#2 look for some sgfs that analyse and maybe pulled as games
 	#3 check a player
 
-	event=Registry.get_primary_event()
-	#1check time since get from kgs
+	# event=Registry.get_primary_event()
+	#1 check time since get from kgs
 	now=datetime.datetime.now().replace(tzinfo=None)
 	last_kgs=Registry.get_time_kgs().replace(tzinfo=None)
 	delta=now-last_kgs
@@ -47,7 +47,7 @@ def scraper():
 		sgfs=Sgf.objects.filter(p_status=1)
 	if len(sgfs)>0 :
 		sgf = sgfs[0]
-		#parse the sgf datas to populate the rows
+		#parse the sgf datas to populate the rows -> KGS archive request
 		sgf = sgf.parse()
 		#if the sgf doesn't have a result (unfinished game) we just delete it
 		if sgf.result == '?':
@@ -55,35 +55,35 @@ def scraper():
 		else:
 			sgf.check_validity()
 			sgf.save()
+			# I think we could deal with sgf already in db one day here:
+			# Populate existing sgf urlto and delete new sgf
 			if sgf.league_valid:
 				Game.create_game(sgf)
 		out = sgf
 	#3 no games to scrap let's check a player
 	else :
-		players=LeaguePlayer.objects.filter(event=event)
+		events = LeagueEvent.objects.filter(is_open=True)
+		profiles = Profile.objects.filter(user__leagueplayer__event__in = events).distinct()
 		#if everyone has been checked.
-		if not(players.filter(p_status__gt =0).exists()):
-			players.update(p_status=1)
-		if players.filter(p_status =2).exists():
-			player=players.filter(p_status = 2)[0]
-			player.check_player()
-			out=player
+		if not(profiles.filter(p_status__gt =0).exists()):
+			profiles.update(p_status=1)
+		if profiles.filter(p_status =2).exists():
+			user = profile.filter(p_status = 2)[0].user
+			user.check_user()
+			out=user
 		else:
-			player = players.filter(p_status = 1)[0]
-			player.check_player()
-		out=player
+			user = profiles.filter(p_status = 1)[0].user
+			user.check_user()
+		out=user
 	Registry.set_time_kgs(now)
 	return out
 
 def scraper_view(request):
-	user=User.objects.get(pk=10)
-	#user.check_user()
-
-	print(str(users))
-	#out=scraper()
+	out=scraper()
 	return HttpResponse(out)
 
 def sgf(request,sgf_id):
+	'''download one sgf file'''
 	sgf=get_object_or_404(Sgf,pk = sgf_id)
 	response = HttpResponse(sgf.sgf_text, content_type='application/octet-stream')
 	response['Content-Disposition'] = 'attachment; filename="'+ sgf.wplayer + '-' + sgf.bplayer + '-'+ sgf.date.strftime('%m/%d/%Y')+'.sgf"'
@@ -832,7 +832,7 @@ def scrap_list_up(request,player_id):
 	raise Http404("What are you doing here ?")
 
 @login_required()
-@user_passes_test(is_league_member,login_url="/",redirect_field_name = None)
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
 def create_all_profiles(request):
 	if request.method == 'POST':
 		form = ActionForm(request.POST)

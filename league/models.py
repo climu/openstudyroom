@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 import datetime
 import time
-from dateutil.rrule import rrule, MONTHLY
+#from dateutil.rrule import rrule, MONTHLY
 from . import utils
 import requests
 from django.contrib.auth.models import AbstractUser
@@ -16,7 +16,7 @@ from django.dispatch import receiver
 class LeagueEvent(models.Model):
 	begin_time = models.DateTimeField(blank=True)
 	end_time =  models.DateTimeField(blank=True)
-	name = models.TextField(max_length=20)
+	name = models.TextField(max_length=20) # This should have been a charfield from the start. Changing that now sounds scary.
 	nb_matchs = models.SmallIntegerField(default=2)
 	ppwin = models.DecimalField(default=1.5, max_digits=2, decimal_places=1) #points per win
 	pploss = models.DecimalField(default=0.5, max_digits=2, decimal_places=1) #points per loss
@@ -44,9 +44,14 @@ class LeagueEvent(models.Model):
 		'''Return a list of dates representing months to check for this event:
 		If the event last more than one month:
 		check current month and past month from the 1st of the month
+		Useless: I thought we would check each event one by one. We dont !
+		 We just check a user kgs games and find correspondance with all open events .
+
+		 See check_user
+		 Will be deleted soon
 		'''
 		# first we create a list of {'month':dt.month,'year':dt.year} from self.begin_time to self.end_time
-		months = [{'month':dt.month,'year':dt.year} for dt in rrule(MONTHLY, dtstart=self.begin_time, until=self.end_time)]
+		#months = [{'month':dt.month,'year':dt.year} for dt in rrule(MONTHLY, dtstart=self.begin_time, until=self.end_time)]
 		# This list is too big: no need to check future months
 		now = datetime.datetime.today()
 		# s is a set with current month
@@ -194,8 +199,14 @@ class Sgf(models.Model):
 
 
 	def parse(self):
-		#parse one sgf :
-		#check the p_status, and populate the rows
+		''' parse one sgf:
+		check the p_status:
+			0: return
+			1: we only have urlto and need a kgs request
+			2: uploaded/changed by admin and no kgs_request needed.
+		Populate the rows(result, time, date...)
+		Does NOT save sgf to db to allow previews of changes
+		'''
 		if self.p_status == 0:
 			return
 		if self.p_status == 1: # we only have the urlto and need a kgs request
@@ -210,10 +221,13 @@ class Sgf(models.Model):
 
 
 	def check_validity_event(self,event):
-		# check sgf validity for a given event: oponents in same Division, tag , timesetting,not a review
-		# We will reperform check on players division because a user could have upload a sgf by hand
-		# hence such a sgf wouldn't have been check during check_player
-		# we don't touch the sgf but return a dict {'message': m , 'valid' : b}
+		''' check sgf validity for a given event: oponents in same Division, tag , timesetting,not a review
+		 We will reperform check on players division because a user could have upload a sgf by hand
+		 hence such a sgf wouldn't have been check during check_player
+		 we don't touch the sgf but return a dict {'message': string , 'valid' : boolean, 'tag',boolean}
+		 This is meant to be called by check_validity(self) only.
+		 Note that this method does not check if a sgf is already in db.
+		 '''
 		b = True
 		m = ''
 		if self.game_type == 'review': (b,m) = (False,m+' review gametype')
@@ -246,13 +260,13 @@ class Sgf(models.Model):
 		If it's valid for only one event, we mark the sgf as valid.
 		If it's valid for more than one event, we mark the sgf as invalid with message:'valid for multiple events'
 		If it's not valid at all, we just keep last event messages.
-		Update the sgf but do NOT save it to db
+		Update the sgf but do NOT save it to db. This way allow some preview.
 		Return true is the sgf is valid and False if not
 		I think the way we deal with message could be better: maybe a dict with {'event1':'message', 'event2'...}
 		'''
 		# First we check if we have same sgf in db comparing check_code
 		sgfs= Sgf.objects.filter(check_code=self.check_code)
-		if self.pk is None:
+		if self.pk is None: # self is not in the db already (admin uploading)
 			if len(sgfs)>0:
 				self.league_valid =False
 				self.message = 'same sgf already in db : '+ str(sgfs.first().pk)
@@ -266,12 +280,10 @@ class Sgf(models.Model):
 		# if sgf already in db, no need to perform further: We are out already returning False.
 		events = LeagueEvent.objects.filter(is_open=True)
 		message = ''
-		if len(events) == 0: return False
+		if len(events) == 0: return False # that situation should better be handle proprely.
 		n = 0
 		for event in events:
-			print(str(event))
 			check = self.check_validity_event(event)
-			print(str(check))
 			if check['tag']:
 				message = check['message']
 				if check['valid']:
@@ -363,6 +375,8 @@ class User(AbstractUser):
 		return self.emailaddress_set.filter(primary=True).first()
 
 	def get_divisions(self):
+		''' Return all division a user have been in. I think it should return open events divisions only
+		'''
 		players = self.leagueplayer_set.all()
 		return Division.objects.filter(leagueplayer__in = players)
 
@@ -371,22 +385,25 @@ class User(AbstractUser):
 		 check if a user have play new games:
 		 get a list of games from kgs (only 1 request to kgs)
 		 for each game we check if it's already in db (comparing urlto)
-		 then, for each user.players, for we check if both players are in the same division(hence event)
-		 if both we add them to db with p-status = 1 => to be scraped
-		 if no do nothing
+		 then, for each user.players in open events:
+		  	we check if user.player and his opponent are in the same division
+		 	if yes: we add them to db with p-status = 1 => to be scraped
+		 	if no: we do nothing
 		 we can't get more info on the game yet cause we need the sgf datas for that.
 		 So that would imply one additional kgs request per game in very short time.
 		 '''
 
 		kgs_username = self.kgs_username
-		self.profile.update(p_status = 0)
+
+		self.profile.p_status = 0
+		self.profile.save()
 		now = datetime.datetime.today()
 		# months is a set with current month
 		months = [{'month':now.month,'year':now.year}]
 		if now.day == 1 :
 		#if we are the 1st of the month, we check both previous month an current
 			prev = date.today().replace(day=1) - timedelta(days=1)
-			months.append({'month':now.month,'year':now.year})
+			months.append({'month':prev.month,'year':prev.year})
 		list_urlto_games = utils.ask_kgs(kgs_username,months[0]['year'],months[0]['month'])
 		if len(months)>1:
 			time.sleep(5)
@@ -396,24 +413,24 @@ class User(AbstractUser):
 		for d in list_urlto_games:
 			url=d['url']
 			game_type=d['game_type']
-			print(str(d))
-			if  not Sgf.objects.filter(urlto = url).exists():
+			if  not Sgf.objects.filter(urlto = url).exists(): # First we check if we alrady have a sgf with same urlto in db
 				#check if both players are in the league
 				players = utils.extract_players_from_url(url)
 				#no need to check the self to be in the league
 				if players['white'].lower() == self.kgs_username.lower() :
-					player = players['black']
+					opponent = players['black']
 				else:
-					player = players['white']
-				# For each open events the user is in, we need to check if the oponent is in the same division too.
-				if LeaguePlayer.objects.filter(kgs_username__iexact=player,division__in=divisions).exists():
+					opponent = players['white']
+				# Finally, we check if player and oponents are in an open event's same division
+				if LeaguePlayer.objects.filter(kgs_username__iexact=opponent,division__in=divisions).exists():
+					# This doesn't check the open status of the event. fix will go in get_divisions I guess.
 					sgf = Sgf()
 					sgf.wplayer = players['white']
 					sgf.bplayer = players['black']
 					sgf.urlto = url
 					sgf.p_status = 1
 					sgf.game_type = game_type
-					#sgf.save()
+					sgf.save()
 
 def is_league_admin(user):
 	return user.groups.filter(name='league_admin').exists()
