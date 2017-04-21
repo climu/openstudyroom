@@ -241,7 +241,7 @@ class Sgf(models.Model):
 		if wplayer != None and bplayer != None :
 			if	wplayer.division != bplayer.division: (b,m) = (False,m+'; players not in same division')
 			w_results = wplayer.get_results()
-			if self.bplayer in w_results:
+			if self.bplayer in w_results and Game.objects.filter(sgf=self).exists():
 				if len(w_results[self.bplayer]) >= event.nb_matchs:
 					(b,m) = (False,m+'; max number of games')
 		else : (b,m) = (False,m+'; One of the players is not a league player')
@@ -309,7 +309,7 @@ class Sgf(models.Model):
 			self.event = valid_event
 			return True
 		else: # n>1
-			self.message = 'valid for multiple events'
+			self.message = ';valid for multiple events'
 			self.event = None
 			self.league_valid = False
 			return False
