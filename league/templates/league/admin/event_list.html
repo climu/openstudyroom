@@ -15,9 +15,9 @@
 	<tbody>
 	{% for event in events %}
 	<tr>
-		<td> {% if event.pk == primary_pk %} <b>Open</b> {% else %} Closed {% endif %}</td>
+		<td> {% if event.is_open %} <b>Open</b> {% else %} Closed {% endif %}</td>
 		<td> <a href= "{% url 'league:admin_events_update' event.pk %}"> {{ event.name }} </a> </td>
-		<td> {{ event.begin_time | date:"M d, Y" }} </td>
+		<td> {{ event.begin_time | date:"M d, Y" }}  </td>
 		<td> {{ event.end_time | date:"M d, Y" }} </td>
 
 		<td><a href="{% url 'league:admin_users_list' event.pk %}">	{{ event.number_players }} </a></td>

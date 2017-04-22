@@ -194,12 +194,42 @@ def players(request,event_id=None,division_id=None):
 		template = loader.get_template('league/players.html')
 	return HttpResponse(template.render(context, request))
 
+@login_required()
+@user_passes_test(is_league_member,login_url="/",redirect_field_name = None)
+def join_event(request,event_id,user_id):
+	event = get_object_or_404(LeagueEvent, pk = event_id)
+	# No one should join a close event
+	if not event.is_open :
+		message ="You can't join a close event !"
+		messages.success(request,message)
+		return HttpResponseRedirect(reverse('league:league_account'))
+	user = get_object_or_404(User,pk = user_id)
+	# We already know that request.user is a league member.
+	# So he can join an open event by himself.
+	# If he is a league admin, he can make another user
+	if request.user.user_is_league_admin or request.user == user :
+		if request.method == 'POST':
+			form=ActionForm(request.POST)
+			if form.is_valid():
+				if form.cleaned_data['action'] == 'join':
+					division = event.last_division()
+					if division == False:  #the event have no division
+						message ="The Event you tryed to join have no division. That's strange."
+					else:
+						if user.join_event(event,division):
+							message ="Welcome in " + division.name +" ! You can start playing right now."
+						else:
+							message ="Oops ! Something went wrong. You didn't join."
+	else:
+		message ="What are you doing here ?"
+	messages.success(request,message)
+	return HttpResponseRedirect(reverse('league:league_account'))
+
 def account(request,user_name=None):
 	#This view does many things:
 	# if url ask for a user( /league/user/climu) display that user profile.
 	# if none, we check if user is auth and, if so,  we display his own profile.
 	# In the template, we will display a join button only if user is auth and request.user == user
-	primary_event = Registry.get_primary_event()
 	if user_name == None: # if no user provide  by url, we check if user is auth and if so display hi own profile
 		if request.user.is_authenticated :
 			 user=request.user
@@ -210,38 +240,27 @@ def account(request,user_name=None):
 		user= User.objects.get(username=user_name)
 
 	if not is_league_member(user): return HttpResponseRedirect('/')
-
-	if request.method == 'POST':
-		if request.user.is_authenticated() and user == request.user:
-
-			form=ActionForm(request.POST)
-			if form.is_valid():
-				if form.cleaned_data['action'] == 'join':
-					division = Division.objects.filter(league_event = primary_event).order_by('-order').first()
-					user.join_event(primary_event,division)
-					message ="Welcome in " + division.name +" ! You can start playing right now."
-					messages.success(request,message)
-					return HttpResponseRedirect(reverse('league:league_account'))
-
-	else:
-		players = user.leagueplayer_set.order_by('-pk')
-		games = Game.objects.filter(Q(black__in = players)|Q(white__in = players))
-		if user.is_in_primary_event():
-			active_player = user.get_primary_event_player()
-			opponents = LeaguePlayer.objects.filter(division=active_player.division).order_by('-score')
-		else:
-			active_player = False
-			opponents = []
-		context = {
-		'players' : players,
-		'primary_event':primary_event,
-		'games' : games,
-		'active_player' : active_player,
-		'opponents' : opponents,
-		'user' :user,
-		}
-		template = loader.get_template('league/account.html')
-		return HttpResponse(template.render(context, request))
+	open_events = LeagueEvent.objects.filter(is_open=True)
+	players = user.leagueplayer_set.order_by('-pk')
+	games = Game.objects.filter(Q(black__in = players)|Q(white__in = players))
+	for event in open_events :
+		event_players = LeaguePlayer.objects.filter(user=user,event=event)
+		if len(event_players) > 0 :
+			event.is_in = True
+			player = event_players.first()
+			event.this_player = player
+			opponents = LeaguePlayer.objects.filter(division=player.division).order_by('-score')
+			event.opponents = opponents
+		else :
+			event.is_in = False
+	context = {
+	'players' : players,
+	'open_events':open_events,
+	'games' : games,
+	'user' :user,
+	}
+	template = loader.get_template('league/account.html')
+	return HttpResponse(template.render(context, request))
 
 def game_api(request,game_id):
 	''' will return a json containing:

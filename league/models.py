@@ -109,6 +109,11 @@ class LeagueEvent(models.Model):
 			return self.division_set.last().order
 		else: return -1
 
+	def last_division(self):
+		if self.division_set.exists():
+			return self.division_set.last()
+		else: return False
+
 	def get_other_events(self):
 		return LeagueEvent.objects.all().exclude(pk=self.pk)
 
@@ -337,6 +342,9 @@ class User(AbstractUser):
 		event=Registry.get_primary_event()
 		return LeaguePlayer.objects.filter(user=self,event=event).exists()
 
+	def is_in_event(self,event):
+		return LeaguePlayer.objects.filter(user=self,event=event).exists()
+
 	def get_primary_event_player(self):
 		event=Registry.get_primary_event()
 		return LeaguePlayer.objects.filter(user=self,event=event).first()
@@ -524,7 +532,7 @@ class LeaguePlayer(models.Model):
 	p_status = models.SmallIntegerField(default=0)
 
 	def __str__(self):
-		return self.kgs_username
+		return str(self.pk) + self.kgs_username
 
 
 

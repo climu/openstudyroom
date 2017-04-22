@@ -56,17 +56,19 @@ class LeagueEventForm(forms.ModelForm):
     class Meta:
         model = LeagueEvent
         fields = ['name',
+                'event_type',
     			'begin_time',
     			'end_time',
     			'nb_matchs',
     			'ppwin',
     			'pploss',
     			'min_matchs',
-                'is_open',
                 'tag',
                 'server',
                 'main_time',
-                'byo_time']
+                'byo_time',
+                'is_open',
+                ]
         widgets = {
             'name':forms.TextInput(),
             'begin_time': forms.SelectDateWidget(),
