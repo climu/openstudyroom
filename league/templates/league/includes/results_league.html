@@ -1,0 +1,34 @@
+{% load league_tags %}
+<div class='table-responsive'>
+    <table id='league-table' class='table table-bordered  table-hover ' >
+        <thead >
+        <tr>
+            <th>player</th>
+            <th>score</th>
+            <th>wins</th>
+            <th>loss</th>
+            <th># games</th>
+            <th>Results</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for player in players %}
+        <tr>
+            <td >{{forloop.counter}}. {{player.user | user_link}}</td>
+            <td >{{ player | player_score:results }}</td>
+            <td>{{player.nb_win}} </td>
+            <td>{{player.nb_loss}}</td>
+            <td>{{player.nb_games}}</td>
+            <td>
+            {% for opponent in players %}
+            {% if forloop.counter == forloop.parentloop.counter %}
+            {% else %}
+            {% html_one_result %}
+            {% endif %}
+            {% endfor %}
+          </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

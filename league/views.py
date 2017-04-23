@@ -90,7 +90,8 @@ def sgf(request,sgf_id):
 	return response
 
 def games(request,event_id=None,game_id=None):
-	context = {}
+	open_events = LeagueEvent.objects.filter(is_open = True)
+	context = {'open_events':open_events}
 	if game_id != None:
 		game = get_object_or_404(Game,pk = game_id)
 		context.update({'game':game})
@@ -102,19 +103,18 @@ def games(request,event_id=None,game_id=None):
 
 	else:
 		event = get_object_or_404(LeagueEvent,pk=event_id)
-		close = event.is_close()
 		games=Game.objects.filter(white__event=event).order_by('-sgf__date')
 		template = loader.get_template('league/games.html')
 		context.update( {
 			'games': games,
 			'event':event,
-			'close':close,
 			})
 	return HttpResponse(template.render(context, request))
 
 
 
 def results(request,event_id=None,division_id=None):
+	open_events = LeagueEvent.objects.filter(is_open = True)
 	if event_id == None:
 		event = Registry.get_primary_event()
 	else:
@@ -126,29 +126,29 @@ def results(request,event_id=None,division_id=None):
 	results = division.get_results()
 	template = loader.get_template('league/results.html')
 	players = LeaguePlayer.objects.filter(division=division).order_by('-score')
-	close = event.is_close()
 	context = {
 		'players':players,
 		'event':event,
 		'division':division,
-		'close' : close,
 		'results' :results,
+		'open_events':open_events
 		}
 	return HttpResponse(template.render(context, request))
 
 
 
 def archives(request):
-		primary_event = Registry.get_primary_event()
 		events = LeagueEvent.objects.all()
-
+		open_events = events.filter(is_open = True)
 		context = {
 		'events':events,
+		'open_events':open_events,
 		}
 		template = loader.get_template('league/archive.html')
 		return HttpResponse(template.render(context, request))
 
 def event(request,event_id=None,division_id=None,):
+	open_events = LeagueEvent.objects.filter(is_open = True)
 	if event_id == None:
 		event = Registry.get_primary_event()
 	else:
@@ -160,18 +160,19 @@ def event(request,event_id=None,division_id=None,):
 	close = event.is_close()
 	context = {
 		'event':event,
-		'close':close,
-
+		'open_events':open_events,
 		}
 	template = loader.get_template('league/event.html')
 	return HttpResponse(template.render(context, request))
 
 def players(request,event_id=None,division_id=None):
+	open_events = LeagueEvent.objects.filter(is_open = True)
 	#if no event is provided, we show all the league members
 	if event_id == None:
 		users=User.objects.filter(groups__name='league_member')
 		context = {
 			'users':users,
+			'open_events':open_events,
 		}
 		template = loader.get_template('league/archives_players.html')
 	else:
@@ -184,11 +185,10 @@ def players(request,event_id=None,division_id=None):
 			division = get_object_or_404(Division,pk=division_id)
 			divisions = [division]
 			players = LeaguePlayer.objects.filter(event=event,division = division).order_by('-p_score')
-		close = event.is_close
 		context = {
+			'open_events':open_events,
 			'event':event,
 			'players':players,
-			'close' : close,
 			'divisions':divisions
 		}
 		template = loader.get_template('league/players.html')
@@ -243,6 +243,7 @@ def account(request,user_name=None):
 	open_events = LeagueEvent.objects.filter(is_open=True)
 	players = user.leagueplayer_set.order_by('-pk')
 	games = Game.objects.filter(Q(black__in = players)|Q(white__in = players))
+	if len(games) == 0: games = None
 	for event in open_events :
 		event_players = LeaguePlayer.objects.filter(user=user,event=event)
 		if len(event_players) > 0 :
@@ -819,23 +820,23 @@ def admin_users_list(request,event_id=None,division_id=None):
 	return render(request,'league/admin/users.html',context)
 
 @login_required()
-@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+@user_passes_test(is_league_member,login_url="/",redirect_field_name = None)
 def scrap_list(request):
-	event = Registry.get_primary_event()
-	players = event.leagueplayer_set.all().order_by('-p_status')
+	open_events = LeagueEvent.objects.filter(is_open=True)
+	profiles = Profile.objects.filter(user__leagueplayer__event__in = open_events).distinct().order_by('-p_status')
 	context = {
-	'event':event,
-	'players':players
+	'open_events':open_events,
+	'profiles':profiles
 	}
 	return render(request,'league/scrap_list.html',context)
 
 @login_required()
 @user_passes_test(is_league_member,login_url="/",redirect_field_name = None)
-def scrap_list_up(request,player_id):
-	''' Set player p_status to 2 so this player will be checked soon'''
-	player = get_object_or_404(LeaguePlayer,pk=player_id)
-	if player.p_status == 2:
-		message = str(player) + ' will already be scraped with hight priority'
+def scrap_list_up(request,profile_id):
+	''' Set user profile p_status to 2 so this user will be checked soon'''
+	profile = get_object_or_404(Profile,pk=profile_id)
+	if profile.p_status == 2:
+		message = str(profile.user) + ' will already be scraped with hight priority'
 		messages.success(request,message)
 		return HttpResponseRedirect(reverse('league:scrap_list'))
 
@@ -843,9 +844,9 @@ def scrap_list_up(request,player_id):
 		form = ActionForm (request.POST)
 		if form.is_valid():
 			if form.cleaned_data['action'] == 'p_status_up':
-				player.p_status = 2
-				player.save()
-				message = 'You just moved ' + str(player) + ' up the scrap list'
+				profile.p_status = 2
+				profile.save()
+				message = 'You just moved ' + str(profile.user) + ' up the scrap list'
 				messages.success(request,message)
 				return HttpResponseRedirect(reverse('league:scrap_list'))
 	raise Http404("What are you doing here ?")

@@ -2,17 +2,22 @@
 {% block title %}Archives- Players{% endblock %}
 {% load league_tags %}
 {% block content %}
-
+<ul class="nav nav-tabs">
+  <li class="active"><a href="{% url 'league:archives' %}">Archives</a></li>
+  {% for ev in open_events %}
+  <li>
+    {{ev|event_link}}
+  </li>
+  {% endfor %}
+  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
+  </ul>
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav navbar-left">
   <li><a href="{% url 'league:archives' %}">Leagues</a></li>
   <li class="active"><a href="{% url 'league:players'  %}">Players</a></li>
   <li><a href="{% url 'league:games' %}">Games</a></li>
 </ul>
-<ul class="nav navbar-nav navbar-right active" style="margin-right:5px;">
-  <li><a href="{% url 'league:event' %}">Current league</a></li>
-  <li class="active"><a href="{% url 'league:archives' %}">Archives</a></li>
-</ul>
+
 
 </nav>
 

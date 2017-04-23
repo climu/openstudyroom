@@ -2,22 +2,29 @@
 {% load league_tags %}
 {% block title %}OSR league - Archives{% endblock %}
 {% block content %}
+<ul class="nav nav-tabs">
+  <li class="active"><a href="{% url 'league:archives' %}">Archives</a></li>
+  {% for ev in open_events %}
+  <li>
+    {{ev|event_link}}
+  </li>
+  {% endfor %}
+  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
+  </ul>
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav navbar-left">
   <li class="active"><a href="{% url 'league:archives' %}">Leagues</a></li>
   <li><a href="{% url 'league:players'  %}">Players</a></li>
   <li><a href="{% url 'league:games'  %}">Games</a></li>
 </ul>
-<ul class="nav navbar-nav navbar-right active" style="margin-right:5px;">
-  <li><a href="{% url 'league:event' %}">Current league</a></li>
-  <li class="active"><a href="{% url 'league:archives' %}">Archives</a></li>
-</ul>
 </nav>
-<table class='table '  >
+<table class='table'  >
    <thead>
      <tr>
        <th>Begin time</th>
+       <th>End time</th>
        <th>Name</th>
+       <th>Type</th>
        <th># Divisions</th>
        <th># Players</th>
        <th># games </th>
@@ -25,9 +32,11 @@
   </thead>
   <tbody>
     {% for event in  events %}
-      <tr>
+      <tr {% if event.is_open %}class="success"{%endif%}>
         <td>{{event.begin_time |date:"SHORT_DATE_FORMAT"}}</td>
+        <td>{{event.end_time |date:"SHORT_DATE_FORMAT"}}</td>
         <td>{{event |event_link}}</td>
+        <td>{{event.event_type}}</td>
         <td>{{ event.number_divisions }}</td>
         <td>{{event.number_players}}</td>
         <td>{{ event.number_games}}</td>

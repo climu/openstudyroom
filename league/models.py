@@ -14,6 +14,11 @@ from django.dispatch import receiver
 
 # Create your models here.
 class LeagueEvent(models.Model):
+	EVENT_TYPE_CHOICES = (
+        ('ladder', 'ladder'),
+        ('league', 'league'),
+        ('tournament', 'tournament'),
+        )
 	begin_time = models.DateTimeField(blank=True)
 	end_time =  models.DateTimeField(blank=True)
 	name = models.TextField(max_length=20) # This should have been a charfield from the start. Changing that now sounds scary.
@@ -23,7 +28,10 @@ class LeagueEvent(models.Model):
 	min_matchs = models.SmallIntegerField(default=1)
 	is_open = models.BooleanField(default=False)
 	server = models.CharField(max_length=10,default= 'KGS') #KGS, OGS
-	event_type = models.CharField(max_length=10,default='ladder') # ladder, tournament, league
+	event_type = models.CharField(# ladder, tournament, league
+		max_length=10,
+		choices=EVENT_TYPE_CHOICES,
+		default='ladder')
 	tag = models.CharField(max_length=10,default='#OSR')
 	main_time = models.PositiveSmallIntegerField(default=1800) #main time in minutes
 	byo_time = models.PositiveSmallIntegerField(default=30) #byo yomi time in sec

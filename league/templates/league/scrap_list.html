@@ -2,32 +2,27 @@
 {% load bootstrap3 league_tags%}
 {% block title %}{{event}}- Scraplist{% endblock %}
 {% block content %}
-<nav class="navbar navbar-default">
-<ul class="nav navbar-nav navbar-left">
-  <li><a href="{% url 'league:event' event.pk %}">Overview</a></li>
-  <li><a href="{% url 'league:results' event.pk %}">Results</a></li>
-  <li><a href="{% url 'league:players' event.pk %}">Players</a></li>
-  <li><a href="{% url 'league:games' event.pk %}">Games</a></li>
-  {% if not close %}
-  <li class="active"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
-  {% endif %}
-  </ul>
-<ul class="nav navbar-nav navbar-right" style="margin-right:5px;">
-  <li {%if not close %}class ="active"{%endif%}><a href="{% url 'league:event' %}">Current league</a></li>
-  <li><a href="{% url 'league:archives' %}">Archives</a></li>
+<ul class="nav nav-tabs">
+  <li ><a href="{% url 'league:archives' %}">Archives</a></li>
+  {% for ev in open_events %}
+  <li {%if ev == event %} class="active"{%endif %}>
+    {{ev|event_link}}
+  </li>
+  {% endfor %}
+  <li class="active pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
 </ul>
-</nav>
-<p> This table show  the players of {{event}} ordered by the approximate time they will be checked in minutes.</p>
-{% if request.user.is_authenticated and request.user.is_in_primary_event %}
+<div class="well"> This table show  the players of {{event}} ordered by the approximate time they will be checked in minutes.
+{% if request.user.is_authenticated and request.user.profile in profiles %}
   <form action="" method="POST" class="form-inline" >{% csrf_token %}
     <span> If you just played a game, you can move you up this list by clicking this button :</span>
 
     <input type="hidden" name="action" value="p_status_up">
-    <button type="submit" formaction="{% url 'league:scrap_list_up' request.user.get_primary_event_player.pk %}" class="btn btn-primary btn-xs">
+    <button type="submit" formaction="{% url 'league:scrap_list_up' request.user.profile.pk %}" class="btn btn-primary btn-xs">
       {% bootstrap_icon "arrow-up" %} Put me up !
     </button>
   </form>
    {% endif %}
+   </div>
 <table id='player-table' class='display table' cellspacing='0' width='100%' >
 	<thead>
 	<tr>
@@ -39,15 +34,15 @@
 
 	</thead>
 	<tbody>
-    {%for player in players %}
+    {%for profile in profiles %}
     <tr>
-      <td>{{player.user | user_link}}</td>
+      <td>{{profile.user | user_link}}</td>
       <td>{{forloop.counter |scrap_time}}</td>
       {% if request.user.is_authenticated and request.user.user_is_league_admin %}
       <td>
         <form action="" method="POST" class="form-inline" >{% csrf_token %}
           <input type="hidden" name="action" value="p_status_up">
-          <button type="submit" formaction="{% url 'league:scrap_list_up' player.pk %}" class="btn btn-primary btn-xs">
+          <button type="submit" formaction="{% url 'league:scrap_list_up' profile.pk %}" class="btn btn-primary btn-xs">
             {% bootstrap_icon "arrow-up" %}
           </button>
         </form>

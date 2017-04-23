@@ -4,59 +4,45 @@
 
 
 {% block content %}
+<ul class="nav nav-tabs">
+  <li ><a href="{% url 'league:archives' %}">Archives</a></li>
+  {%if event not in open_events%}
+  <li class="active">{{event |event_link}}</li>
+    {%endif%}
+  {% for ev in open_events %}
+  <li {%if ev == event %} class="active"{%endif %}>
+    {{ev|event_link}}
+  </li>
+  {% endfor %}
+  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
+
+</ul>
 <nav class="navbar navbar-default">
     <ul class="nav navbar-nav navbar-left">
         <li><a href="{% url 'league:event' event.pk %}">Overview</a></li>
         <li class = active ><a href="{% url 'league:results' event.pk %}">Results</a></li>
         <li><a href="{% url 'league:players' event.pk %}">Players</a></li>
         <li><a href="{% url 'league:games' event.pk %}">Games</a></li>
-        {% if not close %}
-        <li ><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
-        {% endif %}
-    </ul>
-    <ul class="nav navbar-nav navbar-right" style="margin-right:5px;">
-        <li {%if not close %}class ="active"{%endif%}><a href="{% url 'league:event' %}">Current league</a></li>
-        <li><a href="{% url 'league:archives' %}">Archives</a></li>
     </ul>
 </nav>
-<ul class="nav nav-tabs">
+{% if event.event_type == 'ladder' %}
+<ul class="nav nav-pills">
     {% for div in event.get_divisions %}
     <li {% if div == division %}class='active'{%endif%} > {{div|division_link}}</li>
     {% endfor %}
 </ul>
-<div class='table-responsive'>
-    <table id='example' class='table table-bordered  table-hover table-condensed' >
-        <thead class='table-league-highlight'>
-        <tr>
-            <th>player</th>
-            <th>score</th>
-            {% for player in players %}
-            <th>
-                <div class="kgs_username">{{ player.kgs_username }}</div>
-            </th>
-            {% endfor %}
-        </thead>
-        <tbody>
-        {% for player in players %}
-        <tr class="{% cycle 'even-row' 'odd-row' %}">
-            <td class='table-league-player'>{{forloop.counter}}. {{player.user | user_link}}</td>
-            <td class='table-league-score-highlight'>{{ player | player_score:results }}</td>
-            {% for opponent in players %}
-
-            {% if forloop.counter == forloop.parentloop.counter %}
-            <td class="table-league-highlight {% cycle 'even-column' 'odd-column' %}">
-                {% else %}
-            <td class="{% cycle 'even-column' 'odd-column' %}">
-              
-              {% html_one_result %}
-            </td>
-            {% endif %}
-            {% endfor %}
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-
+{% include "league/includes/results_ladder.html"  %}
+{% else %}
+{% include "league/includes/results_league.html"  %}
+{% endif %}
 {% endblock %}
+{% if event.event_type == 'league' %}
+{% block extra_js %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+$('#league-table').DataTable();
+} );
+</script>
+{% endblock %}
+{%endif%}
