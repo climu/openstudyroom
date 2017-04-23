@@ -42,6 +42,9 @@ class LeagueEvent(models.Model):
 	def __str__(self):
 		return self.name
 
+	def get_main_time_min(self):
+		return self.main_time /60
+
 	def get_absolut_url(self):
 		return reverse('league', kwargs={'pk': self.pk})
 
