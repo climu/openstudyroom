@@ -11,7 +11,7 @@
   {% endfor %}
   <li class="active pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
 </ul>
-<div class="well"> This table show  the players of {{event}} ordered by the approximate time they will be checked in minutes.
+<div class="well"> This table show all OSR players ordered by the approximate time they will be checked in minutes.
 {% if request.user.is_authenticated and request.user.profile in profiles %}
   <form action="" method="POST" class="form-inline" >{% csrf_token %}
     <span> If you just played a game, you can move you up this list by clicking this button :</span>

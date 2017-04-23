@@ -64,7 +64,7 @@ return false;};
   {% with player=event.this_player %}
   <p><b>{{user.username}}</b> is currently playing for the <b>{{event}}</b> in the <b>{{player.division}}</b> group with the kgs username <b>{{user.kgs_username}}</b>.</p>
 </div>
-  <table id='opponents-table' class=' table table-hover table-condensed'  >
+  <table id='{{event.pk}}-opponents-table' class=' table table-hover table-condensed'  >
      <thead>
        <tr>
          <th>Rank</th>
@@ -188,8 +188,10 @@ $(document).ready(function() {
     render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','MMM DD, YYYY' )
   } ],
   "order": [[ 0, "desc" ]]});
-
-$('#opponents-table').DataTable({});
+{% for event in open_events %}
+$('#{{event.pk}}-opponents-table').DataTable({});
+{% endfor %}
 } );
+
 </script>
 {% endblock %}
