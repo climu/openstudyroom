@@ -1,7 +1,7 @@
 {% extends "league/base.html" %}
 {% load league_tags wgo_tags%}
 
-{% block title %}Archives - Games {% if game %}- {{game.black}} vs {{game.white}} {%endif %}{% endblock %}
+{% block title %}Archives - Games {% if game %}- {{game.black.kgs_username}} vs {{game.white.kgs_username}} {%endif %}{% endblock %}
 {% block extra_head_js %}
 <script type="text/javascript">
 function load_game(game_id) {
