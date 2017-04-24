@@ -465,7 +465,6 @@ def admin_edit_sgf(request,sgf_id):
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
 def admin(request):
-	event = Registry.get_primary_event()
 	if request.method =='POST':
 		form = ActionForm(request.POST)
 		if form.is_valid():
@@ -474,8 +473,7 @@ def admin(request):
 				user.groups.clear()
 				group = Group.objects.get(name='league_member')
 				user.groups.add(group)
-				division=Division.objects.filter(league_event=event).last()
-				user.join_event(event,division)
+				#We should send an email here.
 				message =" You moved " + user.username + "from new user to league member"
 				messages.success(request,message)
 				return HttpResponseRedirect(reverse('league:admin'))
