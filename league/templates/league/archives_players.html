@@ -6,7 +6,7 @@
   <li class="active"><a href="{% url 'league:archives' %}">Archives</a></li>
   {% for ev in open_events %}
   <li>
-    {{ev|event_link}}
+    <a href ="{% url 'league:players' ev.pk %}">{{ev.name}}</a>
   </li>
   {% endfor %}
   <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
@@ -20,7 +20,7 @@
 
 
 </nav>
-
+<div class="well"> This table show all users of the Open Study Room since it's creation.</div>
 <table id='player-table' class=' table table-hover '  >
    <thead>
      <tr>

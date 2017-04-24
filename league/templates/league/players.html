@@ -9,8 +9,8 @@
     {%endif%}
   {% for ev in open_events %}
   <li {%if ev == event %} class="active"{%endif %}>
-    {{ev|event_link}}
-  </li>
+    <a href ="{% url 'league:players' ev.pk %}">{{ev.name}}</a>
+    </li>
   {% endfor %}
   <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
 </ul>
