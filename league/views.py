@@ -819,8 +819,6 @@ def admin_users_list(request,event_id=None,division_id=None):
 	}
 	return render(request,'league/admin/users.html',context)
 
-@login_required()
-@user_passes_test(is_league_member,login_url="/",redirect_field_name = None)
 def scrap_list(request):
 	open_events = LeagueEvent.objects.filter(is_open=True)
 	profiles = Profile.objects.filter(user__leagueplayer__event__in = open_events).distinct().order_by('-p_status')
@@ -839,16 +837,16 @@ def scrap_list_up(request,profile_id):
 		message = str(profile.user) + ' will already be scraped with hight priority'
 		messages.success(request,message)
 		return HttpResponseRedirect(reverse('league:scrap_list'))
-
-	if request.method == 'POST':
-		form = ActionForm (request.POST)
-		if form.is_valid():
-			if form.cleaned_data['action'] == 'p_status_up':
-				profile.p_status = 2
-				profile.save()
-				message = 'You just moved ' + str(profile.user) + ' up the scrap list'
-				messages.success(request,message)
-				return HttpResponseRedirect(reverse('league:scrap_list'))
+	if profile.user == request.user or request.user.user_is_league_admin():
+		if request.method == 'POST':
+			form = ActionForm (request.POST)
+			if form.is_valid():
+				if form.cleaned_data['action'] == 'p_status_up':
+					profile.p_status = 2
+					profile.save()
+					message = 'You just moved ' + str(profile.user.username) + ' up the scrap list'
+					messages.success(request,message)
+					return HttpResponseRedirect(reverse('league:scrap_list'))
 	raise Http404("What are you doing here ?")
 
 @login_required()
