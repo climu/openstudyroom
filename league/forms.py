@@ -68,6 +68,7 @@ class LeagueEventForm(forms.ModelForm):
                 'main_time',
                 'byo_time',
                 'is_open',
+                'is_public',
                 ]
         widgets = {
             'name':forms.TextInput(),

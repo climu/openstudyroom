@@ -2,6 +2,7 @@
 	<thead>
 	<tr>
 		<th>Status</th>
+		<th>Public?</th>
 		<th>Name</th>
 		<th>Begin</th>
 		<th>End</th>
@@ -16,6 +17,7 @@
 	{% for event in events %}
 	<tr>
 		<td> {% if event.is_open %} <b>Open</b> {% else %} Closed {% endif %}</td>
+		<td>{% if event.is_public %} public {% else %} Private {% endif %}</td>
 		<td> <a href= "{% url 'league:admin_events_update' event.pk %}"> {{ event.name }} </a> </td>
 		<td> {{ event.begin_time | date:"M d, Y" }}  </td>
 		<td> {{ event.end_time | date:"M d, Y" }} </td>

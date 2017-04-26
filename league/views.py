@@ -91,6 +91,8 @@ def sgf(request,sgf_id):
 
 def games(request,event_id=None,game_id=None):
 	open_events = LeagueEvent.objects.filter(is_open = True)
+	if not (request.user.is_authenticated and request.user.user_is_league_admin()) :
+		open_events = open_events.filter(is_public = True)
 	context = {'open_events':open_events}
 	if game_id != None:
 		game = get_object_or_404(Game,pk = game_id)
@@ -115,6 +117,8 @@ def games(request,event_id=None,game_id=None):
 
 def results(request,event_id=None,division_id=None):
 	open_events = LeagueEvent.objects.filter(is_open = True)
+	if not (request.user.is_authenticated and request.user.user_is_league_admin()) :
+		open_events = open_events.filter(is_public = True)
 	if event_id == None:
 		event = Registry.get_primary_event()
 	else:
@@ -140,6 +144,9 @@ def results(request,event_id=None,division_id=None):
 def archives(request):
 		events = LeagueEvent.objects.all()
 		open_events = events.filter(is_open = True)
+		if not (request.user.is_authenticated and request.user.user_is_league_admin()) :
+			open_events = open_events.filter(is_public = True)
+			events = events.filter(is_public = True)
 		context = {
 		'events':events,
 		'open_events':open_events,
@@ -149,6 +156,8 @@ def archives(request):
 
 def event(request,event_id=None,division_id=None,):
 	open_events = LeagueEvent.objects.filter(is_open = True)
+	if not (request.user.is_authenticated and request.user.user_is_league_admin()) :
+		open_events = open_events.filter(is_public = True)
 	if event_id == None:
 		event = Registry.get_primary_event()
 	else:
@@ -167,6 +176,8 @@ def event(request,event_id=None,division_id=None,):
 
 def players(request,event_id=None,division_id=None):
 	open_events = LeagueEvent.objects.filter(is_open = True)
+	if not (request.user.is_authenticated and request.user.user_is_league_admin()) :
+		open_events = open_events.filter(is_public = True)
 	#if no event is provided, we show all the league members
 	if event_id == None:
 		users=User.objects.filter(groups__name='league_member')
@@ -241,6 +252,8 @@ def account(request,user_name=None):
 
 	if not is_league_member(user): return HttpResponseRedirect('/')
 	open_events = LeagueEvent.objects.filter(is_open=True)
+	if not (request.user.is_authenticated and request.user.user_is_league_admin()) :
+		open_events = open_events.filter(is_public = True)
 	players = user.leagueplayer_set.order_by('-pk')
 	games = Game.objects.filter(Q(black__in = players)|Q(white__in = players))
 	if len(games) == 0: games = None

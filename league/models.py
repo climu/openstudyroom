@@ -26,7 +26,8 @@ class LeagueEvent(models.Model):
 	ppwin = models.DecimalField(default=1.5, max_digits=2, decimal_places=1) #points per win
 	pploss = models.DecimalField(default=0.5, max_digits=2, decimal_places=1) #points per loss
 	min_matchs = models.SmallIntegerField(default=1)
-	is_open = models.BooleanField(default=False)
+	is_open = models.BooleanField(default=False) #players can join and games get scraped
+	is_public = models.BooleanField(default=False) # if false, only admins can see it
 	server = models.CharField(max_length=10,default= 'KGS') #KGS, OGS
 	event_type = models.CharField(# ladder, tournament, league
 		max_length=10,
@@ -51,29 +52,6 @@ class LeagueEvent(models.Model):
 	def get_year(self):
 		return self.begin_time.year
 
-	def get_months(self):
-		'''Return a list of dates representing months to check for this event:
-		If the event last more than one month:
-		check current month and past month from the 1st of the month
-		Useless: I thought we would check each event one by one. We dont !
-		 We just check a user kgs games and find correspondance with all open events .
-
-		 See check_user
-		 Will be deleted soon
-		'''
-		# first we create a list of {'month':dt.month,'year':dt.year} from self.begin_time to self.end_time
-		#months = [{'month':dt.month,'year':dt.year} for dt in rrule(MONTHLY, dtstart=self.begin_time, until=self.end_time)]
-		# This list is too big: no need to check future months
-		now = datetime.datetime.today()
-		# s is a set with current month
-		s = [{'month':now.month,'year':now.year}]
-		if now.day == 1 :
-		#if we are the 1st of the month, we check both previous month an current
-			prev = date.today().replace(day=1) - timedelta(days=1)
-			s.append({'month':now.month,'year':now.year})
-		# we get the intersection of months and s
-		[x for x in s if x in months]
-		return months
 
 	def number_players(self):
 		return self.leagueplayer_set.count()
