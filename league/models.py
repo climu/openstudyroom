@@ -520,6 +520,9 @@ class LeaguePlayer(models.Model):
 	score = models.DecimalField(default=0, max_digits =4, decimal_places=1)
 	p_status = models.SmallIntegerField(default=0)
 
+	class Meta:
+		unique_together = ('user', 'division',)
+
 	def __str__(self):
 		return str(self.pk) + self.kgs_username
 
@@ -654,42 +657,43 @@ class Game(models.Model):
 		# return true if successfully create a game, false otherwise
 
 		#check if we already got a game with this sgf
-		if Game.objects.filter(sgf=sgf).exists() or not(sgf.league_valid):
+		if Game.objects.filter(sgf=sgf).exists() or not(sgf.league_valid) or (sgf.event is None):
 			return False
+		event = sgf.event
+		#check players before saving the game otherwise we can't delete it:
+		#calling unscore will raise error.
+		#I guess that's why they do db normalisation
+		whites = LeaguePlayer.objects.filter(kgs_username__iexact = sgf.wplayer).filter(event=event)
+		print(str(whites))
+		if len(whites) == 1:
+			white = whites.first()
+		else : return False
+		blacks = LeaguePlayer.objects.filter(kgs_username__iexact = sgf.bplayer).filter(event=event)
+		if len(blacks) == 1:
+			 black = blacks.first()
+		else : return False
+		game = Game()
+		game.event = event
+		game.sgf = sgf
+		game.save() #we need to save it to be able to add a OnetoOnefield
+		game.black = black
+		game.white = white
+		game.save()
+		#add the winner field and score the results :
+		if sgf.result.find('B+') == 0:
+			game.winner = blacks.first()
+			game.winner.score_win()
+			game.white.score_loss()
+		elif sgf.result.find('W+') == 0:
+			game.winner = whites.first()
+			game.winner.score_win()
+			game.black.score_loss()
 		else:
-			event=Registry.get_primary_event()
-			game = Game()
-			game.event = event
-			game.sgf = sgf
-			game.save() #we need to save it to be able to add a OnetoOnefield
-			whites = LeaguePlayer.objects.filter(kgs_username__iexact = sgf.wplayer).filter(event=event)
-			if len(whites) == 1:
-				 game.white = whites.first()
-			else :
-				game.delete()
-				return False
-			blacks = LeaguePlayer.objects.filter(kgs_username__iexact = sgf.bplayer).filter(event=event)
-			if len(blacks) == 1:
-				 game.black = blacks.first()
-			else :
-				game.delete()
-				return False
-			game.save()
-			#add the winner field and score the results :
-			if sgf.result.find('B+') == 0:
-				game.winner = blacks.first()
-				game.winner.score_win()
-				game.white.score_loss()
-
-			elif sgf.result.find('W+') == 0:
-				game.winner = whites.first()
-				game.winner.score_win()
-				game.black.score_loss()
-			else:
-				game.delete()
-				return False
-			game.save()
-			return True
+			#this shouldn't work this delete() will call unscore who needs a winner field.
+			game.delete()
+			return False
+		game.save()
+		return True
 
 @receiver(pre_delete, sender=Game)
 def unscore_game(sender, instance, *args, **kwargs):

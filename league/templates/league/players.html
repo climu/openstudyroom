@@ -22,6 +22,7 @@
   <li><a href="{% url 'league:games' event.pk %}">Games</a></li>
 </ul>
 </nav>
+<div class="well"> This table show all users who play{% if not event.is_open %}ed{% endif %} in the {{event.name}}.</div>
 
 <table id='player-table' class=' table table-hover '  >
    <thead>

@@ -25,14 +25,18 @@
         <li><a href="{% url 'league:games' event.pk %}">Games</a></li>
     </ul>
 </nav>
+
 {% if event.event_type == 'ladder' %}
+
 <ul class="nav nav-pills">
     {% for div in event.get_divisions %}
     <li {% if div == division %}class='active'{%endif%} > {{div|division_link}}</li>
     {% endfor %}
 </ul>
+
 {% include "league/includes/results_ladder.html"  %}
 {% else %}
+
 {% include "league/includes/results_league.html"  %}
 {% endif %}
 {% endblock %}

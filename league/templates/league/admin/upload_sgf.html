@@ -27,7 +27,7 @@
 </div>
 <div class="row">
 {%if sgf.league_valid %}
- <h3>Your sgf is valid !</h3>
+ <h3>Your sgf is valid for {{sgf.event}} !</h3>
  <p>Check details below and click save sgf to add it to the database</p>
 
  {% else %}
@@ -69,7 +69,7 @@
   <div class="panel-heading">
 {% if sgf.league_valid %}
 
-     This SGF is valid !
+     This SGF is valid for {{sgf.event}} !
 
 {% else %}
 This SGF is not valid :
