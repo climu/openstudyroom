@@ -1,4 +1,4 @@
-Welcome in the Open Study Room {{user.name}} !
+Welcome in the Open Study Room {{user.username}} !
 
 We just accepted you as a OSR member and we are happy to have you onboard.
 
