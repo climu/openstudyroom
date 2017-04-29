@@ -68,7 +68,7 @@ def scraper():
 		if not(profiles.filter(p_status__gt =0).exists()):
 			profiles.update(p_status=1)
 		if profiles.filter(p_status =2).exists():
-			user = profile.filter(p_status = 2)[0].user
+			user = profiles.filter(p_status = 2)[0].user
 			user.check_user()
 			out=user
 		else:
@@ -486,8 +486,18 @@ def admin(request):
 				user.groups.clear()
 				group = Group.objects.get(name='league_member')
 				user.groups.add(group)
-				#We should send an email here.
-				message =" You moved " + user.username + "from new user to league member"
+				# We send a welcome mail
+				plaintext = loader.get_template('emails/welcome.txt')
+				context = { 'user': user }
+				message = plaintext.render(context)
+				send_mail(
+				'Welcome in the Open Study Room',
+				message,
+				'openstudyroom@gmail.com',
+				[user.get_primary_email().email],
+				fail_silently=False,
+				)
+				message =" You moved " + user.username + "from new user to league member and sent him a welcome email"
 				messages.success(request,message)
 				return HttpResponseRedirect(reverse('league:admin'))
 			if form.cleaned_data['action'] == "delete_new_user":

@@ -120,3 +120,25 @@ def player_score(player, results):
 		return results[player.kgs_username]['score']
 	else:
 		return 0
+
+@register.filter()
+def player_nb_win(player, results):
+	if player.kgs_username in results:
+		return results[player.kgs_username]['nb_win']
+	else:
+		return 0
+
+@register.filter()
+def player_nb_loss(player, results):
+	if player.kgs_username in results:
+		return results[player.kgs_username]['nb_loss']
+	else:
+		return 0
+
+
+@register.filter()
+def player_nb_games(player, results):
+	if player.kgs_username in results:
+		return results[player.kgs_username]['nb_games']
+	else:
+		return 0

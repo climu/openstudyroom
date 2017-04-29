@@ -487,6 +487,8 @@ class Division(models.Model):
 				winner = game.black.kgs_username
 				loser =game.white.kgs_username
 			if winner in results:
+				results[winner]['nb_win'] += 1
+				results[winner]['nb_games'] += 1
 				results[winner]['score'] = results[winner]['score'] + self.league_event.ppwin
 				if loser in results[winner]['results']:
 					results[winner]['results'][loser].append({'id': game.pk, 'r': 1})
@@ -494,10 +496,15 @@ class Division(models.Model):
 					results[winner]['results'][loser] = [{'id': game.pk, 'r': 1}]
 			else:
 				results[winner] = {}
+				results[winner]['nb_loss'] = 0
+				results[winner]['nb_win'] = 1
+				results[winner]['nb_games'] = 1
 				results[winner]['score'] = self.league_event.ppwin
 				results[winner]['results'] = {}
 				results[winner]['results'][loser] = [{'id': game.pk, 'r': 1}]
 			if loser in results:
+				results[loser]['nb_loss'] += 1
+				results[loser]['nb_games'] += 1
 				results[loser]['score'] = results[loser]['score'] + self.league_event.pploss
 				if winner in results[loser]['results']:
 					results[loser]['results'][winner].append({'id': game.pk, 'r': 0})
@@ -505,6 +512,9 @@ class Division(models.Model):
 					results[loser]['results'][winner] = [{'id': game.pk, 'r': 0}]
 			else:
 				results[loser] = {}
+				results[loser]['nb_win'] = 0
+				results[loser]['nb_loss'] = 1
+				results[loser]['nb_games'] = 1
 				results[loser]['score'] = self.league_event.pploss
 				results[loser]['results'] = {}
 				results[loser]['results'][winner] = [{'id': game.pk, 'r': 0}]

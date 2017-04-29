@@ -27,6 +27,8 @@ class LeagueSignupForm(forms.Form):
         group = Group.objects.get(name='new_user')
         user.groups.add(group)
         user.save()
+        profile = Profile(user=user,kgs_username=user.kgs_username)
+        profile.save()
 
 
 class UploadFileForm(forms.Form):
