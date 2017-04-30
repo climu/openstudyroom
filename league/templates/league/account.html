@@ -21,7 +21,7 @@ function processData(data)
     var player = new WGo.BasicPlayer(elem, {
       sgf: data.sgf
       });
-    
+
 
 };
 return false;};
@@ -29,7 +29,7 @@ return false;};
 {% endblock %}
 {% block body_class %}user{% endblock %}
 
-{% block title %}{{user.username}}'s league profile{% endblock %}
+{% block title %}{{user.username}} league profile{% endblock %}
 {% block heading %}
 <div class="page-header">
     <h1>{{user.username}} profile</h1>
@@ -54,14 +54,17 @@ return false;};
 </ul>
 {%endif %}
 </nav>
-<div class="panel panel-default">
-<div class="panel-heading"><h3>Active event</h3></div>
-<div class="panel-body">
-{% if active_player %}
-<p><b>{{user.username}}</b> is currently playing for the <b>{{active_player.event}}</b> in the <b>{{active_player.division}}</b> with the kgs username <b>{{user.kgs_username}}</b>.</p>
-</div>
+{% for event in open_events %}
 
-  <table id='opponents-table' class=' table table-hover table-condensed'  >
+<div class="panel panel-default">
+<div class="panel-heading"><h4>{{event |event_link}} </h4></div>
+<div class="panel-body">
+
+  {%if event.is_in %}
+  {% with player=event.this_player %}
+  <p><b>{{user.username}}</b> is currently playing for the <b>{{event}}</b> in the <b>{{player.division}}</b> group with the kgs username <b>{{user.kgs_username}}</b>.</p>
+</div>
+  <table id='{{event.pk}}-opponents-table' class=' table table-hover table-condensed'  >
      <thead>
        <tr>
          <th>Rank</th>
@@ -70,9 +73,9 @@ return false;};
          <th> {{user.kgs_username}}'s results</th>
       </thead>
       <tbody>
-    {% with player=players.0 %}
+
     {% with player.get_results as results %}
-    {% for opponent in opponents %}
+    {% for opponent in event.opponents %}
     {% if opponent == player %}
     <tr class="info">
       {%else%}
@@ -97,22 +100,27 @@ return false;};
         {% endwith%}
 </tbody>
 </table>
-{% else%}
-{% if request.user == user %}
-<form action=" {% url 'league:league_account'  %}" method="post" class="form">
-{% csrf_token %}
-<input type="hidden" name="action" value="join">
-<span>You are not playing in any league at the moment. Maybe you want to join the {{primary_event}} ?</span>
+  {% elif  request.user.is_authenticated and user == request.user %}
+  <form action=" {% url 'league:join_event' event.pk user.pk %}" method="post" class="form">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="join">
+  <span>You are not playing in {{event}}. Maybe you want to join the {{event.last_division}} ?</span>
 
-<button type="submit" class="btn btn-primary"  onclick="return confirm('You are about to join the {{primary_event}}. Allright?')">
-{% bootstrap_icon "ok" %} Join !
-</button>
-</form>
-{% else %}
-<p>{{user.username}} is not playing in any league at the moment. </p>
-{% endif %}
-{% endif %}
+  <button type="submit" class="btn btn-primary"  onclick="return confirm('You are about to join the {{event}}. Allright?')">
+  {% bootstrap_icon "ok" %} Join !
+  </button>
+  </form>
 </div>
+  {% else %}
+  {{user.username}} is not playing in {{event}}.
+</div>
+  {%endif %}
+
+</div>
+
+
+
+{% endfor %}
 
 <div class="panel panel-default">
 <div class="panel-heading"><h3>All events</h3></div>
@@ -142,6 +150,10 @@ return false;};
 
 <div class="panel panel-default">
 <div class="panel-heading"><h3>{{user}} Games</h4></div>
+  {% if games is None %}
+  <div class="panel-body">
+    {{user}} didn't play any league game yet.
+  {% else %}
 <div class ="row">
 <div class="col-md-4">
   <div id ="game_infos">
@@ -152,19 +164,34 @@ return false;};
 
 <div class="col-md-8">
 
-    <div id="player"></div>
+    <div id="player">
+      <div class="alert alert-info">
+      Click a game result and it will be launched in a goban.
+    </div>
+  </div>
 </div>
 </div>
+{%endif%}
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
+
 <script type="text/javascript">
 $(document).ready(function() {
-  $('#game-table').DataTable({"bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',"order": [[ 0, "desc" ]]});
-
-$('#opponents-table').DataTable({});
+  $('#game-table').DataTable({"bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
+  "columnDefs": [ {
+    targets: 0,
+    render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','MMM DD, YYYY' )
+  } ],
+  "order": [[ 0, "desc" ]]});
+{% for event in open_events %}
+$('#{{event.pk}}-opponents-table').DataTable({});
+{% endfor %}
 } );
+
 </script>
 {% endblock %}

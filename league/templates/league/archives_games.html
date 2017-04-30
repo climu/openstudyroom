@@ -1,7 +1,7 @@
 {% extends "league/base.html" %}
 {% load league_tags wgo_tags%}
 
-{% block title %}Archives - Games {% if game %}- {{game.black}} vs {{game.white}} {%endif %}{% endblock %}
+{% block title %}Archives - Games {% if game %}- {{game.black.kgs_username}} vs {{game.white.kgs_username}} {%endif %}{% endblock %}
 {% block extra_head_js %}
 <script type="text/javascript">
 function load_game(game_id) {
@@ -30,18 +30,24 @@ return false;};
 </script>
 {% endblock %}
 {% block content %}
+<ul class="nav nav-tabs">
+  <li class="active"><a href="{% url 'league:archives' %}">Archives</a></li>
+  {% for ev in open_events %}
+  <li>
+    <a href="{% url 'league:games' ev.pk %}">{{ev}}</a>
+  </li>
+  {% endfor %}
+  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
+  </ul>
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav navbar-left">
   <li><a href="{% url 'league:archives' %}">Leagues</a></li>
   <li><a href="{% url 'league:players'  %}">Players</a></li>
   <li class="active"><a href="{% url 'league:games'  %}">Games</a></li>
 </ul>
-<ul class="nav navbar-nav navbar-right" style="margin-right:5px;">
-  <li><a href="{% url 'league:event' %}">Current league</a></li>
-  <li class="active"><a href="{% url 'league:archives' %}">Archives</a></li>
-</ul>
 </nav>
 <div class ="row">
+  <div class="well"> This table show all games that have been played in the Open Study Room</div>
 <div class="col-md-4">
   <div id ="game_infos">
     {% if game %}
@@ -59,15 +65,32 @@ return false;};
   <div id="player" data-wgo="{{ game.sgf.sgf_text | prepare_sgf}}" >
     </div>
     {% else %}
-    <div id="player"></div>
+    <div id="player">
+      <div class="alert alert-info">
+      Click a game result and it will be launched in a goban.
+    </div>
+    </div>
   {% endif %}
 {% endblock %}
 </div>
 {% block extra_js %}
+
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
+
 <script type="text/javascript">
 $(document).ready(function() {
-$('#game-table').DataTable({"bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',"order": [[ 0, "desc" ]]});
+$('#game-table').DataTable({
+  "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
+  "columnDefs": [ {
+    targets: 0,
+    render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','MMM DD, YYYY' )
+  } ],
+  "order": [[ 0, "desc" ]]
+
+});
 } );
 </script>
+
 {% endblock %}

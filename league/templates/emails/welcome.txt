@@ -1,0 +1,12 @@
+Welcome in the Open Study Room {{user.username}} !
+
+We just accepted you as a OSR member and we are happy to have you onboard.
+
+After loggin in, you should visit your account at openstudyroom.org/profile/ .
+There you will be able to join our leagues and to manage your emails or paswords.
+
+You can now use our forums and join our discord server at openstudyroom.org/discord/ .
+
+Looking forward to meet you there !
+
+openstudyroom.org
