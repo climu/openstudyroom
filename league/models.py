@@ -371,11 +371,11 @@ class User(AbstractUser):
 	def get_primary_email(self):
 		return self.emailaddress_set.filter(primary=True).first()
 
-	def get_divisions(self):
-		''' Return all division a user have been in. I think it should return open events divisions only
+	def get_open_divisions(self):
+		''' Return all division a user is in.
 		'''
 		players = self.leagueplayer_set.all()
-		return Division.objects.filter(leagueplayer__in = players)
+		return Division.objects.filter(leagueplayer__in = players,league_event__is_open = True)
 
 	def check_user(self):
 		''' Since we support multiple events, we need to check a user instead of a player.
@@ -406,7 +406,7 @@ class User(AbstractUser):
 			time.sleep(5)
 			list_urlto_games += utils.ask_kgs(kgs_username,months[1]['year'],months[1]['month'])
 		#list_urlto_games=[{url:'url',game_type:'game_type'},{...},...]
-		divisions = self.get_divisions()
+		divisions = self.get_open_divisions()
 		for d in list_urlto_games:
 			url=d['url']
 			game_type=d['game_type']

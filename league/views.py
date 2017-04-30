@@ -63,7 +63,7 @@ def scraper():
 	#3 no games to scrap let's check a player
 	else :
 		events = LeagueEvent.objects.filter(is_open=True)
-		profiles = Profile.objects.filter(user__leagueplayer__event__in = events).distinct()
+		profiles = Profile.objects.filter(user__leagueplayer__event__in = events).distinct().order_by('-p_status')
 		#if everyone has been checked.
 		if not(profiles.filter(p_status__gt =0).exists()):
 			profiles.update(p_status=1)
