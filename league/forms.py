@@ -27,6 +27,8 @@ class LeagueSignupForm(forms.Form):
         group = Group.objects.get(name='new_user')
         user.groups.add(group)
         user.save()
+        profile = Profile(user=user,kgs_username=user.kgs_username)
+        profile.save()
 
 
 class UploadFileForm(forms.Form):
@@ -56,12 +58,20 @@ class LeagueEventForm(forms.ModelForm):
     class Meta:
         model = LeagueEvent
         fields = ['name',
+                'event_type',
     			'begin_time',
     			'end_time',
     			'nb_matchs',
     			'ppwin',
     			'pploss',
-    			'min_matchs']
+    			'min_matchs',
+                'tag',
+                'server',
+                'main_time',
+                'byo_time',
+                'is_open',
+                'is_public',
+                ]
         widgets = {
             'name':forms.TextInput(),
             'begin_time': forms.SelectDateWidget(),

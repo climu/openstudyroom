@@ -1,0 +1,34 @@
+{% load league_tags %}
+<div class='table-responsive'>
+    <table id='example' class='table table-bordered  table-hover table-condensed' >
+        <thead class='table-league-highlight'>
+        <tr>
+            <th>player</th>
+            <th>score</th>
+            {% for player in players %}
+            <th>
+                <div class="kgs_username">{{ player.kgs_username }}</div>
+            </th>
+            {% endfor %}
+        </thead>
+        <tbody>
+        {% for player in players %}
+        <tr class="{% cycle 'even-row' 'odd-row' %}">
+            <td class='table-league-player'>{{forloop.counter}}. {{player.user | user_link}}</td>
+            <td class='table-league-score-highlight'>{{ player | player_score:results }}</td>
+            {% for opponent in players %}
+
+            {% if forloop.counter == forloop.parentloop.counter %}
+            <td class="table-league-highlight {% cycle 'even-column' 'odd-column' %}">
+                {% else %}
+            <td class="{% cycle 'even-column' 'odd-column' %}">
+
+              {% html_one_result %}
+            </td>
+            {% endif %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

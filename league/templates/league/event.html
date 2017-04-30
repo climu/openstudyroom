@@ -1,27 +1,49 @@
 {% extends "league/base.html" %}
+{% load league_tags %}
 {% block title %}{{event}}- Overview{% endblock %}
 {% block content %}
+<ul class="nav nav-tabs">
+  <li ><a href="{% url 'league:archives' %}">Archives</a></li>
+  {%if event not in open_events%}
+  <li class="active">{{event |event_link}}</li>
+    {%endif%}
+  {% for ev in open_events %}
+  <li {%if ev == event %} class="active"{%endif %}>
+    {{ev|event_link}}
+  </li>
+  {% endfor %}
+  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
+</ul>
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav navbar-left">
   <li class="active"><a href="{% url 'league:event' event.pk %}">Overview</a></li>
   <li><a href="{% url 'league:results' event.pk %}">Results</a></li>
   <li><a href="{% url 'league:players' event.pk %}">Players</a></li>
   <li><a href="{% url 'league:games' event.pk %}">Games</a></li>
-  {% if not close %}
-  <li ><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
-  {% endif %}
-</ul>
-<ul class="nav navbar-nav navbar-right" style="margin-right:5px;">
-  <li {%if not close %}class ="active"{%endif%}><a href="{% url 'league:event' %}">Current league</a></li>
-  <li><a href="{% url 'league:archives' %}">Archives</a></li>
 </ul>
 </nav>
 
 <h3>Infos</h3>
 <p>The <b>{{event.name}}</b> started on <b>{{event.begin_time |date:"M d, Y" }}</b> and {% if close %} stoped{% else %}will stop{%endif%} on <b>{{event.end_time |date:"M d, Y" }}</b>.</p>
 <p>{{event.number_players}} players played {{event.number_games}} games in {{event.number_divisions}} divisions. That is {{event.percent_game_played}} % of {{event.possible_games}} possible games.</p>
-{% if close %}
-<h3> winners</h3>
-{% endif %}
 
+<h3>Game settings </h3>
+<ul>
+  <li> Game must be played in the {{event.server}} go server </li>
+  <li> Games must be played with <b>no handicap</b></li>
+  <li> Games must use <b>Japanese timesetting</b> with at least <b>{{event.get_main_time_min}} min main time</b> and
+    <b>5 x {{event.byo_time}} sec byo-yomi</b>.</li>
+  <li>At least one player must tag the game saying <b>{{event.tag}}</b> or <b>{{event.tag|lower}}</b>.</li>
+  <li>The game can be ranked or free to the convenience of the players.</li>
+  <li>Using a bot such as Leela or Crazy Stone during league game si stricly forbiden. OSR team might check some game from time to time to look for matching with these go engines.</li>
+</ul>
+<h3> League rules </h3>
+<ul>
+  <li> Players can play up to <b>{{event.nb_matchs}} games</b> against opponents {%if event.type == ladder %} of the same group{%endif%}.</li>
+  <li>A win grant <b>{{event.ppwin}} points</b> and a loss grant <b>{{event.pploss}}</b>.</li>
+  <li>We will keep players who played at least <b>{{event.min_matchs}} games</b>.</li>
+</ul>
+<p>Players are strongly encourage to review the game afterward. If both player have the same rank, or if your opponent can't help you reviewing your game, one should feel free to ask stronger players in our kgs room and/or in our discord channel help for the review.</p>
+
+</ul>
 {% endblock %}}
