@@ -3,6 +3,7 @@
     <table id='league-table' class='table table-bordered  table-hover ' >
         <thead >
         <tr>
+            <th>rank</th>
             <th>player</th>
             <th>score</th>
             <th>wins</th>
@@ -14,7 +15,8 @@
         <tbody>
         {% for player in players %}
         <tr>
-            <td >{{forloop.counter}}. {{player.user | user_link}}</td>
+          <td>{{forloop.counter}}</td>
+            <td>{{player.user | user_link}}</td>
             <td >{{ player | player_score:results }}</td>
             <td>{{ player | player_nb_win:results }} </td>
             <td>{{ player | player_nb_loss:results }}</td>
