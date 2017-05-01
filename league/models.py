@@ -399,7 +399,7 @@ class User(AbstractUser):
 		months = [{'month':now.month,'year':now.year}]
 		if now.day == 1 :
 		#if we are the 1st of the month, we check both previous month an current
-			prev = date.today().replace(day=1) - timedelta(days=1)
+			prev = now.replace(day=1) - datetime.timedelta(days=1)
 			months.append({'month':prev.month,'year':prev.year})
 		list_urlto_games = utils.ask_kgs(kgs_username,months[0]['year'],months[0]['month'])
 		if len(months)>1:
