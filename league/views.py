@@ -486,18 +486,20 @@ def admin(request):
 				user.groups.clear()
 				group = Group.objects.get(name='league_member')
 				user.groups.add(group)
-				# We send a welcome mail
-				plaintext = loader.get_template('emails/welcome.txt')
-				context = { 'user': user }
-				message = plaintext.render(context)
-				send_mail(
-				'Welcome in the Open Study Room',
-				message,
-				'openstudyroom@gmail.com',
-				[user.get_primary_email().email],
-				fail_silently=False,
-				)
-				message =" You moved " + user.username + "from new user to league member and sent him a welcome email"
+				# We send a welcome mail only if we have a primary email
+				email = user.get_primary_email()
+				if email is not None:
+					plaintext = loader.get_template('emails/welcome.txt')
+					context = { 'user': user }
+					message = plaintext.render(context)
+					send_mail(
+					'Welcome in the Open Study Room',
+					message,
+					'openstudyroom@gmail.com',
+					[email.email],
+					fail_silently=False,
+					)
+				message =" You moved " + user.username + "from new user to league member"
 				messages.success(request,message)
 				return HttpResponseRedirect(reverse('league:admin'))
 			if form.cleaned_data['action'] == "delete_new_user":

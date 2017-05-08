@@ -26,14 +26,26 @@
         {% for new_user in new_users %}
         <tr>
           <td>{{new_user.username}}</td>
-          <td>{{new_user.email}}</td>
+
+          <td>
+            {% with new_user.get_primary_email as email %}
+            {% if email is none %}
+            {{new_user.email}}
+            {% else %}
+            {{email.email}}
+            {% if email.verified %}
+            {% bootstrap_icon "ok" %}
+            {% endif %}
+            {% endif %}
+          </td>
+          {% endwith %}
           <td><a href="https://www.gokgs.com/gameArchives.jsp?user={{new_user.kgs_username}}" target="_blank">{{new_user.kgs_username}}</a></td>
           <td>  <form action=" {% url 'league:admin' %}" method="post" class="form">
             {% csrf_token %}
             <input type="hidden" name="action" value="delete_new_user">
             <input type="hidden" name="user_id" value="{{new_user.pk}}">
               <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('You are about to delete the new user {{new_user.username}}. Allright?')" >
-                {% bootstrap_icon "remove" %}  
+                {% bootstrap_icon "remove" %}
               </button>
             </form>
           </td>
