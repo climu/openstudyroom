@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import  Group
-from .models import User,Division,LeagueEvent
+from .models import User,Division,LeagueEvent,Profile
 from django.forms import ModelForm
 
 class SgfAdminForm(forms.Form):
