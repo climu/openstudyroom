@@ -1,5 +1,5 @@
 {% extends "league/base.html" %}
-{% load league_tags %}
+{% load league_tags bootstrap3 %}
 {% block title %}{{event}}- Overview{% endblock %}
 {% block content %}
 <ul class="nav nav-tabs">
@@ -21,6 +21,18 @@
   <li><a href="{% url 'league:players' event.pk %}">Players</a></li>
   <li><a href="{% url 'league:games' event.pk %}">Games</a></li>
 </ul>
+{% if can_join %}
+<form class="navbar-form navbar-right" style="margin-right:5px;" action=" {% url 'league:join_event' event.pk user.pk %}" method="post" >
+  {% csrf_token %}
+  <div class="form-group">
+  <input type="hidden" name="action" value="join">
+  <input type="hidden" name="next" value="{{request.path}}">
+  <button type="submit" class="btn btn-default"  onclick="return confirm('You are about to join the {{event}}. Allright?')">
+  {% bootstrap_icon "ok" %} Join {{event.name}} !
+  </button>
+  </div>
+  </form>
+{%endif%}
 </nav>
 
 <h3>Infos</h3>

@@ -1,0 +1,51 @@
+{% extends "left_sidebar.html" %}
+{% load i18n static %}{% load postman_tags bootstrap3%}
+{% block title %}{% trans "Messaging" %}
+
+{% endblock %}
+
+{% block heading %}
+<div class="page-header">
+    <h1>My profile - Messages</h1>
+</div>
+
+
+<nav class="navbar navbar-default">
+<ul class="nav navbar-nav navbar-left">
+  <li ><a href="{% url "league:league_account" user%}">League</a></li>
+  <li ><a href="{% url "forum_member:profile" user.pk%}">Forum</a></li>
+</ul>
+{% if request.user.is_authenticated and user == request.user%}
+<ul class="nav navbar-nav navbar-right active" style="margin-right:5px;">
+  <li class="active">
+    <a href="{% url "postman:inbox" %}" >
+      <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+      Messages
+      {% if postman_unread_count > 0 %}
+      <span class="badge"> {{ postman_unread_count }}</span>
+      {% endif %}
+    </a>
+    </li>
+  <li class="dropdown">
+  <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+  Manage <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu">
+  <li><a href="{% url "account_change_password" %} ">Password</a></li>
+  <li ><a href="{% url "account_email" %}">Email</a></li>
+</ul>
+</ul>
+{%endif %}
+</nav>
+
+{% endblock %}
+{% block sidebar %}
+<ul class="nav nav-pills nav-stacked">{% with postman_unread_count as unread_count %}
+ <li><a href="{% url 'postman:inbox' %}">{%bootstrap_icon "inbox"%} {% trans "Inbox" %}{% if unread_count %} <strong>({{ unread_count }})</strong>{% endif %}</a></li>
+ <li ><a href="{% url 'postman:sent' %}">{%bootstrap_icon "send"%} {% trans "Sent Messages" %}</a></li>
+ <li><a href="{% url 'postman:write' %}">{%bootstrap_icon "pencil"%} {% trans "Write" %}</a></li>
+ <li ><a href="{% url 'postman:archives' %}">{%bootstrap_icon "folder-close"%} {% trans "Archives" %}</a></li>
+ <li ><a href="{% url 'postman:trash' %}">{%bootstrap_icon "trash"%} {% trans "Trash" %}</a></li>
+ {%endwith%}
+</ul>
+{% endblock %}
