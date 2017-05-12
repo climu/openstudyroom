@@ -22,10 +22,12 @@ urlpatterns = [
     url(r'^league/', include('league.urls', namespace="league")),
     url(r'^wgo/', include('wgo.urls', namespace="wgo")),
 #    url(r'^accounts/login/$',LoginView.as_view(), name="auth_login"),
-#    url(r'^accounts/signup/$',SignupView.as_view(), name="registration_register"), 
+#    url(r'^accounts/signup/$',SignupView.as_view(), name="registration_register"),
+
 
     url(r'^accounts/', include('allauth.urls')),
     url(r'^forum/', include(board.urls)),
+    url(r'^messages/', include('postman.urls', namespace='postman', app_name='postman')),
     url(r'', include('puput.urls')),
     # For anything not caught by a more specific rule above, hand over to
     # Wagtail's page serving mechanism. This should be the last pattern in
@@ -36,6 +38,11 @@ urlpatterns = [
     # of your site, rather than the site root:
     #    url(r'^pages/', include(wagtail_urls)),
 ]
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns
 
 
 if settings.DEBUG:

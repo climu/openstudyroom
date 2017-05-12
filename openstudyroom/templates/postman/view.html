@@ -1,0 +1,57 @@
+{% extends "postman/base.html" %}
+{% load i18n %}{% load postman_tags bootstrap3 %}
+{% block content %}
+<div id="postman">
+<h1>{% if pm_messages|length > 1 %}{% trans "Conversation" %}{% else %}{% trans "Message" %}{% endif %}</h1>
+{% with pm_messages.last as message %}
+<form action="" method="post">{% csrf_token %}
+
+<input type="hidden" {% if pm_messages|length > 1 and message.thread_id %}name="tpks" value="{{ message.thread_id }}"{% else %}name="pks" value="{{ message.pk }}"{% endif %} />
+<div class="btn-group" role="group">
+<a href="{{ next_url }}" class="btn btn-default">{%bootstrap_icon "arrow-left"%} {% trans "Back" %}</a>
+<button type="submit" class="btn btn-default"
+ onclick="this.form.action='{% url 'postman:delete' %}?next={{ next_url|urlencode }}'">{%bootstrap_icon "trash"%} {% trans "Delete" %}</button>
+{% if not archived %}<button type="submit" class="btn btn-default"
+ onclick="this.form.action='{% url 'postman:archive' %}?next={{ next_url|urlencode }}'">{%bootstrap_icon "folder-close"%} {% trans "Archive" %}</button>{% endif %}
+{% if reply_to_pk %}<a href="{% url 'postman:reply' reply_to_pk %}?next={{ next_url|urlencode }}"
+ class="btn btn-default">{%bootstrap_icon "share-alt"%} {% trans "Reply" %}</a>{% endif %}
+ </div>
+</form>
+{% endwith %}
+{% for message in pm_messages %}
+<div class="panel panel-default{% if message.is_pending %} pm_pending{% endif %}{% if message.is_rejected %} pm_rejected{% endif %}{% if message.sender == user and message.sender_archived or message.recipient == user and message.recipient_archived %} pm_archived{% endif %}{% if message.sender == user and message.sender_deleted_at or message.recipient == user and message.recipient_deleted_at %} pm_deleted{% endif %}{% if message.recipient == user and not message.read_at %} pm_unread{% endif %}">
+ <div class="panel-heading clearfix text-center">
+  <span class="pull-left">{{ message.obfuscated_sender|or_me:user }}
+  <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"> </span>
+   {{ message.obfuscated_recipient|or_me:user }}</span>
+  <span class="label label-default">{{ message.subject }}</span>
+  <span class="pull-right">{{ message.sent_at|date:"DATETIME_FORMAT"}}</span>
+
+{% if message.is_rejected %}  <div class="pm_status">{% trans "Rejected" %}{% if message.moderation_reason %}{% trans ":" %} {{ message.moderation_reason }}{% endif %}</div>{% endif %}
+ </div>
+ <div class="panel-body">{{ message.body|linebreaksbr }}</div>
+</div>
+{% if forloop.last %}
+<form action="" method="post">{% csrf_token %}
+
+<input type="hidden" {% if pm_messages|length > 1 and message.thread_id %}name="tpks" value="{{ message.thread_id }}"{% else %}name="pks" value="{{ message.pk }}"{% endif %} />
+<div class="btn-group" role="group">
+<a href="{{ next_url }}" class="btn btn-default">{%bootstrap_icon "arrow-left"%} {% trans "Back" %}</a>
+<button type="submit" class="btn btn-default"
+ onclick="this.form.action='{% url 'postman:delete' %}?next={{ next_url|urlencode }}'">{%bootstrap_icon "trash"%} {% trans "Delete" %}</button>
+{% if not archived %}<button type="submit" class="btn btn-default"
+ onclick="this.form.action='{% url 'postman:archive' %}?next={{ next_url|urlencode }}'">{%bootstrap_icon "folder-close"%} {% trans "Archive" %}</button>{% endif %}
+{% if reply_to_pk %}<a href="{% url 'postman:reply' reply_to_pk %}?next={{ next_url|urlencode }}"
+ class="btn btn-default">{%bootstrap_icon "share-alt"%} {% trans "Reply" %}</a>{% endif %}
+ </div>
+</form>
+{% if reply_to_pk %}<hr />
+<h2>{% trans 'Fast Reply' %}</h2>
+<form action="{% url 'postman:reply' reply_to_pk %}?next={{ next_url|urlencode }}" method="post">{% csrf_token %}
+{% bootstrap_field form.body show_label=False%}
+<button type="submit" class="btn btn-primary">{%bootstrap_icon "share-alt"%} {% trans 'Reply' %}</button>
+</form>{% endif %}
+{% endif %}
+{% endfor %}
+</div>
+{% endblock %}
