@@ -10,7 +10,9 @@ class SgfAdminForm(forms.Form):
 
 class ActionForm(forms.Form):
     action = forms.CharField(label ='action',widget=forms.HiddenInput())
-    user_id= forms.IntegerField(label ='user_id',widget=forms.HiddenInput(),required=False)
+    user_id = forms.IntegerField(label ='user_id',widget=forms.HiddenInput(),required=False)
+    next = forms.CharField(label ='next',widget=forms.HiddenInput(),required=False)
+
 
 class LeagueSignupForm(forms.Form):
     kgs_username = forms.CharField(max_length=10,required=True,)

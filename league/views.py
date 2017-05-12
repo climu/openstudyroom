@@ -107,9 +107,12 @@ def games(request,event_id=None,game_id=None):
 		event = get_object_or_404(LeagueEvent,pk=event_id)
 		games=Game.objects.filter(white__event=event).order_by('-sgf__date')
 		template = loader.get_template('league/games.html')
+		if event.is_open:
+			can_join = request.user.is_authenticated and request.user.user_is_league_member() and not LeaguePlayer.objects.filter(user=request.user,event = event).exists()
 		context.update( {
 			'games': games,
 			'event':event,
+			'can_join': can_join,
 			})
 	return HttpResponse(template.render(context, request))
 
@@ -117,12 +120,15 @@ def games(request,event_id=None,game_id=None):
 
 def results(request,event_id=None,division_id=None):
 	open_events = LeagueEvent.objects.filter(is_open = True)
+	can_join = False
 	if not (request.user.is_authenticated and request.user.user_is_league_admin()) :
 		open_events = open_events.filter(is_public = True)
 	if event_id == None:
 		event = Registry.get_primary_event()
 	else:
 		event=get_object_or_404(LeagueEvent,pk=event_id)
+		if event.is_open:
+			can_join = request.user.is_authenticated and request.user.user_is_league_member() and not LeaguePlayer.objects.filter(user=request.user,event = event).exists()
 	if division_id == None:
 		division = Division.objects.filter(league_event=event).first()
 	else:
@@ -135,7 +141,8 @@ def results(request,event_id=None,division_id=None):
 		'event':event,
 		'division':division,
 		'results' :results,
-		'open_events':open_events
+		'open_events':open_events,
+		'can_join' : can_join,
 		}
 	return HttpResponse(template.render(context, request))
 
@@ -155,6 +162,7 @@ def archives(request):
 		return HttpResponse(template.render(context, request))
 
 def event(request,event_id=None,division_id=None,):
+	can_join = False
 	open_events = LeagueEvent.objects.filter(is_open = True)
 	if not (request.user.is_authenticated and request.user.user_is_league_admin()) :
 		open_events = open_events.filter(is_public = True)
@@ -162,6 +170,8 @@ def event(request,event_id=None,division_id=None,):
 		event = Registry.get_primary_event()
 	else:
 		event=get_object_or_404(LeagueEvent,pk=event_id)
+	if event.is_open:
+		can_join = request.user.is_authenticated and request.user.user_is_league_member() and not LeaguePlayer.objects.filter(user=request.user,event = event).exists()
 	if division_id == None:
 		division = Division.objects.filter(league_event=event).first()
 	else:
@@ -170,12 +180,14 @@ def event(request,event_id=None,division_id=None,):
 	context = {
 		'event':event,
 		'open_events':open_events,
+		'can_join': can_join,
 		}
 	template = loader.get_template('league/event.html')
 	return HttpResponse(template.render(context, request))
 
 def players(request,event_id=None,division_id=None):
 	open_events = LeagueEvent.objects.filter(is_open = True)
+	can_join = False
 	if not (request.user.is_authenticated and request.user.user_is_league_admin()) :
 		open_events = open_events.filter(is_public = True)
 	#if no event is provided, we show all the league members
@@ -188,6 +200,8 @@ def players(request,event_id=None,division_id=None):
 		template = loader.get_template('league/archives_players.html')
 	else:
 		event=get_object_or_404(LeagueEvent,pk=event_id)
+		if event.is_open:
+			can_join = request.user.is_authenticated and request.user.user_is_league_member() and not LeaguePlayer.objects.filter(user=request.user,event = event).exists()
 		#if no division is provided, we show all players from this event
 		if division_id == None:
 			players = LeaguePlayer.objects.filter(event=event).order_by('-score')
@@ -200,7 +214,8 @@ def players(request,event_id=None,division_id=None):
 			'open_events':open_events,
 			'event':event,
 			'players':players,
-			'divisions':divisions
+			'divisions':divisions,
+			'can_join' : can_join,
 		}
 		template = loader.get_template('league/players.html')
 	return HttpResponse(template.render(context, request))
@@ -231,10 +246,12 @@ def join_event(request,event_id,user_id):
 							message ="Welcome in " + division.name +" ! You can start playing right now."
 						else:
 							message ="Oops ! Something went wrong. You didn't join."
+					messages.success(request,message)
+					return HttpResponseRedirect(form.cleaned_data['next'])
 	else:
 		message ="What are you doing here ?"
-	messages.success(request,message)
-	return HttpResponseRedirect(reverse('league:league_account'))
+		messages.success(request,message)
+	return HttpResponseRedirect('/')
 
 def account(request,user_name=None):
 	#This view does many things:

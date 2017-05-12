@@ -121,6 +121,7 @@ return false;};
   <form action=" {% url 'league:join_event' event.pk user.pk %}" method="post" class="form">
   {% csrf_token %}
   <input type="hidden" name="action" value="join">
+  <input type="hidden" name="next" value="{{request.path}}">
   <span>You are not playing in {{event}}. Maybe you want to join the {{event.last_division}} ?</span>
 
   <button type="submit" class="btn btn-primary"  onclick="return confirm('You are about to join the {{event}}. Allright?')">
