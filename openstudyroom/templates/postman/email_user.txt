@@ -1,0 +1,19 @@
+{% load i18n %}{% autoescape off %}
+Hello {{object.obfuscated_recipient}}
+{% if action == 'rejection' %}
+{% blocktrans with object.sent_at|date:"DATETIME_FORMAT" as date and object.obfuscated_recipient as recipient %}On {{ date }}, you asked to send a message to the user '{{ recipient }}'.{% endblocktrans %}
+
+{% trans "Your message has been rejected by the moderator" %}{% if object.moderation_reason %}{% trans ", for the following reason:" %}
+    {{ object.moderation_reason }}{% else %}.{% endif %}
+
+{% else %}{# 'acceptance' #}
+
+{% blocktrans with object.obfuscated_sender as sender %}You have received a message from the user '{{ sender }}'{% endblocktrans %}:
+{%endif%}
+---------------------------------------------
+{{object.body}}
+---------------------------------------------
+Hope you enjoy your time in the Open Study Room !
+
+openstudyroom.org
+{% endautoescape %}

@@ -1,0 +1,66 @@
+{% extends "postman/base.html" %}
+{% load i18n postman_tags bootstrap3%}{% load pagination_tags %}{% comment %}
+WARNING: 'pagination_tags' is a name from the django-pagination application.
+For convenience, the design of this template is done with the use of that application.
+Django-postman will still be working, even if that application is not installed, by providing a mock
+for the template tag library.
+If the real implementation is to be used, just make sure that 'pagination' is declared before 'postman'
+in the INSTALLED_APPS setting.
+{% endcomment %}
+{% block content %}
+<h1>{% block pm_folder_title %}{% endblock %}</h1>
+{% autopaginate pm_messages %}
+{% if invalid_page %}
+<p>{% trans "Sorry, this page number is invalid." %}</p>
+{% else %}
+{% if pm_messages %}
+{% block pm_by_modes %} <ul class="nav nav-tabs">
+  <li {% if by_conversation %} class="active"{% endif %}>
+    <a href="{{ by_conversation_url }}">{% trans "by conversation" %}</a>
+  </li>
+  <li {% if by_message %} class="active"{% endif %}>
+    <a href="{{ by_message_url }}">{% trans "by message" %}</a>
+  </li>
+</ul>{% endblock pm_by_modes %}
+<form action="{% block pm_form_action %}{% endblock %}" method="post">{% csrf_token %}
+{% block pm_form_buttons %}<div class="btn-group" role="group">
+{% block pm_delete_button %}<button type="submit" class="btn btn-default" onclick="this.form.action='{% url 'postman:delete' %}'">{%bootstrap_icon "trash"%} {% trans "Delete" %}</button>{% endblock %}
+{% block pm_archive_button %}<button type="submit" class="btn btn-default" onclick="this.form.action='{% url 'postman:archive' %}'">{%bootstrap_icon "folder-close"%} {% trans "Archive" %}</button>{% endblock %}
+{% block pm_undelete_button %}<button type="submit" class="btn btn-default" onclick="this.form.action='{% url 'postman:undelete' %}'">{% trans "Undelete" %}</button>{% endblock %}
+{% block pm_read_button %}<button type="submit" class="btn btn-default" onclick="this.form.action='{% url 'postman:mark-read' %}'">{% trans "Mark as read" %}</button>{% endblock %}
+{% block pm_unread_button %}<button type="submit" class="btn btn-default" onclick="this.form.action='{% url 'postman:mark-unread' %}'">{% trans "Mark as unread" %}</button>{% endblock %}
+</span></div>{% endblock %}
+<table class="table">
+ <thead>
+  <tr>
+   <th>{% trans "Action" %}</th>
+{% block pm_sender_header %}   <th><a href="{% postman_order_by sender %}">{% trans "Sender" %}</a></th>{% endblock %}
+{% block pm_recipient_header %}   <th><a href="{% postman_order_by recipient %}">{% trans "Recipient" %}</a></th>{% endblock %}
+   <th><a href="{% postman_order_by subject %}">{% trans "Subject" %}</a></th>
+   <th><a href="{% postman_order_by date %}">{% block pm_date %}{% trans "Date" %}{% endblock %}</a></th>
+  </tr>
+ </thead>
+ <tbody>{% for message in pm_messages %}
+  <tr>
+   <td><input type="checkbox" {% if by_conversation and message.thread_id %}name="tpks" value="{{ message.thread_id }}"{% else %}name="pks" value="{{ message.pk }}"{% endif %} /></td>
+{% block pm_sender_cell %}   <td>{{ message.obfuscated_sender|or_me:user }}{% if message.count %} ({{ message.count }}){% endif %}</td>{% endblock %}
+{% block pm_recipient_cell %}   <td>{{ message.obfuscated_recipient|or_me:user }}{% if message.count %} ({{ message.count }}){% endif %}</td>{% endblock %}
+   <td>{% if message.is_new %}<strong>{% endif %}{% if message.is_replied %}<em>{% endif %}
+{% block pm_subject %}
+    <a href="{% if by_conversation and message.thread_id %}{% url 'postman:view_conversation' message.thread_id %}{% else %}{% url 'postman:view' message.pk %}{% endif %}?next={{ current_url|urlencode }}">
+    {% include "postman/inc_subject_ex.html" %}
+    </a>
+{% endblock %}
+   {% if message.is_replied %}</em>{% endif %}{% if message.is_new %}</strong>{% endif %}</td>
+   <td>{{ message.sent_at|compact_date:_("g:i A,M j,n/j/y") }}</td>
+  </tr>{% endfor %}
+ </tbody>
+</table>
+</form>
+{% paginate %}
+{% else %}
+<p>{% trans "No messages." %}</p>
+{% endif %}
+{% endif %}
+{% block pm_footer_info %}{% endblock %}
+{% endblock content %}

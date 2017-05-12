@@ -1,0 +1,20 @@
+{% extends "postman/base_folder.html" %}
+{% load i18n bootstrap3 %}
+{% block pm_folder_title %}{% trans "Sent Messages" %}{% endblock %}
+{% block pm_undelete_button %}{% endblock %}
+{% block pm_read_button %}{% endblock %}
+{% block pm_unread_button %}{% endblock %}
+{% block pm_sender_header %}{% endblock %}
+{% block pm_date %}{% trans "Sent" %}{% endblock %}
+{% block pm_sender_cell %}{% endblock %}
+
+{% block sidebar %}
+<ul class="nav nav-pills nav-stacked">{% with postman_unread_count as unread_count %}
+ <li><a href="{% url 'postman:inbox' %}">{%bootstrap_icon "inbox"%} {% trans "Inbox" %}{% if unread_count %} <strong>({{ unread_count }})</strong>{% endif %}</a></li>
+ <li class="active"><a href="{% url 'postman:sent' %}">{%bootstrap_icon "send"%} {% trans "Sent Messages" %}</a></li>
+ <li><a href="{% url 'postman:write' %}">{%bootstrap_icon "pencil"%} {% trans "Write" %}</a></li>
+ <li ><a href="{% url 'postman:archives' %}">{%bootstrap_icon "folder-close"%} {% trans "Archives" %}</a></li>
+ <li ><a href="{% url 'postman:trash' %}">{%bootstrap_icon "trash"%} {% trans "Trash" %}</a></li>
+ {%endwith%}
+</ul>
+{% endblock %}
