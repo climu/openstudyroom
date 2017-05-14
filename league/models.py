@@ -10,6 +10,8 @@ from collections import defaultdict
 from django.db.models import Q
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
+import pytz
+
 
 
 # Create your models here.
@@ -441,6 +443,13 @@ class Profile(models.Model):
 	bio = models.TextField(blank=True)
 	p_status = models.PositiveSmallIntegerField(default=0)
 	last_kgs_online = models.DateTimeField(blank=True,null=True)
+	timezone = models.CharField(
+	 		max_length=100,
+	 		choices=[(t, t) for t in pytz.common_timezones],
+			blank=True,null=True
+        )
+
+
 	def __str__(self):
 		return self.user.username
 

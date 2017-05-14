@@ -95,6 +95,7 @@ INSTALLED_APPS = [
     #'django_messages',
     'postman',
 
+    
 ]+ get_machina_apps()
 
 MIDDLEWARE = [
@@ -113,6 +114,8 @@ MIDDLEWARE = [
 	# Machina
     'machina.apps.forum_permission.middleware.ForumPermissionMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'league.middleware.TimezoneMiddleware'
+
 ]
 
 ROOT_URLCONF = 'openstudyroom.urls'
@@ -137,8 +140,10 @@ TEMPLATES = [
                 #for django-messages
                 #'django_messages.context_processors.inbox',
                 'postman.context_processors.inbox',
-		# Machina
-		'machina.core.context_processors.metadata',
+		        # Machina
+		      'machina.core.context_processors.metadata',
+
+              'django.template.context_processors.request',
 
             ],
         },

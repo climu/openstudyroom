@@ -22,7 +22,9 @@
   </a>
   <ul class="dropdown-menu">
   <li><a href="{% url "account_change_password" %} ">Password</a></li>
-  <li ><a href="{% url "postman:inbox" %}">Email</a></li>
+  <li ><a href="{% url "account_email" %}">Email</a></li>
+  <li ><a href="{% url "league:timezone_update" %}">Timezone</a></li>
+
 </ul>
 </ul>
 {% else %}
