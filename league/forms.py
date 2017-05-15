@@ -3,7 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import  Group
 from .models import User,Division,LeagueEvent,Profile
 from django.forms import ModelForm
-from machina.apps.forum_member.forms import ForumProfileForm
+#from machina.apps.forum_member.forms import ForumProfileForm
+import pytz
 
 class SgfAdminForm(forms.Form):
 	sgf = forms.CharField(label='sgf data',widget=forms.Textarea(attrs={'cols': 60, 'rows': 20}))
@@ -17,6 +18,13 @@ class ActionForm(forms.Form):
 
 class LeagueSignupForm(forms.Form):
 	kgs_username = forms.CharField(max_length=10,required=True,)
+	timezone = forms.ChoiceField(
+        label='Time Zone',
+        choices=[(t, t) for t in pytz.common_timezones],
+		required=False,
+		initial='UTC'
+    )
+
 
 	def clean_kgs_username(self):
 		kgs_username = self.cleaned_data['kgs_username']
@@ -30,7 +38,7 @@ class LeagueSignupForm(forms.Form):
 		group = Group.objects.get(name='new_user')
 		user.groups.add(group)
 		user.save()
-		profile = Profile(user=user,kgs_username=user.kgs_username)
+		profile = Profile(user=user,kgs_username=user.kgs_username,timezone=self.cleaned_data['timezone'])
 		profile.save()
 
 
