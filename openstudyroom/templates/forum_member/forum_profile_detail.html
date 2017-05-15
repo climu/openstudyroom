@@ -9,7 +9,7 @@
     <h1>{% if profile.user == request.user %}My{% else %}{{profile.user.username}}{% endif %} profile - Forum</h1>
 </div>
 {%endblock%}
-{% block content %}{% include 'league/includes/user_nav.html' with active='forum' %}
+{% block content %}{% include 'league/includes/user_nav.html' with active='forum' user=profile.user %}
 <div class="row profile">
   <div class="col-md-3">
     <div class="profile-sidebar">
