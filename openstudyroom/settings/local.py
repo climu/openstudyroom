@@ -95,6 +95,9 @@ INSTALLED_APPS = [
     #'django_messages',
     'postman',
 
+    'fullcalendar',
+
+
 ]+ get_machina_apps()
 
 MIDDLEWARE = [
@@ -139,7 +142,7 @@ TEMPLATES = [
                 'postman.context_processors.inbox',
 		# Machina
 		'machina.core.context_processors.metadata',
-
+    
             ],
         },
     },

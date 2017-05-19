@@ -1,0 +1,34 @@
+
+
+<ul class="sidebar">
+  <h4>
+  <a href="{% url 'calendar:calendar_view' %}">  <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+  OSR Events
+</a>
+  </h4>
+{% for cal_event in cal_events %}
+  {% if cal_event.url %}  <a href="{{cal_event.url}}">    {% endif %}
+<div class="panel">
+
+  <div class="panel-body">
+    <div class="col-md-6">
+      <p>{{cal_event.begin_time|date:"d, M"}}</p>
+      <p>{{cal_event.begin_time|time:"TIME_FORMAT"}}</p>
+
+    </div>
+    <div class="col-md-6">
+<div class="text-center label label-default">
+      {{cal_event.title}}
+    </div>
+    <div>
+      {{cal_event.description}}
+
+    </div>
+
+    </div>
+    {% if cal_event.url %}  </a>  {% endif %}
+</div>
+</div>
+
+{% endfor %}
+</ul>
