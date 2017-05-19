@@ -1,5 +1,5 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 league_tags static%}
+{% load bootstrap3 league_tags static tz%}
 {% block title %}OSR league admin - Edit an event{% endblock %}
 
 {% block heading %}
@@ -8,6 +8,7 @@
 </div>
 {%endblock%}
 {% block content %}
+{% timezone "UTC" %}
 <div class="row">
 <div class="col-md-4">
   <legend>Edit the event {{object.title}} </legend>
@@ -25,4 +26,6 @@
       </button>
     </form>
 </div>
+{% endtimezone %}
+
 {% endblock %}

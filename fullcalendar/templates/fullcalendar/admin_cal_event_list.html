@@ -1,5 +1,5 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 league_tags static%}
+{% load bootstrap3 league_tags static tz%}
 {% block title %}OSR league admin - Events list{% endblock %}
 
 {% block heading %}
@@ -8,7 +8,7 @@
 </div>
 {%endblock%}
 {% block content %}
-
+{% timezone "UTC" %}
 <a  href="{%url 'calendar:create_cal_event'%}">
   <button class="btn btn-success">
     {%bootstrap_icon 'plus'%} Create a new event
@@ -17,8 +17,8 @@
 <table class="table">
  <thead>
    <th>Title</th>
-   <th>Begin Time</th>
-   <th>End Time</th>
+   <th>Begin Time (UTC)</th>
+   <th>End Time (UTC)</th>
    <th> Edit</th>
    <th>Delete</th>
  </thead>
@@ -48,5 +48,5 @@
 </tbody>
 
 </table>
-
+{% endtimezone %}
 {%endblock%}
