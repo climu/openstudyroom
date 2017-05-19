@@ -9,8 +9,7 @@
 {% block page_content %}
     <div class="row">
       <div class="col-md-8">
-        <div class = "intro">
-          <legend><h3>The Open Study Room</h3></legend>
+        <legend><h3>The Open Study Room</h3></legend>
           <p>
       Take chance to join an online go community dedicated to play, teach, learn and study the fascinating game of go.
       </p>
@@ -22,21 +21,30 @@
       </p>
         <legend><h3>Register here</h3></legend>
       <p>
-        Registering will allow you to participate in our <a href=" {% url 'league:archives' %}">leagues</a> and use our <a href="/forum/">forums</a>.
+        Registering will allow you to participate in our <a href="/league/league_rules">leagues</a>, use our <a href="/forum/">forums</a> and our discord server.
       </p>
       <p>
         Just fill this form by indicating your <a href="https://www.gokgs.com">KGS</a> username so that our automatic game finder can upload your league games to your profile.
       </p>
       <p> You need to have played at least one game on  <a href="https://www.gokgs.com">KGS</a> for our team to accept you as a OSR member.</p>
-
+      <p>Setting your timezone will allow our website to adapt all times to your local time.</p>
       </div>
-      </div>
+      
         <div class="col-md-4">
             <form id="signup_form" method="post" action="{% url "account_signup" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
                 {% csrf_token %}
                 <legend><h3>Sign up</h3></legend>
-                {%bootstrap_form form show_label=False %}
-                <input type="hidden" name="{{ redirect_field_name }}" value="/welcome" />
+                {%bootstrap_field form.username show_label=False addon_before="<span class='glyphicon glyphicon-user'></span>  " %}
+                {%bootstrap_field form.kgs_username show_label=False addon_before="<span class='small'>KGS</span>" %}
+                {%bootstrap_field form.email show_label=False addon_before="<span class='glyphicon glyphicon-envelope'></span>  " %}
+                {%bootstrap_field form.password1 show_label=False addon_before="<span class='glyphicon glyphicon-lock'></span>  " %}
+                {%bootstrap_field form.password2 show_label=False addon_before="<span class='glyphicon glyphicon-lock'></span>  " %}
+                {%bootstrap_field form.timezone show_label=True addon_before="<span class='glyphicon glyphicon-globe'></span>  " %}
+
+
+
+
+                  <input type="hidden" name="{{ redirect_field_name }}" value="/welcome" />
                 <button type="submit" class="btn btn-primary">Sign up</button>
             </form>
             <p class="login-signup">
@@ -53,7 +61,7 @@
     {{ block.super }}
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#id_kgs_username').focus();
+            $('#id_username').focus();
         });
     </script>
 {% endblock %}

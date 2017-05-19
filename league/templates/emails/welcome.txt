@@ -1,12 +1,12 @@
-Welcome in the Open Study Room {{user.username}} !
+Hello and welcome to the Open Study Room, {{user.username}}!
 
-We just accepted you as a OSR member and we are happy to have you onboard.
+You have just been accepted as an OSR member, and we are glad to have you onboard.
 
-After loggin in, you should visit your account at openstudyroom.org/profile/ .
-There you will be able to join our leagues and to manage your emails or paswords.
+After logging in, you should take a look at your profile page, located at openstudyroom.org/profile/
+There you will be able to join our leagues as well as manage your e-mail address and passwords.
 
-You can now use our forums and join our discord server at openstudyroom.org/discord/ .
+You can now also use our forums and join our Discord server at openstudyroom.org/discord/ .
 
-Looking forward to meet you there !
+Looking forward to see you there!
 
 openstudyroom.org

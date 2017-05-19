@@ -28,6 +28,8 @@ urlpatterns = [
     url(r'^discord/$', views.discord_redirect, name='discord_redirect'),
 
     url(r'^sgf/(?P<sgf_id>[0-9]+)/$', views.sgf, name='sgf'),
+    url(r'^account/timezone/$', views.timezone_update, name='timezone_update'),
+
 
     url(r'^account/$', views.account, name='league_account'),
     url(r'^account/(?P<user_name>[\w.@+-]+)/$', views.account,name='league_account'),

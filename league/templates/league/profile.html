@@ -1,64 +1,64 @@
-{% extends "full_width.html" %}
-{% load wagtailcore_tags %}
-{% load league_tags %}
+{% extends "board_base.html" %}
+{% load i18n bootstrap3%}
+
+{% block sub_title %}{% trans "Edit forum profile" %}{% endblock sub_title %}
+{% block breadcrumb %}{%endblock%}
+
+{% block heading %}
+<div class="page-header">
+    <h1>{{user.username}} profile</h1>
+</div>
+{%endblock%}
+
 {% block content %}
-<h2>Active event</h2>
-{% if active_player %}
-<p><b>{{user.kgs_username}}</b> currently playing for the <b>{{active_player.event}}</b> in the <b>{{active_player.division}}:</b></p>
-  <table id='opponents-table' class='display' cellspacing='100' >
-     <thead>
-       <tr>
-         <th>Rank</th>
-         <th>Player</th>
-         <th>Results</th>
-      </thead>
-      <tbody>
-    {% for opponent in opponents %}
-    <tr>
-      <td>{{forloop.counter}}</td>
-      <td>{{opponent.kgs_username}}</td>
-      <td></td>
-    </tr>
 
-    {% endfor %}
-</tbody>
-</table>
-{% else%}
+{% include 'league/includes/user_nav.html' with active='profile' %}
 
+{% if profile.avatar %}
+<div class="profile-avatar">
+  <img src="{{ profile.avatar.url }}" class="img-responsive" alt="{{ profile.user.username }}" />
+</div>
+{% else %}
+<div class="profile-avatar empty">
+  <i class="fa fa-user fa-4x" ></i>
+</div>
 {% endif %}
-<h2>All events</h2>
-<table id='player-table' class='display' cellspacing='0' width='100%'>
-   <thead>
-     <tr>
-       <th>Event</th>
-       <th>Division</th>
-       <th># win</th>
-       <th># loss</th>
-       <th># games </th>
-    </thead>
-    <tbody>
-{% for player in players %}
-  <tr>
-    <td>{{player.event}}</td>
-    <td>{{player.division}}</td>
-    <td>{{player.nb_win}}</td>
-    <td>{{player.nb_loss}}</td>
-    <td>{{player | nb_games}}</td>
-  </tr>
-{% endfor %}
-</tbody>
-</table>
 
-<h2>Games</h2>
-{% include "league/includes/games.html" with games=games %}
-{% endblock %}
+<form method="post" action="{% url 'league:league_profile' user.username %}" class="form" enctype="multipart/form-data" novalidate>{% csrf_token %}
+    <div class="row">
+        <div class="col-md-12">
+    <div id="div_id_{{ form.avatar.html_name }}" class="form-group{% if form.avatar.errors %} has-error{% endif %}">
+        <div class="controls">
+          {% if form.avatar.label %}<label class="control-label" for="{{ field.auto_id }}">{{ form.avatar.label }}{% if not form.avatar.field.required %} <span class="text-muted">{% trans "(optional)" %}</span>{% endif %}</label>{% endif %}
+          {{ form.avatar }}
+            {% if form.avatar.help_text %}<p class="help-block">{{ form.avatar.help_text }}</p>{% endif %}
+            {% for error in form.avatar.errors %}<p class="error">{{ error }}</p>{% endfor %}
+        </div>
+    </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {% include "partials/form_field.html" with field=form.signature %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-actions">
+                <input type="submit" class="btn btn-large btn-primary" value="{% trans "Submit" %}" />
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+{% endblock content %}
+
+{% block extra_css %}
+    {{ form.media.css }}
+{% endblock extra_css %}
 
 {% block extra_js %}
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
-<script type="text/javascript">
-$(document).ready(function() {
-$('#game-table').DataTable();
-$('#opponents-table').DataTable();
-} );
-</script>
-{% endblock %}
+    {{ form.media.js }}
+{% endblock extra_js %}

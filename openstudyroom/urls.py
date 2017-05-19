@@ -24,6 +24,7 @@ urlpatterns = [
 #    url(r'^accounts/login/$',LoginView.as_view(), name="auth_login"),
 #    url(r'^accounts/signup/$',SignupView.as_view(), name="registration_register"),
 
+    url(r'^calendar/', include('fullcalendar.urls',namespace='calendar')),
 
     url(r'^accounts/', include('allauth.urls')),
     url(r'^forum/', include(board.urls)),
