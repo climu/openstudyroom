@@ -3,7 +3,7 @@ from django.template import loader
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect,Http404
 from .models import Sgf,LeaguePlayer,User,LeagueEvent,Division,Game,Registry, User, is_league_admin, is_league_member,Profile
-from .forms import  SgfAdminForm,ActionForm,LeaguePopulateForm,UploadFileForm,DivisionForm,LeagueEventForm,EmailForm
+from .forms import  SgfAdminForm,ActionForm,LeaguePopulateForm,UploadFileForm,DivisionForm,LeagueEventForm,EmailForm,TimezoneForm
 import datetime
 from django.http import Http404
 from django.core.urlresolvers import reverse
@@ -20,8 +20,12 @@ from . import utils
 from django.core.mail import send_mail
 from django.views.generic.edit import UpdateView
 from django.views.generic.edit import CreateView
+from machina.core.db.models import get_model
+from machina.apps.forum_member.forms import ForumProfileForm
 import json
 
+
+ForumProfile = get_model('forum_member', 'ForumProfile')
 discord_url_file = "/etc/discord_url.txt"
 
 def scraper():
@@ -81,6 +85,25 @@ def scraper():
 def scraper_view(request):
 	out=scraper()
 	return HttpResponse(out)
+
+
+@login_required()
+@user_passes_test(is_league_member,login_url="/",redirect_field_name = None)
+def timezone_update(request):
+	user = request.user
+	if request.method == 'POST':
+		form = TimezoneForm(request.POST)
+		if form.is_valid():
+			user.profile.timezone = form.cleaned_data['timezone']
+			user.profile.save()
+			message = 'successfully updated your timezone'
+			messages.success(request,message)
+
+	tz = request.user.profile.timezone
+	form = TimezoneForm(instance=user.profile)
+	context={'user':user,'form':form}
+	template = loader.get_template('league/timezone_update.html')
+	return HttpResponse(template.render(context, request))
 
 def sgf(request,sgf_id):
 	'''download one sgf file'''
@@ -145,7 +168,6 @@ def results(request,event_id=None,division_id=None):
 		'can_join' : can_join,
 		}
 	return HttpResponse(template.render(context, request))
-
 
 
 def archives(request):
