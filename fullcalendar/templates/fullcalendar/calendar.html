@@ -1,0 +1,64 @@
+{% extends "full_width.html" %}
+
+{% block extra_head_js %}
+<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css' />
+<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.print.css' media='print' />
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js'></script>
+
+{% endblock %}
+
+{% block content %}
+<div id='calendar'></div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+
+	$(document).ready(function() {
+
+		$('#calendar').fullCalendar({
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,agendaWeek,agendaDay'
+			},
+			defaultDate: '2017-05-12',
+			navLinks: true, // can click day/week names to navigate views
+			editable: false,
+			eventLimit: true, // allow "more" link when too many events
+			events: [
+
+				{% for event in cal_events %}
+				{
+				id : {{event.pk}},
+				title : '{{event.title}}',
+				start :'{{event.begin_time |date:"Y-m-d G:i:s"}}',
+				end : '{{event.end_time |date:"Y-m-d G:i:s"}}',
+				{% if event.url %}
+				url :'{{event.url}}',
+				{% endif %}
+				{%if event.type == 'division'%}
+				rendering: 'background'
+				{% endif %}
+			},
+				{% endfor %}
+			],
+
+
+		});
+		$('#calendar').fullCalendar({
+		    eventClick: function(event, element) {
+
+		        event.title = "CLICKED!";
+
+		        $('#calendar').fullCalendar('updateEvent', event);
+
+		    }
+		});
+	});
+
+</script>
+{% endblock %}
