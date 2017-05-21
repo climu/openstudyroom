@@ -48,5 +48,5 @@ class CalEvent(models.Model):
 			#personal_events = CalEvent.objects.filter(type = 'personal',users = user)
 			#division_events = CalEvent.objects.filter(type ='division,' division = divisions )
 		else :
-			cal_events = CalEvent.objects.filter(type= 'public').filter(begin_time>now)
+			cal_events = CalEvent.objects.filter(type= 'public').filter(end_time__gte = now)
 		return cal_events
