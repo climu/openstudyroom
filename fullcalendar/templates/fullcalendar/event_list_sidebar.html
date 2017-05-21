@@ -1,18 +1,29 @@
 
+{%load tz%}
+{% get_current_timezone as TIME_ZONE %}
 
 <ul class="sidebar">
   <h4>
   <a href="{% url 'calendar:calendar_view' %}">  <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-  OSR Events
+  OSR Events ({{TIME_ZONE}})
 </a>
   </h4>
+
+
 {% for cal_event in cal_events %}
   {% if cal_event.url %}  <a href="{{cal_event.url}}">    {% endif %}
 <div class="panel">
 
   <div class="panel-body">
     <div class="col-md-6">
-      <p>{{cal_event.begin_time|date:"d, M"}}</p>
+      <p>
+        {% if cal_event.begin_time.date == now.date %}
+        Today !
+        {% else %}
+        {{cal_event.begin_time|date:"d, M"}}
+        {% endif %}
+      </p>
+
       <p>{{cal_event.begin_time|time:"TIME_FORMAT"}}</p>
 
     </div>
@@ -31,4 +42,6 @@
 </div>
 
 {% endfor %}
+
+
 </ul>

@@ -37,3 +37,16 @@ class CalEvent(models.Model):
 		else :
 			cal_events = CalEvent.objects.filter(type= 'public')
 		return cal_events
+
+	@staticmethod
+	def get_future_cal_events(user):
+		'''return a query of all future event related to a user.'''
+		now = timezone.now()
+		if user.is_authenticated and user.user_is_league_member:
+			divisions = user.get_open_divisions()
+			cal_events = CalEvent.objects.filter(end_time__gte = now).filter(Q(type= 'public')|Q(type = 'personal',users = user)|Q(type = 'division',division__in = divisions))
+			#personal_events = CalEvent.objects.filter(type = 'personal',users = user)
+			#division_events = CalEvent.objects.filter(type ='division,' division = divisions )
+		else :
+			cal_events = CalEvent.objects.filter(type= 'public').filter(begin_time>now)
+		return cal_events
