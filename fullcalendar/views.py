@@ -6,14 +6,14 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 import datetime
 from league.models import is_league_admin
-from .forms import CalEventForm
+from .forms import UTCCalEventForm
 from .models import CalEvent
 # Create your views here.
 
 
 
 class CalEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-	form_class = CalEventForm
+	form_class = UTCCalEventForm
 	model = CalEvent
 	template_name_suffix = '_update_form'
 
@@ -25,7 +25,7 @@ class CalEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 
 class CalEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
-	form_class = CalEventForm
+	form_class = UTCCalEventForm
 	model = CalEvent
 	template_name_suffix = '_create_form'
 	initial = { 'begin_time': datetime.datetime.now(),

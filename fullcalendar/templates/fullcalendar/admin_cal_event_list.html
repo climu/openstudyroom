@@ -17,8 +17,8 @@
 <table class="table">
  <thead>
    <th>Title</th>
-   <th>Begin Time (UTC)</th>
-   <th>End Time (UTC)</th>
+   <th>Begin Time (UTC/24h)</th>
+   <th>End Time (UTC/24h)</th>
    <th> Edit</th>
    <th>Delete</th>
  </thead>
@@ -26,8 +26,8 @@
   {% for event in public_events %}
   <tr>
     <td>{{event.title}}</td>
-    <td>{{event.begin_time}}</td>
-    <td>{{event.end_time}}</td>
+    <td>{{event.begin_time |date:'M, d, Y H:i'}}</td>
+    <td>{{event.end_time |date:'M, d, Y H:i'}}</td>
     <td>
       <a href="{% url 'calendar:update_cal_event' event.pk%}">
         {% bootstrap_icon 'wrench' %}
