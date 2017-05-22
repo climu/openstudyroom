@@ -1,13 +1,14 @@
 {% load static i18n wagtailcore_tags wagtailimages_tags puput_tags compress wagtailroutablepage_tags %}
-{% load league_tags osr_tags %}
+{% load league_tags osr_tags%}
 
         <div class="rss-sitemap">
             <a href="{% feeds_url blog_page %}" target="_blank" title="RSS">
                  <i class="fa fa-rss-square"></i> <span>Feed RSS</span>
             </a>
         </div>
-        {% include 'fullcalendar/event_list_sidebar.html'  %}
+          {% include 'fullcalendar/event_list_sidebar.html'  %}
 {% adverts %}
+{% last_topics request as topics %}
         <ul class="sidebar">
         <h4> Being discussed in our forums </h4>
         {% for topic in topics %}
@@ -21,6 +22,7 @@
         </article>
         {% endfor %}
         </ul>
+        {% discord_users as disc_users %}
         <ul class="sidebar">
         <h4>  Online on <a href="{% url 'league:discord_redirect'%}"> OSR discord server</a> ({{disc_users | length}})</h4>
         {% with first_disc_users=disc_users|slice:":5"   %}

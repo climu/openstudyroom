@@ -18,17 +18,6 @@ from wagtail.wagtaildocs.blocks import DocumentChooserBlock
 from puput.models import EntryPage, BlogPage
 from wagtailmenus.models import MenuPage
 
-from fullcalendar.models import CalEvent
-from machina.core.db.models import get_model
-from machina.core.loading import get_class
-import requests
-import json
-from django.utils import timezone
-
-
-Forum = get_model('forum', 'Forum')
-Topic = get_model('forum_conversation', 'Topic')
-
 @register_snippet
 @python_2_unicode_compatible  # provide equivalent __unicode__ and __str__ methods on Python 2
 class Advert(models.Model):
@@ -44,12 +33,6 @@ class Advert(models.Model):
 
     def __str__(self):
         return self.title
-
-
-
-
-
-
 
 
 
@@ -121,19 +104,9 @@ class HomePage(Page):
      def get_context(self, request, *args, **kwargs):
         entries = EntryPage.objects.live().order_by('-date')
         blog_page = BlogPage.objects.all().first()
-        allowed_forums = request.forum_permission_handler._get_forums_for_user(request.user,[ 'can_read_forum',])
-        last_topics = Topic.objects.filter(forum__in = allowed_forums).order_by('-last_post_on')[:5]
-        r = requests.get('https://discordapp.com/api/guilds/287487891003932672/widget.json')
-        disc_users = r.json()['members']
-        cal_events = CalEvent.get_future_cal_events(request.user).order_by('-begin_time')
         context = super(HomePage, self).get_context(request, *args, **kwargs)
         context['entries'] = entries
         context['blog_page'] = blog_page
-        context['topics'] = last_topics
-        context['disc_users'] = disc_users
-        context['cal_events'] = cal_events
-        context['now'] = timezone.now()
-
         return context
 
 

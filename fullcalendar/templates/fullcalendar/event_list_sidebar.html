@@ -1,5 +1,5 @@
 
-{%load tz%}
+{%load tz calendar_tags%}
 {% get_current_timezone as TIME_ZONE %}
 
 <ul class="sidebar">
@@ -8,8 +8,8 @@
   OSR Events ({{TIME_ZONE}})
 </a>
   </h4>
-
-
+{% get_now as now %}
+{% cal_events request.user as cal_events%}
 {% for cal_event in cal_events %}
   {% if cal_event.url %}  <a href="{{cal_event.url}}">    {% endif %}
 <div class="panel">
