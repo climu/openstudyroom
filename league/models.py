@@ -431,6 +431,14 @@ class User(AbstractUser):
 					sgf.game_type = game_type
 					sgf.save()
 
+
+	def get_timezone(self):
+		if self.is_authenticated() and hasattr(self,'profile') and self.profile.timezone is not None:
+			tz = pytz.timezone(self.profile.timezone)
+		else :
+			tz = pytz.utc
+		return tz
+
 def is_league_admin(user):
 	return user.groups.filter(name='league_admin').exists()
 def is_league_member(user):

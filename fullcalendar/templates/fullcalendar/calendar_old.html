@@ -21,8 +21,6 @@
 {% if user.is_authenticated %}
 {% include 'league/includes/user_nav.html' %}
 {% endif %}
-<div id='message'></div>
-
 <button class='btn btn-default' id='save'>save</button>
 <div id='calendar'></div>
 {% endblock %}
@@ -94,22 +92,35 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
           color: '#01DF3A',
           className :'me-available',
           is_new : true,
-          is_change:true,
+
+
 				};
 					$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
 
 				$('#calendar').fullCalendar('unselect');
 			},
-      eventResize: function(event, delta) {
-        event.is_change=true;
-      },
-      eventDrag:function(event, delta, revertFunc){
-        event.is_change=true;
-      },
       {% endif %}
 
 
-			events:'{% url "calendar:json_feed" %}',
+			events: [
+
+				{% for event in cal_events %}
+				{
+				id : {{event.pk}},
+				title : '{{event.title}}',
+				start :'{{event.begin_time |date:"Y-m-d G:i:s"}}',
+				end : '{{event.end_time |date:"Y-m-d G:i:s"}}',
+        editable: false,
+        is_new: false,
+        {% if event.url %}
+				url :'{{event.url}}',
+				{% endif %}
+				{%if event.type == 'division'%}
+				rendering: 'background'
+				{% endif %}
+			},
+				{% endfor %}
+			],
       eventRender: function(event, element) {
         if (element.find(".fc-helper")){
           event.eventColor='#01DF3A';
@@ -139,7 +150,7 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
 
     $("#save").click(function () {
       var eventsFromCalendar = $('#calendar').fullCalendar('clientEvents',function (event) {
-                    return event.is_change == true;});
+                    return event.is_new == true;});
       //to render json from events objects list, we need to deal with circular relation
       //see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
       seen = [];
@@ -156,7 +167,7 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
                  type:"POST",
                  url:"{% url 'calendar:save'%}",
                  data: {
-                        'events': json
+                        'events': json // from form
                         },
                  success: function(){
                      $('#message').html("<h2>Contact Form Submitted!</h2>")

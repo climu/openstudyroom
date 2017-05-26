@@ -1,13 +1,13 @@
 from django import template
 from home.models import Advert
-from fullcalendar.models import CalEvent
+from fullcalendar.models import PublicEvent
 from django.utils import timezone
 
 register = template.Library()
 
 @register.simple_tag()
-def cal_events(user):
-    cal_events = CalEvent.get_future_cal_events(user).order_by('-begin_time')
+def public_events():
+    cal_events = PublicEvent.get_future_public_events().order_by('-start')
     return cal_events
 
 @register.simple_tag()
