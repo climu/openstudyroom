@@ -10,3 +10,7 @@
       border-color: #01DF3A;
        opacity: 0.5;
 }
+.event-deleted{
+  display: none;
+}
+.closeon {cursor: pointer;}

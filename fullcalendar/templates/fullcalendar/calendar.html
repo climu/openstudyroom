@@ -69,7 +69,6 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
       timeFormat: 'H:mm',
       {% if request.user.is_authenticated %}
       selectable:true,
-      editable: true,
       selectHelper: true,
       //prevent user from selecting multiple day availability
       selectConstraint: {
@@ -95,6 +94,7 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
           className :'me-available',
           is_new : true,
           is_change:true,
+          editable:true
 				};
 					$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
 
@@ -103,7 +103,7 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
       eventResize: function(event, delta) {
         event.is_change=true;
       },
-      eventDrag:function(event, delta, revertFunc){
+      eventDrop:function(event, delta){
         event.is_change=true;
       },
       {% endif %}
@@ -124,7 +124,12 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
                 $('#calendar').fullCalendar( 'renderEvent',
                  {title: event._id,
                    start:event.start,
+                   end: event.end,
+                   type:'deleted',
+                   is_change:true,
                    className :'event-deleted',
+                   is_new:false,
+                   rendering: 'background',
 
                  } ,
                  true  );
@@ -142,6 +147,16 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
                     return event.is_change == true;});
       //to render json from events objects list, we need to deal with circular relation
       //see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
+      eventsFromCalendar = eventsFromCalendar.map(function(e) {
+        return {
+          start: e.start,
+          end: e.end,
+          title: e.title,
+          type: e.type,
+          is_new: e.is_new,
+          id:e.id
+        };
+      });
       seen = [];
       var json = JSON.stringify(eventsFromCalendar,function(key, val) {
           if (val != null && typeof val == "object") {
@@ -159,7 +174,9 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
                         'events': json
                         },
                  success: function(){
-                     $('#message').html("<h2>Contact Form Submitted!</h2>")
+                   $('#calendar').fullCalendar( 'removeEvents');
+                    $('#calendar').fullCalendar( 'refetchEvents' );
+
                  }
             });
             return false; //<---- move it here
