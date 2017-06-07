@@ -107,7 +107,7 @@ def parse_sgf_string(sgf_string):
 	code=""
 	q=0
 	for n in range(0,5):
-		p=sgf_string.find('BL[')
+		p=sgf_string.find('BL[',q)
 		if p!=-1:
 			q = sgf_string.find(']',p)
 			code += sgf_string[p+3:q]
