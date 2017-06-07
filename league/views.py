@@ -132,6 +132,7 @@ def games(request,event_id=None,game_id=None):
 		template = loader.get_template('league/games.html')
 		if event.is_open:
 			can_join = request.user.is_authenticated and request.user.user_is_league_member() and not LeaguePlayer.objects.filter(user=request.user,event = event).exists()
+		else: can_join = False
 		context.update( {
 			'games': games,
 			'event':event,
