@@ -11,10 +11,14 @@ from django.db.models import Q
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 import pytz
+from operator import attrgetter
 
 
 
 # Create your models here.
+
+
+
 class LeagueEvent(models.Model):
 	EVENT_TYPE_CHOICES = (
 		('ladder', 'ladder'),
@@ -60,7 +64,7 @@ class LeagueEvent(models.Model):
 		return self.leagueplayer_set.count()
 
 	def number_games(self):
-		return self.game_set.count()
+		return self.sgf_set.count()
 
 	def number_divisions(self):
 		return self.division_set.count()
@@ -179,6 +183,7 @@ class Sgf(models.Model):
 	p_status = models.SmallIntegerField(default=1)
 	check_code = models.CharField(max_length=100,default='nothing',blank=True)
 	events = models.ManyToManyField(LeagueEvent,blank=True)
+	divisions = models.ManyToManyField('Division',blank=True)
 	black = models.ForeignKey('User',blank=True,related_name = 'black_sgf', null=True)
 	white = models.ForeignKey('User',blank=True,related_name = 'white_sgf', null = True)
 	winner = models.ForeignKey('User',blank=True,related_name = 'winner_sgf', null = True)
@@ -190,46 +195,69 @@ class Sgf(models.Model):
 	def __str__(self):
 		return str(self.pk) +': ' + self.wplayer + ' vs ' + self.bplayer
 
-	def mark_valid(self,event):
-		'''mark the sgf valid for an event:
+	def mark_valid(self,events):
+		''' This will replace the create_game method
+			mark the sgf valid for a list of events:
 				- populate black, white, winner fields
 				- update players score
-				- add event to events field
+				- add proper division to divisions field
 			return True if all went well and False if something went wrong'''
-		black = LeaguePlayer.objects.filter(event = event, kgs_username__iexact=self.bplayer)
-		if len(black) == 1 :
-			black = black.first()
-		else:
-			return False
-		white = LeaguePlayer.objects.filter(event = event, kgs_username__iexact=self.wplayer).first()
-		if len(white) == 1:
-			white = white.first()
 
+		# We put the win info in a variable
 		if self.result.find('B+') == 0:
-			self.winner = black.user
-			black.score_win()
-			white.score_loss()
-
+			winner = 'black'
 		elif self.result.find('W+') == 0:
-			self.winner = white.user
-			white.score_win()
-			black.score_loss()
-		else:
+			winner = 'white'
+		else: # here the game has no valid result.That shouldn't happen
 			return False
-		self.white = white.user
-		self.black = black.user
+
+		for event in events:
+			#First we test if event is already in self.events
+			if event in self.events:
+				return False
+			# Then we get the proper players
+			black_player = LeaguePlayer.objects.filter(event = event, kgs_username__iexact=self.bplayer)
+			if len(black_player) == 1 : #That shouldn't happen, but who knows
+				black_player = black_player.first()
+			else:
+				return False
+			white = LeaguePlayer.objects.filter(event = event, kgs_username__iexact=self.wplayer).first()
+			if len(white_player) == 1:
+					white_player = white_player.first()
+			else :
+				return False
+			# Now we score win/loss
+			if winner == 'black':
+				black_player.score_win()
+				white_player.score_loss()
+
+			else :
+				white_player.score_win()
+				black_player.score_loss()
+
+		# Now we set the field on the sgf
+		if winner == 'black':
+			self.winner = black_player.user
+		else:
+			self.winner = white_player.user
+		self.white = white_player.user
+		self.black = black_player.user
 		self.events.add(event)
 		self.save()
 		return True
 
 	def unmark_valid(self,event):
-		''' reverse the mark_valid method:
+		''' This will replace the unscore_game receiver.
+			reverse the mark_valid method:
 				- Unscore win and loss for events players
 				- set black, white and winner fields to None
 				- remove event to events fields
 			Return true if all went well and false otherwise'''
 
-		# First we get the proper LeaguePlayers
+		# First we check if self is already valid for this event:
+		if not event in self.events :
+			return False
+		# we get the proper LeaguePlayers
 		white_player = LeaguePlayer.objects.filter(event=event,user=self.white)
 		black_player = LeaguePlayer.objects.filter(event=event,user=self.black)
 		if len(white_player) == 1 :
@@ -247,13 +275,14 @@ class Sgf(models.Model):
 		else:
 			white_player.unscore_loss()
 			black_player.unscore_win()
-		# finally, we unpopulate the sgf fields
+		# finally, we unpopulate the sgf fields if
 		self.update(white=None,black=None,winner=None)
 		self.events.remove(event)
 		return True
 
 
 	def has_game(self):
+		'''deprecated. We should use league_valid from now on '''
 		return Game.objects.filter(sgf=self).exists()
 
 	def get_messages(self):
@@ -321,11 +350,9 @@ class Sgf(models.Model):
 
 	def check_validity(self):
 		'''check sgf validity for all open events.
-		If it's valid for only one event, we mark the sgf as valid.
-		If it's valid for more than one event, we mark the sgf as invalid with message:'valid for multiple events'
-		If it's not valid at all, we just keep last event messages.
+		Return a list of valid leagues is the sgf is valid and False if not
+		If it's not valid for one event, we just keep last event messages.Wuite random.
 		Update the sgf but do NOT save it to db. This way allow some preview.
-		Return true is the sgf is valid and False if not
 		I think the way we deal with message could be better: maybe a dict with {'event1':'message', 'event2'...}
 		'''
 		# First we check if we have same sgf in db comparing check_code
@@ -344,7 +371,7 @@ class Sgf(models.Model):
 		# if sgf already in db, no need to perform further: We are out already returning False.
 		events = LeagueEvent.objects.filter(is_open=True)#get all open events
 		message = ''
-		if len(events) == 0: return False # that situation should better be handle proprely.
+		if len(events) == 0: return [] # that situation should better be handle proprely.
 		valid_events=[]
 		for event in events:
 			check = self.check_validity_event(event)
@@ -361,36 +388,10 @@ class Sgf(models.Model):
 				self.message = message
 			else:
 				self.message = check['message']
-
-			self.league_valid = False
-			self.event = []
-			return False
-		elif len(valid_events) == 1 :
-			#sgf is valid for one event only. We set the event foreign key field.
+				return []
+		else: #the sgf is valid for at lease one event.
 			self.message = ''
-			self.league_valid = True
-			self.events = valid_event
-			return True
-		else: # the sgf is valid for multiple events.
-			#We check if all events are linked.
-			valid =True
-			for event1 in valid_events:
-				linked1 = event.linked_events.all()
-				for event2 in valid_events:
-					if event1 != event2:
-						linked2 = event2.linked_events.all()
-						if not (event1 in linked2 or event2 in linked1):
-							valid =False
-							self.message = ';valid for multiple events non linked'
-							self.event = None
-							self.league_valid = False
-							return False
-			if valid:
-				for event in valid_events:
-					self.events.add(event)
-					#event.sgf_set.add(self)
-				self.league_valid = True
-				return True
+		return valid_events
 
 
 
@@ -431,8 +432,6 @@ class User(AbstractUser):
 		return self.groups.filter(name='league_member').exists()
 
 	def nb_games(self):
-
-		self.white_sgf_set.count + self.black_sgf_set.count
 		players = self.leagueplayer_set.all()
 		n = 0
 		for player in players:
@@ -546,6 +545,7 @@ class Profile(models.Model):
 		return self.user.username
 
 
+
 class Division(models.Model):
 	league_event = models.ForeignKey('LeagueEvent')
 	name = models.TextField(max_length=20)
@@ -559,7 +559,7 @@ class Division(models.Model):
 		return self.name
 
 	def number_games(self):
-		return Game.objects.filter(white__division=self).count()
+		return self.sgf_set.distinct().count()
 
 	def get_players(self):
 		return	self.leagueplayer_set.all().order_by('-score')
@@ -576,6 +576,55 @@ class Division(models.Model):
 
 	def is_last(self):
 		return not Division.objects.filter(league_event=self.league_event, order__gt = self.order).exists()
+
+	#class results(object):
+
+	def get_new_results(self):
+		'''new proper way to get results.
+		return a list of all leagueplayers of the division with extra fields per leagueplayer:
+			- rank : integer
+			- score : decimal
+			- nb_win : integer
+			- nb_loss : integer
+			- nb_games : integer
+			- results : {opponent1 : [{'id':game1.pk, 'r':1/0},{'id':game2.pk, 'r':1/0},...],opponent2:}
+		'''
+		sgfs = self.sgf_set.all()
+		players = LeaguePlayer.objects.filter(division=self)
+		#First create a list of players with extra fields
+		results=[]
+		for player in players:
+			player.n_win = 0
+			player.n_loss = 0
+			player.n_games = 0
+			player.score = 0
+			player.results = {}
+			results.append(player)
+		for sgf in sgfs:
+			if sgf.winner == sgf.white:
+				loser = next(player for player in results if player.user == sgf.black)
+				winner = next(player for player in results if player.user == sgf.white)
+			else :
+				loser = next(player for player in results if player.user == sgf.black)
+				winner = next(player for player in results if player.user==sgf.black)
+			winner.n_win +=1
+			winner.n_games +=1
+			winner.score += self.league_event.ppwin
+			loser.n_loss +=1
+			loser.n_games +=1
+			loser.score += self.league_event.pploss
+			if loser.kgs_username in winner.results:
+				winner.results[loser.kgs_username].append({'id': sgf.pk, 'r': 1})
+			else:
+				winner.results[loser.kgs_username]= [{'id': sgf.pk, 'r': 1}]
+			if winner.kgs_username in loser.results:
+				loser.results[winner.kgs_username].append({'id': sgf.pk, 'r': 0})
+			else:
+				loser.results[winner.kgs_username]= [{'id': sgf.pk, 'r': 0}]
+		results = sorted(results,key=attrgetter('score'),reverse=True)
+		return results
+
+
 
 	def get_results(self):
 		games= Game.objects.filter(white__division=self)
@@ -670,13 +719,23 @@ class LeaguePlayer(models.Model):
 
 
 	def nb_win(self):
-		return Game.objects.filter(Q(black = self)|Q(white = self)).filter(winner=self).count()
+		user = self.user
+		event = self.event
+		return event.sgf_set.filter(Q(black = user)|Q(white = user)).filter(winner=user).count()
+
 
 	def nb_loss(self):
-		return Game.objects.filter(Q(black = self)|Q(white = self)).exclude(winner=self).count()
+		user = self.user
+		event = self.event
+		return event.sgf_set.filter(Q(black = user)|Q(white = user)).exclude(winner=user).count()
+
 
 	def nb_games(self):
-		return Game.objects.filter(Q(black = self)|Q(white = self)).count()
+		user = self.user
+		event = self.event
+		return event.sgf_set.filter(Q(black = user)|Q(white = user)).count()
+
+
 
 	def score_win(self):
 		self.score += self.event.ppwin

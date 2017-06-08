@@ -10,26 +10,23 @@ def html_one_result(context):
 	# this filter only works called from a context where player an opponent exists
 	player=context['player']
 	opponent = context['opponent']
-	if not player.kgs_username in context['results']:
-		return ""
-	results = context['results'][player.kgs_username]['results']
 	if 'event' in context:
 		event=str(context['event'].pk)+'/'
 	else:
 		event=''
-
 	opponent_kgs=opponent.kgs_username
 	html=""
-	if opponent_kgs in results:
-		result=results[opponent_kgs]
-		for game in result:
-			#here, game['id'] would get you the id of the game to add a link
-			html += '<a href="/league/'+ event + 'games/' + str(game['id']) + '">'
-			if game['r']==1 :
-				 html += '<i class="fa fa-circle-o" aria-hidden="true" style="color:green"></i></a>'
-			#will be glyphicon glyphicon-ok-circle or fontawesome thing
-			else :
-			 html += '<i class="fa fa-circle" aria-hidden="true" style="color:blue"></i></a>'
+	if not opponent_kgs in player.results:
+		return ""
+	result=player.results[opponent_kgs]
+	for game in result:
+		#here, game['id'] would get you the id of the game to add a link
+		html += '<a href="/league/'+ event + 'games/' + str(game['id']) + '">'
+		if game['r']==1 :
+			html += '<i class="fa fa-circle-o" aria-hidden="true" style="color:green"></i></a>'
+		#will be glyphicon glyphicon-ok-circle or fontawesome thing
+		else :
+			html += '<i class="fa fa-circle" aria-hidden="true" style="color:blue"></i></a>'
 
 	return mark_safe(html)
 
@@ -66,8 +63,8 @@ def game_iframe_link(game):
 	return mark_safe(html)
 
 @register.filter
-def game_link(game,event=None):
-	html= '<a role="button" onclick="load_game(' + str(game.pk) +')">'+ str(game.sgf.result) + '</a>'
+def game_link(sgf,event=None):
+	html= '<a role="button" onclick="load_game(' + str(sgf.pk) +')">'+ str(sgf.result) + '</a>'
 
 	return mark_safe(html)
 

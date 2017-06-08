@@ -112,29 +112,30 @@ def sgf(request,sgf_id):
 	response['Content-Disposition'] = 'attachment; filename="'+ sgf.wplayer + '-' + sgf.bplayer + '-'+ sgf.date.strftime('%m/%d/%Y')+'.sgf"'
 	return response
 
-def games(request,event_id=None,game_id=None):
+def games(request,event_id=None,sgf_id=None):
 	open_events = LeagueEvent.objects.filter(is_open = True)
 	if not (request.user.is_authenticated and request.user.user_is_league_admin()) :
 		open_events = open_events.filter(is_public = True)
 	context = {'open_events':open_events}
-	if game_id != None:
-		game = get_object_or_404(Game,pk = game_id)
-		context.update({'game':game})
+	if sgf_id != None:
+
+		sgf = get_object_or_404(Sgf,pk = sgf_id)
+		context.update({'sgf':sgf})
 
 	if event_id == None:
-		games=Game.objects.all().order_by('-sgf__date')
-		context.update({'games': games})
+		sgfs=Sgf.objects.filter(league_valid=True).order_by('-date')
+		context.update({'sgfs': sgfs})
 		template = loader.get_template('league/archives_games.html')
 
 	else:
 		event = get_object_or_404(LeagueEvent,pk=event_id)
-		games=Game.objects.filter(white__event=event).order_by('-sgf__date')
+		sgfs=event.sgf_set.filter(league_valid=True).order_by('-date')
 		template = loader.get_template('league/games.html')
 		if event.is_open:
 			can_join = request.user.is_authenticated and request.user.user_is_league_member() and not LeaguePlayer.objects.filter(user=request.user,event = event).exists()
 		else: can_join = False
 		context.update( {
-			'games': games,
+			'sgfs': sgfs,
 			'event':event,
 			'can_join': can_join,
 			})
@@ -157,7 +158,7 @@ def results(request,event_id=None,division_id=None):
 		division = Division.objects.filter(league_event=event).first()
 	else:
 		division = get_object_or_404(Division,pk=division_id)
-	results = division.get_results()
+	results = division.get_new_results()
 	template = loader.get_template('league/results.html')
 	players = LeaguePlayer.objects.filter(division=division).order_by('-score')
 	context = {
@@ -232,11 +233,9 @@ def players(request,event_id=None,division_id=None):
 		else:
 			division = get_object_or_404(Division,pk=division_id)
 			divisions = [division]
-			players = LeaguePlayer.objects.filter(event=event,division = division).order_by('-p_score')
 		context = {
 			'open_events':open_events,
 			'event':event,
-			'players':players,
 			'divisions':divisions,
 			'can_join' : can_join,
 		}
@@ -316,22 +315,19 @@ def account(request,user_name=None):
 	template = loader.get_template('league/account.html')
 	return HttpResponse(template.render(context, request))
 
-def game_api(request,game_id):
+def game_api(request,sgf_id):
 	''' will return a json containing:
 	'infos': players, date, league, group, permalink, download link.
 	'sgf': sgf datas as plain text string
 	'''
-	game = get_object_or_404(Game, pk= game_id)
-	event = game.event
-	division = game.white.division
-	sgf = game.sgf
-	html=loader.render_to_string("league/includes/game_info.html",{'game':game})
+	sgf = get_object_or_404(Sgf, pk= sgf_id)
+	html=loader.render_to_string("league/includes/game_info.html",{'sgf':sgf})
 	data = {}
 	data['sgf'] = sgf.sgf_text.replace(';B[]',"").replace(';W[]',"")
-	data['permalink'] = '/league/games/'+ str(game.pk)
+	data['permalink'] = '/league/games/'+ str(sgf.pk)+'/'
 	data['game_infos'] = html
-	data['white'] = game.white.kgs_username
-	data['black'] = game.black.kgs_username
+	data['white'] = sgf.white.kgs_username
+	data['black'] = sgf.black.kgs_username
 
 	return HttpResponse(json.dumps(data), content_type = "application/json")
 
@@ -389,12 +385,13 @@ def upload_sgf(request):
 			sgf.sgf_text = form.cleaned_data['sgf']
 			sgf.p_status = 2
 			sgf=sgf.parse()
-			sgf.check_validity()
+			valid_events = sgf.check_validity()
 			form = SgfAdminForm(initial={'sgf':sgf.sgf_text})
 
 			context = {
 			'sgf':sgf,
 			'form': form,
+			'valid_events':valid_events,
 			}
 			template = loader.get_template('league/admin/upload_sgf.html')
 			return HttpResponse(template.render(context, request))
@@ -406,11 +403,12 @@ def upload_sgf(request):
 			request.session['sgf_data']=None
 			sgf.p_status = 2
 			sgf=sgf.parse()
-			sgf.check_validity()
+			valid_events = sgf.check_validity()
 			form = SgfAdminForm(initial={'sgf':sgf.sgf_text})
 			context = {
 			'sgf':sgf,
 			'form': form,
+			'valid_events':valid_events,
 			}
 			template = loader.get_template('league/admin/upload_sgf.html')
 			return HttpResponse(template.render(context, request))
@@ -944,7 +942,7 @@ def update_all_sgf(request):
 				sgf.black = game.black.user
 				sgf.white = game.white.user
 				sgf.winner = game.winner.user
-
+				sgf.divisions.add(game.white.division)
 				sgf.events.add(game.event)
 				sgf.save()
 

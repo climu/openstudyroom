@@ -18,7 +18,7 @@ urlpatterns = [
     url(r'^(?P<event_id>[0-9]+)/$',views.event,name='event'),
 
     url(r'^games/$', views.games, name='games'),
-    url(r'^games/(?P<game_id>[0-9]+)/$', views.games, name='game'),
+    url(r'^games/(?P<sgf_id>[0-9]+)/$', views.games, name='game'),
     url(r'^(?P<event_id>[0-9]+)/games/$', views.games, name='games'),
     url(r'^(?P<event_id>[0-9]+)/games/(?P<game_id>[0-9]+)/$', views.games, name='game'),
 
@@ -61,7 +61,7 @@ urlpatterns = [
     url(r'^admin/users/(?P<user_id>[0-9]+)/send-mail/$', views.admin_user_send_mail, name='admin_user_send_mail' ),
     url(r'^scrap-list/$', views.scrap_list, name='scrap_list'),
     url(r'^scrap-list/(?P<profile_id>[0-9]+)/up/$', views.scrap_list_up, name='scrap_list_up'),
-    url(r'^game/json/(?P<game_id>[0-9]+)/$', views.game_api, name='game_api'),
+    url(r'^game/json/(?P<sgf_id>[0-9]+)/$', views.game_api, name='game_api'),
     url(r'^(?P<event_id>[0-9]+)/join/(?P<user_id>[0-9]+)/$', views.join_event, name='join_event'),
     url(r'^admin/create-all-profiles/$', views.create_all_profiles, name='create_all_profiles'),
     url(r'^admin/update-all-sgf-check-code/$', views.update_all_sgf_check_code, name='update_all_sgf_check_code'),
