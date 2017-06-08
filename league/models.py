@@ -182,13 +182,76 @@ class Sgf(models.Model):
 	black = models.ForeignKey('User',blank=True,related_name = 'black_sgf', null=True)
 	white = models.ForeignKey('User',blank=True,related_name = 'white_sgf', null = True)
 	winner = models.ForeignKey('User',blank=True,related_name = 'winner_sgf', null = True)
-
+	# black, white, winner and events fields will only be populated for valid sgfs
 	# status of the sgf:0 already checked
 	#					1 require checking, sgf added from kgs archive link
 	#					2 require checking with priority,sgf added/changed by admin
 
 	def __str__(self):
 		return str(self.pk) +': ' + self.wplayer + ' vs ' + self.bplayer
+
+	def mark_valid(self,event):
+		'''mark the sgf valid for an event:
+				- populate black, white, winner fields
+				- update players score
+				- add event to events field
+			return True if all went well and False if something went wrong'''
+		black = LeaguePlayer.objects.filter(event = event, kgs_username__iexact=self.bplayer)
+		if len(black) == 1 :
+			black = black.first()
+		else:
+			return False
+		white = LeaguePlayer.objects.filter(event = event, kgs_username__iexact=self.wplayer).first()
+		if len(white) == 1:
+			white = white.first()
+
+		if self.result.find('B+') == 0:
+			self.winner = black.user
+			black.score_win()
+			white.score_loss()
+
+		elif self.result.find('W+') == 0:
+			self.winner = white.user
+			white.score_win()
+			black.score_loss()
+		else:
+			return False
+		self.white = white.user
+		self.black = black.user
+		self.events.add(event)
+		self.save()
+		return True
+
+	def unmark_valid(self,event):
+		''' reverse the mark_valid method:
+				- Unscore win and loss for events players
+				- set black, white and winner fields to None
+				- remove event to events fields
+			Return true if all went well and false otherwise'''
+
+		# First we get the proper LeaguePlayers
+		white_player = LeaguePlayer.objects.filter(event=event,user=self.white)
+		black_player = LeaguePlayer.objects.filter(event=event,user=self.black)
+		if len(white_player) == 1 :
+			white_player = white_player.first()
+		else :
+			return False
+		if len(black_player) == 1 :
+			black_player = black_player.first()
+		else :
+			return False
+		#then we unscore win and loss
+		if self.winner == self.white :
+			white_player.unscore_win()
+			black_player.unscore_loss()
+		else:
+			white_player.unscore_loss()
+			black_player.unscore_win()
+		# finally, we unpopulate the sgf fields
+		self.update(white=None,black=None,winner=None)
+		self.events.remove(event)
+		return True
+
 
 	def has_game(self):
 		return Game.objects.filter(sgf=self).exists()
@@ -368,6 +431,8 @@ class User(AbstractUser):
 		return self.groups.filter(name='league_member').exists()
 
 	def nb_games(self):
+
+		self.white_sgf_set.count + self.black_sgf_set.count
 		players = self.leagueplayer_set.all()
 		n = 0
 		for player in players:
@@ -441,15 +506,10 @@ class User(AbstractUser):
 				else:
 					opponent = players['white']
 				# Finally, we check if player and oponents are in an open event's same division
-				opponent_users = LeaguePlayer.objects.filter(kgs_username__iexact=opponent,division__in=divisions)
-				if len(oppent_users) > 0:
+				if LeaguePlayer.objects.filter(kgs_username__iexact=opponent,division__in=divisions).exists() :
 					sgf = Sgf()
-					if opponent == players['black']:
-						sgf.black = opponent_users.first()
-						sgf.white = self
-					else:
-						sgf.white = opponent_users.first()
-						sgf.black = self
+					sgf.wplayer = players['white']
+					sgf.bplayer = players['black']
 					sgf.urlto = url
 					sgf.p_status = 1
 					sgf.game_type = game_type
@@ -715,7 +775,6 @@ class Game(models.Model):
 		#calling unscore will raise error.
 		#I guess that's why they do db normalisation
 		whites = LeaguePlayer.objects.filter(kgs_username__iexact = sgf.wplayer).filter(event=event)
-		print(str(whites))
 		if len(whites) == 1:
 			white = whites.first()
 		else : return False
