@@ -832,7 +832,7 @@ def discord_redirect(request):
 
 @login_required()
 @user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
-def update_all_sgf(request):
+def update_all_sgf_check_code(request):
 	'''
 	Reparse all sgf from db. This can be usefull after adding a new field to sgf models.
 	We just display a confirmation page with a warning if no post request.
@@ -856,7 +856,7 @@ def update_all_sgf(request):
 			return HttpResponseRedirect(reverse('league:admin'))
 	else:
 
-		return render(request,'league/admin/update_all_sgf.html')
+		return render(request,'league/admin/update_all_sgf_check_code.html')
 
 
 @login_required()
@@ -931,3 +931,29 @@ def create_all_profiles(request):
 			return HttpResponseRedirect(reverse('league:admin'))
 	else:
 		return render(request,'league/admin/create_all_profiles.html')
+
+@login_required()
+@user_passes_test(is_league_admin,login_url="/",redirect_field_name = None)
+def update_all_sgf(request):
+	if request.method == 'POST':
+		form = ActionForm(request.POST)
+		if form.is_valid():
+			games= Game.objects.all()
+			for game in games:
+				sgf = game.sgf
+				sgf.black = game.black.user
+				sgf.white = game.white.user
+				sgf.winner = game.winner.user
+
+				sgf.events.add(game.event)
+				sgf.save()
+
+			message ="Successfully updated " + str(games.count()) + " sgfs."
+			messages.success(request,message)
+			return HttpResponseRedirect(reverse('league:admin'))
+		else:
+			message ="Something went wrong (form is not valid)"
+			messages.success(request,message)
+			return HttpResponseRedirect(reverse('league:admin'))
+	else:
+		return render(request,'league/admin/update_all_sgf.html')

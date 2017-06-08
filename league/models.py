@@ -17,10 +17,10 @@ import pytz
 # Create your models here.
 class LeagueEvent(models.Model):
 	EVENT_TYPE_CHOICES = (
-        ('ladder', 'ladder'),
-        ('league', 'league'),
-        ('tournament', 'tournament'),
-        )
+		('ladder', 'ladder'),
+		('league', 'league'),
+		('tournament', 'tournament'),
+		)
 	begin_time = models.DateTimeField(blank=True)
 	end_time =  models.DateTimeField(blank=True)
 	name = models.TextField(max_length=20) # This should have been a charfield from the start. Changing that now sounds scary.
@@ -38,6 +38,7 @@ class LeagueEvent(models.Model):
 	tag = models.CharField(max_length=10,default='#OSR')
 	main_time = models.PositiveSmallIntegerField(default=1800) #main time in minutes
 	byo_time = models.PositiveSmallIntegerField(default=30) #byo yomi time in sec
+	linked_events = models.ManyToManyField("LeagueEvent",blank=True)
 
 	class Meta:
 		ordering = ['-begin_time']
@@ -177,7 +178,11 @@ class Sgf(models.Model):
 	number_moves = models.SmallIntegerField(default=100)
 	p_status = models.SmallIntegerField(default=1)
 	check_code = models.CharField(max_length=100,default='nothing',blank=True)
-	event = models.ForeignKey(LeagueEvent,blank=True,null=True)
+	events = models.ManyToManyField(LeagueEvent,blank=True)
+	black = models.ForeignKey('User',blank=True,related_name = 'black_sgf', null=True)
+	white = models.ForeignKey('User',blank=True,related_name = 'white_sgf', null = True)
+	winner = models.ForeignKey('User',blank=True,related_name = 'winner_sgf', null = True)
+
 	# status of the sgf:0 already checked
 	#					1 require checking, sgf added from kgs archive link
 	#					2 require checking with priority,sgf added/changed by admin
@@ -274,19 +279,18 @@ class Sgf(models.Model):
 				self.message = ';same sgf already in db : '+ str(sgfs.first().pk)
 				return False
 		# if sgf already in db, no need to perform further: We are out already returning False.
-		events = LeagueEvent.objects.filter(is_open=True)
+		events = LeagueEvent.objects.filter(is_open=True)#get all open events
 		message = ''
 		if len(events) == 0: return False # that situation should better be handle proprely.
-		n = 0
+		valid_events=[]
 		for event in events:
 			check = self.check_validity_event(event)
-			if check['tag']:
+			if check['tag']: #if the game is taged for this event, we keep this events message
 				message = check['message']
 				if check['valid']:
-					n += 1
-					valid_event = event
+					valid_events.append(event)
 
-		if n == 0:
+		if len(valid_events) == 0:
 			# here sgf is valid for no event.
 			# if the sgf was tagged for an event, we display this event message.
 			# Otherwise, just the last one.
@@ -296,19 +300,36 @@ class Sgf(models.Model):
 				self.message = check['message']
 
 			self.league_valid = False
-			self.event = None
+			self.event = []
 			return False
-		elif n == 1 :
+		elif len(valid_events) == 1 :
 			#sgf is valid for one event only. We set the event foreign key field.
 			self.message = ''
 			self.league_valid = True
-			self.event = valid_event
+			self.events = valid_event
 			return True
-		else: # n>1
-			self.message = ';valid for multiple events'
-			self.event = None
-			self.league_valid = False
-			return False
+		else: # the sgf is valid for multiple events.
+			#We check if all events are linked.
+			valid =True
+			for event1 in valid_events:
+				linked1 = event.linked_events.all()
+				for event2 in valid_events:
+					if event1 != event2:
+						linked2 = event2.linked_events.all()
+						if not (event1 in linked2 or event2 in linked1):
+							valid =False
+							self.message = ';valid for multiple events non linked'
+							self.event = None
+							self.league_valid = False
+							return False
+			if valid:
+				for event in valid_events:
+					self.events.add(event)
+					#event.sgf_set.add(self)
+				self.league_valid = True
+				return True
+
+
 
 
 
@@ -374,8 +395,7 @@ class User(AbstractUser):
 		return self.emailaddress_set.filter(primary=True).first()
 
 	def get_open_divisions(self):
-		''' Return all division a user is in.
-		'''
+		''' Return all open division a user is in.'''
 		players = self.leagueplayer_set.all()
 		return Division.objects.filter(leagueplayer__in = players,league_event__is_open = True)
 
@@ -385,9 +405,9 @@ class User(AbstractUser):
 		 get a list of games from kgs (only 1 request to kgs)
 		 for each game we check if it's already in db (comparing urlto)
 		 then, for each user.players in open events:
-		  	we check if user.player and his opponent are in the same division
-		 	if yes: we add them to db with p-status = 1 => to be scraped
-		 	if no: we do nothing
+			we check if user.player and his opponent are in the same division
+			if yes: we add them to db with p-status = 1 => to be scraped
+			if no: we do nothing
 		 we can't get more info on the game yet cause we need the sgf datas for that.
 		 So that would imply one additional kgs request per game in very short time.
 		 '''
@@ -421,11 +441,15 @@ class User(AbstractUser):
 				else:
 					opponent = players['white']
 				# Finally, we check if player and oponents are in an open event's same division
-				if LeaguePlayer.objects.filter(kgs_username__iexact=opponent,division__in=divisions).exists():
-					# This doesn't check the open status of the event. fix will go in get_divisions I guess.
+				opponent_users = LeaguePlayer.objects.filter(kgs_username__iexact=opponent,division__in=divisions)
+				if len(oppent_users) > 0:
 					sgf = Sgf()
-					sgf.wplayer = players['white']
-					sgf.bplayer = players['black']
+					if opponent == players['black']:
+						sgf.black = opponent_users.first()
+						sgf.white = self
+					else:
+						sgf.white = opponent_users.first()
+						sgf.black = self
 					sgf.urlto = url
 					sgf.p_status = 1
 					sgf.game_type = game_type
@@ -452,10 +476,10 @@ class Profile(models.Model):
 	p_status = models.PositiveSmallIntegerField(default=0)
 	last_kgs_online = models.DateTimeField(blank=True,null=True)
 	timezone = models.CharField(
-	 		max_length=100,
-	 		choices=[(t, t) for t in pytz.common_timezones],
+			max_length=100,
+			choices=[(t, t) for t in pytz.common_timezones],
 			blank=True,null=True
-        )
+		)
 
 
 	def __str__(self):

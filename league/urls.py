@@ -40,7 +40,7 @@ urlpatterns = [
     url(r'^admin/handle-upload-sgf/$', views.handle_upload_sgf, name='handle_upload_sgf'),
     url(r'^admin/upload-sgf/$', views.upload_sgf, name='upload_sgf'),
     url(r'^admin/create-sgf/$', views.create_sgf, name='create_sgf'),
-    url(r'^admin/update-all-sgf/$', views.update_all_sgf, name='update_all_sgf'),
+
     url(r'^admin/events/$', views.admin_events, name='admin_events'),
     url(r'^admin/events/(?P<pk>[0-9]+)/$', views.LeagueEventUpdate.as_view(success_url='/league/admin/events/'), name='admin_events_update' ),
     url(r'^admin/events/create/$', views.LeagueEventCreate.as_view(success_url='/league/admin/events/'), name='admin_events_create' ),
@@ -48,7 +48,6 @@ urlpatterns = [
     url(r'^admin/events/(?P<event_id>[0-9]+)/delete/$', views.admin_events_delete, name='delete_event'),
     url(r'^admin/sgf/$', views.admin_sgf_list, name='admin_sgf'),
     url(r'^admin/game/(?P<game_id>[0-9]+)/delete/$', views.admin_delete_game, name='delete_game'),
-
     url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/create-game/$', views.admin_create_game, name='create_game'),
     url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/save/$', views.admin_save_sgf, name='save_sgf'),
     url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/delete/$', views.admin_delete_sgf, name='delete_sgf'),
@@ -63,8 +62,10 @@ urlpatterns = [
     url(r'^scrap-list/$', views.scrap_list, name='scrap_list'),
     url(r'^scrap-list/(?P<profile_id>[0-9]+)/up/$', views.scrap_list_up, name='scrap_list_up'),
     url(r'^game/json/(?P<game_id>[0-9]+)/$', views.game_api, name='game_api'),
-    url(r'^admin/create-all-profiles/$', views.create_all_profiles, name='create_all_profiles'),
     url(r'^(?P<event_id>[0-9]+)/join/(?P<user_id>[0-9]+)/$', views.join_event, name='join_event'),
+    url(r'^admin/create-all-profiles/$', views.create_all_profiles, name='create_all_profiles'),
+    url(r'^admin/update-all-sgf-check-code/$', views.update_all_sgf_check_code, name='update_all_sgf_check_code'),
+    url(r'^admin/update-all-sgf/$', views.update_all_sgf, name='update_all_sgf'),
 
 
 ]
