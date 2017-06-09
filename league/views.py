@@ -291,11 +291,11 @@ def account(request,user_name=None):
 
 	if not is_league_member(user): return HttpResponseRedirect('/')
 	open_events = LeagueEvent.objects.filter(is_open=True)
-	if not (request.user.is_authenticated and request.user.user_is_league_admin()) :
+	if not (user.is_authenticated and user.user_is_league_admin()) :
 		open_events = open_events.filter(is_public = True)
 	players = user.leagueplayer_set.order_by('-pk')
-	games = Game.objects.filter(Q(black__in = players)|Q(white__in = players))
-	if len(games) == 0: games = None
+	sgfs = Sgf.objects.filter(Q(white = user)|Q(black = user))
+	if len(sgfs) == 0: sgfs = None
 	for event in open_events :
 		event_players = LeaguePlayer.objects.filter(user=user,event=event)
 		if len(event_players) > 0 :
@@ -309,7 +309,7 @@ def account(request,user_name=None):
 	context = {
 	'players' : players,
 	'open_events':open_events,
-	'games' : games,
+	'sgfs' : sgfs,
 	'user' :user,
 	}
 	template = loader.get_template('league/account.html')

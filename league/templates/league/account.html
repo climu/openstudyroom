@@ -134,7 +134,7 @@ return false;};
 
 <div class="panel panel-default">
 <div class="panel-heading"><h3>{{user}} Games</h4></div>
-  {% if games is None %}
+  {% if sgfs is None %}
   <div class="panel-body">
     {{user}} didn't play any league game yet.
   {% else %}
@@ -143,7 +143,7 @@ return false;};
   <div id ="game_infos">
 </div>
 
-{% include "league/includes/games.html" with games=games %}
+{% include "league/includes/games.html" with sgfs=sgfs %}
 </div>
 
 <div class="col-md-8">
