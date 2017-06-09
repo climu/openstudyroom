@@ -55,12 +55,11 @@ def scraper():
         if sgf.result == '?':
             sgf.delete()
         else:
-            sgf.check_validity()
+            valid_events = sgf.check_validity()
+            sgf.update_related(valid_events)
             sgf.save()
             # I think we could deal with sgf already in db one day here:
             # Populate existing sgf urlto and delete new sgf
-            if sgf.league_valid:
-                Game.create_game(sgf)
         out = sgf
     # 3 no games to scrap let's check a player
     else:
@@ -122,7 +121,7 @@ def games(request, event_id=None, sgf_id=None):
         open_events = open_events.filter(is_public=True)
     context = {'open_events': open_events}
     if sgf_id is not None:
-        sgf = get_object_or_404(Sgf, pk=sgf_id)
+        sgf = get_object_or_404(Sgf, pk=sgf_id, league_valid=True)
         context.update({'sgf': sgf})
 
     if event_id is None:
@@ -157,11 +156,9 @@ def results(request, event_id=None, division_id=None):
     else:
         division = get_object_or_404(Division, pk=division_id)
     can_join = event.can_join(request.user)
-    results = division.get_new_results()
+    results = division.get_results()
     template = loader.get_template('league/results.html')
-    players = LeaguePlayer.objects.filter(division=division).order_by('-score')
     context = {
-        'players': players,
         'event': event,
         'division': division,
         'results': results,
@@ -226,6 +223,8 @@ def players(request, event_id=None, division_id=None):
         else:
             division = get_object_or_404(Division, pk=division_id)
             divisions = [division]
+        for division in divisions:
+            division.results = division.get_results
         context = {
             'open_events': open_events,
             'event': event,
@@ -269,7 +268,6 @@ def join_event(request, event_id, user_id):
         messages.success(request, message)
     return HttpResponseRedirect('/')
 
-
 def account(request, user_name=None):
     """Show a user account.
     if url ask for a user( /league/user/climu) display that user profile.
@@ -304,8 +302,8 @@ def account(request, user_name=None):
             event.is_in = True
             player = event_players.first()
             event.this_player = player
-            opponents = LeaguePlayer.objects.filter(division=player.division).order_by('-score')
-            event.opponents = opponents
+            results = player.division.get_results()
+            event.results = results
         else:
             event.is_in = False
     context = {
@@ -424,48 +422,6 @@ def upload_sgf(request):
 
 @login_required()
 @user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
-def admin_delete_game(request, game_id):
-    """ delete a game and add the message  'deleted by admin to the sgf'"""
-    game = get_object_or_404(Game, pk=game_id)
-    if request.method == 'POST':
-        form = ActionForm(request.POST)
-        if form.is_valid():
-            if form.cleaned_data['action'] == 'delete_game':
-                sgf = game.sgf
-                sgf.message += ";deleted by admin (" + str(game.pk) + ")"
-                sgf.save()
-                game.delete()
-                form = SgfAdminForm(initial={'sgf': sgf.sgf_text, 'url': sgf.urlto})
-                message = "The game " + str(game) + "has been deleted"
-                messages.success(request, message)
-                return HttpResponseRedirect(reverse('league:edit_sgf', args=[sgf.pk]))
-    raise Http404("What are you doing here ?")
-
-
-@login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
-def admin_create_game(request, sgf_id):
-    sgf = get_object_or_404(Sgf, pk=sgf_id)
-    if request.method == 'POST':
-        form = ActionForm(request.POST)
-        if form.is_valid():
-            sgf.check_validity()
-            if sgf.league_valid:
-                if Game.create_game(sgf):
-                    message = 'Successfully created the game ' + \
-                        sgf.wplayer + ' vs ' + sgf.bplayer + ' !'
-                else:
-                    message = "We coudln't create a league game for this sgf"
-            else:
-                message = "The sgf is not valid so we can't create a game"
-        else:
-            raise Http404("What are you doing here ?")
-    messages.success(request, message)
-    return HttpResponseRedirect(reverse('league:edit_sgf', args=[sgf.pk]))
-
-
-@login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
 def admin_save_sgf(request, sgf_id):
     sgf = get_object_or_404(Sgf, pk=sgf_id)
     if request.method == 'POST':
@@ -475,7 +431,8 @@ def admin_save_sgf(request, sgf_id):
             sgf.urlto = form.cleaned_data['url']
             sgf.p_status = 2
             sgf = sgf.parse()
-            sgf.check_validity()
+            valid_events = sgf.check_validity()
+            sgf.update_related(valid_events)
             sgf.save()
     message = 'successfully saved the sgf in the db'
     messages.success(request, message)
@@ -506,21 +463,24 @@ def admin_edit_sgf(request, sgf_id):
             sgf.urlto = form.cleaned_data['url']
             sgf.p_status = 2
             sgf = sgf.parse()
-            sgf.check_validity()
+            valid_events = sgf.check_validity()
             form = SgfAdminForm(initial={'sgf': sgf.sgf_text, 'url': sgf.urlto})
             context = {
                 'sgf': sgf,
                 'form': form,
-                'preview': True
+                'preview': True,
+                'valid_events': valid_events
             }
             template = loader.get_template('league/admin/sgf_edit.html')
             return HttpResponse(template.render(context, request))
     else:
         form = SgfAdminForm(initial={'sgf': sgf.sgf_text, 'url': sgf.urlto})
+        valid_events = sgf.events.all()
         context = {
             'form': form,
             'sgf': sgf,
-            'preview': False
+            'preview': False,
+            'valid_events': valid_events
         }
         return render(request, 'league/admin/sgf_edit.html', context)
 

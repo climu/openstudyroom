@@ -51,7 +51,7 @@
    </thead>
    <tbody>
      {% for division in divisions %}
-     {% for player in division.get_new_results %}
+     {% for player in division.results %}
        <tr>
        <td>{{player.division |division_link}}</td>
        <td>{{forloop.counter}}</td>

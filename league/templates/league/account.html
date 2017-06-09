@@ -58,7 +58,7 @@ return false;};
       <tbody>
 
     {% with player.get_results as results %}
-    {% for opponent in event.opponents %}
+    {% for opponent in event.results %}
     {% if opponent == player %}
     <tr class="info">
       {%else%}

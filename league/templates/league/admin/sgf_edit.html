@@ -88,13 +88,16 @@
 
   <div class="panel-heading">
 {% if sgf.league_valid %}
-
-     This SGF is valid for {{sgf.event}} !
-
+     This SGF is valid for those events:
+   </div>
+   <table class="table table-condensed">
+     {% for event in valid_events %}
+     <tr><td>{{event | event_link}}</td></tr>
+     {% endfor %}
 {% else %}
 This SGF is not valid :
 
-{% endif %}
+
 </div>
 <table class="table table-condensed">
 {% with sgf.get_messages as messages %}
@@ -102,66 +105,14 @@ This SGF is not valid :
 <tr><td>{{message}}</td></tr>
 {% endfor %}
 {% endwith %}
+{% endif %}
 </table>
 
    </div>
 
 
-   <div class="panel panel-default">
-{% if sgf.has_game %}
-     <div class="panel-heading">
-This SGF has a league game:
-     </div>
-     <table class="table table-condensed">
-     <tr>
-       <th> Game ID </th>
-       <td>{{sgf.game.pk}}</td>
-     </tr>
-     <tr>
-       <th> League </th>
-       <td>{{sgf.game.event}}</td>
-     </tr>
-     <tr>
-       <th> Group </th>
-       <td>{{sgf.game.white.division}}</td>
-     </tr>
-     <tr>
-       <th>  Permalink </th>
-       <td><a href="/league/games/{{sgf.game.pk}}">{% bootstrap_icon 'link' %}</a></td>
-     </tr>
-     <tr>
-       <th>Delete</th>
-       <td>
-         <form action="" method="POST" class="form-inline" >{% csrf_token %}
-           <input type="hidden" name="action" value="delete_game">
-        <button type="submit" class="btn btn-danger btn-xs" formaction="{%url 'league:delete_game' sgf.game.pk%}"onclick="return confirm('Deleting this game will adjust players scores but will NOT delete the SGF.')" >
-          {% bootstrap_icon 'remove'%}
-          Delete game
-        </button>
-      </form>
-       </td>
-     </tr>
-
-     </table>
-     {% else %}
-     <div class="panel-heading">
-This SGF is NOT a league game
 </div>
-{% if preview %}
-You should save sgf changes before creating a game.
-{% elif sgf.league_valid %}
-<form action="" method="POST" class="form-inline" >{% csrf_token %}
-  <input type="hidden" name="action" value="create_game">
-<button type="submit" class="btn btn-success btn-xs" formaction="{%url 'league:create_game' sgf.pk%}" onclick="return confirm('Create a league game for this SGF ?')" >
-{% bootstrap_icon "plus"%} Create a league game
-</button>
-</form>
-{% endif %}
 
-
-{% endif %}
-</div>
-</div>
 
 
 

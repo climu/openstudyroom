@@ -219,15 +219,17 @@ class Sgf(models.Model):
     def __str__(self):
         return str(self.pk) + ': ' + self.wplayer + ' vs ' + self.bplayer
 
-    def mark_valid(self, events):
-        """Mark the sgf valid for a list of events.
 
-                - populate black, white, winner fields
-                - update players score
-                - add proper division to divisions field
-            return True if all went well and False if something went wrong
-        This will replace the create_game method
+    def update_related(self, events):
+        """Update league_valid, events, divisions and users fields.
+        return True if all went well and False if something went wrong
         """
+        # First we empty all sgf related fields
+        self.events.clear()
+        self.divisions.clear()
+        self.white = None
+        self.black = None
+        self.winner = None
         # We put the win info in a variable
         if self.result.find('B+') == 0:
             winner = 'black'
@@ -235,83 +237,43 @@ class Sgf(models.Model):
             winner = 'white'
         else:  # here the game has no valid result.That shouldn't happen
             return False
-
-        for event in events:
-            # First we test if event is already in self.events
-            if event in self.events:
-                return False
-            # Then we get the proper players
-            black_player = LeaguePlayer.objects.filter(
-                event=event,
-                kgs_username__iexact=self.bplayer
-            )
-            if len(black_player) == 1:  # That shouldn't happen, but who knows
-                black_player = black_player.first()
-            else:
-                return False
-            white_player = LeaguePlayer.objects.filter(
-                event=event,
-                kgs_username__iexact=self.wplayer
-            ).first()
-
-            if len(white_player) == 1:
-                white_player = white_player.first()
-            else:
-                return False
-            # Now we score win/loss
+        # if events is empty, we mark the sgf as invalid and unpopulate related fields
+        if len(events) == 0:
+            self.league_valid = False
+            self.save()
+            return True
+        else:
+            for event in events:
+                # Then we get the proper players
+                black_player = LeaguePlayer.objects.filter(
+                    event=event,
+                    kgs_username__iexact=self.bplayer
+                )
+                if len(black_player) == 1:  # That shouldn't happen, but who knows
+                    black_player = black_player.first()
+                else:
+                    return False
+                white_player = LeaguePlayer.objects.filter(
+                    event=event,
+                    kgs_username__iexact=self.wplayer
+                )
+                if len(white_player) == 1:
+                    white_player = white_player.first()
+                else:
+                    return False
+                # We add event and division to the sgf
+                self.events.add(event)
+                self.divisions.add(white_player.division)
+            # Now we set the fields on the sgf
             if winner == 'black':
-                black_player.score_win()
-                white_player.score_loss()
-
+                self.winner = black_player.user
             else:
-                white_player.score_win()
-                black_player.score_loss()
-
-        # Now we set the field on the sgf
-        if winner == 'black':
-            self.winner = black_player.user
-        else:
-            self.winner = white_player.user
-        self.white = white_player.user
-        self.black = black_player.user
-        self.events.add(event)
-        self.save()
-        return True
-
-    def unmark_valid(self, event):
-        """Reverse the mark_valid method.
-
-            - Unscore win and loss for events players
-            - set black, white and winner fields to None
-            - remove event to events fields
-        Return true if all went well and false otherwise
-        This will replace the unscore_game receiver.
-        """
-        # First we check if self is already valid for this event:
-        if event not in self.events:
-            return False
-        # we get the proper LeaguePlayers
-        white_player = LeaguePlayer.objects.filter(event=event, user=self.white)
-        black_player = LeaguePlayer.objects.filter(event=event, user=self.black)
-        if len(white_player) == 1:
-            white_player = white_player.first()
-        else:
-            return False
-        if len(black_player) == 1:
-            black_player = black_player.first()
-        else:
-            return False
-        # then we unscore win and loss
-        if self.winner == self.white:
-            white_player.unscore_win()
-            black_player.unscore_loss()
-        else:
-            white_player.unscore_loss()
-            black_player.unscore_win()
-        # finally, we unpopulate the sgf fields if
-        self.update(white=None, black=None, winner=None)
-        self.events.remove(event)
-        return True
+                self.winner = white_player.user
+            self.white = white_player.user
+            self.black = black_player.user
+            self.league_valid = True
+            self.save()
+            return True
 
     def has_game(self):
         """Deprecated. We should use league_valid from now on."""
@@ -373,7 +335,8 @@ class Sgf(models.Model):
         if wplayer is not None and bplayer is not None:
             if wplayer.division != bplayer.division:
                 (b, m) = (False, m + '; players not in same division')
-            w_results = wplayer.get_results()
+            else:
+                w_results = wplayer.get_results()
             if self.bplayer in w_results and Game.objects.filter(sgf=self).exists():
                 if len(w_results[self.bplayer]) >= event.nb_matchs:
                     (b, m) = (False, m + '; max number of games')
@@ -390,7 +353,7 @@ class Sgf(models.Model):
         if self.number_moves < 20:
             (b, m) = (False, m + '; number moves')
 
-        return {'message': m, 'valid': b, 'tag': tag}
+        return {'message': m, 'valid': b, 'tag': tag, }
 
     def check_validity(self):
         """Check sgf validity for all open events.
@@ -436,15 +399,17 @@ class Sgf(models.Model):
             if len(message) > 0:
                 self.message = message
             else:
+                self.league_valid = False
                 self.message = check['message']
                 return []
         else:  # the sgf is valid for at lease one event.
+            self.league_valid = True
             self.message = ''
         return valid_events
 
 
 class User(AbstractUser):
-    """Use used for auth in all project."""
+    """User used for auth in all project."""
 
     kgs_username = models.CharField(max_length=20)
 
@@ -645,7 +610,7 @@ class Division(models.Model):
             order__gt=self.order
         ).exists()
 
-    def get_new_results(self):
+    def get_results(self):
         """New proper way to get results.
 
         return a list of all leagueplayers of the division with extra fields:
@@ -692,12 +657,12 @@ class Division(models.Model):
         results = sorted(results, key=attrgetter('score'), reverse=True)
         return results
 
+
 class LeaguePlayer(models.Model):
     user = models.ForeignKey('User')
     kgs_username = models.CharField(max_length=20, default='')
     event = models.ForeignKey('LeagueEvent')
     division = models.ForeignKey('Division')
-    score = models.DecimalField(default=0, max_digits=4, decimal_places=1)
     p_status = models.SmallIntegerField(default=0)
 
     class Meta:
