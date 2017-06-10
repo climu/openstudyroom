@@ -58,7 +58,7 @@ return false;};
       <tbody>
 
     {% with player.get_results as results %}
-    {% for opponent in event.results %}
+    {% for opponent in event.opponents %}
     {% if opponent == player %}
     <tr class="info">
       {%else%}
@@ -134,7 +134,7 @@ return false;};
 
 <div class="panel panel-default">
 <div class="panel-heading"><h3>{{user}} Games</h4></div>
-  {% if sgfs is None %}
+  {% if games is None %}
   <div class="panel-body">
     {{user}} didn't play any league game yet.
   {% else %}
@@ -143,7 +143,7 @@ return false;};
   <div id ="game_infos">
 </div>
 
-{% include "league/includes/games.html" with sgfs=sgfs %}
+{% include "league/includes/games.html" with games=games %}
 </div>
 
 <div class="col-md-8">
