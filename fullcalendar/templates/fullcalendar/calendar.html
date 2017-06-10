@@ -21,11 +21,14 @@
 {% if user.is_authenticated %}
 {% include 'league/includes/user_nav.html' %}
 {% endif %}
+{% comment "don't show save button for now"%}
 <div id='message'></div>
 
 <button class='btn btn-default' id='save'>save</button>
+{% endcomment %}
 <div id='calendar'></div>
 {% endblock %}
+
 
 {% block extra_js %}
 <script>
@@ -67,7 +70,7 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
 			height: 'auto',
       allDaySlot:false,
       timeFormat: 'H:mm',
-      {% if request.user.is_authenticated %}
+      {% if request.user.is_authenticated and request.user.user_is_league_admin%}
       selectable:true,
       selectHelper: true,
       //prevent user from selecting multiple day availability
