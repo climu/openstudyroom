@@ -13,16 +13,16 @@
           </tr>
         </thead>
         <tbody>
-        {% for player in players %}
+        {% for player in results %}
         <tr>
           <td>{{forloop.counter}}</td>
             <td>{{player.user | user_link}}</td>
-            <td >{{ player | player_score:results }}</td>
-            <td>{{ player | player_nb_win:results }} </td>
-            <td>{{ player | player_nb_loss:results }}</td>
-            <td>{{ player | player_nb_games:results }}</td>
+            <td >{{ player.score }}</td>
+            <td>{{ player.n_win }} </td>
+            <td>{{ player.n_loss }}</td>
+            <td>{{ player.n_games }}</td>
             <td>
-            {% for opponent in players %}
+            {% for opponent in results %}
             {% if forloop.counter == forloop.parentloop.counter %}
             {% else %}
             {% html_one_result %}

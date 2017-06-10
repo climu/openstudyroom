@@ -4,12 +4,12 @@
 {% block title %}Archives - Games {% if game %}- {{game.black.kgs_username}} vs {{game.white.kgs_username}} {%endif %}{% endblock %}
 {% block extra_head_js %}
 <script type="text/javascript">
-function load_game(game_id) {
-  var url = "/league/game/json/" + game_id
+function load_game(sgf_id) {
+  var url = "/league/game/json/" + sgf_id
 
   $.ajax({
     type: "GET",
-    url: "/league/game/json/" + game_id,
+    url: "/league/game/json/" + sgf_id,
     dataType: "json",
     success: processData,
     error: function(){ alert("failed"); }
@@ -50,19 +50,19 @@ return false;};
   <div class="well"> This table show all games that have been played in the Open Study Room</div>
 <div class="col-md-4">
   <div id ="game_infos">
-    {% if game %}
+    {% if sgf %}
   {% include "league/includes/game_info.html"  %}
     {% endif %}
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">Games</div>
-{% include "league/includes/games.html" with games=games %}
+{% include "league/includes/games.html" with sgfs=sgfs %}
 </div>
 </div>
 
 <div class="col-md-8">
-  {% if game %}
-  <div id="player" data-wgo="{{ game.sgf.sgf_text | prepare_sgf}}" >
+  {% if sgf %}
+  <div id="player" data-wgo="{{ sgf.sgf_text | prepare_sgf}}" >
     </div>
     {% else %}
     <div id="player">
