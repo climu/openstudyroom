@@ -9,26 +9,10 @@
 <script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js'></script>
 
 {% endblock %}
-{% block title %}{% if user.is_authenticated %}My profile - {% endif %}Calendar{% endblock %}
-{% block heading %}
-{% get_current_timezone as TIME_ZONE %}
-<div class="page-header">
-    <h1>{% if user.is_authenticated %}My profile - {% endif %}Calendar ({{TIME_ZONE}})</h1>
-</div>
-{%endblock%}
+
 {% block content %}
-{% if user.is_authenticated %}
-{% include 'league/includes/user_nav.html' %}
-{% endif %}
-{% comment "don't show save button for now"%}
-<div id='message'></div>
-
-<button class='btn btn-default' id='save'>save</button>
-{% endcomment %}
-
 <div id='calendar'></div>
 {% endblock %}
-
 
 {% block extra_js %}
 <script>
@@ -44,42 +28,21 @@
 			defaultDate: '2017-05-12',
 			navLinks: true, // can click day/week names to navigate views
 			editable: false,
-			height: 'auto',
-      allDaySlot:false,
-      timeFormat: 'H:mm',
-      {% if request.user.is_authenticated and request.user.user_is_league_admin%}
-      selectable:true,
-      selectHelper: true,
-      //prevent user from selecting multiple day availability
-      selectConstraint: {
-        start: '00:00',
-        end: '24:00',
-      },
-      //we don't want to me-available event overlaping
-      selectOverlap: function(event) {
-              return event.type != 'me-available';
-          },
-      eventOverlap: function(stillEvent, movingEvent) {
-        return stillEvent.type != 'me-available';
-      },
-      //selecting will create an event saying use is available
-      select: function(start, end) {
-				var eventData;
-				eventData = {
-					title: 'I am available',
-					start: start,
-					end: end,
-          type:'me-available',
-          color: '#01DF3A',
-          className :'me-available',
-          is_new : true,
-          is_change:true,
-          editable:true
-				};
-					$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+			eventLimit: true, // allow "more" link when too many events
+			events: [
 
-				$('#calendar').fullCalendar('unselect');
-
+				{% for event in cal_events %}
+				{
+				id : {{event.pk}},
+				title : '{{event.title}}',
+				start :'{{event.begin_time |date:"Y-m-d G:i:s"}}',
+				end : '{{event.end_time |date:"Y-m-d G:i:s"}}',
+				{% if event.url %}
+				url :'{{event.url}}',
+				{% endif %}
+				{%if event.type == 'division'%}
+				rendering: 'background'
+				{% endif %}
 			},
 				{% endfor %}
 			],
