@@ -1,5 +1,5 @@
 {% extends "league/admin/base.html" %}
-{% load bootstrap3 wgo_tags %}
+{% load bootstrap3 wgo_tags league_tags %}
 {% block title %}Upload a sgf{% endblock %}
 {% block heading%}
   <div class="page-header">
@@ -27,7 +27,7 @@
 </div>
 <div class="row">
 {%if sgf.league_valid %}
- <h3>Your sgf is valid for {{sgf.event}} !</h3>
+ <h3>Your sgf is valid !</h3>
  <p>Check details below and click save sgf to add it to the database</p>
 
  {% else %}
@@ -67,14 +67,17 @@
 <div class="panel panel-default">
 
   <div class="panel-heading">
-{% if sgf.league_valid %}
-
-     This SGF is valid for {{sgf.event}} !
-
+    {% if sgf.league_valid %}
+         This SGF is valid for those events:
+       </div>
+       <table class="table table-condensed">
+         {% for event in valid_events %}
+         <tr><td>{{event | event_link}}</td></tr>
+         {% endfor %}
 {% else %}
 This SGF is not valid :
 
-{% endif %}
+
 </div>
 <table class="table table-condensed">
 {% with sgf.get_messages as messages %}
@@ -82,6 +85,7 @@ This SGF is not valid :
 <tr><td>{{message}}</td></tr>
 {% endfor %}
 {% endwith %}
+{% endif %}
 </table>
 
 </div>
