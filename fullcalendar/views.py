@@ -20,6 +20,7 @@ class PublicEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = PublicEvent
     template_name_suffix = '_update_form'
 
+
     def test_func(self):
         return self.request.user.is_authenticated() and self.request.user.user_is_league_admin()
 
@@ -33,6 +34,7 @@ class PublicEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     template_name_suffix = '_create_form'
     initial = {'start': datetime.now(),
                'end': datetime.now()}
+
 
     def test_func(self):
         return self.request.user.is_authenticated() and self.request.user.user_is_league_admin()
@@ -139,6 +141,7 @@ def save(request):
                 ev.save()
 
     return HttpResponse('success')
+
 
 
 @login_required()

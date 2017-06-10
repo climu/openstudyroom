@@ -1,4 +1,4 @@
 from django.contrib import admin
-#from .models import PublicEvent
+from .models import CalEvent
 # Register your models here.
-#admin.site.register(PublicEvent)
+admin.site.register(CalEvent)

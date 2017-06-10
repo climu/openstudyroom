@@ -1,6 +1,6 @@
 from django import template
 from home.models import Advert
-from fullcalendar.models import PublicEvent
+from fullcalendar.models import CalEvent
 from django.utils import timezone
 
 register = template.Library()

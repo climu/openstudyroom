@@ -1,10 +1,9 @@
 {% extends "full_width.html" %}
-{% load tz static%}
 
 {% block extra_head_js %}
 <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css' />
 <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.print.css' media='print' />
-<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/calendar.css'%}"/>
+
 
 <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js'></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js'></script>
@@ -26,31 +25,14 @@
 
 <button class='btn btn-default' id='save'>save</button>
 {% endcomment %}
+
 <div id='calendar'></div>
 {% endblock %}
 
 
 {% block extra_js %}
 <script>
-// we will do some ajax post request and hence we will need to grab csrf from cookie.
-//https://docs.djangoproject.com/en/1.11/ref/csrf/#ajax
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-var csrftoken = getCookie('csrftoken');
-$.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
+
 	$(document).ready(function() {
 
 		$('#calendar').fullCalendar({
@@ -59,12 +41,7 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
 				center: 'title',
 				right: 'month,agendaWeek,agendaDay'
 			},
-      views: {
-        month:{
-          selectable:false,
-        }
-      },
-
+			defaultDate: '2017-05-12',
 			navLinks: true, // can click day/week names to navigate views
 			editable: false,
 			height: 'auto',
@@ -102,88 +79,22 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
 					$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
 
 				$('#calendar').fullCalendar('unselect');
+
 			},
-      eventResize: function(event, delta) {
-        event.is_change=true;
-      },
-      eventDrop:function(event, delta){
-        event.is_change=true;
-      },
-      {% endif %}
+				{% endfor %}
+			],
 
 
-			events:'{% url "calendar:json_feed" %}',
-      eventRender: function(event, element) {
-        if (element.find(".fc-helper")){
-          event.eventColor='#01DF3A';
-
-        }
-        //add a delete button to me-available events
-        if (event.type === 'me-available'){
-            element.find(".fc-content").prepend( "<span style='font-size:1.5em;'class='pull-right glyphicon glyphicon-remove-circle closeon' aria-hidden='true'></span>" );
-            element.find(".closeon").click(function() {
-              //if the event is not new, we have to create a deleted event to inform the server
-              if (event.is_new != true){
-                $('#calendar').fullCalendar( 'renderEvent',
-                 {title: event._id,
-                   start:event.start,
-                   end: event.end,
-                   type:'deleted',
-                   is_change:true,
-                   className :'event-deleted',
-                   is_new:false,
-                   rendering: 'background',
-
-                 } ,
-                 true  );
-
-              }
-               $('#calendar').fullCalendar('removeEvents',event._id);
-            });
-
-        }
-      }
 		});
+		$('#calendar').fullCalendar({
+		    eventClick: function(event, element) {
 
-    $("#save").click(function () {
-      var eventsFromCalendar = $('#calendar').fullCalendar('clientEvents',function (event) {
-                    return event.is_change == true;});
-      //to render json from events objects list, we need to deal with circular relation
-      //see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
-      eventsFromCalendar = eventsFromCalendar.map(function(e) {
-        return {
-          start: e.start,
-          end: e.end,
-          title: e.title,
-          type: e.type,
-          is_new: e.is_new,
-          id:e.id
-        };
-      });
-      seen = [];
-      var json = JSON.stringify(eventsFromCalendar,function(key, val) {
-          if (val != null && typeof val == "object") {
-            if (seen.indexOf(val) >= 0) {
-              return;
-            }
-            seen.push(val);
-          }
-          return val;
-        });
-        $.ajax({
-                 type:"POST",
-                 url:"{% url 'calendar:save'%}",
-                 data: {
-                        'events': json
-                        },
-                 success: function(){
-                   $('#calendar').fullCalendar( 'removeEvents');
-                    $('#calendar').fullCalendar( 'refetchEvents' );
+		        event.title = "CLICKED!";
 
-                 }
-            });
-            return false; //<---- move it here
-      });
+		        $('#calendar').fullCalendar('updateEvent', event);
+
+		    }
+		});
 	});
 
 </script>

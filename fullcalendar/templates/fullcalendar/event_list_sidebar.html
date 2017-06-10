@@ -9,22 +9,22 @@
 </a>
   </h4>
 {% get_now as now %}
-{% public_events as public_events%}
-{% for cal_event in public_events %}
+{% cal_events request.user as cal_events%}
+{% for cal_event in cal_events %}
   {% if cal_event.url %}  <a href="{{cal_event.url}}">    {% endif %}
 <div class="panel cal-event-sidebar">
 
   <div class="panel-body">
     <div class="col-md-4">
       <p>
-        {% if cal_event.start.date == now.date %}
+        {% if cal_event.begin_time.date == now.date %}
         Today !
         {% else %}
-        {{cal_event.start|date:"d, M"}}
+        {{cal_event.begin_time|date:"d, M"}}
         {% endif %}
       </p>
 
-      <p>{{cal_event.start|time:"TIME_FORMAT"}}</p>
+      <p>{{cal_event.begin_time|time:"TIME_FORMAT"}}</p>
 
     </div>
     <div class="col-md-8" style="text-align: center;">
