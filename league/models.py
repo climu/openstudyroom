@@ -512,6 +512,7 @@ class User(AbstractUser):
             )
         # list_urlto_games=[{url:'url',game_type:'game_type'},{...},...]
         divisions = self.get_open_divisions()
+        print(divisions)
         for d in list_urlto_games:
             url = d['url']
             game_type = d['game_type']
@@ -527,9 +528,9 @@ class User(AbstractUser):
                 # Finally, we check if player and oponents
                 # are in an open event's same division
                 if LeaguePlayer.objects.filter(
-                    kgs_username__iexact=opponent,
-                    division__in=divisions
-                ).exists():
+                        kgs_username__iexact=opponent,
+                        division__in=divisions).exists():
+                    print('ok')
                     sgf = Sgf()
                     sgf.wplayer = players['white']
                     sgf.bplayer = players['black']
@@ -803,14 +804,3 @@ class Game(models.Model):
             return False
         game.save()
         return True
-
-
-@receiver(pre_delete, sender=Game)
-def unscore_game(sender, instance, *args, **kwargs):
-    """Unscore a instance before deleting it"""
-    if instance.winner == instance.black:
-        instance.black.unscore_win()
-        instance.white.unscore_loss()
-    else:
-        instance.white.unscore_win()
-        instance.black.unscore_loss()

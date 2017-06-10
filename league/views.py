@@ -367,9 +367,10 @@ def create_sgf(request):
             sgf.sgf_text = form.cleaned_data['sgf']
             sgf.p_status = 2
             sgf = sgf.parse()
-            if sgf.check_validity():
+            valid_events = sgf.check_validity()
+            if sgf.league_valid:
                 sgf.save()
-                Game.create_game(sgf)
+                sgf.update_related(valid_events)
                 message = " Succesfully created a sgf and a league game"
                 messages.success(request, message)
             else:

@@ -16,7 +16,7 @@
         <tr class="{% cycle 'even-row' 'odd-row' %}">
             <td class='table-league-player'>{{forloop.counter}}. {{player.user | user_link}}</td>
             <td class='table-league-score-highlight'>{{ player.score }}</td>
-            {% for opponent in players %}
+            {% for opponent in results %}
 
             {% if forloop.counter == forloop.parentloop.counter %}
             <td class="table-league-highlight {% cycle 'even-column' 'odd-column' %}">

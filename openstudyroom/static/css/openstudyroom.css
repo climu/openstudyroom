@@ -66,3 +66,20 @@ blockquote{
     }
 }
 .sidebar>li>.rich-text>ul{padding-left:0px;}
+
+.cal-event-sidebar{
+  margin-left: -10px;
+  margin-right: -10px;
+
+}
+.cal-event-sidebar div{
+  padding-left:5px;
+  padding-right: 5px;
+}
+.cal-event-title{
+
+}
+
+.cal-event-description{
+  margin-top:10px;
+}
