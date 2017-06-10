@@ -12,10 +12,10 @@
 {% cal_events request.user as cal_events%}
 {% for cal_event in cal_events %}
   {% if cal_event.url %}  <a href="{{cal_event.url}}">    {% endif %}
-<div class="panel cal-event-sidebar">
+<div class="panel">
 
   <div class="panel-body">
-    <div class="col-md-4">
+    <div class="col-md-6">
       <p>
         {% if cal_event.begin_time.date == now.date %}
         Today !
@@ -27,11 +27,11 @@
       <p>{{cal_event.begin_time|time:"TIME_FORMAT"}}</p>
 
     </div>
-    <div class="col-md-8" style="text-align: center;">
-<div class=" label label-default cal-event-title">
+    <div class="col-md-6">
+<div class="text-center label label-default">
       {{cal_event.title}}
     </div>
-    <div class="text-center cal-event-description">
+    <div>
       {{cal_event.description}}
 
     </div>

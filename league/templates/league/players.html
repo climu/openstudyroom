@@ -51,15 +51,15 @@
    </thead>
    <tbody>
      {% for division in divisions %}
-     {% for player in division.results %}
+     {% for player in division.get_players %}
        <tr>
        <td>{{player.division |division_link}}</td>
        <td>{{forloop.counter}}</td>
        <td>{{player.user | user_link}}</td>
        <td>{{player.score}}</td>
-       <td>{{player.n_win}}</td>
-       <td>{{player.n_loss}}</td>
-       <td>{{player.n_games}}</td>
+       <td>{{player.nb_win}}</td>
+       <td>{{player.nb_loss}}</td>
+       <td>{{player.nb_games}}</td>
        </tr>
      {% endfor %}
      {%endfor%}

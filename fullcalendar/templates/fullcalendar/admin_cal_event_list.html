@@ -7,15 +7,14 @@
     <h1>Events list</h1>
 </div>
 {%endblock%}
-{% timezone "UTC" %}
 {% block content %}
-
+{% timezone "UTC" %}
 <a  href="{%url 'calendar:create_cal_event'%}">
   <button class="btn btn-success">
     {%bootstrap_icon 'plus'%} Create a new event
   </button>
 </a>
-<table class="table" id="cal-event-table">
+<table class="table">
  <thead>
    <th>Title</th>
    <th>Begin Time (UTC/24h)</th>
@@ -49,16 +48,5 @@
 </tbody>
 
 </table>
-
-{%endblock%}
-
-{% block extra_js %}
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
-<script type="text/javascript">
-$(document).ready(function() {
-$('#cal-event-table').DataTable({"order": [[ 1, "desc" ]]}
-);
-} );
-</script>
-{% endblock %}
 {% endtimezone %}
+{%endblock%}
