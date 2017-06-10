@@ -549,7 +549,6 @@ class User(AbstractUser):
         return tz
 
 
-
 def is_league_admin(user):
     return user.groups.filter(name='league_admin').exists()
 
