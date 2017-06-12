@@ -639,7 +639,7 @@ class Division(models.Model):
                 loser = next(player for player in results if player.user == sgf.black)
                 winner = next(player for player in results if player.user == sgf.white)
             else:
-                loser = next(player for player in results if player.user == sgf.black)
+                loser = next(player for player in results if player.user == sgf.white)
                 winner = next(player for player in results if player.user == sgf.black)
             winner.n_win += 1
             winner.n_games += 1
@@ -681,7 +681,7 @@ class LeaguePlayer(models.Model):
         """
         blackGames = self.black.get_queryset()
         whiteGames = self.white.get_queryset()
-
+        print(whiteGames)
         resultsDict = defaultdict(list)
 
         for game in blackGames:
