@@ -337,9 +337,9 @@ class Sgf(models.Model):
                 (b, m) = (False, m + '; players not in same division')
             else:
                 w_results = wplayer.get_results()
-            if self.bplayer in w_results and Game.objects.filter(sgf=self).exists():
-                if len(w_results[self.bplayer]) >= event.nb_matchs:
-                    (b, m) = (False, m + '; max number of games')
+                if self.bplayer in w_results:
+                    if len(w_results[self.bplayer]) >= event.nb_matchs:
+                        (b, m) = (False, m + '; max number of games')
         else:
             (b, m) = (False, m + '; One of the players is not a league player')
 
