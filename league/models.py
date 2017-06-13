@@ -512,7 +512,6 @@ class User(AbstractUser):
             )
         # list_urlto_games=[{url:'url',game_type:'game_type'},{...},...]
         divisions = self.get_open_divisions()
-        print(divisions)
         for d in list_urlto_games:
             url = d['url']
             game_type = d['game_type']
@@ -530,7 +529,6 @@ class User(AbstractUser):
                 if LeaguePlayer.objects.filter(
                         kgs_username__iexact=opponent,
                         division__in=divisions).exists():
-                    print('ok')
                     sgf = Sgf()
                     sgf.wplayer = players['white']
                     sgf.bplayer = players['black']
@@ -681,7 +679,6 @@ class LeaguePlayer(models.Model):
         """
         blackGames = self.black.get_queryset()
         whiteGames = self.white.get_queryset()
-        print(whiteGames)
         resultsDict = defaultdict(list)
 
         for game in blackGames:
