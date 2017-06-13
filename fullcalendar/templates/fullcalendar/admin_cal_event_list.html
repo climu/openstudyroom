@@ -7,9 +7,9 @@
     <h1>Events list</h1>
 </div>
 {%endblock%}
-{% timezone "UTC" %}
-{% block content %}
 
+{% block content %}
+{% timezone "UTC" %}
 <a  href="{%url 'calendar:create_cal_event'%}">
   <button class="btn btn-success">
     {%bootstrap_icon 'plus'%} Create a new event
@@ -49,7 +49,7 @@
 </tbody>
 
 </table>
-
+{% endtimezone %}
 {%endblock%}
 
 {% block extra_js %}
@@ -61,4 +61,3 @@ $('#cal-event-table').DataTable({"order": [[ 1, "desc" ]]}
 } );
 </script>
 {% endblock %}
-{% endtimezone %}
