@@ -17,6 +17,8 @@ def html_one_result(context):
         event = ''
     opponent_kgs = opponent.kgs_username
     html = ""
+    print(player)
+    print(player.results)
     if not opponent_kgs in player.results:
         return ""
     result = player.results[opponent_kgs]
@@ -59,6 +61,8 @@ def html_one_player_result(context):
 
 @register.filter
 def user_link(user):
+    if user is None:
+        return ''
     link = '<a href="/league/account/' + user.username + '">' + user.kgs_username + '</a>'
     return mark_safe(link)
 
