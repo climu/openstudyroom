@@ -27,8 +27,8 @@
   {% for event in public_events %}
   <tr>
     <td>{{event.title}}</td>
-    <td>{{event.start |date:'M, d, Y H:i'}}</td>
-    <td>{{event.end |date:'M, d, Y H:i'}}</td>
+    <td>{{event.start |date:'M d, Y H:i'}}</td>
+    <td>{{event.end |date:'M d, Y H:i'}}</td>
     <td>
       <a href="{% url 'calendar:update_cal_event' event.pk%}">
         {% bootstrap_icon 'wrench' %}
@@ -53,11 +53,21 @@
 {%endblock%}
 
 {% block extra_js %}
+
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
+
 <script type="text/javascript">
 $(document).ready(function() {
-$('#cal-event-table').DataTable({"order": [[ 1, "desc" ]]}
-);
+$('#cal-event-table').DataTable({
+  "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
+  "columnDefs": [ {
+    targets: 1,
+    render: $.fn.dataTable.render.moment( 'MMM DD, YYYY HH:mm','MMM DD, YYYY HH:mm' )
+  } ],
+  "order": [[ 1, "desc" ]]
+});
 } );
 </script>
 {% endblock %}
