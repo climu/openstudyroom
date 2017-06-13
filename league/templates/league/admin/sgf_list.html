@@ -34,6 +34,7 @@
     <th>Result</th>
     <th> Type </th>
     <th>League valid?</th>
+    <th>has_game?</th>
     <th>p_status</th>
     <th>Edit</th>
   </thead>
@@ -47,6 +48,7 @@
 <td>{{sgf.result}}</td>
 <td>{{sgf.game_type}}</td>
 <td>{{sgf.league_valid | boolean_icon}}</td>
+<td>{{sgf.has_game | boolean_icon}}</td>
 <td>{{sgf.p_status}}</td>
 <td><a href= "{% url 'league:edit_sgf' sgf.pk %}"> <span class="glyphicon glyphicon-menu-right"></span></a></td>
 
