@@ -1,5 +1,6 @@
 {% extends "league/base.html" %}
-{% load league_tags bootstrap3 %}
+{% load static tz league_tags bootstrap3 calendar_tags%}
+
 {% block title %}{{event}}- Overview{% endblock %}
 {% block content %}
 <ul class="nav nav-tabs">
@@ -14,29 +15,11 @@
   {% endfor %}
   <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
 </ul>
-<nav class="navbar navbar-default">
-<ul class="nav navbar-nav navbar-left">
-  <li class="active"><a href="{% url 'league:event' event.pk %}">Overview</a></li>
-  <li><a href="{% url 'league:results' event.pk %}">Results</a></li>
-  <li><a href="{% url 'league:players' event.pk %}">Players</a></li>
-  <li><a href="{% url 'league:games' event.pk %}">Games</a></li>
-</ul>
-{% if can_join %}
-<form class="navbar-form navbar-right" style="margin-right:5px;" action=" {% url 'league:join_event' event.pk user.pk %}" method="post" >
-  {% csrf_token %}
-  <div class="form-group">
-  <input type="hidden" name="action" value="join">
-  <input type="hidden" name="next" value="{{request.path}}">
-  <button type="submit" class="btn btn-default"  onclick="return confirm('You are about to join the {{event}}. Allright?')">
-  {% bootstrap_icon "ok" %} Join {{event.name}} !
-  </button>
-  </div>
-  </form>
-{%endif%}
-</nav>
+{% include 'league/includes/league_nav.html' with active='overview' %}
 
+{% get_current_timezone as TIME_ZONE %}
 <h3>Infos</h3>
-<p>The <b>{{event.name}}</b> started on <b>{{event.begin_time |date:"M d, Y" }}</b> and {% if close %} stoped{% else %}will stop{%endif%} on <b>{{event.end_time |date:"M d, Y" }}</b>.</p>
+<p>The <b>{{event.name}}</b> started on <b>{{event.begin_time |date:"M d, Y H:i" }}</b> ({{TIME_ZONE}}) and {% if close %} stoped{% else %}will stop{%endif%} on <b>{{event.end_time |date:"M d, Y H:i" }}</b> ({{TIME_ZONE}}).</p>
 <p>{{event.number_players}} players played {{event.number_games}} games in {{event.number_divisions}} divisions. That is {{event.percent_game_played}} % of {{event.possible_games}} possible games.</p>
 
 <h3>Game settings </h3>
@@ -59,3 +42,17 @@
 
 </ul>
 {% endblock %}}
+{% if event.is_open %}
+{% timezone "UTC" %}
+{% block extra_js %}
+
+<script type="text/javascript" src="{% static 'jquery.countdown/jquery.countdown.min.js' %}"></script>
+<script type="text/javascript">
+$("#countdown").countdown("{{event.end_time|date:'Y/m/j H:i'}}",function(event) {
+    $(this).html(event.strftime('League ends in %D day%!D %H:%M:%S'));
+  });
+</script>
+
+{% endblock %}
+{% endtimezone %}
+{% endif %}

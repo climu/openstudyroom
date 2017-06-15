@@ -1,5 +1,5 @@
 {% extends "league/base.html" %}
-{% load league_tags bootstrap3 %}
+{% load tz static league_tags bootstrap3 %}
 
 {% block title %}{{event}}- Players{% endblock %}
 {% block content %}
@@ -15,26 +15,7 @@
   {% endfor %}
   <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
 </ul>
-<nav class="navbar navbar-default">
-<ul class="nav navbar-nav navbar-left">
-  <li><a href="{% url 'league:event' event.pk %}">Overview</a></li>
-  <li><a href="{% url 'league:results' event.pk %}">Results</a></li>
-  <li class="active"><a href="{% url 'league:players' event.pk %}">Players</a></li>
-  <li><a href="{% url 'league:games' event.pk %}">Games</a></li>
-</ul>
-{% if can_join %}
-<form class="navbar-form navbar-right" style="margin-right:5px;" action=" {% url 'league:join_event' event.pk user.pk %}" method="post" >
-  {% csrf_token %}
-  <div class="form-group">
-  <input type="hidden" name="action" value="join">
-  <input type="hidden" name="next" value="{{request.path}}">
-  <button type="submit" class="btn btn-default"  onclick="return confirm('You are about to join the {{event}}. Allright?')">
-  {% bootstrap_icon "ok" %} Join {{event.name}} !
-  </button>
-  </div>
-  </form>
-{%endif%}
-</nav>
+{% include 'league/includes/league_nav.html' with active='players' %}
 <div class="well"> This table show all users who play{% if not event.is_open %}ed{% endif %} in the {{event.name}}.</div>
 
 <table id='player-table' class=' table table-hover '  >
@@ -66,7 +47,7 @@
    </tbody>
 
 {% endblock %}
-
+{% timezone "UTC" %}
 {% block extra_js %}
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
 <script type="text/javascript">
@@ -74,4 +55,15 @@ $(document).ready(function() {
 $('#player-table').DataTable();
 } );
 </script>
+{% if event.is_open %}
+
+<script type="text/javascript" src="{% static 'jquery.countdown/jquery.countdown.min.js' %}"></script>
+<script type="text/javascript">
+$("#countdown").countdown("{{event.end_time|date:'Y/m/j H:i'}}",function(event) {
+    $(this).html(event.strftime('League ends in %D day%!D %H:%M:%S'));
+  });
+</script>
+
+{% endif %}
 {% endblock %}
+{% endtimezone %}
