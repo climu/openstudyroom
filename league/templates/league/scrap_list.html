@@ -1,9 +1,13 @@
 {% extends "league/base.html" %}
 {% load bootstrap3 league_tags%}
 {% block title %}OSR leagues - Scraplist{% endblock %}
+{% block heading%}
+  <div class="page-header">
+      <h1>OSR League - Scrap list</h1>
+{%endblock%}
 {% block content %}
 <ul class="nav nav-tabs">
-  <li ><a href="{% url 'league:archives' %}">Scraplist</a></li>
+  <li ><a href="{% url 'league:archives' %}">Archives</a></li>
   {% for ev in open_events %}
   <li {%if ev == event %} class="active"{%endif %}>
     {{ev|event_link}}
@@ -11,8 +15,8 @@
   {% endfor %}
   <li class="active pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
 </ul>
-<div class="well"> Every 5 minutes, our website check if one player (and one player only) have play new games.
-  This table show the order in which such check will be perform.
+<div class="well"> Every 5 minutes, our system checks whether a player (one player at a time) has played any new games.
+  This table shows the players that are next in line to be checked by the system.
 
 {% if request.user.is_authenticated and request.user.profile in profiles %}
   <form action="" method="POST" class="form-inline" >{% csrf_token %}
