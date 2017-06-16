@@ -11,6 +11,7 @@ from django.dispatch import receiver
 import pytz
 from operator import attrgetter
 from django.core.urlresolvers import reverse
+from django.utils import timezone
 
 
 # Create your models here.
@@ -140,6 +141,11 @@ class LeagueEvent(models.Model):
             user.is_authenticated and \
             user.user_is_league_member() and \
             not LeaguePlayer.objects.filter(user=user, event=self).exists()
+
+    def remaining_sec(self):
+        """return the number of milliseconds before the league ends."""
+        delta = self.end_time - timezone.now()
+        return int(delta.total_seconds() * 1000)
 
 
 class Registry(models.Model):
@@ -673,7 +679,7 @@ class LeaguePlayer(models.Model):
     def get_results(self):
         """Return a player results.
 
-        esults are formated as:
+        results are formated as:
         {'opponent1':[{'id':game1.pk, 'r':1/0},{'id':game2.pk, 'r':1/0},...],'opponent2':[...]}
         r: 1 for win, 0 for loss
         """

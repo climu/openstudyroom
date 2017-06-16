@@ -39,20 +39,18 @@
   <li>We will keep players who played at least <b>{{event.min_matchs}} games</b>.</li>
 </ul>
 <p>Players are strongly encourage to review the game afterward. If both player have the same rank, or if your opponent can't help you reviewing your game, one should feel free to ask stronger players in our kgs room and/or in our discord channel help for the review.</p>
-
 </ul>
 {% endblock %}}
 {% if event.is_open %}
-{% timezone "UTC" %}
 {% block extra_js %}
 
 <script type="text/javascript" src="{% static 'jquery.countdown/jquery.countdown.min.js' %}"></script>
 <script type="text/javascript">
-$("#countdown").countdown("{{event.end_time|date:'Y/m/j H:i'}}",function(event) {
+var end = Date.now() + {{event.remaining_sec}};
+$("#countdown").countdown(end,function(event) {
     $(this).html(event.strftime('League ends in %D day%!D %H:%M:%S'));
   });
 </script>
 
 {% endblock %}
-{% endtimezone %}
 {% endif %}
