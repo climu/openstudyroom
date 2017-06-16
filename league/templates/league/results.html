@@ -47,7 +47,8 @@ $('#league-table').DataTable();
 {% if event.is_open %}
 <script type="text/javascript" src="{% static 'jquery.countdown/jquery.countdown.min.js' %}"></script>
 <script type="text/javascript">
-$("#countdown").countdown("{{event.end_time|date:'Y/m/j H:i'}}",function(event) {
+var end = Date.now() + {{event.remaining_sec}};
+$("#countdown").countdown(end,function(event) {
     $(this).html(event.strftime('League ends in %D day%!D %H:%M:%S'));
   });
 </script>
