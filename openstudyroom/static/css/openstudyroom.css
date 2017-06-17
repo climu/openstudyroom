@@ -83,3 +83,21 @@ blockquote{
 .cal-event-description{
   margin-top:10px;
 }
+.online::before {
+    color: #3f3;
+    content: "";
+    display: inline-block;
+    font-family: FontAwesome;
+    font-size: 0.5rem;
+    padding-bottom: 0.5rem;
+    vertical-align: middle;
+}
+.offline::before {
+    color: #888;
+    content: "";
+    display: inline-block;
+    font-family: FontAwesome;
+    font-size: 0.5rem;
+    padding-bottom: 0.5rem;
+    vertical-align: middle;
+}
