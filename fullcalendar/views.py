@@ -11,7 +11,6 @@ from league.models import is_league_admin, is_league_member
 from .forms import UTCPublicEventForm
 from .models import PublicEvent, AvailableEvent
 from pytz import utc, timezone
-#from django.utils import timezone
 # Create your views here.
 
 
@@ -71,6 +70,7 @@ def json_feed(request):
         data.append(dict)
     # get user related available events
     if user.is_authenticated() and user.user_is_league_member():
+        # 1st we get his availability
         me_available_events = AvailableEvent.objects.filter(user=user)
         for event in me_available_events:
             dict = {
@@ -84,8 +84,11 @@ def json_feed(request):
                 'color': '#01DF3A',
                 'className': 'me-available',
             }
-
             data.append(dict)
+        # then we get opponents availability
+        opponents = user.get_opponents()
+        opponents_available_events = AvailableEvent.objects.filter(user__in=opponents)
+        
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
@@ -96,16 +99,13 @@ def save(request):
     Right now it's disabled. It's working but since we can't display such events
     No need to invite users to use that for now.
     """
-    # the next line just squeeze all that view and do nothing.
-    return HttpResponse('success')
     user = request.user
     tz = user.get_timezone()
     if request.method == 'POST':
+        # todo: add proper form to check crfs
         changed_events = ''
         changed_events = json.loads(request.POST.get('events'))
-        print(changed_events)
         for event in changed_events:
-            print(event)
             if event['type'] == 'deleted':  # we deleted an event
                 # event pk is stored in event title type:pk
                 a = event['title'].find(':')
@@ -120,9 +120,8 @@ def save(request):
                 start = make_aware(start, tz)
                 end = datetime.strptime(event['end'], '%Y-%m-%dT%H:%M:%S')
                 end = make_aware(end, tz)
-                print(end)
                 if event['type'] == 'me-available':
-                    new_event = AvailableEvent.objects.create(start=start, end=end, user=user)
+                    AvailableEvent.objects.create(start=start, end=end, user=user)
 
             else:  # the event must have been moved or resized.
                 start = datetime.strptime(event['start'], '%Y-%m-%dT%H:%M:%S')
@@ -133,10 +132,9 @@ def save(request):
                 pk = event['id'][a + 1:]
                 if event['id'].startswith('me-a'):
                     ev = get_object_or_404(AvailableEvent, user=user, pk=pk)
-
-                ev.start = start
-                ev.end = end
-                ev.save()
+                    ev.start = start
+                    ev.end = end
+                    ev.save()
 
     return HttpResponse('success')
 

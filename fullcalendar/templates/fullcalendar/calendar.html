@@ -18,14 +18,10 @@
 </div>
 {%endblock%}
 {% block content %}
-{% if user.is_authenticated %}
+{% if user.is_authenticated and request.user.user_is_league_member%}
 {% include 'league/includes/user_nav.html' %}
-{% endif %}
-{% comment "don't show save button for now"%}
-<div id='message'></div>
-
 <button class='btn btn-default' id='save'>save</button>
-{% endcomment %}
+{% endif %}
 <div id='calendar'></div>
 {% endblock %}
 
@@ -70,7 +66,7 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
 			height: 'auto',
       allDaySlot:false,
       timeFormat: 'H:mm',
-      {% if request.user.is_authenticated and request.user.user_is_league_admin%}
+      {% if request.user.is_authenticated and request.user.user_is_league_member%}
       selectable:true,
       selectHelper: true,
       //prevent user from selecting multiple day availability
@@ -182,7 +178,7 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
 
                  }
             });
-            return false; //<---- move it here
+            return false;
       });
 	});
 
