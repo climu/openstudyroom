@@ -683,24 +683,24 @@ class LeaguePlayer(models.Model):
         {'opponent1':[{'id':game1.pk, 'r':1/0},{'id':game2.pk, 'r':1/0},...],'opponent2':[...]}
         r: 1 for win, 0 for loss
         """
-        blackGames = self.black.get_queryset()
-        whiteGames = self.white.get_queryset()
+        black_sgfs = self.user.black_sgf.get_queryset().filter(divisions=self.division)
+        white_sgfs = self.user.white_sgf.get_queryset().filter(divisions=self.division)
         resultsDict = defaultdict(list)
 
-        for game in blackGames:
-            opponent = game.white
-            won = game.winner == self
+        for sgf in black_sgfs:
+            opponent = sgf.white
+            won = sgf.winner == self.user
             record = {
-                'id': game.pk,
+                'id': sgf.pk,
                 'r': 1 if won else 0
             }
             resultsDict[opponent.kgs_username].append(record)
 
-        for game in whiteGames:
-            opponent = game.black
-            won = game.winner == self
+        for sgf in white_sgfs:
+            opponent = sgf.black
+            won = sgf.winner == self.user
             record = {
-                'id': game.pk,
+                'id': sgf.pk,
                 'r': 1 if won else 0
             }
             resultsDict[opponent.kgs_username].append(record)
@@ -739,8 +739,23 @@ class LeaguePlayer(models.Model):
         self.score -= self.event.pploss
         self.save()
 
+    def get_opponents(self):
+        players = LeaguePlayer.objects.filter(division=self.division).exclude(pk=self.pk)
+        opponents = []
+        for player in players:
+            n_black = self.user.black_sgf.get_queryset().filter(
+                divisions=self.division,
+                white=player.user).count()
+            n_white = self.user.white_sgf.get_queryset().filter(
+                divisions=self.division,
+                black=player.user).count()
+            if n_white + n_black < self.event.nb_matchs:
+                opponents.append(player)
+        return opponents
 
 class Game(models.Model):
+    """This model is deprecated and should be deleted soon."""
+
     sgf = models.OneToOneField('Sgf')
     event = models.ForeignKey('LeagueEvent', blank=True, null=True)
     black = models.ForeignKey('LeaguePlayer',
