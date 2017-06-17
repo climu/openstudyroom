@@ -1,10 +1,29 @@
 # library of useful fonctions
 
 from bs4 import BeautifulSoup
+
 import requests
 import re
 import datetime
+import json
+import time
 
+def kgs_connect():
+    url = 'http://www.gokgs.com/json/access'
+    message = {
+        "type": "LOGIN",
+        "name": "OSR",
+        "password": "qx3whs",
+        "locale": "en_US",
+    }
+    formatted_message = json.dumps(message)
+    response = requests.post(url, formatted_message)
+    time.sleep(2)
+    cookies = response.cookies
+    r = requests.get(url, cookies=cookies)
+    time.sleep(2)
+    requests.post(url, json.dumps({"type": "LOGOUT"}), cookies=cookies)
+    return r
 
 def check_byoyomi(s):
     '''check if a string is a correct byo-yomi time: at least '3x30 byo-yomi'
