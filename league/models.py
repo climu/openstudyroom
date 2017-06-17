@@ -433,13 +433,10 @@ class User(AbstractUser):
 
     def is_online_kgs(self):
         """return a boolean saying if a user is online on KGS."""
-        print("here")
         if self.profile.last_kgs_online is None:
             return False
-        print(self.profile.last_kgs_online)
         now = timezone.now()
         delta = now - self.profile.last_kgs_online
-        print(delta.total_seconds)
         return delta.total_seconds() < 500
 
 

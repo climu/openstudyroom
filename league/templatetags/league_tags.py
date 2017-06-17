@@ -17,8 +17,6 @@ def html_one_result(context):
         event = ''
     opponent_kgs = opponent.kgs_username
     html = ""
-    print(player)
-    print(player.results)
     if not opponent_kgs in player.results:
         return ""
     result = player.results[opponent_kgs]
