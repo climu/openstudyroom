@@ -243,7 +243,7 @@ class Sgf(models.Model):
             winner = 'white'
         else:  # here the game has no valid result.That shouldn't happen
             return False
-        # if events is empty, we mark the sgf as invalid and unpopulate related fields
+        # if events is empty, we mark the sgf as invalid
         if len(events) == 0:
             self.league_valid = False
             self.save()
@@ -479,6 +479,33 @@ class User(AbstractUser):
         """Return all open division a user is in."""
         players = self.leagueplayer_set.all()
         return Division.objects.filter(leagueplayer__in=players, league_event__is_open=True)
+
+    def get_opponents(self):
+        """return a list of all user self can play with.
+
+        Maybe at some point we should have the divisions in which on can play with
+        as well as the number of games remaining.
+        """
+        # First we get all self players in open divisions
+        players = self.leagueplayer_set.filter(division__league_event__is_open=True)
+        # For each player, we get related opponents
+        opponents = []
+        for player in players:
+            division = player.division
+            player_opponents = LeaguePlayer.objects.filter(
+                division=division).exclude(pk=player.pk)
+            for opponent in player_opponents:
+                n_black = player.user.black_sgf.get_queryset().filter(
+                    divisions=division,
+                    white=opponent.user).count()
+                n_white = player.user.white_sgf.get_queryset().filter(
+                    divisions=division,
+                    black=opponent.user).count()
+                if n_white + n_black < division.league_event.nb_matchs:
+                    if opponent.user not in opponents:
+                        opponents.append(opponent.user)
+        return opponents
+
 
     def check_user(self):
         """Check a user to see if he have play new games.
