@@ -440,7 +440,7 @@ class User(AbstractUser):
         now = timezone.now()
         delta = now - self.profile.last_kgs_online
         print(delta.total_seconds)
-        return delta.total_seconds() < 300
+        return delta.total_seconds() < 500
 
 
     def is_in_primary_event(self):
