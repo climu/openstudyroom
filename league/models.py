@@ -243,7 +243,7 @@ class Sgf(models.Model):
             winner = 'white'
         else:  # here the game has no valid result.That shouldn't happen
             return False
-        # if events is empty, we mark the sgf as invalid and unpopulate related fields
+        # if events is empty, we mark the sgf as invalid
         if len(events) == 0:
             self.league_valid = False
             self.save()
@@ -431,6 +431,18 @@ class User(AbstractUser):
             player.save()
             return True
 
+    def is_online_kgs(self):
+        """return a boolean saying if a user is online on KGS."""
+        print("here")
+        if self.profile.last_kgs_online is None:
+            return False
+        print(self.profile.last_kgs_online)
+        now = timezone.now()
+        delta = now - self.profile.last_kgs_online
+        print(delta.total_seconds)
+        return delta.total_seconds() < 300
+
+
     def is_in_primary_event(self):
         event = Registry.get_primary_event()
         return LeaguePlayer.objects.filter(user=self, event=event).exists()
@@ -479,6 +491,33 @@ class User(AbstractUser):
         """Return all open division a user is in."""
         players = self.leagueplayer_set.all()
         return Division.objects.filter(leagueplayer__in=players, league_event__is_open=True)
+
+    def get_opponents(self):
+        """return a list of all user self can play with.
+
+        Maybe at some point we should have the divisions in which on can play with
+        as well as the number of games remaining.
+        """
+        # First we get all self players in open divisions
+        players = self.leagueplayer_set.filter(division__league_event__is_open=True)
+        # For each player, we get related opponents
+        opponents = []
+        for player in players:
+            division = player.division
+            player_opponents = LeaguePlayer.objects.filter(
+                division=division).exclude(pk=player.pk)
+            for opponent in player_opponents:
+                n_black = player.user.black_sgf.get_queryset().filter(
+                    divisions=division,
+                    white=opponent.user).count()
+                n_white = player.user.white_sgf.get_queryset().filter(
+                    divisions=division,
+                    black=opponent.user).count()
+                if n_white + n_black < division.league_event.nb_matchs:
+                    if opponent.user not in opponents:
+                        opponents.append(opponent.user)
+        return opponents
+
 
     def check_user(self):
         """Check a user to see if he have play new games.
@@ -683,24 +722,24 @@ class LeaguePlayer(models.Model):
         {'opponent1':[{'id':game1.pk, 'r':1/0},{'id':game2.pk, 'r':1/0},...],'opponent2':[...]}
         r: 1 for win, 0 for loss
         """
-        blackGames = self.black.get_queryset()
-        whiteGames = self.white.get_queryset()
+        black_sgfs = self.user.black_sgf.get_queryset().filter(divisions=self.division)
+        white_sgfs = self.user.white_sgf.get_queryset().filter(divisions=self.division)
         resultsDict = defaultdict(list)
 
-        for game in blackGames:
-            opponent = game.white
-            won = game.winner == self
+        for sgf in black_sgfs:
+            opponent = sgf.white
+            won = sgf.winner == self.user
             record = {
-                'id': game.pk,
+                'id': sgf.pk,
                 'r': 1 if won else 0
             }
             resultsDict[opponent.kgs_username].append(record)
 
-        for game in whiteGames:
-            opponent = game.black
-            won = game.winner == self
+        for sgf in white_sgfs:
+            opponent = sgf.black
+            won = sgf.winner == self.user
             record = {
-                'id': game.pk,
+                'id': sgf.pk,
                 'r': 1 if won else 0
             }
             resultsDict[opponent.kgs_username].append(record)
@@ -739,8 +778,23 @@ class LeaguePlayer(models.Model):
         self.score -= self.event.pploss
         self.save()
 
+    def get_opponents(self):
+        players = LeaguePlayer.objects.filter(division=self.division).exclude(pk=self.pk)
+        opponents = []
+        for player in players:
+            n_black = self.user.black_sgf.get_queryset().filter(
+                divisions=self.division,
+                white=player.user).count()
+            n_white = self.user.white_sgf.get_queryset().filter(
+                divisions=self.division,
+                black=player.user).count()
+            if n_white + n_black < self.event.nb_matchs:
+                opponents.append(player)
+        return opponents
 
 class Game(models.Model):
+    """This model is deprecated and should be deleted soon."""
+
     sgf = models.OneToOneField('Sgf')
     event = models.ForeignKey('LeagueEvent', blank=True, null=True)
     black = models.ForeignKey('LeaguePlayer',
