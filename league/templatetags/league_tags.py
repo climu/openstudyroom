@@ -63,7 +63,13 @@ def html_one_player_result(context):
 def user_link(user):
     if user is None:
         return ''
-    link = '<a href="/league/account/' + user.username + '">' + user.kgs_username + '</a>'
+    link = '<a href="/league/account/' + user.username + '"'
+    if user.is_online_kgs():
+        link += 'class="online"'
+    else:
+        link += 'class="offline"'
+    link +=  '>' + user.kgs_username + '</a>'
+
     return mark_safe(link)
 
 

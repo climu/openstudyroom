@@ -20,6 +20,8 @@ from django.views.generic.edit import UpdateView
 from django.views.generic.edit import CreateView
 from machina.core.db.models import get_model
 import json
+from django.utils import timezone
+from time import sleep
 
 ForumProfile = get_model('forum_member', 'ForumProfile')
 discord_url_file = "/etc/discord_url.txt"
@@ -28,22 +30,39 @@ discord_url_file = "/etc/discord_url.txt"
 def scraper():
     """Check kgs to update our db.
     This is called every 5 mins by cron in production.
-    To prevent overrequestion kgs, do one of the 3 actions only:
-    - 1 check time since get from kgs
-    - 2 look for some sgfs that analyse and maybe pulled as games
-    - 3 check a player
+    First we check and update kgs online players.
+    then we do one of the 3 actions only:
+    - 1: check time since get from kgs
+    - 2: Check which players are online on kgs and update db.
+    - 3: wait 5 sec
+    Do only one of the above actions
+    - 4.1 look for some sgfs that analyse and maybe pulled as games
+    - 4.2 check a player
     """
 
     # 1 check time since get from kgs
-    now = datetime.datetime.now().replace(tzinfo=None)
-    last_kgs = Registry.get_time_kgs().replace(tzinfo=None)
+    now = timezone.now()
+    last_kgs = Registry.get_time_kgs()
     delta = now - last_kgs
     delta_sec = delta.total_seconds()
     kgs_delay = Registry.get_kgs_delay()
     if delta_sec < kgs_delay:  # we can't scrape yet
         out = 'too soon'
         return out
-    # 2 look for some sgfs that we analyse and maybe record as games
+    # 2 Check which players are online and update db
+    r = utils.kgs_connect()
+    for m in json.loads(r.text)['messages']:
+        if m['type'] == 'ROOM_JOIN' and m['channelId'] == 3627409:
+            for kgs_user in m['users']:
+                osr_user = User.objects.filter(kgs_username__iexact=kgs_user['name']).first()
+                if osr_user is not None:
+                    profile = osr_user.profile
+                    profile.last_kgs_online = now
+                    profile.save()
+    # 3 wait a bit
+    sleep(2)
+
+    # 4.1 look for some sgfs that we analyse and maybe record as games
     sgfs = Sgf.objects.filter(p_status=2)
     if len(sgfs) == 0:
         sgfs = Sgf.objects.filter(p_status=1)
@@ -61,7 +80,8 @@ def scraper():
             # I think we could deal with sgf already in db one day here:
             # Populate existing sgf urlto and delete new sgf
         out = sgf
-    # 3 no games to scrap let's check a player
+
+    # 4.2 no games to scrap let's check a player
     else:
         events = LeagueEvent.objects.filter(is_open=True)
         profiles = Profile.objects.filter(user__leagueplayer__event__in=events) \
