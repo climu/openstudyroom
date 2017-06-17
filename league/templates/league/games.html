@@ -1,12 +1,13 @@
 {% extends "league/base.html" %}
-{% load league_tags wgo_tags bootstrap3%}
-{% block title %}{% if game %} {{game.black.kgs_username}} vs {{game.white.kgs_username}} {% else %}{{event}}- Games{% endif %}{% endblock %}
+{% load tz static league_tags wgo_tags bootstrap3%}
+
+{% block title %}{% if sgf %} {{sgf.black.kgs_username}} vs {{sgf.white.kgs_username}} {% else %}{{event}}- Games{% endif %}{% endblock %}
 {% block extra_head_js %}
 <script type="text/javascript">
-function load_game(game_id) {
+function load_game(sgf_id) {
     $.ajax({
     type: "GET",
-    url: "/league/game/json/" + game_id,
+    url: "/league/game/json/" + sgf_id,
     dataType: "json",
     success: processData,
     error: function(){ alert("failed"); }
@@ -40,51 +41,31 @@ return false;};
   {% endfor %}
   <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
   </ul>
-<nav class="navbar navbar-default">
-<ul class="nav navbar-nav navbar-left">
-  <li><a href="{% url 'league:event' event.pk %}">Overview</a></li>
-  <li><a href="{% url 'league:results' event.pk %}">Results</a></li>
-  <li><a href="{% url 'league:players' event.pk %}">Players</a></li>
-  <li class="active"><a href="{% url 'league:games' event.pk %}">Games</a></li>
-</ul>
-{% if can_join %}
-<form class="navbar-form navbar-right" style="margin-right:5px;" action=" {% url 'league:join_event' event.pk user.pk %}" method="post" >
-  {% csrf_token %}
-  <div class="form-group">
-  <input type="hidden" name="action" value="join">
-  <input type="hidden" name="next" value="{{request.path}}">
-  <button type="submit" class="btn btn-default"  onclick="return confirm('You are about to join the {{event}}. Allright?')">
-  {% bootstrap_icon "ok" %} Join {{event.name}} !
-  </button>
-  </div>
-  </form>
-{%endif%}
-</nav>
-
+{% include 'league/includes/league_nav.html' with active='games' %}
 <div class ="row">
   <div class="well"> This table show all games that have been played in the {{event.name}}</div>
 <div  class="col-md-4">
   <div id ="game_infos">
-    {% if game %}
+    {% if sgf %}
   {% include "league/includes/game_info.html"  %}
     {% endif %}
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">Games from {{event}}</div>
 
-{% include "league/includes/games.html" with games=games %}
+{% include "league/includes/games.html" with sgfs=sgfs %}
 
 </div>
 </div>
 
 <div class="col-md-8">
-  {% if game %}
-  <div id="player" data-wgo="{{ game.sgf.sgf_text | prepare_sgf}}" >
+  {% if sgf %}
+  <div id="player" data-wgo="{{ sgf.sgf_text | prepare_sgf}}" >
     </div>
     {% else %}
     <div id="player">
       <div class="alert alert-info">
-      Click a game result and it will be launched in a goban.
+      Click a game result to see it.
     </div>
 
     </div>
@@ -98,7 +79,6 @@ return false;};
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
-
 <script type="text/javascript">
 $(document).ready(function() {
 $('#game-table').DataTable({
@@ -109,9 +89,17 @@ $('#game-table').DataTable({
     render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','MMM DD, YYYY' )
   } ],
   "order": [[ 0, "desc" ]]
-
 });
 } );
 </script>
+{% if event.is_open %}
+<script type="text/javascript" src="{% static 'jquery.countdown/jquery.countdown.min.js' %}"></script>
+<script type="text/javascript">
+var end = Date.now() + {{event.remaining_sec}};
+$("#countdown").countdown(end,function(event) {
+    $(this).html(event.strftime('League ends in %D day%!D %H:%M:%S'));
+  });
+</script>
 
+{% endif %}
 {% endblock %}

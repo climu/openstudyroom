@@ -11,18 +11,18 @@
        <th>result</th>
     </thead>
     <tbody>
-{% for game in games %}
+{% for sgf in sgfs %}
   <tr>
-    <td> {{ game.sgf.date |date:"M d, Y" }}</td>
-    {% if game.winner == game.white %}
-    <td><b> {{ game.white.user | user_link}}<b></td>
-    <td> {{ game.black.user | user_link }}</td>
+    <td> {{ sgf.date |date:"M d, Y" }}</td>
+    {% if sgf.winner == sgf.white %}
+    <td><b> {{ sgf.white | user_link}}<b></td>
+    <td> {{ sgf.black | user_link }}</td>
 
     {% else %}
-    <td> {{ game.white.user | user_link }}</td>
-    <td><b> {{ game.black.user | user_link }}</b></td>
+    <td> {{ sgf.white | user_link }}</td>
+    <td><b> {{ sgf.black | user_link }}</b></td>
     {%endif%}
-    <td> {%if event %}{{ game |game_link:event }} {%else%}{{ game |game_link}}{%endif%}</td>
+    <td> {%if event %}{{ sgf |game_link:event }} {%else%}{{ sgf |game_link}}{%endif%}</td>
   </tr>
   {% endfor %}
 </tbody>

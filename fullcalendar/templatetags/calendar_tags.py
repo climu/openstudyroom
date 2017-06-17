@@ -7,7 +7,7 @@ register = template.Library()
 
 @register.simple_tag()
 def public_events():
-    cal_events = PublicEvent.get_future_public_events().order_by('-start')
+    cal_events = PublicEvent.get_future_public_events().order_by('start')
     return cal_events
 
 @register.simple_tag()

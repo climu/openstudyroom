@@ -1,6 +1,10 @@
 {% extends "league/base.html" %}
 {% load bootstrap3 league_tags%}
-{% block title %}{{event}}- Scraplist{% endblock %}
+{% block title %}OSR leagues - Scraplist{% endblock %}
+{% block heading%}
+  <div class="page-header">
+      <h1>OSR League - Scrap list</h1>
+{%endblock%}
 {% block content %}
 <ul class="nav nav-tabs">
   <li ><a href="{% url 'league:archives' %}">Archives</a></li>
@@ -11,7 +15,9 @@
   {% endfor %}
   <li class="active pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
 </ul>
-<div class="well"> This table show all OSR players ordered by the approximate time they will be checked in minutes.
+<div class="well"> Every 5 minutes, our system checks whether a player (one player at a time) has played any new games.
+  This table shows the players that are next in line to be checked by the system.
+
 {% if request.user.is_authenticated and request.user.profile in profiles %}
   <form action="" method="POST" class="form-inline" >{% csrf_token %}
     <span> If you just played a game, you can move you up this list by clicking this button :</span>
@@ -27,7 +33,7 @@
 	<thead>
 	<tr>
 		<th>Player</th>
-		<th>Check in</th>
+		<th>Check in (min)</th>
     {% if request.user.is_authenticated and request.user.user_is_league_admin %}
     <th> Put up</th>
     {% endif %}
