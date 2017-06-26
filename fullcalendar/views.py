@@ -42,11 +42,15 @@ class PublicEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
 def calendar_view(request):
     user = request.user
-    return render(request, 'fullcalendar/calendar.html', {'user': request.user, })
+    if user.is_authenticated and user.user_is_league_member:
+        template = 'fullcalendar/calendar_member.html'
+    else:
+        template = 'fullcalendar/calendar.html'
+    return render(request, template, {'user': user, })
 
 
 def json_feed(request):
-    '''get all events for one user and serve a json'''
+    '''get all events for one user and serve a json.'''
     user = request.user
     if user.is_authenticated:
         tz = user.get_timezone()
@@ -70,47 +74,65 @@ def json_feed(request):
         data.append(dict)
     # get user related available events
     if user.is_authenticated() and user.user_is_league_member():
-        # 1st we get his availability
+        # his own availability
         me_available_events = AvailableEvent.objects.filter(user=user)
         for event in me_available_events:
             dict = {
                 'id': 'me-a:' + str(event.pk),
+                'pk': str(event.pk),
                 'title': 'I am available',
                 'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
                 'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
                 'is_new': False,
                 'editable': True,
                 'type': 'me-available',
-                'color': '#01DF3A',
+                'color': '#ffff80',
                 'className': 'me-available',
             }
+            print(dict)
             data.append(dict)
-        # then we get opponents availability
-        opponents = user.get_opponents()
-        opponents_available_events = AvailableEvent.objects.filter(user__in=opponents)
-        
+        # others availability
+        leagues_list = json.loads(request.GET.get('divs', ''))
+        events = AvailableEvent.get_formated_other_available(user, leagues_list)
+        for event in events:
+            # event is formated like this:
+            # { start: datetime,
+            #   end : datetime,
+            #   users: [user1, user2, ...]
+            # }
+            n_users = len(event['users'])
+            dict = {
+                'id': 'other-available',
+                'title': str(n_users) + ' players available.',
+                'start': event['start'].astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+                'end': event['end'].astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+                'is_new': False,
+                'editable': False,
+                'type': 'other-available',
+                'color': '#01DF3A',
+                'className': 'other-available',
+                'rendering': 'background',
+                'users': event['users'],
+            }
+            data.append(dict)
+
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
 @login_required()
 @user_passes_test(is_league_member, login_url="/", redirect_field_name=None)
 def save(request):
-    """Get events modification from calendar ajax post.
-    Right now it's disabled. It's working but since we can't display such events
-    No need to invite users to use that for now.
-    """
+    """Get events modification from calendar ajax post."""
     user = request.user
     tz = user.get_timezone()
     if request.method == 'POST':
-        # todo: add proper form to check crfs
         changed_events = ''
         changed_events = json.loads(request.POST.get('events'))
         for event in changed_events:
+            print(event)
             if event['type'] == 'deleted':  # we deleted an event
-                # event pk is stored in event title type:pk
-                a = event['title'].find(':')
-                pk = event['title'][a + 1:]
-                if event['title'].startswith('me-a'):
+                pk = event['pk']
+                if event['id'].startswith('me-a'):
                     # we had user=user to be sure one user can only delete his available events
                     ev = get_object_or_404(AvailableEvent, user=user, pk=pk)
                     ev.delete()
@@ -128,9 +150,8 @@ def save(request):
                 start = make_aware(start, tz)
                 end = datetime.strptime(event['end'], '%Y-%m-%dT%H:%M:%S')
                 end = make_aware(end, tz)
-                a = event['id'].find(':')
-                pk = event['id'][a + 1:]
-                if event['id'].startswith('me-a'):
+                pk = event['pk']
+                if event['type'] == 'me-available':
                     ev = get_object_or_404(AvailableEvent, user=user, pk=pk)
                     ev.start = start
                     ev.end = end

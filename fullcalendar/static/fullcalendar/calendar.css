@@ -1,16 +1,30 @@
 .fc-helper{
-  color: white !important;
-      background-color: #01DF3A !important;
-      border-color: #01DF3A;
+  color: black !important;
+      background-color: #ffff80 !important;
+      border-color: #ffff80;
        opacity: 0.5;
 }
 .me-available{
-  color: white !important;
-      background-color: #01DF3A !important;
-      border-color: #01DF3A;
+  color: black !important;
+      background-color: #ffff80 !important;
+      border-color: #ffff80;
        opacity: 0.5;
 }
 .event-deleted{
   display: none;
 }
 .closeon {cursor: pointer;}
+.other-available{
+  margin:1px;
+  color:white;
+}
+.controls{
+padding-right: 5px;
+padding-left: 5px;
+
+
+}
+.hidden{
+
+  display:none!important;
+}

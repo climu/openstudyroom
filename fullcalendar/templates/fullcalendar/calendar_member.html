@@ -1,0 +1,323 @@
+{% extends "full_width.html" %}
+{% load tz static%}
+
+{% block extra_head_js %}
+<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css' />
+<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.print.css' media='print' />
+<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/calendar.css'%}"/>
+<script
+			  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+			  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+			  crossorigin="anonymous">
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js'></script>
+
+{% endblock %}
+{% block title %}My profile - Calendar{% endblock %}
+{% block heading %}
+{% get_current_timezone as TIME_ZONE %}
+<div class="page-header">
+    <h1>My profile - Calendar ({{TIME_ZONE}})</h1>
+</div>
+{%endblock%}
+{% block content %}
+<div class= "row">
+{% include 'league/includes/user_nav.html' %}
+<div class="col-md-2 controls">
+  <div data-spy="affix" data-offset-top="240" style="top:20px;">
+<div class="panel panel-default">
+  <div class="panel-heading clearfix" style="background-color: #ffff80 !important;opacity: 0.5;" >
+    <div class="checkbox pull-left">
+      <label><input id ="check-me-av" type="checkbox" checked >My availability</label>
+    </div>
+  </div>
+  <div class="panel-body me-available-controls">
+    <button class='btn btn-default' id='save'>Save changes</button>
+
+  </div>
+
+</div>
+<div class="panel panel-default" >
+  <div class="panel-heading" style="background-color: #01DF3A !important;opacity: 0.5;">
+    <div class="checkbox">
+      <label><input id ="check-other-av" type="checkbox" checked>Others availability</label>
+    </div>
+  </div>
+  <div class="panel-body other-available-controls">
+{% for division in user.get_open_divisions %}
+    <div class="checkbox div-checkbox ">
+      <label><input class ="check-div" value="{{division.pk}}" type="checkbox" checked>{{division.name}}</label>
+    </div>
+{% endfor %}
+  </div>
+  <div class="panel-footer other-available-controls">
+    <div id="draggable" class="fc-event ui-draggable ui-draggable-handle"
+     data-event='{
+       "title":"Game request",
+       "duration":"01:00",
+        "type":"game_request",
+        "color": "#FF8800",
+        "className" :"game-request",
+        "is_new" : "true",
+        "is_change":"true",
+        "constraint":"other-available",
+        "eventStartEditable": true
+
+        }'>
+      Game request
+    </div>
+  </div>
+
+</div>
+
+</div>
+</div>
+<div class="col-md-10"
+<div id='calendar'></div>
+</div>
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+// we will do some ajax post request and hence we will need to grab csrf from cookie.
+//https://docs.djangoproject.com/en/1.11/ref/csrf/#ajax
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+$.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
+// end of csrftoken cookie set up
+
+$('#draggable').draggable({
+    revert: true,      // immediately snap back to original position
+    revertDuration: 0  //
+});
+	$(document).ready(function() {
+
+		$('#calendar').fullCalendar({
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,agendaWeek'
+			},
+      views: {
+        month:{
+          selectable:false,
+        }
+      },
+      weekNumbers: true,
+			navLinks: true, // can click day/week names to navigate views
+			editable: false,
+			height: 'auto',
+      allDaySlot:false,
+      timeFormat: 'H:mm',
+      selectable:true,
+      selectHelper: true,
+      droppable: true,
+      //prevent user from selecting multiple day availability
+      selectConstraint: {
+        start: '00:00',
+        end: '24:00',
+      },
+
+      selectAllow:  function(selectInfo){
+        return ($('#check-me-av').is(':checked'));
+
+        },
+      //we don't want to me-available event overlaping
+      selectOverlap: function(event) {
+              return event.type != 'me-available';
+          },
+      eventOverlap: function(stillEvent, movingEvent) {
+        return stillEvent.type != 'me-available';
+      },
+      //selecting will create an event saying use is available
+      select: function(start, end) {
+				var eventData;
+				eventData = {
+					title: 'I am available',
+					start: start,
+					end: end,
+          type:'me-available',
+          color: '#ffff80',
+          className :'me-available',
+          is_new : true,
+          is_change:true,
+          editable:true
+				};
+				$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+
+				$('#calendar').fullCalendar('unselect');
+			},
+      eventResize: function(event, delta) {
+        event.is_change=true;
+      },
+      eventDrop:function(event, delta){
+        event.is_change=true;
+      },
+      drop: function(date) {
+
+    },
+
+			events:{
+        url: '{% url "calendar:json_feed" %}',
+        data: function() { // a function that returns an object
+          var div_list = $('.check-div:checkbox:checked').map(function() {
+            return this.value;
+             }).get();
+          json = JSON.stringify(div_list);
+            return({
+              'divs':json
+            });
+        }
+    },
+
+      eventRender: function(event, element) {
+        if (element.find(".fc-helper")){
+          event.eventColor='#ffff80';
+        }
+        // deals with me-available events:
+        if (event.type === 'me-available'){
+            // add a closeon button
+            element.find(".fc-content").prepend( "<span style='font-size:1.5em;'class='pull-right glyphicon glyphicon-remove-circle closeon' aria-hidden='true'></span>" );
+            element.find(".closeon").click(function() {
+              //if the event is not new, we have to create a deleted event to inform the server
+              if (event.is_new != true){
+              //  $('#calendar').fullCalendar( 'renderEvent',
+                // {title: event._id,
+                  // start:event.start,
+              //     end: event.end,
+              //     type:'deleted',
+              //     is_change:true,
+              //     className :'event-deleted',
+              //     is_new:false,
+              //     rendering: 'background',
+              //   } ,
+              //   true  );
+              event.type = 'deleted';
+              event.is_change = true;
+              event.className  = 'event-deleted';
+              event.rendering  = 'background';
+              $('#calendar').fullCalendar('updateEvent', event);
+              }
+              else{
+               $('#calendar').fullCalendar('removeEvents',event._id);
+             }
+           });// end of closeon
+           if (!($('#check-me-av').is(':checked'))){
+             element.addClass('hidden');
+           }
+
+        }// end of event.type == me-available
+        if (event.type === 'other-available'){
+          element.append(event.title);
+          var text = event.title + '<ul>';
+          event.users.forEach(function(element){
+            text +='<li>' + element + '</li>';
+          });
+          text += '</ul>';
+          element.tooltip({
+            title: text,
+            html: true,
+            placement: "left"
+          });//tooltip
+          if (!($('#check-other-av').is(':checked'))){
+            element.addClass('hidden');
+          }
+        }// other-available
+      }//render event
+    });//fullCalendar
+
+    $("#save").click(function () {
+      var eventsFromCalendar = $('#calendar').fullCalendar('clientEvents',function (event) {
+                    return event.is_change == true;});
+      //to render json from events objects list, we need to deal with circular relation
+      //see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
+      eventsFromCalendar = eventsFromCalendar.map(function(e) {
+        return {
+          start: e.start,
+          end: e.end,
+          title: e.title,
+          type: e.type,
+          is_new: e.is_new,
+          id:e.id,
+          pk:e.pk
+        };
+      });
+      seen = [];
+      var json = JSON.stringify(eventsFromCalendar,function(key, val) {
+          if (val != null && typeof val == "object") {
+            if (seen.indexOf(val) >= 0) {
+              return;
+            }
+            seen.push(val);
+          }
+          return val;
+        });
+        $.ajax({
+                 type:"POST",
+                 url:"{% url 'calendar:save'%}",
+                 data: {
+                        'events': json
+                        },
+                 success: function(){
+                   $('#calendar').fullCalendar( 'removeEvents');
+                    $('#calendar').fullCalendar( 'refetchEvents' );
+
+                 }
+            });
+            return false;
+      });// closing $("#save").click
+
+      // when a user (un)check a division checkbox
+      // we need tp refetch the events
+      $('.check-div').click(function(){
+        //$('#calendar').fullCalendar( 'removeEvents');
+        $('#calendar').fullCalendar( 'refetchEvents' );
+          });
+
+    $('#check-me-av').click(function() {
+    if( $(this).is(':checked')) {
+      $(".me-available").removeClass('hidden');
+      $(".me-available-controls").removeClass('hidden');
+
+    } else {
+        $(".me-available").addClass('hidden');
+        $(".me-available-controls").addClass('hidden');
+
+    }
+    });
+    $('#check-other-av').click(function() {
+    if( $(this).is(':checked')) {
+      $(".other-available").removeClass('hidden');
+      $(".other-available-controls").removeClass('hidden');
+
+    } else {
+        $(".other-available").addClass('hidden');
+        $(".other-available-controls").addClass('hidden');
+
+    }
+});
+
+	});// document ready
+
+
+
+
+</script>
+{% endblock %}

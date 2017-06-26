@@ -10,177 +10,54 @@
 <script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js'></script>
 
 {% endblock %}
-{% block title %}{% if user.is_authenticated %}My profile - {% endif %}Calendar{% endblock %}
+{% block title %}Calendar{% endblock %}
 {% block heading %}
 {% get_current_timezone as TIME_ZONE %}
 <div class="page-header">
-    <h1>{% if user.is_authenticated %}My profile - {% endif %}Calendar ({{TIME_ZONE}})</h1>
+    <h1>Calendar ({{TIME_ZONE}})</h1>
 </div>
 {%endblock%}
 {% block content %}
-{% if user.is_authenticated and request.user.user_is_league_member%}
-{% include 'league/includes/user_nav.html' %}
-<button class='btn btn-default' id='save'>save</button>
-{% endif %}
+<div class= "row">
 <div id='calendar'></div>
 {% endblock %}
 
 
 {% block extra_js %}
+
 <script>
-// we will do some ajax post request and hence we will need to grab csrf from cookie.
-//https://docs.djangoproject.com/en/1.11/ref/csrf/#ajax
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-var csrftoken = getCookie('csrftoken');
-$.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
 	$(document).ready(function() {
 
 		$('#calendar').fullCalendar({
 			header: {
 				left: 'prev,next today',
 				center: 'title',
-				right: 'month,agendaWeek,agendaDay'
+				right: 'month,agendaWeek'
 			},
       views: {
         month:{
           selectable:false,
         }
       },
-
+      weekNumbers: true,
 			navLinks: true, // can click day/week names to navigate views
 			editable: false,
 			height: 'auto',
       allDaySlot:false,
       timeFormat: 'H:mm',
-      {% if request.user.is_authenticated and request.user.user_is_league_member%}
-      selectable:true,
-      selectHelper: true,
-      //prevent user from selecting multiple day availability
-      selectConstraint: {
-        start: '00:00',
-        end: '24:00',
-      },
-      //we don't want to me-available event overlaping
-      selectOverlap: function(event) {
-              return event.type != 'me-available';
-          },
-      eventOverlap: function(stillEvent, movingEvent) {
-        return stillEvent.type != 'me-available';
-      },
-      //selecting will create an event saying use is available
-      select: function(start, end) {
-				var eventData;
-				eventData = {
-					title: 'I am available',
-					start: start,
-					end: end,
-          type:'me-available',
-          color: '#01DF3A',
-          className :'me-available',
-          is_new : true,
-          is_change:true,
-          editable:true
-				};
-					$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
-
-				$('#calendar').fullCalendar('unselect');
-			},
-      eventResize: function(event, delta) {
-        event.is_change=true;
-      },
-      eventDrop:function(event, delta){
-        event.is_change=true;
-      },
-      {% endif %}
-
-
-			events:'{% url "calendar:json_feed" %}',
-      eventRender: function(event, element) {
-        if (element.find(".fc-helper")){
-          event.eventColor='#01DF3A';
-
-        }
-        //add a delete button to me-available events
-        if (event.type === 'me-available'){
-            element.find(".fc-content").prepend( "<span style='font-size:1.5em;'class='pull-right glyphicon glyphicon-remove-circle closeon' aria-hidden='true'></span>" );
-            element.find(".closeon").click(function() {
-              //if the event is not new, we have to create a deleted event to inform the server
-              if (event.is_new != true){
-                $('#calendar').fullCalendar( 'renderEvent',
-                 {title: event._id,
-                   start:event.start,
-                   end: event.end,
-                   type:'deleted',
-                   is_change:true,
-                   className :'event-deleted',
-                   is_new:false,
-                   rendering: 'background',
-
-                 } ,
-                 true  );
-
-              }
-               $('#calendar').fullCalendar('removeEvents',event._id);
+      events:{
+        url: '{% url "calendar:json_feed" %}',
+        data: function() { // a function that returns an object
+          var div_list = $('.check-div:checkbox:checked').map(function() {
+            return this.value;
+             }).get();
+          json = JSON.stringify(div_list);
+            return({
+              'divs':json
             });
-
         }
-      }
-		});
-
-    $("#save").click(function () {
-      var eventsFromCalendar = $('#calendar').fullCalendar('clientEvents',function (event) {
-                    return event.is_change == true;});
-      //to render json from events objects list, we need to deal with circular relation
-      //see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
-      eventsFromCalendar = eventsFromCalendar.map(function(e) {
-        return {
-          start: e.start,
-          end: e.end,
-          title: e.title,
-          type: e.type,
-          is_new: e.is_new,
-          id:e.id
-        };
-      });
-      seen = [];
-      var json = JSON.stringify(eventsFromCalendar,function(key, val) {
-          if (val != null && typeof val == "object") {
-            if (seen.indexOf(val) >= 0) {
-              return;
-            }
-            seen.push(val);
-          }
-          return val;
-        });
-        $.ajax({
-                 type:"POST",
-                 url:"{% url 'calendar:save'%}",
-                 data: {
-                        'events': json
-                        },
-                 success: function(){
-                   $('#calendar').fullCalendar( 'removeEvents');
-                    $('#calendar').fullCalendar( 'refetchEvents' );
-
-                 }
-            });
-            return false;
-      });
-	});
-
+    },
+  });//fullCalendar
+});// document ready
 </script>
 {% endblock %}
