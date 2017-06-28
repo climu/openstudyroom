@@ -4,6 +4,7 @@ from django.db.models import Q
 from operator import attrgetter
 import datetime
 from league.models import User, Division
+from postman.api import pm_broadcast
 
 # Create your models here.
 
@@ -107,11 +108,13 @@ class AvailableEvent(CalEvent):
         return events
 
 
+
 class GameRequestEvent(CalEvent):
     sender = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_related_sender",
                                related_query_name="%(app_label)s_%(class)ss_sender",)
     receivers = models.ManyToManyField(User, related_name="%(app_label)s_%(class)s_related_receiver",
                                        related_query_name="%(app_label)s_%(class)ss_receiver",)
+
 
 
 class GameAppointmentEvent(CalEvent):

@@ -28,3 +28,30 @@ padding-left: 5px;
 
   display:none!important;
 }
+.other-available-controls{
+  margin-top:10px;
+}
+.me-available-controls{
+  margin-top:10px;
+}
+.game-request-drag{
+  height:64px;
+  background-color: #FF8800;
+}
+
+
+.modeless{
+    top:1%;
+    left:50%;
+    bottom:auto;
+    right:auto;
+    margin-left:-300px;
+}
+
+.modal-backdrop{
+        display:none !important;
+    }
+
+    .modal-open {
+  overflow-y: scroll;
+}

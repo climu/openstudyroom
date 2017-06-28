@@ -4,13 +4,18 @@ from django.contrib.auth.decorators import user_passes_test, login_required
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 from django.utils.timezone import make_aware
 from league.models import is_league_admin, is_league_member
 from .forms import UTCPublicEventForm
-from .models import PublicEvent, AvailableEvent
+from .models import PublicEvent, AvailableEvent, GameRequestEvent
 from pytz import utc, timezone
+from league.models import User
+from postman.api import pm_broadcast
+from django.template import loader
+
+
 # Create your views here.
 
 
@@ -74,49 +79,110 @@ def json_feed(request):
         data.append(dict)
     # get user related available events
     if user.is_authenticated() and user.user_is_league_member():
-        # his own availability
-        me_available_events = AvailableEvent.objects.filter(user=user)
-        for event in me_available_events:
+        if json.loads(request.GET.get('me-av', False)):
+            # his own availability
+            me_available_events = AvailableEvent.objects.filter(user=user)
+            for event in me_available_events:
+                dict = {
+                    'id': 'me-a:' + str(event.pk),
+                    'pk': str(event.pk),
+                    'title': 'I am available',
+                    'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+                    'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+                    'is_new': False,
+                    'editable': True,
+                    'type': 'me-available',
+                    'color': '#ffff80',
+                    'className': 'me-available',
+                }
+                data.append(dict)
+        # his game requests
+        my_game_request = GameRequestEvent.objects.filter(sender=user)
+        for event in my_game_request:
             dict = {
-                'id': 'me-a:' + str(event.pk),
+                'id': 'my-gr:' + str(event.pk),
                 'pk': str(event.pk),
-                'title': 'I am available',
+                'title': 'My game request',
                 'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
                 'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
                 'is_new': False,
-                'editable': True,
-                'type': 'me-available',
-                'color': '#ffff80',
-                'className': 'me-available',
+                'editable': False,
+                'type': 'my-gr',
+                'color': '#FF8800',
+                'className': 'my-gr',
             }
-            print(dict)
             data.append(dict)
         # others availability
-        leagues_list = json.loads(request.GET.get('divs', ''))
-        events = AvailableEvent.get_formated_other_available(user, leagues_list)
-        for event in events:
-            # event is formated like this:
-            # { start: datetime,
-            #   end : datetime,
-            #   users: [user1, user2, ...]
-            # }
-            n_users = len(event['users'])
-            dict = {
-                'id': 'other-available',
-                'title': str(n_users) + ' players available.',
-                'start': event['start'].astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
-                'end': event['end'].astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
-                'is_new': False,
-                'editable': False,
-                'type': 'other-available',
-                'color': '#01DF3A',
-                'className': 'other-available',
-                'rendering': 'background',
-                'users': event['users'],
-            }
-            data.append(dict)
+        if json.loads(request.GET.get('other-av', False)):
+
+            leagues_list = json.loads(request.GET.get('divs', ''))
+            events = AvailableEvent.get_formated_other_available(user, leagues_list)
+            for event in events:
+                # event is formated like this:
+                # { start: datetime,
+                #   end : datetime,
+                #   users: [user1, user2, ...]
+                # }
+                n_users = len(event['users'])
+                dict = {
+                    'id': 'other-available',
+                    'title': str(n_users) + ' players available.',
+                    'start': event['start'].astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+                    'end': event['end'].astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+                    'is_new': False,
+                    'editable': False,
+                    'type': 'other-available',
+                    'color': '#01DF3A',
+                    'className': 'other-available',
+                    'rendering': 'background',
+                    'users': event['users'],
+                }
+                data.append(dict)
 
     return HttpResponse(json.dumps(data), content_type="application/json")
+
+
+@login_required()
+@user_passes_test(is_league_member, login_url="/", redirect_field_name=None)
+def create_game_request(request):
+    """Create a game request from calendar ajax post."""
+    sender = request.user
+    tz = sender.get_timezone()
+    return HttpResponse('success')
+
+    if request.method == 'POST':
+        users_list = json.loads(request.POST.get('users'))
+        date = datetime.strptime(request.POST.get('date'), '%Y-%m-%dT%H:%M:%S')
+        date = make_aware(date, tz)
+        receivers = User.objects.filter(kgs_username__in=users_list)
+
+        # a game request should last 1h30
+        end = date + timedelta(hours=1, minutes=30)
+        # create the instance
+        request = GameRequestEvent(start=date, end=end, sender=sender)
+        request.save()
+        request.receivers = receivers
+        request.save()
+
+        # send a message to all receivers
+        subject = 'Game request from' + sender.kgs_username \
+            + ' on ' + date.strftime('%d %b')
+        plaintext = loader.get_template('fullcalendar/messages/game_request.txt')
+        context = {
+            'sender': sender,
+            'date': date
+        }
+        message = plaintext.render(context)
+        pm_broadcast(
+            sender=sender,
+            recipients=list(receivers),
+            subject=subject
+            ,body=message
+        )
+
+        return HttpResponse('success')
+
+
 
 
 @login_required()
@@ -129,7 +195,6 @@ def save(request):
         changed_events = ''
         changed_events = json.loads(request.POST.get('events'))
         for event in changed_events:
-            print(event)
             if event['type'] == 'deleted':  # we deleted an event
                 pk = event['pk']
                 if event['id'].startswith('me-a'):

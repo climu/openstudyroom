@@ -11,6 +11,6 @@ urlpatterns = [
     url(r'^admin/event-list/$', views.admin_cal_event_list, name='admin_cal_event_list' ),
     url(r'^save/$', views.save, name='save' ),
     url(r'^json-feed/$', views.json_feed, name='json_feed' ),
-
+    url(r'^create-game-request/$', views.create_game_request, name='create_game_request' ),
 
 ]
