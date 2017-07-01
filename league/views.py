@@ -737,6 +737,7 @@ def populate(request, to_event_id, from_event_id=None):
     """
     to_event = get_object_or_404(LeagueEvent, pk=to_event_id)
     new_players = OrderedDict()
+
     for division in to_event.get_divisions():
         new_players[division.name] = []
 
@@ -745,17 +746,23 @@ def populate(request, to_event_id, from_event_id=None):
             raise Http404("What are you doing here ?")
         else:
             from_event = get_object_or_404(LeagueEvent, pk=from_event_id)
+
         form = LeaguePopulateForm(from_event, to_event, request.POST)
         if form.is_valid():
-            for player in from_event.get_players():
-                if player.is_active():
-                    new_division = Division.objects.get(pk=form.cleaned_data['player_' + str(player.pk)])
-                    new_player = LeaguePlayer(user=player.user,
-                                              event=to_event,
-                                              kgs_username=player.kgs_username,
-                                              division=new_division)
-                    new_player.previous_division = player.division
-                    new_players[new_division.name].append(new_player)
+            divisions = from_event.get_divisions()
+            for division in divisions:
+                division.results = division.get_results()
+                for player in division.results:
+                    if player.is_active:
+                        new_division = Division.objects.get(pk=form.cleaned_data['player_' + str(player.pk)])
+                        new_player = LeaguePlayer(
+                            user=player.user,
+                            event=to_event,
+                            kgs_username=player.kgs_username,
+                            division=new_division
+                        )
+                        new_player.previous_division = player.division
+                        new_players[new_division.name].append(new_player)
             # Admin have a preview so we are sure form is not dumber than the admin.
             # We will display the save button in template
             preview = True
@@ -768,12 +775,17 @@ def populate(request, to_event_id, from_event_id=None):
         # Having preview at false prevent the save button to be displayed in tempalte
         preview = False
 
+        divisions = from_event.get_divisions()
+        for division in divisions:
+            division.results = division.get_results()
+
     context = {
         'from_event': from_event,
         'to_event': to_event,
         'form': form,
         'new_players': new_players,
         'preview': preview,
+        'divisions': divisions
     }
     template = loader.get_template('league/admin/populate.html')
     return HttpResponse(template.render(context, request))
@@ -795,7 +807,7 @@ def proceed_populate(request, from_event_id, to_event_id):
         if form.is_valid():
             n = 0
             for player in from_event.get_players():
-                if player.is_active():
+                if player.nb_games() >= from_event.min_matchs:
                     n += 1
                     new_division = Division.objects.get(pk=form.cleaned_data['player_' + str(player.pk)])
                     new_player = LeaguePlayer.objects.create(user=player.user,
