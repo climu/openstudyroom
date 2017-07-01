@@ -661,6 +661,7 @@ class Division(models.Model):
             - nb_loss : integer
             - nb_games : integer
             - results : a dict as such
+            - is_active : true/false
             {opponent1 : [{'id':game1.pk, 'r':1/0},{'id':game2.pk, 'r':1/0},...],opponent2:}
         """
         sgfs = self.sgf_set.all()
@@ -695,6 +696,12 @@ class Division(models.Model):
                 loser.results[winner.kgs_username].append({'id': sgf.pk, 'r': 0})
             else:
                 loser.results[winner.kgs_username] = [{'id': sgf.pk, 'r': 0}]
+
+        # now let's set the active flag
+        min_matchs = self.league_event.min_matchs
+        for player in players:
+            player.is_active = player.n_games >= min_matchs
+
         results = sorted(results, key=attrgetter('score'), reverse=True)
         return results
 

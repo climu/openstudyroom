@@ -35,7 +35,7 @@
   <div class='col-md-6'>
     <legend> {{from_event}} </legend>
 
-  {% for division in from_event.get_divisions %}
+  {% for division in divisions %}
   <div class="panel panel-default clearfix">
   <div class="panel-heading">{{division}}
     <div class="pull-right"> {{division.number_players}} players | {{division.number_games}} games</div>
@@ -55,13 +55,13 @@
 
       <tbody>
 
-  {% for player in division.get_players%}
+  {% for player in division.results%}
       <tr {% if player.nb_games < from_event.min_matchs %} class= "danger"{% endif %}>
         <td>{{forloop.counter}}</td>
         <td>{{player.user |user_link}}</td>
         <td>{{player.score}}</td>
-        <td>{{player.nb_games}}</td>
-        <td>{% if player.nb_games >= from_event.min_matchs %}  {{form |player_field:player.pk }} {% endif %}</td>
+        <td>{{player.n_games}}</td>
+        <td>{% if player.is_active %}  {{form |player_field:player.pk }} {% endif %}</td>
       </tr>
 
 
