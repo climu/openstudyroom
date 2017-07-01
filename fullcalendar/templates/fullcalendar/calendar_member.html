@@ -51,29 +51,6 @@
         <button class='btn btn-default' id='save'><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save</button>
       </div>
     </div>
-
-      <div class="panel panel-default other-available-controls hidden" >
-        <div class="panel-heading">
-          Create game request
-        </div>
-      <div class="panel-body other-available-controls">
-        <div id="draggable" class="fc-event game-request-drag ui-draggable ui-draggable-handle"
-         data-event='{
-           "title":"Game request",
-           "duration":"01:30",
-            "type":"game_request",
-            "color": "#FF8800",
-            "className" :"game-request",
-            "is_new" : "true",
-            "is_change":"true",
-            "constraint":"other-available",
-            "eventStartEditable": true
-
-            }'>
-          Game request
-        </div>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -130,11 +107,6 @@ var csrftoken = getCookie('csrftoken');
 $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
 // end of csrftoken cookie set up
 
-$('#draggable').draggable({
-    cursor: "move", cursorAt: { top: 0},
-    revert: true,      // immediately snap back to original position
-    revertDuration: 0  //
-});
 	$(document).ready(function() {
 
 		$('#calendar').fullCalendar({
@@ -156,7 +128,6 @@ $('#draggable').draggable({
       timeFormat: 'H:mm',
       selectable:true,
       selectHelper: true,
-      droppable: true,
       //prevent user from selecting multiple day availability
       selectConstraint: {
         start: '00:00',
@@ -168,13 +139,13 @@ $('#draggable').draggable({
         // check if we clicked on a backgroud event
         if (element.classList.contains('other-available')) {
           // empty the message
-          $("#modal-message").empty()
+          $("#modal-message").hide()
           // get the users available at that time in an array
           var users = element.getAttribute('data-users').split(',').sort();
           $("#modal-title").text('Request a game on ' + date.format('lll') + ' ({{TIME_ZONE}})');
           $("#modal-body").empty();
           $("#modal-body").append('<p>Select the users you want to send a game request to:</p>');
-
+          $("#modal-body").attr('data-date', date.format());
           users.forEach(function(element){
             $("#modal-body").append(
               '<div class="checkbox"><label><input class="user-select" type="checkbox" value="'+
@@ -187,38 +158,7 @@ $('#draggable').draggable({
               handle : ".modal-header"
             });
 
-          // handle the send game request click
-          $('#send-game-request').click(function(){
-            console.log('post')
-              // get the list of selected users
-              var selected_users = $('.user-select:checked').map(function(){
-                return this.value;
-              }).get();
-              // This list shouldn't be empty
-              if (selected_users.length == 0 ) {
-                $('#modal-message').text('You should select at least one user.');
-                $('#modal-message').addClass("alert alert-warning");
-                return;
-              }
-              json = JSON.stringify(selected_users);
-              $.ajax({
-                       type:"POST",
-                       url:"{% url 'calendar:create_game_request'%}",
-                       data: {
-                              'date': date.format(),
-                              'users': json
-                              },
-                       success: function(){
-                         $("#modal-message").empty()
 
-                         $('#game-request-modal').modal('hide');
-                        $('#calendar').fullCalendar( 'removeEvents');
-                        $('#calendar').fullCalendar( 'refetchEvents' );
-
-                       }
-                  });
-              return false;
-          });
         }// we clicked on other-available event
       },//dayclick
 
@@ -328,6 +268,38 @@ $('#draggable').draggable({
       }//render event
     });//fullCalendar
 
+    // handle the send game request click
+    $('#send-game-request').click(function(){
+      console.log('post')
+        // get the list of selected users
+        var selected_users = $('.user-select:checked').map(function(){
+          return this.value;
+        }).get();
+        // This list shouldn't be empty
+        if (selected_users.length == 0 ) {
+          $('#modal-message').text('You should select at least one user.');
+          $('#modal-message').addClass("alert alert-warning");
+          $('#modal-message').show()
+          return;
+        }
+        var date = $('#modal-body').attr('data-date');
+        json = JSON.stringify(selected_users);
+        $.ajax({
+                 type:"POST",
+                 url:"{% url 'calendar:create_game_request'%}",
+                 data: {
+                        'date': date,
+                        'users': json
+                        },
+                 success: function(){
+                  $('#game-request-modal').modal('hide');
+                  $('#calendar').fullCalendar( 'removeEvents');
+                  $('#calendar').fullCalendar( 'refetchEvents' );
+
+                 }
+            });
+        return false;
+    });
     $("#save").click(function () {
       var eventsFromCalendar = $('#calendar').fullCalendar('clientEvents',function (event) {
                     return event.is_change == true;});

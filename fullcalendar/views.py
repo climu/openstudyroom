@@ -79,9 +79,13 @@ def json_feed(request):
         data.append(dict)
     # get user related available events
     if user.is_authenticated() and user.user_is_league_member():
+        now = timezone.now()
         if json.loads(request.GET.get('me-av', False)):
             # his own availability
-            me_available_events = AvailableEvent.objects.filter(user=user)
+            me_available_events = AvailableEvent.objects.filter(
+                user=user,
+                end__gte=now,
+            )
             for event in me_available_events:
                 dict = {
                     'id': 'me-a:' + str(event.pk),
@@ -97,7 +101,10 @@ def json_feed(request):
                 }
                 data.append(dict)
         # his game requests
-        my_game_request = GameRequestEvent.objects.filter(sender=user)
+        my_game_request = GameRequestEvent.objects.filter(
+            sender=user,
+            end__gte=now,
+        )
         for event in my_game_request:
             dict = {
                 'id': 'my-gr:' + str(event.pk),
@@ -116,7 +123,10 @@ def json_feed(request):
         if json.loads(request.GET.get('other-av', False)):
 
             leagues_list = json.loads(request.GET.get('divs', ''))
-            events = AvailableEvent.get_formated_other_available(user, leagues_list)
+            events = AvailableEvent.get_formated_other_available(
+                user,
+                leagues_list
+                )
             for event in events:
                 # event is formated like this:
                 # { start: datetime,
@@ -148,8 +158,6 @@ def create_game_request(request):
     """Create a game request from calendar ajax post."""
     sender = request.user
     tz = sender.get_timezone()
-    return HttpResponse('success')
-
     if request.method == 'POST':
         users_list = json.loads(request.POST.get('users'))
         date = datetime.strptime(request.POST.get('date'), '%Y-%m-%dT%H:%M:%S')
@@ -165,7 +173,7 @@ def create_game_request(request):
         request.save()
 
         # send a message to all receivers
-        subject = 'Game request from' + sender.kgs_username \
+        subject = 'Game request from ' + sender.kgs_username \
             + ' on ' + date.strftime('%d %b')
         plaintext = loader.get_template('fullcalendar/messages/game_request.txt')
         context = {
@@ -176,13 +184,11 @@ def create_game_request(request):
         pm_broadcast(
             sender=sender,
             recipients=list(receivers),
-            subject=subject
-            ,body=message
+            subject=subject,
+            body=message
         )
 
         return HttpResponse('success')
-
-
 
 
 @login_required()
@@ -208,7 +214,11 @@ def save(request):
                 end = datetime.strptime(event['end'], '%Y-%m-%dT%H:%M:%S')
                 end = make_aware(end, tz)
                 if event['type'] == 'me-available':
-                    AvailableEvent.objects.create(start=start, end=end, user=user)
+                    AvailableEvent.objects.create(
+                        start=start,
+                        end=end,
+                        user=user
+                    )
 
             else:  # the event must have been moved or resized.
                 start = datetime.strptime(event['start'], '%Y-%m-%dT%H:%M:%S')
@@ -229,7 +239,11 @@ def save(request):
 @user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
 def admin_cal_event_list(request):
     public_events = PublicEvent.objects.all()
-    return render(request, 'fullcalendar/admin_cal_event_list.html', {'public_events': public_events, })
+    return render(
+        request,
+        'fullcalendar/admin_cal_event_list.html',
+        {'public_events': public_events, }
+    )
 
 
 @login_required()

@@ -56,7 +56,8 @@ class AvailableEvent(CalEvent):
         list_users = user.get_opponents(division_list)
         availables = AvailableEvent.objects.filter(
             end__gte=now,
-            user__in=list_users)
+            user__in=list_users
+        )
         changes = []
         for event in availables:
             change = {
@@ -108,15 +109,22 @@ class AvailableEvent(CalEvent):
         return events
 
 
-
 class GameRequestEvent(CalEvent):
-    sender = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_related_sender",
-                               related_query_name="%(app_label)s_%(class)ss_sender",)
-    receivers = models.ManyToManyField(User, related_name="%(app_label)s_%(class)s_related_receiver",
-                                       related_query_name="%(app_label)s_%(class)ss_receiver",)
-
+    sender = models.ForeignKey(
+        User,
+        related_name="%(app_label)s_%(class)s_related_sender",
+        related_query_name="%(app_label)s_%(class)ss_sender",
+    )
+    receivers = models.ManyToManyField(
+        User,
+        related_name="%(app_label)s_%(class)s_related_receiver",
+        related_query_name="%(app_label)s_%(class)ss_receiver",
+    )
 
 
 class GameAppointmentEvent(CalEvent):
-    users = models.ManyToManyField(User, related_name="%(app_label)s_%(class)s_related",
-                                   related_query_name="%(app_label)s_%(class)ss",)
+    users = models.ManyToManyField(
+        User,
+        related_name="%(app_label)s_%(class)s_related",
+        related_query_name="%(app_label)s_%(class)ss",
+    )

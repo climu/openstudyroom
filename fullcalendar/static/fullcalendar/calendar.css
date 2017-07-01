@@ -17,6 +17,7 @@
 .other-available{
   margin:1px;
   color:white;
+  cursor:pointer;
 }
 .controls{
 padding-right: 5px;
@@ -54,4 +55,7 @@ padding-left: 5px;
 
     .modal-open {
   overflow-y: scroll;
+}
+.modal-header{
+  cursor:grab;
 }
