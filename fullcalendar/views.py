@@ -219,7 +219,7 @@ def cancel_game_ajax(request):
             opponent = game_appointment.opponent(user)
             game_appointment.delete()
             # send a message
-            subject = user.kgs_username + ' have cancel your game appointment.'
+            subject = user.kgs_username + ' has cancel your game appointment.'
             plaintext = loader.get_template('fullcalendar/messages/game_cancel.txt')
             context = {
                 'user': user,
@@ -252,7 +252,7 @@ def accept_game_request_ajax(request):
         game_appointment.users.add(user, sender)
         game_request.delete()
         # send a message
-        subject = user.kgs_username + ' have accepted your game request.'
+        subject = user.kgs_username + ' has accepted your game request.'
         plaintext = loader.get_template('fullcalendar/messages/game_request_accepted.txt')
         context = {
             'user': user,
