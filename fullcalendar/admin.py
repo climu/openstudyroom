@@ -1,4 +1,6 @@
 from django.contrib import admin
-#from .models import PublicEvent
+from .models import PublicEvent, GameRequestEvent
 # Register your models here.
-#admin.site.register(PublicEvent)
+mymodels = [PublicEvent, GameRequestEvent]
+
+admin.site.register(mymodels)
