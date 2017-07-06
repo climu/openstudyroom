@@ -1,7 +1,8 @@
-Hello !
-This message was automaticly sent to you to inform that the user {{sender}} want to play on the {{date}}.
+Hello!
+This message was automatically sent to you to inform you that the user {{sender}} want to play a game on {{date}}
 
-You can either accept or decline this game request on your calendar or here:
+You can either accept or decline this game request on your calendar:
+https://openstudyroom.org/calendar/
  
 
-Thanks for playing in the Open Study Room !
+Thanks for playing in the Open Study Room!
