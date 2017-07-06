@@ -7,6 +7,11 @@
 {% if request.user.is_authenticated %}
   {% if user == request.user%}
 <ul class="nav navbar-nav navbar-right active" style="margin-right:5px;">
+  <li {% if active == 'calendar' %}class="active"{% endif %}>
+    <a href="{% url "calendar:calendar_view"%}">
+      <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+      Calendar</a></li>
+
   <li {% if active == 'messages' %}class="active"{% endif %}>
     <a href="{% url "postman:inbox" %}" >
       <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
@@ -15,17 +20,19 @@
       <span class="badge"> {{ postman_unread_count }}</span>
       {% endif %}
     </a>
-    </li>
+
   <li {% if active == 'manage' %} class="active"{% endif %}class="dropdown">
   <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
   Manage <span class="caret"></span>
   </a>
+
   <ul class="dropdown-menu">
   <li><a href="{% url "account_change_password" %} ">Password</a></li>
   <li ><a href="{% url "account_email" %}">Email</a></li>
   <li ><a href="{% url "league:timezone_update" %}">Timezone</a></li>
 
 </ul>
+</li>
 </ul>
 {% else %}
 <ul class="nav navbar-nav navbar-right active" style="margin-right:5px;">

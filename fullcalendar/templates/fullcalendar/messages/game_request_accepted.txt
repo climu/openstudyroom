@@ -1,0 +1,6 @@
+Hello !
+This message was automaticly sent to you to inform that the user {{user}} have accepted your game request !
+
+You should play a game with him on the {{date}} 
+
+Thanks for playing in the Open Study Room !
