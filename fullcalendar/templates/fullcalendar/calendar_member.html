@@ -78,6 +78,7 @@
         <button id="cancel-game-request" type="button" class="btn btn-success modal-button" >Cancel game request</button>
         <button id="reject-game-request" type="button" class="btn btn-warning modal-button" >Reject game request</button>
         <button id="accept-game-request" type="button" class="btn btn-success modal-button" >Accept game request</button>
+        <button id="cancel-game" type="button" class="btn btn-success modal-button" >Cancel game appointment</button>
 
       </div>
     </div>
@@ -320,7 +321,29 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
               }
 
           });//tooltip
-        }
+        }//other gr
+        //game appointments
+        if (event.type === 'game'){
+          element.addClass('click-me');
+          element.qtip({
+              content: {
+                text: 'Click to cancel this game appointment.',
+                title: event.title,
+              },
+              position: {
+                my:'left bottom',  // Position my top left...
+        				at:'right top',
+                target: 'mouse', // Use the mouse position as the position origin
+                adjust: { // Don't adjust continuously the mouse, just use initial position
+                x:5,
+                y:-5
+                }
+              },
+              show: {
+                solo: true
+              }
+        });//qtip
+      }//game appointments
 
       }, // Closing render event
 
@@ -363,7 +386,22 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
             handle : ".modal-header"
           });
       }// Other game requests
-      },//eventClick
+
+      // Game
+      if (calEvent.type == 'game'){
+        $("#modal-message").hide();
+        $(".modal-button").hide();
+        $("#modal-title").text(calEvent.title + ' on ' + calEvent.start.format('lll') + ' ({{TIME_ZONE}})');
+        $("#modal-body").empty();
+        $("#modal-body").append('<p>Are you sure you want to cancel this game appointment?</p>');
+        $("#modal-body").attr('data-pk', calEvent.pk);
+        $("#cancel-game").show();
+        $("#game-request-modal").modal();
+        $("#game-request-modal").draggable({
+            handle : ".modal-header"
+          });
+      }//Game
+    },// event click
 
       // Day click
       dayClick: function(date, jsEvent, view) {
@@ -400,6 +438,23 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
 // Buttons handling
 ///////////////////////////////////////////////////////////
 
+$('#cancel-game').click(function(){
+  var pk = $('#modal-body').attr('data-pk');
+  $.ajax({
+           type:"POST",
+           url:"{% url 'calendar:cancel_game_ajax'%}",
+           data: {
+                  'pk': pk,
+                  },
+           success: function(){
+            $('#game-request-modal').modal('hide');
+            $('#calendar').fullCalendar( 'removeEvents');
+            $('#calendar').fullCalendar( 'refetchEvents' );
+
+           }
+    });
+    return false;
+  });//accept Game request
 
 // handle the accept game request click
 $('#accept-game-request').click(function(){

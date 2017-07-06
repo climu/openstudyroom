@@ -13,7 +13,7 @@ from .models import PublicEvent, AvailableEvent, GameRequestEvent, GameAppointme
 from pytz import utc
 from django.utils import timezone
 from league.models import User
-from postman.api import pm_broadcast
+from postman.api import pm_broadcast, pm_write
 from django.template import loader
 
 
@@ -209,6 +209,34 @@ def json_feed(request):
 
 @login_required()
 @user_passes_test(is_league_member, login_url="/", redirect_field_name=None)
+def cancel_game_ajax(request):
+    """Cancel a game appointment from calendar ajax post."""
+    user = request.user
+    if request.method == 'POST':
+        pk = int(request.POST.get('pk'))
+        game_appointment = get_object_or_404(GameAppointmentEvent, pk=pk)
+        if user in game_appointment.users.all():
+            opponent = game_appointment.opponent(user)
+            game_appointment.delete()
+            # send a message
+            subject = user.kgs_username + ' have cancel your game appointment.'
+            plaintext = loader.get_template('fullcalendar/messages/game_cancel.txt')
+            context = {
+                'user': user,
+                'date': game_appointment.start
+            }
+            message = plaintext.render(context)
+            pm_write(
+                sender=user,
+                recipient=opponent,
+                subject=subject,
+                body=message,
+                skip_notification=True
+            )
+            return HttpResponse('success')
+
+@login_required()
+@user_passes_test(is_league_member, login_url="/", redirect_field_name=None)
 def accept_game_request_ajax(request):
     """accept a game request from calendar ajax post."""
     user = request.user
@@ -223,6 +251,21 @@ def accept_game_request_ajax(request):
         game_appointment.save()
         game_appointment.users.add(user, sender)
         game_request.delete()
+        # send a message
+        subject = user.kgs_username + ' have accepted your game request.'
+        plaintext = loader.get_template('fullcalendar/messages/game_request_accepted.txt')
+        context = {
+            'user': user,
+            'date': game_appointment.start
+        }
+        message = plaintext.render(context)
+        pm_write(
+            sender=user,
+            recipient=sender,
+            subject=subject,
+            body=message,
+            skip_notification=True
+        )
         return HttpResponse('success')
 
 @login_required()
@@ -290,7 +333,8 @@ def create_game_request(request):
             sender=sender,
             recipients=list(receivers),
             subject=subject,
-            body=message
+            body=message,
+            skip_notification=True
         )
 
         return HttpResponse('success')

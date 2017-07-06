@@ -47,4 +47,9 @@ urlpatterns = [
         views.accept_game_request_ajax,
         name='accept_game_request_ajax'
     ),
+    url(
+        r'^cancel-game-ajax/$',
+        views.cancel_game_ajax,
+        name='cancel_game_ajax'
+    ),
 ]

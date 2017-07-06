@@ -1,0 +1,4 @@
+Hello !
+This message was automaticly sent to you to inform that the user {{user}} have cancel your game appointment on the {{date}}.
+
+Thanks for playing in the Open Study Room !
