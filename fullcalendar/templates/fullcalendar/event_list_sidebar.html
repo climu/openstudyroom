@@ -1,4 +1,3 @@
-
 {%load tz calendar_tags%}
 {% get_current_timezone as TIME_ZONE %}
 
@@ -9,7 +8,8 @@
 </a>
   </h4>
 {% get_now as now %}
-{% public_events as public_events%}
+  {% public_events as public_events%}
+
 {% for cal_event in public_events %}
   {% if cal_event.url %}  <a href="{{cal_event.url}}">    {% endif %}
 <div class="panel cal-event-sidebar">
@@ -30,6 +30,7 @@
     <div class="col-md-8" style="text-align: center;">
 <div class=" label label-default cal-event-title">
       {{cal_event.title}}
+
     </div>
     <div class="text-center cal-event-description">
       {{cal_event.description}}

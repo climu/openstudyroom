@@ -489,14 +489,18 @@ class User(AbstractUser):
         players = self.leagueplayer_set.all()
         return Division.objects.filter(leagueplayer__in=players, league_event__is_open=True)
 
-    def get_opponents(self):
+    def get_opponents(self, divs_list=None):
         """return a list of all user self can play with.
 
+        The optional param divs_list allow to filter only opponents of some divisions.
         Maybe at some point we should have the divisions in which on can play with
         as well as the number of games remaining.
         """
         # First we get all self players in open divisions
         players = self.leagueplayer_set.filter(division__league_event__is_open=True)
+        if divs_list is not None:
+            players = players.filter(division__in=divs_list)
+
         # For each player, we get related opponents
         opponents = []
         for player in players:
