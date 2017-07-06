@@ -17,7 +17,12 @@
 </ul>
 {% include 'league/includes/league_nav.html' with active='players' %}
 <div class="well"> This table show all users who play{% if not event.is_open %}ed{% endif %} in the {{event.name}}.</div>
-
+{% for division in divisions %}
+<div class="checkbox div-checkbox ">
+  <label><input class ="check-div"  onchange="filterme()" value="{{division}}" type="checkbox" checked>{{division.name}}</label>
+</div>
+{% endfor %}
+<div id="controls"></div>
 <table id='player-table' class=' table table-hover '  >
    <thead>
      <tr>
@@ -52,8 +57,34 @@
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-$('#player-table').DataTable();
+ $('#player-table').DataTable({
+  //"dom":'<"col-md-2"lf>rt<"col-sm-5"i><"col-sm-5"p>'
+}//<"H"lr>ft<"F"ip>'
+);
+
 } );
+
+function filterme() {
+  //build a regex filter string with an or(|) condition
+  var divs = $('.check-div:checkbox:checked').map(function() {
+    return '^' + this.value + '\$';
+  }).get().join('|');
+  console.log(divs.length);
+  var table =  $('#player-table').DataTable();
+  if (divs.length == 0){
+    table
+      .columns( 0 )
+      .search('youshouldnotnameyourdivlikethat',true,false)
+      .draw()
+  }
+  else{
+  //filter in column 0, with an regex, no smart filtering, no inputbox,not case sensitive
+  table
+    .columns( 0 )
+    .search(divs,true,false)
+    .draw()
+}
+}
 </script>
 {% if event.is_open %}
 
