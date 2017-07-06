@@ -17,13 +17,14 @@
 .other-available{
   margin:1px;
   color:white;
-  cursor:pointer;
 }
 .controls{
 padding-right: 5px;
 padding-left: 5px;
+}
 
-
+.click-me{
+  cursor:pointer;
 }
 .hidden{
 
@@ -35,12 +36,6 @@ padding-left: 5px;
 .me-available-controls{
   margin-top:10px;
 }
-.game-request-drag{
-  height:64px;
-  background-color: #FF8800;
-}
-
-
 .modeless{
     top:1%;
     left:50%;
@@ -58,4 +53,7 @@ padding-left: 5px;
 }
 .modal-header{
   cursor:grab;
+}
+.my-gr-active {
+    box-shadow: 0 5px 15px #FF8800;
 }

@@ -1,8 +1,7 @@
 Hello !
-This message was automaticly sent to you to inform that the user {{sender}}
-want to play on the {{date}}.
+This message was automaticly sent to you to inform that the user {{sender}} want to play on the {{date}}.
 
 You can either accept or decline this game request on your calendar or here:
- some url.
+ 
 
 Thanks for playing in the Open Study Room !

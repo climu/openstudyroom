@@ -3,13 +3,14 @@
 
 {% block extra_head_js %}
 <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css' />
-<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.print.css' media='print' />
 <link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/calendar.css'%}"/>
+<link rel='stylesheet' href='http://cdn.jsdelivr.net/qtip2/3.0.3/basic/jquery.qtip.min.css'/>
 <script
 			  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
 			  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
 			  crossorigin="anonymous">
 </script>
+<script src='https://cdn.jsdelivr.net/qtip2/3.0.3/basic/jquery.qtip.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js'></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js'></script>
 
@@ -23,13 +24,13 @@
 {%endblock%}
 {% block content %}
 <div class= "row">
-{% include 'league/includes/user_nav.html' %}
+{% include 'league/includes/user_nav.html' with active='calendar' %}
 <div class="col-md-2 controls">
   <div data-spy="affix" data-offset-top="240" style="top:20px;">
     <ul class="nav nav-pills nav-stacked">
       <li id = 'cal-pill' role="presentation" class = 'active'><a href="javascript:void(0)">Calendar</a></li>
       <li id = 'me-av-pill' role="presentation" ><a href="javascript:void(0)">My availabilities</a></li>
-      <li id = 'other-av-pill'role="presentation" class = 'other'><a href="javascript:void(0)">Others availabilities</a></li>
+      <li id = 'other-av-pill'role="presentation" class = 'other'><a href="javascript:void(0)">Game planer</a></li>
     </ul>
     <div class="panel panel-default other-available-controls hidden" >
       <div class="panel-heading">
@@ -58,7 +59,7 @@
 <div class="col-md-10"
 <div id='calendar'></div>
 </div>
-<!-- Modal -->
+<!-- Modals -->
 <div id="game-request-modal" class="modal fade modeless" role="dialog">
   <div class="modal-dialog">
     <!-- Modal content-->
@@ -71,14 +72,19 @@
       <div id="modal-body" class="modal-body">
 
       </div>
-      <div class="modal-footer">
+      <div id="modal-footer" class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-        <button id="send-game-request" type="button" class="btn btn-success" >Send game request</button>
+        <button id="send-game-request" type="button" class="btn btn-success modal-button" >Send game request</button>
+        <button id="cancel-game-request" type="button" class="btn btn-success modal-button" >Cancel game request</button>
+        <button id="reject-game-request" type="button" class="btn btn-warning modal-button" >Reject game request</button>
+        <button id="accept-game-request" type="button" class="btn btn-success modal-button" >Accept game request</button>
+
       </div>
     </div>
 
   </div>
 </div>
+
 {% endblock %}
 
 
@@ -134,33 +140,7 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
         end: '24:00',
       },
 
-      dayClick: function(date, jsEvent, view) {
-        var element = jsEvent.target;
-        // check if we clicked on a backgroud event
-        if (element.classList.contains('other-available')) {
-          // empty the message
-          $("#modal-message").hide()
-          // get the users available at that time in an array
-          var users = element.getAttribute('data-users').split(',').sort();
-          $("#modal-title").text('Request a game on ' + date.format('lll') + ' ({{TIME_ZONE}})');
-          $("#modal-body").empty();
-          $("#modal-body").append('<p>Select the users you want to send a game request to:</p>');
-          $("#modal-body").attr('data-date', date.format());
-          users.forEach(function(element){
-            $("#modal-body").append(
-              '<div class="checkbox"><label><input class="user-select" type="checkbox" value="'+
-              element + '" checked>'+ element + '</label></div>');
-          });
-          $("#modal-body").append('');
 
-          $("#game-request-modal").modal();
-          $("#game-request-modal").draggable({
-              handle : ".modal-header"
-            });
-
-
-        }// we clicked on other-available event
-      },//dayclick
 
       selectAllow:  function(selectInfo){
         return ($('#me-av-pill').hasClass('active'));
@@ -203,7 +183,9 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
       eventDrop:function(event, delta){
         event.is_change=true;
       },
-
+      ///////////////////////////////////////////////////////////////
+      // Events source
+      ///////////////////////////////////////////////////////////
 			events:{
         url: '{% url "calendar:json_feed" %}',
         data: function() { // a function that returns an object
@@ -214,11 +196,15 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
           return({
             'divs':json,
             'me-av':($('#me-av-pill').hasClass('active')),
-            'other-av':($('#other-av-pill').hasClass('active'))
+            'other-av':($('#other-av-pill').hasClass('active')),
+            'game-request':!($('#me-av-pill').hasClass('active'))
             });
         }
     },
 
+    ///////////////////////////////////////////////////////////////
+    // Event Render
+    ///////////////////////////////////////////////////////////
       eventRender: function(event, element) {
         if (element.find(".fc-helper")){
           event.eventColor='#ffff80';
@@ -248,29 +234,233 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
 
         // If envent.type is other-available
         if (event.type === 'other-available'){
+          element.addClass('click-me');
           element.append(event.title);
-          var text = event.title + '<ul>';
+          var text ='<ul>';
           event.users.forEach(function(element){
             text +='<li>' + element + '</li>';
           });
-          text += '</ul> <p> Clic to create a game request.</p>';
-          element.tooltip({
-            title: text,
-            html: true,
-            placement: "left",
-            container: 'body'
+          text += '</ul> <p> Click to create a game request.</p>';
+          element.qtip({
+            content:{
+              title:event.title,
+              text: text,
+            },
+            position: {
+              my:'left bottom',  // Position my top left...
+      				at:'right top',
+              target: 'mouse', // Use the mouse position as the position origin
+              adjust: { // Don't adjust continuously the mouse, just use initial position
+              x:5,
+              y:-5
+              }
+            },
+            show: {
+              solo: true
+            }
+
           });//tooltip
           element.attr('data-users', event.users);
           if (!($('#other-av-pill').hasClass('active'))){
             element.addClass('hidden');
           }
         }// other-available
-      }//render event
+
+        // My game requests
+        if (event.type === 'my-gr'){
+          element.addClass('click-me');
+          var text = '<ul>';
+          event.users.forEach(function(element){
+            text +='<li>' + element + '</li>';
+          });
+          text += '</ul> <p> Click to cancel game request.</p>';
+          element.qtip({
+              content: {
+                text: text,
+                title: 'Waiting on confirmation from:'
+              },
+              position: {
+                my:'left bottom',  // Position my top left...
+        				at:'right top',
+                target: 'mouse', // Use the mouse position as the position origin
+                adjust: { // Don't adjust continuously the mouse, just use initial position
+                x:5,
+                y:-5
+                }
+              },
+              show: {
+                solo: true
+              }
+
+          });//tooltip
+        }// my game requests
+
+        //other-gr
+        if (event.type === 'other-gr'){
+          element.addClass('click-me');
+          var text = '<p><b>' + event.sender + '</b> want to play with you the ';
+          text += event.start.format('lll') +' {{TIME_ZONE}}.<p>'
+          text += '<p>Click to accept or reject game request</p>'
+          element.qtip({
+              content: {
+                text: text,
+                title: 'Game request from ' + event.sender,
+              },
+              position: {
+                my:'left bottom',  // Position my top left...
+        				at:'right top',
+                target: 'mouse', // Use the mouse position as the position origin
+                adjust: { // Don't adjust continuously the mouse, just use initial position
+                x:5,
+                y:-5
+                }
+              },
+              show: {
+                solo: true
+              }
+
+          });//tooltip
+        }
+
+      }, // Closing render event
+
+      ///////////////////////////////////////////////////////////////
+      // Event click and day click for background events
+      ///////////////////////////////////////////////////////////
+      eventClick: function(calEvent, jsEvent, view) {
+      // My game requests
+      if (calEvent.type == 'my-gr'){
+        $("#modal-message").hide();
+        $(".modal-button").hide();
+        calEvent.className = 'my-gr-active';
+        $("#modal-title").text('Game request on ' + calEvent.start.format('lll') + ' ({{TIME_ZONE}})');
+        $("#modal-body").empty();
+        $("#modal-body").append('<p>Waiting on this users confirmation:</p>');
+        $("#modal-body").attr('data-pk', calEvent.pk);
+        $("#modal-body").append('<p><ul>');
+        calEvent.users.forEach(function(user){
+          $("#modal-body").append('<li>' + user + '</li>')});
+        $("#modal-body").append('</ul></p>');
+        $("#cancel-game-request").show();
+        $("#game-request-modal").modal();
+        $("#game-request-modal").draggable({
+            handle : ".modal-header"
+          });
+      }//My game requests
+
+      // Others game requests
+      if (calEvent.type == 'other-gr'){
+        $("#modal-message").hide();
+        $(".modal-button").hide();
+        $("#modal-title").text(calEvent.sender + ' game request on ' + calEvent.start.format('lll') + ' ({{TIME_ZONE}})');
+        $("#modal-body").empty();
+        $("#modal-body").append('<p><u>'+ calEvent.sender +'</u> want to play with you.</p>');
+        $("#modal-body").attr('data-pk', calEvent.pk);
+        $("#accept-game-request").show();
+        $("#reject-game-request").show();
+        $("#game-request-modal").modal();
+        $("#game-request-modal").draggable({
+            handle : ".modal-header"
+          });
+      }// Other game requests
+      },//eventClick
+
+      // Day click
+      dayClick: function(date, jsEvent, view) {
+        var element = jsEvent.target;
+        // check if we clicked on a backgroud event
+        if (element.classList.contains('other-available')) {
+          // empty the message
+          $("#modal-message").hide();
+          $(".modal-button").hide();
+
+          // get the users available at that time in an array
+          var users = element.getAttribute('data-users').split(',').sort();
+          $("#modal-title").text('Request a game on ' + date.format('lll') + ' ({{TIME_ZONE}})');
+          $("#modal-body").empty();
+          $("#modal-body").append('<p>Select the users you want to send a game request to:</p>');
+          $("#modal-body").attr('data-date', date.format());
+          users.forEach(function(element){
+            $("#modal-body").append(
+              '<div class="checkbox"><label><input class="user-select" type="checkbox" value="'+
+              element + '" checked>'+ element + '</label></div>');
+          });
+
+          $("#send-game-request").show();
+          $("#game-request-modal").modal();
+          $("#game-request-modal").draggable({
+              handle : ".modal-header"
+            });
+        }// we clicked on other-available event
+      },//dayclick
+
     });//fullCalendar
+
+///////////////////////////////////////////////////////////////
+// Buttons handling
+///////////////////////////////////////////////////////////
+
+
+// handle the accept game request click
+$('#accept-game-request').click(function(){
+  var pk = $('#modal-body').attr('data-pk');
+  $.ajax({
+           type:"POST",
+           url:"{% url 'calendar:accept_game_request_ajax'%}",
+           data: {
+                  'pk': pk,
+                  },
+           success: function(){
+            $('#game-request-modal').modal('hide');
+            $('#calendar').fullCalendar( 'removeEvents');
+            $('#calendar').fullCalendar( 'refetchEvents' );
+
+           }
+    });
+    return false;
+  });//accept Game request
+
+    // handle the reject game request click
+    $('#reject-game-request').click(function(){
+      var pk = $('#modal-body').attr('data-pk');
+      $.ajax({
+               type:"POST",
+               url:"{% url 'calendar:reject_game_request_ajax'%}",
+               data: {
+                      'pk': pk,
+                      },
+               success: function(){
+                $('#game-request-modal').modal('hide');
+                $('#calendar').fullCalendar( 'removeEvents');
+                $('#calendar').fullCalendar( 'refetchEvents' );
+
+               }
+        });
+    return false;
+
+  });//reject Game request
+    // handle the cancel game request click
+    $('#cancel-game-request').click(function(){
+      var pk = $('#modal-body').attr('data-pk');
+
+      $.ajax({
+               type:"POST",
+               url:"{% url 'calendar:cancel_game_request_ajax'%}",
+               data: {
+                      'pk': pk,
+                      },
+               success: function(){
+                $('#game-request-modal').modal('hide');
+                $('#calendar').fullCalendar( 'removeEvents');
+                $('#calendar').fullCalendar( 'refetchEvents' );
+
+               }
+        });
+    return false;
+    });//cancel-game-request
 
     // handle the send game request click
     $('#send-game-request').click(function(){
-      console.log('post')
         // get the list of selected users
         var selected_users = $('.user-select:checked').map(function(){
           return this.value;
@@ -299,7 +489,8 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
                  }
             });
         return false;
-    });
+    });// Closing the send game request click
+
     $("#save").click(function () {
       var eventsFromCalendar = $('#calendar').fullCalendar('clientEvents',function (event) {
                     return event.is_change == true;});
@@ -350,7 +541,9 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
         $('#calendar').fullCalendar( 'refetchEvents' );
       });
 
-      // Menu handling
+///////////////////////////////////////////////////////////////
+// Menu handling
+///////////////////////////////////////////////////////////
     $('#me-av-pill').click(function() {
       $('li[role="presentation"]').removeClass('active');
       $(this).addClass('active');

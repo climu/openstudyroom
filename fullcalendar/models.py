@@ -128,3 +128,19 @@ class GameAppointmentEvent(CalEvent):
         related_name="%(app_label)s_%(class)s_related",
         related_query_name="%(app_label)s_%(class)ss",
     )
+
+    def title(self):
+        users = self.users.all()
+        return 'Game ' + users[0].kgs_username + ' vs ' + users[1].kgs_username
+
+    def opponent(self,user):
+        """Return the opponent of a game appointment"""
+        return self.users.exclude(pk=user.pk).first()
+
+    @staticmethod
+    def get_future_games(user):
+        """Return all the future game appointments for a user."""
+        now = timezone.now()
+        return user.fullcalendar_gameappointmentevent_related.filter(
+            start__gte=now
+        )
