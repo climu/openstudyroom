@@ -22,6 +22,7 @@ from machina.core.db.models import get_model
 import json
 from django.utils import timezone
 from time import sleep
+from postman.api import pm_write
 
 ForumProfile = get_model('forum_member', 'ForumProfile')
 discord_url_file = "/etc/discord_url.txt"
@@ -830,14 +831,28 @@ def admin_user_send_mail(request, user_id):
     if request.method == 'POST':
         form = EmailForm(request.POST)
         if form.is_valid():
+            if len(form.cleaned_data['copy_to']) > 0:
+                recipients = [
+                    user.get_primary_email().email,
+                    form.cleaned_data['copy_to']
+                ]
+            else:
+                recipients = [user.get_primary_email().email]
             send_mail(
                 form.cleaned_data['subject'],
                 form.cleaned_data['message'],
                 'openstudyroom@gmail.com',
-                [user.get_primary_email().email, form.cleaned_data['copy_to']],
+                recipients,
                 fail_silently=False,
             )
-            message = "Successfully sent an email to " + str(user)
+            pm_write(
+                request.user,
+                user,
+                form.cleaned_data['subject'],
+                body=form.cleaned_data['message'],
+                skip_notification=True,
+            )
+            message = "Successfully sent an email and a message to " + str(user)
             messages.success(request, message)
             return HttpResponseRedirect(reverse('league:admin'))
     else:

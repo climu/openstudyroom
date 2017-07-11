@@ -101,3 +101,11 @@ blockquote{
     padding-bottom: 0.5rem;
     vertical-align: middle;
 }
+.equal {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+}

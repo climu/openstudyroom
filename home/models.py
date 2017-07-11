@@ -2,21 +2,21 @@ from __future__ import absolute_import, unicode_literals
 
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils import timezone
 from django import forms
-from wagtail.wagtailcore.models import Page, Orderable
+from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore.fields import RichTextField, StreamField
-from wagtail.wagtailadmin.edit_handlers import FieldPanel, FieldRowPanel, MultiFieldPanel, InlinePanel, PageChooserPanel, StreamFieldPanel
-from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
-from wagtail.wagtaildocs.edit_handlers import DocumentChooserPanel
 from wagtail.wagtailsnippets.models import register_snippet
-from wagtail.wagtailforms.models import AbstractEmailForm, AbstractFormField
 from wagtail.wagtailsearch import index
-
+from wagtail.wagtailadmin.edit_handlers import FieldPanel, FieldRowPanel, MultiFieldPanel, InlinePanel, PageChooserPanel, StreamFieldPanel
 from wagtail.wagtailcore.blocks import TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, RichTextBlock, RawHTMLBlock, IntegerBlock
 from wagtail.wagtailimages.blocks import ImageChooserBlock
 from wagtail.wagtaildocs.blocks import DocumentChooserBlock
 from puput.models import EntryPage, BlogPage
 from wagtailmenus.models import MenuPage
+from fullcalendar.models import AvailableEvent, GameRequestEvent
+from league.models import User
+import datetime
 
 @register_snippet
 @python_2_unicode_compatible  # provide equivalent __unicode__ and __str__ methods on Python 2
@@ -107,6 +107,32 @@ class HomePage(Page):
         context = super(HomePage, self).get_context(request, *args, **kwargs)
         context['entries'] = entries
         context['blog_page'] = blog_page
+        user = request.user
+        if user.is_authenticated and user.user_is_league_member:
+            now = timezone.now()
+            opponents = user.get_opponents()
+            if opponents is False:
+                context['should_join'] = True
+            else:
+                availables = AvailableEvent.objects.filter(
+                    end__gte=now,
+                    user__in=opponents
+                ).exists()
+                context['availables'] = availables
+                time_online = timezone.now() - datetime.timedelta(minutes=6)
+                online_opponents = list(filter(
+                    lambda x: x.profile.last_kgs_online is not None and x.profile.last_kgs_online > time_online,
+                    opponents
+                ))
+                context['online_opponents'] = online_opponents
+                game_requests = GameRequestEvent.objects.filter(receivers=user).count()
+                context['game_requests'] = game_requests
+            me_available = AvailableEvent.objects.filter(
+                user=user,
+                end__gte=now
+            ).exists()
+            context['me_available'] = me_available
+
         return context
 
 
