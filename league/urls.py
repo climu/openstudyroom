@@ -6,6 +6,10 @@ from . import views
 urlpatterns = [
     url(r'^$', views.event, name='event'),
     url(r'^results/$', views.results, name='results'),
+    url(r'^meijin/$', views.meijin, name='meijin'),
+    url(r'^ladder/$', views.ladder, name='ladder'),
+
+
     url(r'^admin/event/(?P<to_event_id>[0-9]+)/populate/$',
         views.populate, name='admin_event_populate'),
     url(r'^admin/event/(?P<to_event_id>[0-9]+)/populate/(?P<from_event_id>[0-9]+)/$',
@@ -17,7 +21,6 @@ urlpatterns = [
 
     url(r'^(?P<event_id>[0-9]+)/results/(?P<division_id>[0-9]+)/$', views.results, name='results'),
     url(r'^(?P<event_id>[0-9]+)/results/$', views.results, name='results'),
-
     url(r'^(?P<event_id>[0-9]+)/$', views.event, name='event'),
 
     url(r'^games/$', views.games, name='games'),
