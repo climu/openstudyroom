@@ -189,6 +189,29 @@ def results(request, event_id=None, division_id=None):
     return HttpResponse(template.render(context, request))
 
 
+def meijin(request):
+    """A simple view that redirects to the last open meijin league."""
+    league = LeagueEvent.objects.filter(
+        event_type='league',
+        is_open=True
+    ).order_by('end_time').first()
+    return HttpResponseRedirect(reverse(
+        'league:results',
+        kwargs={'event_id': league.pk})
+    )
+
+def ladder(request):
+    """A simple view that redirects to the last open ladder league."""
+    league = LeagueEvent.objects.filter(
+        event_type='ladder',
+        is_open=True
+    ).order_by('end_time').first()
+    return HttpResponseRedirect(reverse(
+        'league:results',
+        kwargs={'event_id': league.pk})
+    )
+
+
 def archives(request):
     """Show a list of all leagues."""
     events = LeagueEvent.objects.all()
