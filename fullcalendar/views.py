@@ -387,7 +387,7 @@ def save(request):
                                 end=end,
                                 user=user
                                 )
-                        prev_event = new_event
+                            prev_event = new_event
 
             elif end > now:  # the event must have been moved or resized.
                 pk = event['pk']
@@ -395,6 +395,8 @@ def save(request):
                     if prev_event is not None and start == prev_event.end:
                         prev_event.end = end
                         prev_event.save()
+                        ev = get_object_or_404(AvailableEvent, user=user, pk=pk)
+                        ev.delete()
 
                     else:
                         ev = get_object_or_404(AvailableEvent, user=user, pk=pk)
