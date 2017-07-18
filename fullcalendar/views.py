@@ -355,7 +355,11 @@ def save(request):
     now = timezone.now()
     if request.method == 'POST':
         changed_events = ''
-        changed_events = json.loads(request.POST.get('events'))
+        changed_events = sorted(
+            json.loads(request.POST.get('events')),
+            key=lambda k: k['end']
+        )
+        prev_event = None
         for event in changed_events:
             start = datetime.strptime(event['start'], '%Y-%m-%dT%H:%M:%S')
             start = make_aware(start, tz)
@@ -371,19 +375,34 @@ def save(request):
             elif event['is_new']:  # we create a new event on server
                 if end > now:
                     if event['type'] == 'me-available':
-                        AvailableEvent.objects.create(
-                            start=start,
-                            end=end,
-                            user=user
-                        )
+                        # If this event start exactly at the same time as the
+                        # previous event ended, we just merge those events.
+                        if prev_event is not None and start == prev_event.end:
+                            prev_event.end = end
+                            prev_event.save()
+
+                        else:
+                            new_event = AvailableEvent.objects.create(
+                                start=start,
+                                end=end,
+                                user=user
+                                )
+                        prev_event = new_event
 
             elif end > now:  # the event must have been moved or resized.
                 pk = event['pk']
                 if event['type'] == 'me-available':
-                    ev = get_object_or_404(AvailableEvent, user=user, pk=pk)
-                    ev.start = start
-                    ev.end = end
-                    ev.save()
+                    if prev_event is not None and start == prev_event.end:
+                        prev_event.end = end
+                        prev_event.save()
+
+                    else:
+                        ev = get_object_or_404(AvailableEvent, user=user, pk=pk)
+                        ev.start = start
+                        ev.end = end
+                        ev.save()
+                        prev_event = ev
+
 
     return HttpResponse('success')
 
