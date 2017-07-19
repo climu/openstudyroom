@@ -5,6 +5,7 @@
 <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css' />
 <link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/calendar.css'%}"/>
 <link rel='stylesheet' href='https://cdn.jsdelivr.net/qtip2/3.0.3/basic/jquery.qtip.min.css'/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.8.1/css/bootstrap-slider.min.css" />
 <script
 			  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
 			  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
@@ -13,6 +14,7 @@
 <script src='https://cdn.jsdelivr.net/qtip2/3.0.3/basic/jquery.qtip.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js'></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.8.1/bootstrap-slider.min.js'></script>
 
 {% endblock %}
 {% block title %}My profile - Calendar{% endblock %}
@@ -44,7 +46,7 @@
     {% endfor %}
       </div>
     </div>
-    <div class="panel panel-default me-available-controls hidden" >
+    <div class="panel panel-default me-available-controls  hidden" >
       <div class="panel-heading">
         Save your changes !
       </div>
@@ -52,11 +54,35 @@
         <button class='btn btn-default' id='save'><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save</button>
       </div>
     </div>
+    <div class="panel panel-default me-available-controls other-available-controls hidden" >
+        <div class="panel-heading">
+            Filter time range.
+        </div>
+        <div class="panel-body">
+<p>
+            <input id="slider" style="width:100%;"
+	type="text"
+	name="somename"
+	data-provide="slider"
+	data-slider-min="0"
+	data-slider-max="24"
+	data-slider-step="1"
+	data-slider-value="[0,24]">
+</p>
+<p>
+    from <span id="start-time-range">0:00</span> to <span id="end-time-range">24:00</span>.
+</p>
+<p>
+<button class='btn btn-default' id='filter-time-range'><span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filter</button>
+</p>
+        </div>
+    </div>
+
   </div>
 </div>
 
 
-<div class="col-md-10"
+<div class="col-md-10">
 <div id='calendar'></div>
 </div>
 <!-- Modals -->
@@ -79,7 +105,6 @@
         <button id="reject-game-request" type="button" class="btn btn-warning modal-button" >Reject game request</button>
         <button id="accept-game-request" type="button" class="btn btn-success modal-button" >Accept game request</button>
         <button id="cancel-game" type="button" class="btn btn-success modal-button" >Cancel game appointment</button>
-
       </div>
     </div>
 
@@ -596,6 +621,27 @@ $('#accept-game-request').click(function(){
         $('#calendar').fullCalendar( 'refetchEvents' );
       });
 
+
+      ///////////////////////////////////////////////////////////////
+      // Filter time range
+      ///////////////////////////////////////////////////////////
+
+      $('#filter-time-range').click(function(){
+          var range = $('#slider').bootstrapSlider('getValue');
+          var start = range[0].toString() + ":00:00" ;
+          var end = range[1].toString() + ":00:00" ;
+          $('#calendar').fullCalendar('option', 'minTime',start);
+          $('#calendar').fullCalendar('option', 'maxTime',end);
+  });
+
+// When the slider change value, we...
+$('#slider').bootstrapSlider().on('change',function(slider){
+    var start = slider.value.newValue[0].toString() + ":00" ;
+    var end = slider.value.newValue[1].toString() + ":00" ;
+    $('#start-time-range').html(start);
+    $('#end-time-range').html(end);
+
+});
 ///////////////////////////////////////////////////////////////
 // Menu handling
 ///////////////////////////////////////////////////////////
@@ -630,9 +676,8 @@ $('#accept-game-request').click(function(){
 
     });
 
+
 	});// document ready
-
-
 
 
 </script>
