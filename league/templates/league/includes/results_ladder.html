@@ -1,4 +1,6 @@
 {% load league_tags %}
+{% get_meijin as meijin %}
+
 <div class='table-responsive'>
     <table id='example' class='table table-bordered  table-hover table-condensed' >
         <thead class='table-league-highlight'>
@@ -14,7 +16,7 @@
         <tbody>
         {% for player in results %}
         <tr class="{% cycle 'even-row' 'odd-row' %}">
-            <td class='table-league-player'>{{forloop.counter}}. {{player.user | user_link}}</td>
+            <td class='table-league-player'>{{forloop.counter}}. {{player.user | user_link:meijin}}</td>
             <td class='table-league-score-highlight'>{{ player.score }}</td>
             {% for opponent in results %}
 

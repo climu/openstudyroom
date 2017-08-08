@@ -3,6 +3,8 @@
 
 {% block title %}{{event}}- Players{% endblock %}
 {% block content %}
+{% get_meijin as meijin %}
+
 <ul class="nav nav-tabs">
   <li ><a href="{% url 'league:archives' %}">Archives</a></li>
   {%if event not in open_events%}
@@ -41,7 +43,7 @@
        <tr>
        <td>{{player.division |division_link}}</td>
        <td>{{forloop.counter}}</td>
-       <td>{{player.user | user_link}}</td>
+       <td>{{player.user | user_link:meijin}}</td>
        <td>{{player.score}}</td>
        <td>{{player.n_win}}</td>
        <td>{{player.n_loss}}</td>

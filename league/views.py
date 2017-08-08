@@ -379,6 +379,16 @@ def game_api(request, sgf_id):
 
 @login_required()
 @user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+def admin_set_meijin(request,user_id):
+    user = get_object_or_404(User, pk=user_id)
+    user.set_meijin()
+    message = user.username + " is now the new Meijin !"
+    messages.success(request, message)
+    return HttpResponseRedirect(reverse('league:admin_users_list'))
+
+
+@login_required()
+@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
 def admin_sgf_list(request):
     sgfs = Sgf.objects.all()
     context = {'sgfs': sgfs}
