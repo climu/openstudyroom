@@ -82,5 +82,5 @@ urlpatterns = [
     url(r'^admin/update-all-sgf-check-code/$',
         views.update_all_sgf_check_code, name='update_all_sgf_check_code'),
     url(r'^admin/update-all-sgf/$', views.update_all_sgf, name='update_all_sgf'),
-    url(r'^admin/set-meijin/(?P<user_id>[0-9]+)$', views.admin_set_meijin, name='set_meijin'),
+    url(r'^admin/set-meijin/$', views.admin_set_meijin, name='set_meijin'),
 ]
