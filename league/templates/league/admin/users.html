@@ -30,7 +30,15 @@
     <td>{{user.username}}</td>
     <td>{{user|user_link:meijin}}</td>
     <td><a href="{% url 'league:admin_user_send_mail' user.pk %}" > {%bootstrap_icon "send"%}</a></td>
-    <td><a href="{% url 'league:set_meijin' user.pk %}"><i class="fa fa-trophy"></i></a></td>
+
+    <td>
+        <form action="{% url 'league:set_meijin'%}" method="post" class="form">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="set_meijin">
+          <input type="hidden" name="user_id" value="{{user.pk}}">
+          <button type="submit" class="btn btn-primary btn-xs"> <i class="fa fa-trophy"></i></button>
+        </form>
+    </td>
     <td>{% if user.is_in_primary_event %} {{user.get_primary_event_player.division}}{%endif%}</td>
   </tr>
   {%endfor %}
