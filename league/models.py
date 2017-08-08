@@ -6,8 +6,6 @@ import requests
 from django.contrib.auth.models import AbstractUser
 from collections import defaultdict
 from django.db.models import Q
-from django.db.models.signals import pre_delete
-from django.dispatch import receiver
 import pytz
 from operator import attrgetter
 from django.core.urlresolvers import reverse
@@ -162,6 +160,8 @@ class Registry(models.Model):
     time_kgs = models.DateTimeField(default=datetime.datetime.now, blank=True)
     # time between 2 kgs get
     kgs_delay = models.SmallIntegerField(default=19)
+    # actual meijin
+    meijin = models.ForeignKey('User', null=True, blank=True)
 
     @staticmethod
     def get_primary_event():
@@ -183,6 +183,7 @@ class Registry(models.Model):
         r = Registry.objects.get(pk=1)
         r.time_kgs = time
         r.save()
+
 
 
 class Sgf(models.Model):
@@ -605,6 +606,13 @@ class User(AbstractUser):
             tz = pytz.utc
         return tz
 
+    def set_meijin(self):
+        r = Registry.objects.get(pk=1)
+        r.meijin = self
+        r.save()
+        return True
+
+
 
 def is_league_admin(user):
     return user.groups.filter(name='league_admin').exists()
@@ -626,6 +634,8 @@ class Profile(models.Model):
         choices=[(t, t) for t in pytz.common_timezones],
         blank=True, null=True
     )
+    start_cal = models.PositiveSmallIntegerField(default=0)
+    end_cal = models.PositiveSmallIntegerField(default=24)
 
     def __str__(self):
         return self.user.username

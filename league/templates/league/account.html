@@ -2,7 +2,6 @@
 {% load wagtailcore_tags %}
 {% load league_tags %}
 {% load bootstrap3 %}
-
 {% block extra_head_js %}
 <script type="text/javascript">
 function load_game(game_id) {
@@ -27,16 +26,34 @@ function processData(data)
 return false;};
 </script>
 {% endblock %}
+
 {% block body_class %}user{% endblock %}
 
 {% block title %}{% if user == request.user %}My{% else %}{{user.username}}{% endif %} profile - league{% endblock %}
 {% block heading %}
+{% get_meijin as meijin %}
+
 <div class="page-header">
-    <h1>{% if user == request.user %}My{% else %}{{user.username}}{% endif %} profile - league</h1>
+    <h1>
+        {% if user == meijin %}
+            <i class="fa fa-trophy" data-toggle="tooltip" title="{{user.kgs_username}} is OSR Meijin !"></i>
+        {% endif %}
+        {% if user == request.user %}My{% else %}{{user.username}}{% endif %} profile - league
+    </h1>
+
 </div>
 {%endblock%}
 {% block content %}
+{% get_meijin as meijin %}
+
 {% include 'league/includes/user_nav.html' with active='league' %}
+
+{% if user == meijin %}
+<div class="well">
+    <h4><i class="fa fa-trophy"></i> {{user.username}} is OSR Meijin!</h4>
+    He earned respect from all Open Study Room and a teaching game with Alexander Dinerchtein (3p).
+</div>
+{% endif %}
 {% for event in open_events %}
 
 <div class="panel panel-default">
@@ -65,7 +82,7 @@ return false;};
       <tr>
           {%endif%}
       <td>{{forloop.counter}}</td>
-      <td>{{opponent.user | user_link}}</td>
+      <td>{{opponent.user | user_link:meijin}}</td>
       <td>{{opponent.score}}
       <td>
 

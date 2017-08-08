@@ -13,26 +13,28 @@
 </div>
 {%endblock%}
 {% block content %}
+{% get_meijin as meijin %}
 
-<table id='users-table' class='display table' cellspacing='0' width='100%' >
+<table id='users-table' class='display table table-hover' cellspacing='0' width='100%' >
 	<thead>
 	<tr>
 		<th>User</th>
 		<th>KGS username</th>
 		<th>Send email</th>
-    <th>Division</th>
+        <th>Set meijin</th>
+        <th>Division</th>
 	</thead>
 	<tbody>
 	{% for user in users %}
 	<tr>
-    <td>{{user|user_link}}</td>
-    <td>{{user.kgs_username}}</td>
-    <td><a href="{% url 'league:admin_user_send_mail' user.pk%}" > {%bootstrap_icon "send"%}</a></td>
+    <td>{{user.username}}</td>
+    <td>{{user|user_link:meijin}}</td>
+    <td><a href="{% url 'league:admin_user_send_mail' user.pk %}" > {%bootstrap_icon "send"%}</a></td>
+    <td><a href="{% url 'league:set_meijin' user.pk %}"><i class="fa fa-trophy"></i></a></td>
     <td>{% if user.is_in_primary_event %} {{user.get_primary_event_player.division}}{%endif%}</td>
-
   </tr>
   {%endfor %}
-</tbody>
+</tbody>{{meijin}}
 </table>
 
 {% endblock %}

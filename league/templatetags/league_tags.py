@@ -1,7 +1,7 @@
 from django import template
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
-
+from league.models import Registry
 register = template.Library()
 
 
@@ -38,7 +38,6 @@ def html_one_result(context):
 def html_one_player_result(context):
     # note the use of takes_context = true.
     # this filter only works called from a context where player an opponent exists
-    player = context['player']
     opponent = context['opponent']
     results = context['results']
     opponent_kgs = opponent.kgs_username
@@ -57,8 +56,8 @@ def html_one_player_result(context):
     return mark_safe(html)
 
 
-@register.filter
-def user_link(user):
+@register.filter()
+def user_link(user, meijin=None):
     if user is None:
         return ''
     link = '<a href="/league/account/' + user.username + '"'
@@ -66,8 +65,10 @@ def user_link(user):
         link += 'class="online"'
     else:
         link += 'class="offline"'
-    link +=  '>' + user.kgs_username + '</a>'
-
+    link += '>' + user.kgs_username
+    if user == meijin:
+        link += ' <i class="fa fa-trophy" data-toggle="tooltip" title="' + user.kgs_username + ' is OSR Meijin !"></i>'
+    link += '</a>'
     return mark_safe(link)
 
 
@@ -80,7 +81,9 @@ def game_iframe_link(game):
 
 @register.filter
 def game_link(sgf, event=None):
-    html = '<a role="button" onclick="load_game(' + str(sgf.pk) + ')">' + str(sgf.result) + '</a>'
+    html = '<a role="button" onclick="load_game(' + \
+        str(sgf.pk) + \
+        ')">' + str(sgf.result) + '</a>'
 
     return mark_safe(html)
 
@@ -166,3 +169,9 @@ def player_nb_games(player, results):
         return results[player.kgs_username]['nb_games']
     else:
         return 0
+
+
+@register.simple_tag()
+def get_meijin():
+    r = Registry.objects.get(pk=1)
+    return r.meijin
