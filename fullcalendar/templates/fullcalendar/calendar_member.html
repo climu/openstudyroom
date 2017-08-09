@@ -67,10 +67,13 @@
 	data-slider-min="0"
 	data-slider-max="24"
 	data-slider-step="1"
-	data-slider-value="[0,24]">
+	data-slider-value="[{{start_time_range}},{{end_time_range}}]"
+    tooltip_split="true"
+
+    >
 </p>
 <p>
-    from <span id="start-time-range">0:00</span> to <span id="end-time-range">24:00</span>.
+    from <span id="start-time-range">{{start_time_range}}:00</span> to <span id="end-time-range">{{end_time_range}}:00</span>.
 </p>
 <p>
 <button class='btn btn-default' id='filter-time-range'><span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filter</button>
@@ -160,6 +163,9 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
       timeFormat: 'H:mm',
       selectable:true,
       selectHelper: true,
+      minTime: {{start_time_range}} + ":00:00",
+      maxTime: {{end_time_range}} + ":00:00",
+
       //prevent user from selecting multiple day availability
       selectConstraint: {
         start: '00:00',
@@ -630,9 +636,17 @@ $('#accept-game-request').click(function(){
           var range = $('#slider').bootstrapSlider('getValue');
           var start = range[0].toString() + ":00:00" ;
           var end = range[1].toString() + ":00:00" ;
-          $('#calendar').fullCalendar('option', 'minTime',start);
-          $('#calendar').fullCalendar('option', 'maxTime',end);
-  });
+          $('#calendar').fullCalendar('option', 'minTime', start);
+          $('#calendar').fullCalendar('option', 'maxTime', end);
+          $.ajax({
+                   type:"POST",
+                   url:"{% url 'calendar:update_time_range_ajax'%}",
+                   data: {
+                          'start': range[0],
+                          'end': range[1]
+                          }
+              });
+      });
 
 // When the slider change value, we...
 $('#slider').bootstrapSlider().on('change',function(slider){

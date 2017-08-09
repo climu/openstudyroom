@@ -1,9 +1,9 @@
 from django import template
-from home.models import Advert
-from fullcalendar.models import PublicEvent, GameAppointmentEvent
+from fullcalendar.models import PublicEvent, GameAppointmentEvent, AvailableEvent
 from django.utils import timezone
 
 register = template.Library()
+
 
 @register.simple_tag(takes_context=True)
 def public_events(context):

@@ -7,12 +7,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from datetime import datetime, timedelta
 import json
 from django.utils.timezone import make_aware
-from league.models import is_league_admin, is_league_member
+from league.models import User, is_league_admin, is_league_member
 from .forms import UTCPublicEventForm
 from .models import PublicEvent, AvailableEvent, GameRequestEvent, GameAppointmentEvent
 from pytz import utc
 from django.utils import timezone
-from league.models import User
 from postman.api import pm_broadcast, pm_write
 from django.template import loader
 
@@ -50,9 +49,15 @@ def calendar_view(request):
     user = request.user
     if user.is_authenticated and user.user_is_league_member:
         template = 'fullcalendar/calendar_member.html'
+        context = {
+            'user': user,
+            'start_time_range': user.profile.start_cal,
+            'end_time_range': user.profile.end_cal
+        }
     else:
         template = 'fullcalendar/calendar.html'
-    return render(request, template, {'user': user, })
+        context = {'user': user}
+    return render(request, template, context)
 
 
 def json_feed(request):
@@ -205,6 +210,17 @@ def json_feed(request):
                 data.append(dict)
 
     return HttpResponse(json.dumps(data), content_type="application/json")
+
+@login_required()
+@user_passes_test(is_league_member, login_url="/", redirect_field_name=None)
+def update_time_range_ajax(request):
+    if request.method == 'POST':
+        start = request.POST.get('start')
+        end = request.POST.get('end')
+        request.user.profile.start_cal = start
+        request.user.profile.end_cal = end
+        request.user.profile.save()
+        return HttpResponse('success')
 
 
 @login_required()
