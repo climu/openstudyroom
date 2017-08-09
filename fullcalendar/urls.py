@@ -52,4 +52,9 @@ urlpatterns = [
         views.cancel_game_ajax,
         name='cancel_game_ajax'
     ),
+    url(
+        r'^update-time-range-ajax/$',
+        views.update_time_range_ajax,
+        name='update_time_range_ajax'
+    ),
 ]
