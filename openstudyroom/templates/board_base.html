@@ -97,55 +97,53 @@
   </script>
   <script type="text/javascript">
 
- $('.post, .post-review, .post-preview ').shortcode({
+ $('.post-content, .post-review, .post-preview ').shortcode({
    goban: function() {
+       tag_open = '<div'
+       tag_content = ''
+       tag_close = '>'
+       if (this.options !== undefined){
+           var sgf;
+           //disallow controls of the goban
+           if (this.options.diagram == "true"){ //need to test for undefined?
+               tag_content += ' data-wgo-diagram = '
+           }else{
+               tag_content += ' data-wgo = '
+           }
 
-         if (this.options !== undefined){
-             var sgf;
+           //set source sgf file
+           if (this.options.sgf !== undefined){
+               tag_content += ' " ' + this.options.sgf + ' " '
+           }else{
+               tag_content += ' " ' + $("div.attachment").find('a').attr('href') + ' " '
+           }
 
-              if (this.options.sgf !== undefined){
-                   sgf= this.options.sgf;
-              }
-              else{
-                sgf = $("div.attachment").find('a').attr('href');
-              }
-              if (this.options.move !== undefined){
-                  html = '<div  data-wgo="' + sgf + '" data-wgo-move="' + this.options.move +'">';
-              }
-              else{
-                  html = '<div  data-wgo="' + sgf + '">';
-              }
+           //set goban to specific move
+           if (this.options.move !== undefined){
+               tag_content += ' data-wgo-move= " ' + this.options.move + ' " '
+           }else{
+               tag_content += ''
+           }
 
-         }
-         else{
-             html = '<div  data-wgo="' + $("div.attachment").find('a').attr('href') +'">';
-         }
-        return html;
+           //set minimal layout
+           if (this.options.simple !== undefined){
+               var layout = "bottom: ['Control']";
+               tag_content += ' data-wgo-layout="' + layout + '" ';
+            }
+            var js = "console.log('bla');";
+
+            // set width
+            if (this.options.width !== undefined){
+                tag_content += ' style="width:' + this.options.width + ';" '
+            }
+
+        }else{
+           tag_content = 'data-wgo=" ' + $("div.attachment").find('a').attr('href') + ' " '
+       }
+               return tag_open + tag_content + tag_close;
    },
-   diagram:  function() {
 
-         if (this.options !== undefined){
-             var sgf;
-
-              if (this.options.sgf !== undefined){
-                   sgf= this.options.sgf;
-              }
-              else{
-                sgf = $("div.attachment").find('a').attr('href');
-              }
-              if (this.options.move !== undefined){
-                  html = '<div  data-wgo-diagram="' + sgf + '" data-wgo-move="' + this.options.move +'">';
-              }
-              else{
-                  html = '<div  data-wgo-diagram="' + sgf + '">';
-              }
-         }
-         else{
-             html = '<div  data-wgo-diagram="' + $("div.attachment").find('a').attr('href') +'">';
-         }
-        return html;
-   },
-   "":function(){
+   "h":function(){
        if (this.options.coord !== undefined){
            return '<a href="javascript:void(0)" class="coord">'+ this.options.coord +'</a>';
        }
