@@ -2,10 +2,7 @@
 {% load i18n static%}
 {% load forum_conversation_tags %}
 {% load forum_permission_tags %}
-{% block extra_head_js %}
-<script src="{% static 'js/shortcode.min.js' %}" ></script>
 
-{%endblock%}
 {% block sub_title %}{{ topic.subject }}{% endblock sub_title %}
 
 {% block content %}
@@ -120,82 +117,3 @@
     </div>
 </div>
 {% endblock content %}
-
-{% block js %}
-{{ block.super }}
-<script src="{% static 'js/machina.min.js' %}" type="text/javascript" charset="utf-8"></script>
-
-<script type="text/javascript">
-  $(function() {
-    machina.init();
-    {% block onbodyload %}{% endblock onbodyload %}
-  });
-  </script>
-  <script type="text/javascript">
-
-  new Shortcode(document.querySelector('.container'), {
-   goban: function() {
-
-         if (this.options !== undefined){
-             var sgf;
-
-              if (this.options.sgf !== undefined){
-                   sgf= this.options.sgf;
-              }
-              else{
-                sgf = $("div.attachment").find('a').attr('href');
-              }
-              if (this.options.move !== undefined){
-                  html = '<div  data-wgo="' + sgf + '" data-wgo-move="' + this.options.move +'">';
-              }
-              else{
-                  html = '<div  data-wgo="' + sgf + '">';
-              }
-         }
-         else{
-             html = '<div  data-wgo="' + $("div.attachment").find('a').attr('href') +'">';
-         }
-        return html;
-   },
-   "":function(){
-       if (this.options.coord !== undefined){
-           return '<a href="javascript:void(0)" class="coord">'+ this.options.coord +'</a>';
-       }
-       if (this.options.move !== undefined){
-           return '<a href="javascript:void(0)" class="move">'+ this.options.move +'</a>';
-       }
-   }
-});// Shortcode
-
-$('.coord').hover(
-    function(){
-        e = $( this ).html();
-        var player= $( this ).prevAll('.wgo-player-main')[0]._wgo_player;
-        var t, n;
-        t = e.charCodeAt(0) - "a".charCodeAt(0);
-        if (t < 0) t += "a".charCodeAt(0) - "A".charCodeAt(0);
-        if (t > 7) t--;
-        n = e.charCodeAt(1) - "0".charCodeAt(0);
-        if (e.length > 2) n = n * 10 + (e.charCodeAt(2) - "0".charCodeAt(0));
-        n = player.kifuReader.game.size - n;
-        player._tmp_mark = {
-            type: "MA",
-            x: t,
-            y: n
-        };
-        player.board.addObject(player._tmp_mark);
-    },
-    function() {
-        var player= $( this ).prevAll('.wgo-player-main')[0]._wgo_player;
-        player.board.removeObject(player._tmp_mark);
-        delete player._tmp_mark;
-    }
-);
-
-$('.move').click(function(){
-    var n = parseInt($( this ).html());
-    var player= $( this ).prevAll('.wgo-player-main')[0]._wgo_player;
-    player.goTo(n);
-});
-</script>
-{% endblock js %}
