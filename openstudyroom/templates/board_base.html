@@ -169,12 +169,13 @@
                str = str.replace(matches[i],repl)
                 }
             }
+            tag_close += str;
         }
 
         // increment the wgo count
         $('#count-wgo').attr('data-count-wgo',parseInt(n)+1);
 
-               return tag_open + tag_content + tag_close + str ;
+               return tag_open + tag_content + tag_close ;
    },
    "diagram":function(){
        tag_open = '<div'
@@ -244,12 +245,13 @@
                str = str.replace(matches[i],repl)
                 }
             }
+            tag_close += str;
         }
 
         // increment the wgo count
         $('#count-wgo').attr('data-count-wgo',parseInt(n)+1);
 
-     return tag_open + tag_content + tag_close + str;
+     return tag_open + tag_content + tag_close;
    }
 });// Shortcode
 
