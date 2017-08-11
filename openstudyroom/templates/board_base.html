@@ -57,6 +57,8 @@
 <div class="page-header">
   <h1>OSR Forums </h1>
 </div>
+<div id="count-wgo" data-count-wgo="0"></div>
+
 {%endblock%}
 <div class="container" id="main_container">
   <div class="row">
@@ -101,7 +103,7 @@
    goban: function() {
        tag_open = '<div '
        tag_content = ''
-       tag_close = '>'
+       tag_close = '></div>'
        if (this.options !== undefined){
            var sgf;
            //set source sgf file
@@ -143,12 +145,41 @@
         }else{
            tag_content = 'data-wgo=" ' + $("div.attachment").find('a').attr('href') + ' " '
        }
-               return tag_open + tag_content + tag_close;
+
+       // get the count of player on the page
+       n = $('#count-wgo').attr('data-count-wgo');
+       if (this.contents !== undefined){
+
+           //parse the content to add info to the coords and moves
+           //coords
+           str = this.contents
+           matches = str.match(/[A-T][0-9]{1,2}/igm);
+           if (matches !== null){
+               for(i = 0 ; i < matches.length; i++){
+                   repl = '<a href="javascript:void(0)"  class="coord" data-target="wgo_' + n + '">' + matches[i] + '</a>'
+                   str = str.replace(matches[i],repl)
+               }
+           }
+           //moves
+           matches = str.match(/move [0-9]{1,3}/igm);
+           if (matches !== null){
+               for(i = 0 ; i < matches.length; i++){
+                repl = '<a href="javascript:void(0)"  class="move" data-target="wgo_' + n + '">' + matches[i] + '</a>'
+
+               str = str.replace(matches[i],repl)
+                }
+            }
+        }
+
+        // increment the wgo count
+        $('#count-wgo').attr('data-count-wgo',parseInt(n)+1);
+
+               return tag_open + tag_content + tag_close + str ;
    },
    "diagram":function(){
        tag_open = '<div'
        tag_content = ''
-       tag_close = '>'
+       tag_close = '></div>'
        if (this.options !== undefined){
            //set source sgf file
            if (this.options.sgf !== undefined){
@@ -190,46 +221,43 @@
        // set empty layout
        // disable scroll and keys
        tag_content += ' data-wgo-layout="" data-wgo-enablewheel="false" data-wgo-enablekeys="false"';
+       // get the count of player on the page
+       n = $('#count-wgo').attr('data-count-wgo');
+       if (this.contents !== undefined){
 
-     return tag_open + tag_content + tag_close;
-   },
-   "h":function(){
-       if (this.options.coord !== undefined){
-           return '<a href="javascript:void(0)" class="coord">'+ this.options.coord +'</a>';
-       }
-       if (this.options.move !== undefined){
-           return '<a href="javascript:void(0)" class="move">'+ this.options.move +'</a>';
-       }
+           //parse the content to add info to the coords and moves
+           //coords
+           str = this.contents
+           matches = str.match(/[A-T][0-9]{1,2}/igm);
+           if (matches !== null){
+               for(i = 0 ; i < matches.length; i++){
+                   repl = '<a href="javascript:void(0)"  class="coord" data-target="wgo_' + n + '">' + matches[i] + '</a>'
+                   str = str.replace(matches[i],repl)
+               }
+           }
+           //moves
+           matches = str.match(/move [0-9]{1,3}/igm);
+           if (matches !== null){
+               for(i = 0 ; i < matches.length; i++){
+                repl = '<a href="javascript:void(0)"  class="move" data-target="wgo_' + n + '">' + matches[i] + '</a>'
+
+               str = str.replace(matches[i],repl)
+                }
+            }
+        }
+
+        // increment the wgo count
+        $('#count-wgo').attr('data-count-wgo',parseInt(n)+1);
+
+     return tag_open + tag_content + tag_close + str;
    }
 });// Shortcode
-// this is a small helper extension i stole from
- // http://www.texotela.co.uk/code/jquery/reverse/
- // it merely reverses the order of a jQuery set.
- $.fn.reverse = function() {
-     return this.pushStack(this.get().reverse(), arguments);
- };
 
- // create two new functions: prevALL and nextALL. they're very similar, hence this style.
- $.each( ['prev', 'next'], function(unusedIndex, name) {
-     $.fn[ name + 'ALL' ] = function(matchExpr) {
-         // get all the elements in the body, including the body.
-         var $all = $('body').find('*').andSelf();
-
-         // slice the $all object according to which way we're looking
-         $all = (name == 'prev')
-              ? $all.slice(0, $all.index(this)).reverse()
-              : $all.slice($all.index(this) + 1)
-         ;
-         // filter the matches if specified
-         if (matchExpr) $all = $all.filter(matchExpr);
-         return $all;
-     };
-});
 $('.coord').hover(
     function(){
         e = $( this ).html();
-        var player= $( this ).prev('.wgo-player-main')[0]._wgo_player;
-        console.log(player);
+        id = $( this ).attr('data-target');
+        player = $('#'+ id)[0]._wgo_player;
         var t, n;
         t = e.charCodeAt(0) - "a".charCodeAt(0);
         if (t < 0) t += "a".charCodeAt(0) - "A".charCodeAt(0);
@@ -245,19 +273,17 @@ $('.coord').hover(
         player.board.addObject(player._tmp_mark);
     },
     function() {
-        console.log($( this ).prevALL('.wgo-player-main:first'));
-        var player= $( this ).prevALL('.wgo-player-main')[0]._wgo_player;
+        id = $( this ).attr('data-target');
+        player = $('#'+ id)[0]._wgo_player;
         player.board.removeObject(player._tmp_mark);
         delete player._tmp_mark;
     }
 );
 
 $('.move').click(function(){
-    console.log($( this ).prevAll('.wgo-player-main'))
-
-    var n = parseInt($( this ).html());
-    console.log($( this ).prev)
-    var player= $( this ).prev('.wgo-player-main')[0]._wgo_player;
+    var n = parseInt($( this ).html().replace(/[^0-9\.]/g, ''));
+    id = $( this ).attr('data-target');
+    player = $('#'+ id)[0]._wgo_player;
     player.goTo(n);
 });
 </script>
