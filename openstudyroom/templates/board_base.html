@@ -118,6 +118,17 @@
                tag_content += ' " ' + $("div.attachment").find('a').attr('href') + ' " '
            }
 
+           // activate coordinates
+           if (this.options.coord !== undefined){
+               if (this.option.coord == 'true'){
+                   var js = "arguments[0].target.setCoordinates(true);";
+                   tag_content += 'data-wgo-onkifuload="' + js + '"';
+               }// coordiantes are deactivated by default, so no need to do anything if coord == false
+           }else{// activate coordinates by default
+               var js = "arguments[0].target.setCoordinates(true);";
+               tag_content += 'data-wgo-onkifuload="' + js + '"';
+           }
+           
            //set goban to specific move
            if (this.options.move !== undefined){
                tag_content += ' data-wgo-move= " ' + this.options.move + ' " '
@@ -130,7 +141,6 @@
                var layout = "bottom: ['Control']";
                tag_content += ' data-wgo-layout="' + layout + '" ';
             }
-            var js = "console.log('bla');";
 
             // set width
             if (this.options.width !== undefined){
