@@ -120,7 +120,7 @@
 
            // activate coordinates
            if (this.options.coord !== undefined){
-               if (this.option.coord == 'true'){
+               if (this.options.coord == 'true'){
                    var js = "arguments[0].target.setCoordinates(true);";
                    tag_content += 'data-wgo-onkifuload="' + js + '"';
                }// coordiantes are deactivated by default, so no need to do anything if coord == false
@@ -128,7 +128,7 @@
                var js = "arguments[0].target.setCoordinates(true);";
                tag_content += 'data-wgo-onkifuload="' + js + '"';
            }
-           
+
            //set goban to specific move
            if (this.options.move !== undefined){
                tag_content += ' data-wgo-move= " ' + this.options.move + ' " '
