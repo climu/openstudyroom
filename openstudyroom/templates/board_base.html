@@ -101,7 +101,7 @@
   <script type="text/javascript">
 
  $('.post-content, .post-review, .post-preview ').shortcode({
-   goban: function() {
+   goban: function(done) {
        tag_open = '<div '
        tag_content = ''
        tag_close = '></div>'
@@ -156,10 +156,16 @@
                tag_content += ''
            }
 
-            // set width
+            // set style
+            tag_content += ' style="'
+            //width
             if (this.options.width !== undefined){
-                tag_content += ' style="width:' + this.options.width + ';" '
+                tag_content += 'width:' + this.options.width + '; '
             }
+            if (this.options.float !== undefined){
+                tag_content += 'float:' + this.options.float + '; '
+            }
+            tag_content += '"'
 
         }else{
            tag_content = 'data-wgo=" ' + $("div.attachment").find('a').attr('href') + ' " '
@@ -170,7 +176,7 @@
 
        if (this.contents !== undefined){
            // we should first test if this.contest contain a [goban] and do what?
-           
+
            //parse the content to add info to the coords and moves
            //coords
            str = this.contents
@@ -196,7 +202,6 @@
         // increment the wgo count
 
         $('#count-wgo').attr('data-count-wgo', parseInt(n) +1);
-        console.log(tag_content)
 
        return tag_open + tag_content + tag_close ;
    },
