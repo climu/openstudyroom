@@ -428,7 +428,7 @@ def create_sgf(request):
             if sgf.league_valid:
                 sgf.save()
                 sgf.update_related(valid_events)
-                message = " Succesfully created a sgf and a league game"
+                message = " Succesfully created a SGF"
                 messages.success(request, message)
             else:
                 message = " the sgf didn't seems to pass the tests"

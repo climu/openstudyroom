@@ -359,6 +359,8 @@ class Sgf(models.Model):
             (b, m) = (False, m + '; no result')
         if self.number_moves < 20:
             (b, m) = (False, m + '; number moves')
+        if self.komi != '6.50':
+            (b, m) = (False, m + '; komi')
 
         return {'message': m, 'valid': b, 'tag': tag, }
 
@@ -403,16 +405,16 @@ class Sgf(models.Model):
             # here sgf is valid for no event.
             # if the sgf was tagged for an event, we display this event message.
             # Otherwise, just the last one.
+            self.league_valid = False
             if len(message) > 0:
                 self.message = message
             else:
-                self.league_valid = False
                 self.message = check['message']
-                return []
+            return []
         else:  # the sgf is valid for at lease one event.
             self.league_valid = True
             self.message = ''
-        return valid_events
+            return valid_events
 
 
 class User(AbstractUser):
