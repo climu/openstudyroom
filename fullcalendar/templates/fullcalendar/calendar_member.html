@@ -34,6 +34,13 @@
       <li id = 'me-av-pill' role="presentation" ><a href="javascript:void(0)">My availabilities</a></li>
       <li id = 'other-av-pill'role="presentation" class = 'other'><a href="javascript:void(0)">Game planer</a></li>
     </ul>
+    <div class="panel panel-default other-available-controls  hidden" >
+      <div class="panel-heading">
+        <div class="checkbox div-checkbox ">
+        <label><input id ="check-own" type="checkbox" checked>Show your own availability.</label>
+                </div>
+      </div>
+    </div>
     <div class="panel panel-default other-available-controls hidden" >
       <div class="panel-heading">
         Filter by divisions
@@ -185,7 +192,7 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
       eventOverlap: function(stillEvent, movingEvent) {
         return stillEvent.type != 'me-available';
       },
-      //selecting will create an event saying use is available
+      //selecting will create an event saying user is available
       select: function(start, end) {
 				var eventData;
         // the following commented lines is an attempt to set a minimal 1h30
@@ -227,12 +234,13 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
           json = JSON.stringify(div_list);
           return({
             'divs':json,
-            'me-av':($('#me-av-pill').hasClass('active')),
+            'me-av':!($('#cal-pill').hasClass('active')),
             'other-av':($('#other-av-pill').hasClass('active')),
             'game-request':!($('#me-av-pill').hasClass('active'))
             });
         }
     },
+
 
     ///////////////////////////////////////////////////////////////
     // Event Render
@@ -243,6 +251,9 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
         }
         // deals with me-available events:
         if (event.type === 'me-available'){
+
+          // If we are on my availability tab we can change thoses.
+          if ($('#me-av-pill').hasClass('active')){
             // add a closeon button
             element.find(".fc-content").prepend( "<span style='font-size:1.5em;'class='pull-right glyphicon glyphicon-remove-circle closeon' aria-hidden='true'></span>" );
             element.find(".closeon").click(function() {
@@ -258,10 +269,16 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
                $('#calendar').fullCalendar('removeEvents',event._id);
              }
            });// end of closeon
-           if (!($('#me-av-pill').hasClass('active'))){
+         }
+         else if ($('#other-av-pill').hasClass('active')) {
+          element.find(".fc-content").hide();
+          if (!($('#check-own')[0].checked)) {
+            element.addClass('hidden');
+          }
+         }
+         else{
              element.addClass('hidden');
            }
-
         }// end of event.type == me-available
 
         // If envent.type is other-available
@@ -626,8 +643,15 @@ $('#accept-game-request').click(function(){
         //$('#calendar').fullCalendar( 'removeEvents');
         $('#calendar').fullCalendar( 'refetchEvents' );
       });
+    $('#check-own').click(function(){
+          if ($('#check-own')[0].checked){
+            $('.me-available').removeClass('hidden')
+          }
+          else{
+            $('.me-available').addClass('hidden')
+          }
 
-
+        });
       ///////////////////////////////////////////////////////////////
       // Filter time range
       ///////////////////////////////////////////////////////////

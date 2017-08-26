@@ -125,13 +125,19 @@ def json_feed(request):
                     'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
                     'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
                     'is_new': False,
-                    'editable': True,
                     'type': 'me-available',
                     'color': '#ffff80',
                     'className': 'me-available',
-
                 }
+                if json.loads(request.GET.get('other-av', False)):
+                    dict['rendering'] = 'background'
+                else:
+                    dict['editable'] = True
+
                 data.append(dict)
+
+
+
 
         # others availability
         if json.loads(request.GET.get('other-av', False)):
