@@ -110,6 +110,7 @@ blockquote{
 
 }
 
- .responsive-object>iframe {
-    max-width: 100%;
+.sidebar .responsive-object>iframe {
+   max-width: 100%;
+  height:auto!important;
 }
