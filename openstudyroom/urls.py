@@ -20,7 +20,7 @@ urlpatterns = [
     url(r'^search/$', search_views.search, name='search'),
 
     url(r'^league/', include('league.urls', namespace="league")),
-    url(r'^wgo/', include('wgo.urls', namespace="wgo")),
+#    url(r'^wgo/', include('wgo.urls', namespace="wgo")),
 #    url(r'^accounts/login/$',LoginView.as_view(), name="auth_login"),
 #    url(r'^accounts/signup/$',SignupView.as_view(), name="registration_register"),
 
@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
     url(r'^forum/', include(board.urls)),
     url(r'^messages/', include('postman.urls', namespace='postman', app_name='postman')),
+    url(r'^community/', include('community.urls', namespace='community')),
     url(r'', include('puput.urls')),
     # For anything not caught by a more specific rule above, hand over to
     # Wagtail's page serving mechanism. This should be the last pattern in

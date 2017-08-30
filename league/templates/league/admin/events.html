@@ -1,26 +1,25 @@
 {% extends 'league/admin/base.html' %}
 {% load bootstrap3 league_tags%}
-{% block title %}OSR league admin - Events{% endblock %}
+{% block title %}OSR league admin - league{% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1>Event manager</h1>
+    <h1>League manager</h1>
 </div>
 {%endblock%}
 {% block content %}
-
-<div class="panel-body">
-	<div class ="row">
-		<div class="panel panel-default">
-			<form action="" method="GET">
-			<button type="submit" class="btn btn-xs btn-success" formaction="{% url 'league:admin_events_create' %}">
-			  {% bootstrap_icon 'plus'%}
-			  Create Event
-			</button>
-			</form>
-			<div class="panel-heading"><h3>List of events</h3></div>
+<div class="panel panel-default">
+    <div class="panel-heading"><h3>
+        List of OSR leagues
+        <a href= "{% url 'league:admin_events_create' %}">
+            <button class="btn btn-success pull-right clearfix">
+                {%bootstrap_icon 'plus'%} Create new league
+            </button>
+        </a>
+    </h3></div>
+		<div class="panel-body">
 			{% include "league/admin/event_list.html" with events=events %}
 		</div>
-	</div>
+
 </div>
 
 
