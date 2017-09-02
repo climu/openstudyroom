@@ -1,0 +1,64 @@
+{% extends 'full_width.html' %}
+{% load bootstrap3 league_tags%}
+{% block title %}OSR - {{community.name}} - Create new league{% endblock %}
+
+{% block heading %}
+<div class="page-header">
+    <h1> {{community.name}}  </h1>
+</div>
+{%endblock%}
+{% block content %}
+<div class="panel panel-default">
+<div class="panel-heading clearfix">
+  <h3> {{community.name}}
+  {% if admin %}
+  <a href="{% url 'community:community_update' community.pk %}"><button class="btn btn-default pull-right">{% bootstrap_icon 'wrench' %} Edit </button></a>
+  {%endif%}
+</h3>
+</div>
+<div class="panel-body">
+{{community.description}}
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading clearfix">
+All {{community.name}} leagues
+{% if admin %}
+<a href="{% url 'community:create_league' community.pk %}">
+  <button class="btn btn-success pull-right">
+    {% bootstrap_icon 'plus' %}
+    Create new league
+  </button>
+</a>
+{% endif %}
+</div>
+<table id="league-table" class="table">
+  <thead>
+    <th>Name</th>
+    <th>Begin</th>
+    <th>Ends</th>
+    <th>Type</th>
+    <th># Divisions</th>
+    <th># Players</th>
+    <th># games </th>
+    {% if admin %}
+    <th>Edit </th>
+    {% endif %}
+  </thead>
+  <tbody>
+  {% for league in leagues %}
+  <tr>
+    <td>{{league.name}}</td>
+    <td>{{league.begin_time |date:"SHORT_DATE_FORMAT"}}</td>
+    <td>{{league.end_time |date:"SHORT_DATE_FORMAT"}}</td>
+    <td>{{league.league_type}}</td>
+    <td>{{ league.number_divisions }}</td>
+    <td>{{league.number_players}}</td>
+    <td>{{ league.number_games}}</td>
+    <td><a href= "{% url 'league:admin_events_update' league.pk %}"> {% bootstrap_icon 'wrench' %} </a></td>
+  </tr>
+  {% endfor %}
+</tbody>
+</table>
+</div>
+{% endblock %}

@@ -31,7 +31,7 @@
     <tbody>
     {% for community in communitys%}
         <tr>
-            <td>{{ community.name}}</td>
+            <td><a href="{% url 'community:community_page' community.name %}">{{ community.name}}</a></td>
             <td>{{community.close}}</td>
             <td>{{community.private}}</td>
             <td>
@@ -40,7 +40,7 @@
                 {% endfor %}
             </td>
             <td>
-                <a href={% url 'community:admin_community_update' community.pk %}>
+                <a href="{% url 'community:admin_community_update' community.pk %}">
                     {% bootstrap_icon 'wrench' %}
                 </a>
             </td>

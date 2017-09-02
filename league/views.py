@@ -1,8 +1,8 @@
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Game, Registry, is_league_admin, \
-    is_league_member, Profile
+from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Game, Registry, \
+    Profile
 from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm, LeagueEventForm, \
     EmailForm, TimezoneForm
 import datetime
@@ -23,6 +23,7 @@ import json
 from django.utils import timezone
 from time import sleep
 from postman.api import pm_write
+
 
 ForumProfile = get_model('forum_member', 'ForumProfile')
 discord_url_file = "/etc/discord_url.txt"
@@ -109,7 +110,7 @@ def scraper_view(request):
 
 
 @login_required()
-@user_passes_test(is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def timezone_update(request):
     """Update the timezone of request.user."""
     user = request.user
@@ -138,7 +139,7 @@ def sgf(request, sgf_id):
 def games(request, event_id=None, sgf_id=None):
     """List all games and allow to show one with wgo."""
     open_events = LeagueEvent.objects.filter(is_open=True)
-    if not (request.user.is_authenticated and request.user.user_is_league_admin()):
+    if not (request.user.is_authenticated and request.user.is_league_admin()):
         open_events = open_events.filter(is_public=True)
     context = {'open_events': open_events}
     if sgf_id is not None:
@@ -164,9 +165,9 @@ def games(request, event_id=None, sgf_id=None):
 
 
 def results(request, event_id=None, division_id=None):
-    """Show the reuslts of a division."""
+    """Show the results of a division."""
     open_events = LeagueEvent.objects.filter(is_open=True)
-    if not (request.user.is_authenticated and request.user.user_is_league_admin()):
+    if not (request.user.is_authenticated and request.user.is_league_admin()):
         open_events = open_events.filter(is_public=True)
     if event_id is None:
         event = Registry.get_primary_event()
@@ -216,7 +217,7 @@ def archives(request):
     """Show a list of all leagues."""
     events = LeagueEvent.objects.all()
     open_events = events.filter(is_open=True)
-    if not (request.user.is_authenticated and request.user.user_is_league_admin()):
+    if not (request.user.is_authenticated and request.user.is_league_admin()):
         open_events = open_events.filter(is_public=True)
         events = events.filter(is_public=True)
     context = {
@@ -229,7 +230,7 @@ def archives(request):
 
 def event(request, event_id=None, division_id=None, ):
     open_events = LeagueEvent.objects.filter(is_open=True)
-    if not (request.user.is_authenticated and request.user.user_is_league_admin()):
+    if not (request.user.is_authenticated and request.user.is_league_admin()):
         open_events = open_events.filter(is_public=True)
     if event_id is None:
         event = Registry.get_primary_event()
@@ -248,7 +249,7 @@ def event(request, event_id=None, division_id=None, ):
 def players(request, event_id=None, division_id=None):
     open_events = LeagueEvent.objects.filter(is_open=True)
     can_join = False
-    if not (request.user.is_authenticated and request.user.user_is_league_admin()):
+    if not (request.user.is_authenticated and request.user.is_league_admin()):
         open_events = open_events.filter(is_public=True)
     # if no event is provided, we show all the league members
     if event_id is None:
@@ -280,7 +281,7 @@ def players(request, event_id=None, division_id=None):
 
 
 @login_required()
-@user_passes_test(is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def join_event(request, event_id, user_id):
     event = get_object_or_404(LeagueEvent, pk=event_id)
     # No one should join a close event
@@ -292,7 +293,7 @@ def join_event(request, event_id, user_id):
     # We already know that request.user is a league member.
     # So he can join an open event by himself.
     # If he is a league admin, he can make another user
-    if request.user.user_is_league_admin or request.user == user:
+    if request.user.is_league_admin or request.user == user:
         if request.method == 'POST':
             form = ActionForm(request.POST)
             if form.is_valid():
@@ -329,11 +330,11 @@ def account(request, user_name=None):
         # user = get_object_or_404(User,username = user_name)
         user = User.objects.get(username=user_name)
 
-    if not is_league_member(user):
+    if not user.is_league_member():
         return HttpResponseRedirect('/')
 
     open_events = LeagueEvent.objects.filter(is_open=True)
-    if not (user.is_authenticated and user.user_is_league_admin()):
+    if not (user.is_authenticated and user.is_league_admin()):
         open_events = open_events.filter(is_public=True)
 
     players = user.leagueplayer_set.order_by('-pk')
@@ -378,7 +379,7 @@ def game_api(request, sgf_id):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_set_meijin(request):
     if request.method == 'POST':
         form = ActionForm(request.POST)
@@ -391,7 +392,7 @@ def admin_set_meijin(request):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_sgf_list(request):
     sgfs = Sgf.objects.all()
     context = {'sgfs': sgfs}
@@ -399,7 +400,7 @@ def admin_sgf_list(request):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def handle_upload_sgf(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
@@ -415,7 +416,7 @@ def handle_upload_sgf(request):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def create_sgf(request):
     if request.method == 'POST':
         form = SgfAdminForm(request.POST)
@@ -437,7 +438,7 @@ def create_sgf(request):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def upload_sgf(request):
     if request.method == 'POST':
         form = SgfAdminForm(request.POST)
@@ -479,7 +480,7 @@ def upload_sgf(request):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_save_sgf(request, sgf_id):
     sgf = get_object_or_404(Sgf, pk=sgf_id)
     if request.method == 'POST':
@@ -498,7 +499,7 @@ def admin_save_sgf(request, sgf_id):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_delete_sgf(request, sgf_id):
     sgf = get_object_or_404(Sgf, pk=sgf_id)
     if request.method == 'POST':
@@ -511,7 +512,7 @@ def admin_delete_sgf(request, sgf_id):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_edit_sgf(request, sgf_id):
     sgf = get_object_or_404(Sgf, pk=sgf_id)
     if request.method == 'POST':
@@ -544,7 +545,7 @@ def admin_edit_sgf(request, sgf_id):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin(request):
     if request.method == 'POST':
         form = ActionForm(request.POST)
@@ -589,16 +590,28 @@ def admin(request):
         return HttpResponse(template.render(context, request))
 
 
+
+
 class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     form_class = LeagueEventForm
     model = LeagueEvent
     template_name_suffix = '_update_form'
 
     def test_func(self):
-        return self.request.user.is_authenticated() and self.request.user.user_is_league_admin()
+        user = self.request.user
+        return user.is_authenticated and user.is_league_admin(self.get_object())
 
     def get_login_url(self):
         return '/'
+
+    def get_success_url(self):
+        if self.request.user.is_league_admin():
+            return reverse('league:admin_events')
+        else:
+            return reverse(
+                'community:community_page',
+                kwargs={'name': self.get_object().community.name}
+            )
 
 
 class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -610,14 +623,14 @@ class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def test_func(self):
         return self.request.user.is_authenticated() and \
-            self.request.user.user_is_league_admin()
+            self.request.user.is_league_admin()
 
     def get_login_url(self):
         return '/'
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_events(request, event_id=None):
     events = LeagueEvent.objects.all().order_by("-begin_time")
     primary_event = Registry.get_primary_event().pk
@@ -633,7 +646,7 @@ def admin_events(request, event_id=None):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_events_set_primary(request, event_id):
     event = get_object_or_404(LeagueEvent, pk=event_id)
     if request.method == 'POST':
@@ -650,10 +663,11 @@ def admin_events_set_primary(request, event_id):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
 def admin_delete_division(request, division_id):
     division = get_object_or_404(Division, pk=division_id)
     event = division.league_event
+    if not request.user.is_league_admin(event):
+        raise Http404("What are you doing here ?")
     if request.method == 'POST':
         form = ActionForm(request.POST)
         if form.is_valid():
@@ -673,9 +687,10 @@ def admin_delete_division(request, division_id):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
 def admin_events_delete(request, event_id):
     event = get_object_or_404(LeagueEvent, pk=event_id)
+    if not request.user.is_league_admin(event):
+        raise Http404("What are you doing here ?")
     if not request.method == 'POST':
         raise Http404("What are you doing here ?")
 
@@ -690,9 +705,11 @@ def admin_events_delete(request, event_id):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
 def admin_create_division(request, event_id):
     event = get_object_or_404(LeagueEvent, pk=event_id)
+    if not request.user.is_league_admin(event):
+        raise Http404("What are you doing here ?")
+
     if request.method == 'POST':
         form = DivisionForm(request.POST)
         if form.is_valid():
@@ -706,10 +723,11 @@ def admin_create_division(request, event_id):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
 def admin_rename_division(request, division_id):
     division = get_object_or_404(Division, pk=division_id)
     event = division.league_event
+    if not request.user.is_league_admin(event):
+        raise Http404("What are you doing here ?")
 
     if request.method == 'POST':
         form = DivisionForm(request.POST)
@@ -724,13 +742,14 @@ def admin_rename_division(request, division_id):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
 def admin_division_up_down(request, division_id):
     """Changing division order.
     Note that if admin have deleted a division, the order change might not be just +-1
     """
     division_1 = get_object_or_404(Division, pk=division_id)
     event = division_1.league_event
+    if not request.user.is_league_admin(event):
+        raise Http404("What are you doing here ?")
     if request.method == 'POST':
         form = ActionForm(request.POST)
         if form.is_valid():
@@ -764,7 +783,7 @@ def admin_division_up_down(request, division_id):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def populate(request, to_event_id, from_event_id=None):
     """
     A view that helps admin to do populate at the end of the month.
@@ -829,7 +848,7 @@ def populate(request, to_event_id, from_event_id=None):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def proceed_populate(request, from_event_id, to_event_id):
     """ Here we actually populate the db with the form from populate view.
     We assume the admin have seen the new events structure in a preview before being here.
@@ -859,7 +878,7 @@ def proceed_populate(request, from_event_id, to_event_id):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_user_send_mail(request, user_id):
     """Send an email to a user."""
     user = get_object_or_404(User, pk=user_id)
@@ -899,7 +918,7 @@ def admin_user_send_mail(request, user_id):
 
 def discord_redirect(request):
     """loads discord invite url from discord_url_file and redirects the user if he passes the tests."""
-    if request.user.is_authenticated and request.user.user_is_league_member:
+    if request.user.is_authenticated and request.user.is_league_member:
         with open(discord_url_file) as f:
             disc_url = f.read().strip()
         return HttpResponseRedirect(disc_url.replace('\n', ''))
@@ -910,7 +929,7 @@ def discord_redirect(request):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def update_all_sgf_check_code(request):
     """
     Reparse all sgf from db. This can be usefull after adding a new field to sgf models.
@@ -939,7 +958,7 @@ def update_all_sgf_check_code(request):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_users_list(request, event_id=None, division_id=None):
     event = None
     division = None
@@ -974,7 +993,7 @@ def scrap_list(request):
 
 
 @login_required()
-@user_passes_test(is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def scrap_list_up(request, profile_id):
     """ Set user profile p_status to 2 so this user will be checked soon"""
     profile = get_object_or_404(Profile, pk=profile_id)
@@ -982,7 +1001,7 @@ def scrap_list_up(request, profile_id):
         message = str(profile.user) + ' will already be scraped with hight priority'
         messages.success(request, message)
         return HttpResponseRedirect(reverse('league:scrap_list'))
-    if profile.user == request.user or request.user.user_is_league_admin():
+    if profile.user == request.user or request.user.is_league_admin():
         if request.method == 'POST':
             form = ActionForm(request.POST)
             if form.is_valid():
@@ -996,7 +1015,7 @@ def scrap_list_up(request, profile_id):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def create_all_profiles(request):
     if request.method == 'POST':
         form = ActionForm(request.POST)
@@ -1017,7 +1036,7 @@ def create_all_profiles(request):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def update_all_sgf(request):
     if request.method == 'POST':
         form = ActionForm(request.POST)

@@ -1,6 +1,7 @@
 from django.db import models
-from league.models import LeagueEvent, User
 from django.contrib.auth.models import Group
+from django.contrib.auth import get_user_model
+
 
 class Community(models.Model):
 
@@ -26,8 +27,12 @@ class Community(models.Model):
         return community
 
     def get_admins(self):
+        User = get_user_model()
         return list(User.objects.filter(groups=self.admin_group))
 
-class CommunityLeague(LeagueEvent):
-
-    community = models.ForeignKey(Community)
+    def is_admin(self, user):
+        admin = user.is_authenticated and (
+            user.is_league_admin() or
+            self.admin_group in user.groups.all()
+        )
+        return admin

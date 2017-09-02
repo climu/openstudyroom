@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Community, CommunityLeague
+from .models import Community
 # Register your models here.
-mymodels = [Community, CommunityLeague]
+mymodels = [Community]
 
 admin.site.register(mymodels)
