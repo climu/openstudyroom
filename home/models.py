@@ -108,7 +108,7 @@ class HomePage(Page):
         context['entries'] = entries
         context['blog_page'] = blog_page
         user = request.user
-        if user.is_authenticated and user.user_is_league_member:
+        if user.is_authenticated and user.is_league_member:
             now = timezone.now()
             opponents = user.get_opponents()
             if opponents is False:

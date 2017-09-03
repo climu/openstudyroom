@@ -1,9 +1,18 @@
-{% extends 'league/admin/base.html' %}
+{% extends 'full_width.html' %}
 {% load bootstrap3 league_tags%}
-{% block title %}OSR league admin - Events{% endblock %}
+
+{%block page_intro %}
+{% if request.user.is_league_admin %}
+{% include 'league/includes/admin_nav.html' %}
+{% endif %}
+{% endblock %}
+{% block title %}OSR league admin - Leagues{% endblock %}
+
+
+
 {% block heading %}
 <div class="page-header">
-    <h1>Edit Event "{{ object.name }}"</h1>
+    <h1>Edit League "{{ object.name }}"</h1>
 </div>
 {%endblock%}
 {% block content %}
@@ -40,14 +49,14 @@
 	{% bootstrap_form form %}
 	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
 </form>
-
+{% if request.user.is_league_admin %}
 <form action="" method="POST">{% csrf_token %}
 <input type="hidden" name="action" value="set_primary">
 <button type="submit" formaction="{% url 'league:set_primary' object.pk %}" class="btn btn-primary btn-xs pull-right">
   Set as primary
 </button>
 </form>
-
+{% endif %}
 
 <form action="{% url 'league:delete_event' object.pk %}" method="POST">{% csrf_token %}
 	<input type="hidden" name="action" value="delete_event" />
@@ -80,7 +89,6 @@
     <div class="panel-body">
       <div class="col-md-6">
       <form action="" method="POST" class="form-inline" >{% csrf_token %}
-
       <input id="name" class="form-control" name="name" placeholder="Division name" value="{{division}}" title=""  type="text">
 <button type="submit" formaction="{% url 'league:admin_rename_division' division.pk %}" class="btn btn-primary">
   Rename
@@ -118,7 +126,6 @@
     </div>
     </div>
   </div>
-
   {% endfor %}
 </div>
 </div>

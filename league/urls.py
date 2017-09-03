@@ -8,8 +8,6 @@ urlpatterns = [
     url(r'^results/$', views.results, name='results'),
     url(r'^meijin/$', views.meijin, name='meijin'),
     url(r'^ladder/$', views.ladder, name='ladder'),
-
-
     url(r'^admin/event/(?P<to_event_id>[0-9]+)/populate/$',
         views.populate, name='admin_event_populate'),
     url(r'^admin/event/(?P<to_event_id>[0-9]+)/populate/(?P<from_event_id>[0-9]+)/$',
@@ -48,10 +46,16 @@ urlpatterns = [
     url(r'^admin/create-sgf/$', views.create_sgf, name='create_sgf'),
 
     url(r'^admin/events/$', views.admin_events, name='admin_events'),
-    url(r'^admin/events/(?P<pk>[0-9]+)/$', views.LeagueEventUpdate.as_view(
-        success_url='/league/admin/events/'), name='admin_events_update'),
-    url(r'^admin/events/create/$',
-        views.LeagueEventCreate.as_view(success_url='/league/admin/events/'), name='admin_events_create'),
+    url(
+        r'^admin/events/(?P<pk>[0-9]+)/$',
+        views.LeagueEventUpdate.as_view(),
+        name='admin_events_update'
+    ),
+    url(
+        r'^admin/events/create/$',
+        views.LeagueEventCreate.as_view(success_url='/league/admin/events/'),
+        name='admin_events_create'
+    ),
     url(r'^admin/events/(?P<event_id>[0-9]+)/set_primary/$',
         views.admin_events_set_primary, name='set_primary'),
     url(r'^admin/events/(?P<event_id>[0-9]+)/delete/$',

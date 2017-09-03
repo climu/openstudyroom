@@ -3,7 +3,8 @@ from django.contrib.auth.models import  Group
 
 # Register your models here.
 
-from .models import Sgf,User,LeagueEvent,Division,LeaguePlayer,Game,Registry,Profile
+from .models import Sgf, User, LeagueEvent, Division, LeaguePlayer,\
+    Game, Registry, Profile
 
 #we create groups new_user, league_member and league_admin to help manage the league
 #if not Group.objects.filter(name='new_user').exists():
@@ -15,5 +16,14 @@ from .models import Sgf,User,LeagueEvent,Division,LeaguePlayer,Game,Registry,Pro
 #if not Group.objects.filter(name='league_member').exists():
  #      group = Group.objects.create(name='league_member')
 
-mymodels = [Sgf,User,LeagueEvent,Division,LeaguePlayer,Game,Registry,Profile]
+mymodels = [
+    Sgf,
+    User,
+    LeagueEvent,
+    Division,
+    LeaguePlayer,
+    Game,
+    Registry,
+    Profile,
+]
 admin.site.register(mymodels)

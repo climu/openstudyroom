@@ -15,12 +15,8 @@
   </li>
 </ul>
 {% if event.is_open %}
-
-{% if event.is_open %}
 <p class="navbar-text navbar-left"></p>
 <div id="countdown" class="navbar-text navbar-left"></div>
-{% endif %}
-
 {% endif %}
 {% if can_join %}
 <form class="navbar-form navbar-right" style="margin-right:5px;" action=" {% url 'league:join_event' event.pk user.pk %}" method="post" >
