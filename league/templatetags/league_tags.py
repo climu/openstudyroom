@@ -90,7 +90,10 @@ def game_link(sgf, event=None):
 
 @register.filter
 def event_link(event):
-    html = '<a href="/league/' + str(event.pk) + '">' + str(event.name) + '</a>'
+    html = '<a href="/league/' + str(event.pk) + '">'
+    if event.community is not None:
+        html += '(' + event.community.slug + ') '
+    html += str(event.name) + '</a>'
     return mark_safe(html)
 
 

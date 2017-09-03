@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from datetime import datetime, timedelta
 import json
 from django.utils.timezone import make_aware
-from league.models import User, is_league_admin, is_league_member
+from league.models import User
 from .forms import UTCPublicEventForm
 from .models import PublicEvent, AvailableEvent, GameRequestEvent, GameAppointmentEvent
 from pytz import utc
@@ -25,7 +25,7 @@ class PublicEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name_suffix = '_update_form'
 
     def test_func(self):
-        return self.request.user.is_authenticated() and self.request.user.user_is_league_admin()
+        return self.request.user.is_authenticated() and self.request.user.is_league_admin()
 
     def get_login_url(self):
         return '/'
@@ -39,7 +39,7 @@ class PublicEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                'end': datetime.now()}
 
     def test_func(self):
-        return self.request.user.is_authenticated() and self.request.user.user_is_league_admin()
+        return self.request.user.is_authenticated() and self.request.user.is_league_admin()
 
     def get_login_url(self):
         return '/'
@@ -47,7 +47,7 @@ class PublicEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
 def calendar_view(request):
     user = request.user
-    if user.is_authenticated and user.user_is_league_member:
+    if user.is_authenticated and user.is_league_member:
         template = 'fullcalendar/calendar_member.html'
         context = {
             'user': user,
@@ -80,6 +80,7 @@ def json_feed(request):
         dict = {
             'id': 'public:' + str(event.pk),
             'title': event.title,
+            'description': event.description,
             'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
             'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
             'is_new': False,
@@ -90,7 +91,7 @@ def json_feed(request):
             dict['url'] = event.url
         data.append(dict)
     # get user related available events and game requests
-    if user.is_authenticated() and user.user_is_league_member():
+    if user.is_authenticated() and user.is_league_member():
         now = timezone.now()
         # Games appointments
         game_appointments = user.fullcalendar_gameappointmentevent_related.filter(
@@ -218,7 +219,7 @@ def json_feed(request):
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 @login_required()
-@user_passes_test(is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def update_time_range_ajax(request):
     if request.method == 'POST':
         start = request.POST.get('start')
@@ -230,7 +231,7 @@ def update_time_range_ajax(request):
 
 
 @login_required()
-@user_passes_test(is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def cancel_game_ajax(request):
     """Cancel a game appointment from calendar ajax post."""
     user = request.user
@@ -258,7 +259,7 @@ def cancel_game_ajax(request):
             return HttpResponse('success')
 
 @login_required()
-@user_passes_test(is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def accept_game_request_ajax(request):
     """accept a game request from calendar ajax post."""
     user = request.user
@@ -291,7 +292,7 @@ def accept_game_request_ajax(request):
         return HttpResponse('success')
 
 @login_required()
-@user_passes_test(is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def reject_game_request_ajax(request):
     """Reject a game request from calendar ajax post."""
     user = request.user
@@ -308,7 +309,7 @@ def reject_game_request_ajax(request):
 
 
 @login_required()
-@user_passes_test(is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def cancel_game_request_ajax(request):
     """Cancel a game request from calendar ajax post."""
     user = request.user
@@ -323,7 +324,7 @@ def cancel_game_request_ajax(request):
             return HttpResponse('error')
 
 @login_required()
-@user_passes_test(is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def create_game_request(request):
     """Create a game request from calendar ajax post."""
     sender = request.user
@@ -363,13 +364,13 @@ def create_game_request(request):
 
 
 @login_required()
-@user_passes_test(is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def game_request_list(request):
     user = request.user
     game_requests = GameRequestEvent.objects.filter(receivers=user,)
 
 @login_required()
-@user_passes_test(is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def save(request):
     """Get events modification from calendar ajax post."""
     user = request.user
@@ -432,7 +433,7 @@ def save(request):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def admin_cal_event_list(request):
     public_events = PublicEvent.objects.all()
     return render(
@@ -443,7 +444,7 @@ def admin_cal_event_list(request):
 
 
 @login_required()
-@user_passes_test(is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def admin_delete_event(request, pk):
     if request.method == 'POST':
         event = get_object_or_404(PublicEvent, pk=pk)

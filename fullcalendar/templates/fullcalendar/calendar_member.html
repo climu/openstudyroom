@@ -392,7 +392,26 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
               }
         });//qtip
       }//game appointments
-
+      if (event.type === 'public'){
+        element.qtip({
+            content: {
+              text: event.description,
+              title: event.title,
+            },
+            position: {
+              my:'left bottom',  // Position my top left...
+              at:'right top',
+              target: 'mouse', // Use the mouse position as the position origin
+              adjust: { // Don't adjust continuously the mouse, just use initial position
+              x:5,
+              y:-5
+              }
+            },
+            show: {
+              solo: true
+            }
+      });//qtip
+      }// closing public
       }, // Closing render event
 
       ///////////////////////////////////////////////////////////////

@@ -10,6 +10,7 @@ import pytz
 from operator import attrgetter
 from django.core.urlresolvers import reverse
 from django.utils import timezone
+from community.models import Community
 
 
 # Create your models here.
@@ -51,7 +52,8 @@ class LeagueEvent(models.Model):
     main_time = models.PositiveSmallIntegerField(default=1800)
     # byo yomi time in sec
     byo_time = models.PositiveSmallIntegerField(default=30)
-    linked_events = models.ManyToManyField("LeagueEvent", blank=True)
+    community = models.ForeignKey(Community, blank=True, null=True)
+
 
     class Meta:
         ordering = ['-begin_time']
@@ -135,15 +137,24 @@ class LeagueEvent(models.Model):
         """Return a boolean saying if user can join this league.
         Note that user is not necessarily authenticated
         """
-        return self.is_open and \
-            user.is_authenticated and \
-            user.user_is_league_member() and \
-            not LeaguePlayer.objects.filter(user=user, event=self).exists()
+        if self.is_open and \
+                user.is_authenticated and \
+                user.is_league_member() and \
+                not LeaguePlayer.objects.filter(user=user, event=self).exists():
+            if self.community is None:
+                return True
+            else:
+                return self.community.is_member(user)
+        else:
+            return False
+
 
     def remaining_sec(self):
         """return the number of milliseconds before the league ends."""
         delta = self.end_time - timezone.now()
         return int(delta.total_seconds() * 1000)
+
+
 
 
 class Registry(models.Model):
@@ -183,7 +194,6 @@ class Registry(models.Model):
         r = Registry.objects.get(pk=1)
         r.time_kgs = time
         r.save()
-
 
 
 class Sgf(models.Model):
@@ -442,7 +452,6 @@ class User(AbstractUser):
         delta = now - self.profile.last_kgs_online
         return delta.total_seconds() < 500
 
-
     def is_in_primary_event(self):
         event = Registry.get_primary_event()
         return LeaguePlayer.objects.filter(user=self, event=event).exists()
@@ -454,10 +463,19 @@ class User(AbstractUser):
         event = Registry.get_primary_event()
         return LeaguePlayer.objects.filter(user=self, event=event).first()
 
-    def user_is_league_admin(self):
-        return self.groups.filter(name='league_admin').exists()
+    def is_league_admin(self, event=None):
+        """
+        If event is none, we test if user is in league_admin group.
 
-    def user_is_league_member(self):
+        Else we test if the event is a community league and if so,
+         we test if user is in this community admin group
+        """
+        if event is None or event.community is None:
+            return self.groups.filter(name='league_admin').exists()
+        else:
+            return event.community.is_admin(self)
+
+    def is_league_member(self):
         return self.groups.filter(name='league_member').exists()
 
     def nb_games(self):
@@ -614,14 +632,11 @@ class User(AbstractUser):
         r.save()
         return True
 
+    def get_communitys(self):
+        communitys = self.groups.filter(name__endswith='community_member')
+        communitys = list(Community.objects.filter(user_group__in=communitys))
+        return communitys
 
-
-def is_league_admin(user):
-    return user.groups.filter(name='league_admin').exists()
-
-
-def is_league_member(user):
-    return user.groups.filter(name='league_member').exists()
 
 
 class Profile(models.Model):

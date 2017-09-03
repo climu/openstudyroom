@@ -52,7 +52,7 @@
               {% main_menu  %}
               <ul class="nav navbar-nav navbar-right" style= "margin-right:5px;">
       {% if request.user.is_authenticated %}
-	{% if request.user.user_is_league_admin %}
+	{% if request.user.is_league_admin %}
 	<li>
 	<a href="{%url "league:admin" %}"> League admin </a>
 </li>

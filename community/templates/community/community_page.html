@@ -1,0 +1,99 @@
+{% extends 'full_width.html' %}
+{% load bootstrap3 league_tags%}
+{% block title %}OSR - {{community.name}} - Create new league{% endblock %}
+
+{% block heading %}
+<div class="page-header">
+    <h1> {{community.name}}  </h1>
+</div>
+{%endblock%}
+{% block content %}
+<div class="panel panel-default">
+<div class="panel-heading clearfix">
+  <h3> {{community.name}} ({{community.slug}})
+  {% if admin %}
+  <a href="{% url 'community:community_update' community.pk %}"><button class="btn btn-default pull-right">{% bootstrap_icon 'wrench' %} Edit </button></a>
+  {% endif %}
+  {% if can_join %}
+  <form action=" {% url 'community:community_join' community.pk request.user.pk %}" method="post" >
+    {% csrf_token %}
+    <div class="form-group">
+    <input type="hidden" name="action" value="join">
+    <input type="hidden" name="next" value="{{request.path}}">
+    <button type="submit" class="btn btn-success pull-right"  onclick="return confirm('You are about to join the {{community.name}} community. Allright?')">
+    {% bootstrap_icon "ok" %} Join {{community.name}} !
+    </button>
+    </div>
+    </form>
+  {% endif %}
+  {% if can_quit %}
+  <form action=" {% url 'community:community_quit' community.pk request.user.pk %}" method="post" >
+    {% csrf_token %}
+    <div class="form-group">
+    <input type="hidden" name="action" value="join">
+    <input type="hidden" name="next" value="{{request.path}}">
+    <button type="submit" class="btn btn-danger pull-right"  onclick="return confirm('You are about to quit the {{community.name}} community. Allright?')">
+    {% bootstrap_icon "remove" %} Quit {{community.name}} !
+    </button>
+    </div>
+    </form>
+  {% endif %}
+
+</h3>
+</div>
+<div class="panel-body">
+{{community.description}}
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading clearfix">
+  <h3>
+All {{community.name}} leagues
+{% if admin %}
+<a href="{% url 'community:create_league' community.pk %}">
+  <button class="btn btn-success pull-right">
+    {% bootstrap_icon 'plus' %}
+    Create new league
+  </button>
+</a>
+{% endif %}
+</h3>
+Open leagues are green.
+</div>
+<table id="league-table" class="table">
+  <thead>
+    <th>Name</th>
+    <th>Begin</th>
+    <th>Ends</th>
+    <th>Type</th>
+    <th># Divisions</th>
+    <th># Players</th>
+    <th># games </th>
+    {% if admin %}
+    <th>Edit </th>
+    {% endif %}
+  </thead>
+  <tbody>
+  {% for league in leagues %}
+  <tr {% if league.is_open %}class="success"{% endif %}>
+    <td>
+      {{league | event_link}}
+      {% if  not league.is_public %}
+   <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+     {% endif %}
+   </td>
+    <td>{{league.begin_time |date:"SHORT_DATE_FORMAT"}}</td>
+    <td>{{league.end_time |date:"SHORT_DATE_FORMAT"}}</td>
+    <td>{{league.type}}</td>
+    <td>{{ league.number_divisions }}</td>
+    <td>{{league.number_players}}</td>
+    <td>{{ league.number_games}}</td>
+    {% if admin %}
+    <td><a href= "{% url 'league:admin_events_update' league.pk %}"> {% bootstrap_icon 'wrench' %} </a></td>
+    {% endif %}
+  </tr>
+  {% endfor %}
+</tbody>
+</table>
+</div>
+{% endblock %}

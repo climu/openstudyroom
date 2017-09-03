@@ -97,6 +97,8 @@ INSTALLED_APPS = [
 
     'fullcalendar',
 
+    'community'
+
 ]+ get_machina_apps()
 
 MIDDLEWARE = [
@@ -144,7 +146,7 @@ TEMPLATES = [
 
 		# Machina
 		'machina.core.context_processors.metadata',
-    
+
 
 		        # Machina
 		      'machina.core.context_processors.metadata',
