@@ -80,6 +80,7 @@ def json_feed(request):
         dict = {
             'id': 'public:' + str(event.pk),
             'title': event.title,
+            'description': event.description,
             'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
             'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
             'is_new': False,
