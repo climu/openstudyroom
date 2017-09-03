@@ -31,7 +31,7 @@
     <tbody>
     {% for community in communitys%}
         <tr>
-            <td><a href="{% url 'community:community_page' community.name %}">{{ community.name}}</a></td>
+            <td><a href="{% url 'community:community_page' community.slug %}">{{ community.name}}</a></td>
             <td>{{community.close}}</td>
             <td>{{community.private}}</td>
             <td>

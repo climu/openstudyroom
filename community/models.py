@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 class Community(models.Model):
 
     name = models.CharField(max_length=20, blank=True, unique=True)
+    slug = models.CharField(max_length=5, blank=True, unique=True)
     admin_group = models.ForeignKey(Group, related_name='admin_community')
     user_group = models.ForeignKey(Group, null=True, blank=True, related_name='user_community')
     close = models.BooleanField(default=False)
@@ -16,14 +17,22 @@ class Community(models.Model):
         return self.name
 
     @classmethod
-    def create(cls, name):
-        '''We create the admin group before creating the guest object'''
+    def create(cls,name, slug):
+        '''We create the admin and users group before creating the community object'''
 
-        if not Group.objects.filter(name=name + '_community_admin').exists():
-            group = Group.objects.create(name=name + '_community__admin')
+        if not Group.objects.filter(name=slug + '_community_admin').exists():
+            admin_group = Group.objects.create(name=slug + '_community_admin')
 
-        #else we should return an error:'group already here'
-        community = cls(name=name, admin_group=group)
+        if not Group.objects.filter(name=slug + '_community_member').exists():
+            user_group = Group.objects.create(name=slug + '_community_member')
+
+        # else we should return an error:'group already here'
+        community = cls(
+            name=name,
+            slug=slug,
+            admin_group=admin_group,
+            user_group=user_group
+        )
         return community
 
     def get_admins(self):
@@ -36,3 +45,6 @@ class Community(models.Model):
             self.admin_group in user.groups.all()
         )
         return admin
+
+    def is_member(self, user):
+        return user in self.user_group.user_set.all()

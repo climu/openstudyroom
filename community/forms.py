@@ -7,6 +7,7 @@ class AdminCommunityForm(ModelForm):
     class Meta:
         model = Community
         fields = ['name',
+        'slug',
         'description',
         'close',
         'private'

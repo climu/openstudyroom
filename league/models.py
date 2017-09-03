@@ -137,10 +137,17 @@ class LeagueEvent(models.Model):
         """Return a boolean saying if user can join this league.
         Note that user is not necessarily authenticated
         """
-        return self.is_open and \
-            user.is_authenticated and \
-            user.user_is_league_member() and \
-            not LeaguePlayer.objects.filter(user=user, event=self).exists()
+        if self.is_open and \
+                user.is_authenticated and \
+                user.is_league_member() and \
+                not LeaguePlayer.objects.filter(user=user, event=self).exists():
+            if self.community is None:
+                return True
+            else:
+                return self.community.is_member(user)
+        else:
+            return False
+
 
     def remaining_sec(self):
         """return the number of milliseconds before the league ends."""
@@ -457,9 +464,12 @@ class User(AbstractUser):
         return LeaguePlayer.objects.filter(user=self, event=event).first()
 
     def is_league_admin(self, event=None):
-        '''If event is none, we test if user is in league_admin group.
+        """
+        If event is none, we test if user is in league_admin group.
+
         Else we test if the event is a community league and if so,
-         we test if user is in this community admin group'''
+         we test if user is in this community admin group
+        """
         if event is None or event.community is None:
             return self.groups.filter(name='league_admin').exists()
         else:
@@ -621,6 +631,12 @@ class User(AbstractUser):
         r.meijin = self
         r.save()
         return True
+
+    def get_communitys(self):
+        communitys = self.groups.filter(name__endswith='community_member')
+        communitys = list(Community.objects.filter(user_group__in=communitys))
+        return communitys
+
 
 
 class Profile(models.Model):

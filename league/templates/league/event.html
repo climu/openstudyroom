@@ -1,12 +1,14 @@
 {% extends "league/base.html" %}
-{% load static tz league_tags bootstrap3 calendar_tags%}
+{% load static tz league_tags bootstrap3 calendar_tags community_tags%}
 
 {% block title %}{{event}}- Overview{% endblock %}
 {% block content %}
 <ul class="nav nav-tabs">
   <li ><a href="{% url 'league:archives' %}">Archives</a></li>
   {%if event not in open_events%}
-  <li class="active">{{event |event_link}}</li>
+  <li class="active">
+    {{event |event_link}}
+  </li>
     {%endif%}
   {% for ev in open_events %}
   <li {%if ev == event %} class="active"{%endif %}>

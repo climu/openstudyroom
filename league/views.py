@@ -138,7 +138,10 @@ def sgf(request, sgf_id):
 
 def games(request, event_id=None, sgf_id=None):
     """List all games and allow to show one with wgo."""
-    open_events = LeagueEvent.objects.filter(is_open=True)
+    communitys = request.user.get_communitys()
+    open_events = LeagueEvent.objects.\
+        filter(is_open=True).\
+        filter(Q(community__isnull=True) | Q(community__in=communitys))
     if not (request.user.is_authenticated and request.user.is_league_admin()):
         open_events = open_events.filter(is_public=True)
     context = {'open_events': open_events}
@@ -166,7 +169,10 @@ def games(request, event_id=None, sgf_id=None):
 
 def results(request, event_id=None, division_id=None):
     """Show the results of a division."""
-    open_events = LeagueEvent.objects.filter(is_open=True)
+    communitys = request.user.get_communitys()
+    open_events = LeagueEvent.objects.\
+        filter(is_open=True).\
+        filter(Q(community__isnull=True) | Q(community__in=communitys))
     if not (request.user.is_authenticated and request.user.is_league_admin()):
         open_events = open_events.filter(is_public=True)
     if event_id is None:
@@ -215,11 +221,15 @@ def ladder(request):
 
 def archives(request):
     """Show a list of all leagues."""
-    events = LeagueEvent.objects.all()
+    communitys = request.user.get_communitys()
+    events = LeagueEvent.objects.filter(
+        Q(community__isnull=True) | Q(community__in=communitys)
+    )
     open_events = events.filter(is_open=True)
     if not (request.user.is_authenticated and request.user.is_league_admin()):
         open_events = open_events.filter(is_public=True)
         events = events.filter(is_public=True)
+
     context = {
         'events': events,
         'open_events': open_events,
@@ -229,7 +239,10 @@ def archives(request):
 
 
 def event(request, event_id=None, division_id=None, ):
-    open_events = LeagueEvent.objects.filter(is_open=True)
+    communitys = request.user.get_communitys()
+    open_events = LeagueEvent.objects.\
+        filter(is_open=True).\
+        filter(Q(community__isnull=True) | Q(community__in=communitys))
     if not (request.user.is_authenticated and request.user.is_league_admin()):
         open_events = open_events.filter(is_public=True)
     if event_id is None:
@@ -247,7 +260,10 @@ def event(request, event_id=None, division_id=None, ):
 
 
 def players(request, event_id=None, division_id=None):
-    open_events = LeagueEvent.objects.filter(is_open=True)
+    communitys = request.user.get_communitys()
+    open_events = LeagueEvent.objects.\
+        filter(is_open=True).\
+        filter(Q(community__isnull=True) | Q(community__in=communitys))
     can_join = False
     if not (request.user.is_authenticated and request.user.is_league_admin()):
         open_events = open_events.filter(is_public=True)
@@ -333,7 +349,10 @@ def account(request, user_name=None):
     if not user.is_league_member():
         return HttpResponseRedirect('/')
 
-    open_events = LeagueEvent.objects.filter(is_open=True)
+    communitys = request.user.get_communitys()
+    open_events = LeagueEvent.objects.\
+        filter(is_open=True).\
+        filter(Q(community__isnull=True) | Q(community__in=communitys))
     if not (user.is_authenticated and user.is_league_admin()):
         open_events = open_events.filter(is_public=True)
 

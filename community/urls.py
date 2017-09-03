@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
     url(
-        r'^(?P<name>[\w.@+-]+)/$',
+        r'^(?P<slug>[\w.@+-]+)/$',
         views.community_page,
         name='community_page'
     ),
@@ -37,5 +37,20 @@ urlpatterns = [
         r'^(?P<community_pk>[0-9]+)/create-league/$',
         views.community_create_league,
         name='create_league'
+    ),
+    url(
+        r'^(?P<community_pk>[0-9]+)/join/(?P<user_pk>[0-9]+)/$',
+        views.community_join,
+        name='community_join'
+    ),
+    url(
+        r'^(?P<community_pk>[0-9]+)/quit/(?P<user_pk>[0-9]+)/$',
+        views.community_quit,
+        name='community_quit'
+    ),
+    url(
+        r'^$',
+        views.community_list,
+        name='community_list'
     ),
 ]

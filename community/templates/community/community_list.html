@@ -1,0 +1,21 @@
+{% extends 'full_width.html' %}
+{% load bootstrap3 community_tags%}
+{% block title %}OSR - Communitys {% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1> List of all OSR communitys</h1>
+</div>
+{%endblock%}
+
+{% block content %}
+  {% for community in communitys %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        {{community |community_link}}
+      </div>
+      <div class="panelbody">
+        {{community.description}}
+    </div>
+  </div>
+  {% endfor %}
+{% endblock %}
