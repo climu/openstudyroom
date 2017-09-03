@@ -66,7 +66,7 @@
        <span class="caret"></span>
 	</a>
     <ul class="dropdown-menu">
-	{%if request.user.user_is_league_member %}
+	{%if request.user.is_league_member %}
 
 		 <li>
                       <a href="{% url "league:league_account" %}" >{% bootstrap_icon "user" %} Profile</a>
