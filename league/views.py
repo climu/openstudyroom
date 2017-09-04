@@ -240,19 +240,7 @@ def event(request, event_id=None, division_id=None, ):
 
 
 def players(request, event_id=None, division_id=None):
-    if request.user.is_authenticated:
-        communitys = request.user.get_communitys()
-        open_events = LeagueEvent.objects.\
-            filter(is_open=True).\
-            filter(Q(community__isnull=True) | Q(community__in=communitys))
-        if not request.user.is_league_admin:
-            open_events = open_events.filter(is_public=True)
-    else:
-        open_events = LeagueEvent.objects.filter(
-            is_open=True,
-            is_public=True,
-            community__isnull=True
-        )
+    open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
     can_join = False
     # if no event is provided, we show all the league members
     if event_id is None:
@@ -336,12 +324,7 @@ def account(request, user_name=None):
     if not user.is_league_member():
         return HttpResponseRedirect('/')
 
-    communitys = request.user.get_communitys()
-    open_events = LeagueEvent.objects.\
-        filter(is_open=True).\
-        filter(Q(community__isnull=True) | Q(community__in=communitys))
-    if not (user.is_authenticated and user.is_league_admin()):
-        open_events = open_events.filter(is_public=True)
+    open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
 
     players = user.leagueplayer_set.order_by('-pk')
     sgfs = Sgf.objects.filter(Q(white=user) | Q(black=user))
