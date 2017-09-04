@@ -49,6 +49,11 @@ urlpatterns = [
         name='community_quit'
     ),
     url(
+        r'^(?P<slug>[\w.@+-]+)/results/$',
+        views.community_results_page,
+        name='community_resutls'
+    ),
+    url(
         r'^$',
         views.community_list,
         name='community_list'

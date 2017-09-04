@@ -1,6 +1,6 @@
 {% extends 'full_width.html' %}
 {% load bootstrap3 league_tags%}
-{% block title %}OSR - {{community.name}} - Create new league{% endblock %}
+{% block title %}OSR - {{community.name}}{% endblock %}
 
 {% block heading %}
 <div class="page-header">
@@ -96,4 +96,43 @@ Open leagues are green.
 </tbody>
 </table>
 </div>
+
+<div class="panel panel-default">
+<div class="panel-heading"><h3>{{community.name}} Games</h4></div>
+<div class ="row">
+<div class="col-md-4">
+  <div id ="game_infos">
+</div>
+
+{% include "league/includes/games.html" with sgfs=sgfs %}
+</div>
+
+<div class="col-md-8">
+
+    <div id="player">
+      <div class="alert alert-info">
+      Click a game result to see it.
+    </div>
+  </div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#game-table').DataTable({"bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
+  "columnDefs": [ {
+    targets: 0,
+    render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','MMM DD, YYYY' )
+  } ],
+  "order": [[ 0, "desc" ]]});
+} );
+
+</script>
 {% endblock %}
