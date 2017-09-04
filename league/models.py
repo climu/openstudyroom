@@ -135,6 +135,7 @@ class LeagueEvent(models.Model):
 
     def can_join(self, user):
         """Return a boolean saying if user can join this league.
+
         Note that user is not necessarily authenticated
         """
         if self.is_open and \
@@ -148,13 +149,26 @@ class LeagueEvent(models.Model):
         else:
             return False
 
-
     def remaining_sec(self):
         """return the number of milliseconds before the league ends."""
         delta = self.end_time - timezone.now()
         return int(delta.total_seconds() * 1000)
 
-
+    @staticmethod
+    def get_events(user):
+        if user.is_authenticated:
+            communitys = user.get_communitys()
+            events = LeagueEvent.objects.filter(
+                Q(community__isnull=True) | Q(community__in=communitys)
+            )
+            if not user.is_league_admin:
+                events = events.filter(is_public=True)
+        else:
+            events = LeagueEvent.objects.filter(
+                is_public=True,
+                community__isnull=True
+            )
+        return events
 
 
 class Registry(models.Model):
