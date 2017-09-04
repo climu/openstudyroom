@@ -138,12 +138,8 @@ def sgf(request, sgf_id):
 
 def games(request, event_id=None, sgf_id=None):
     """List all games and allow to show one with wgo."""
-    communitys = request.user.get_communitys()
-    open_events = LeagueEvent.objects.\
-        filter(is_open=True).\
-        filter(Q(community__isnull=True) | Q(community__in=communitys))
-    if not (request.user.is_authenticated and request.user.is_league_admin()):
-        open_events = open_events.filter(is_public=True)
+    open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
+
     context = {'open_events': open_events}
     if sgf_id is not None:
         sgf = get_object_or_404(Sgf, pk=sgf_id, league_valid=True)
@@ -169,12 +165,7 @@ def games(request, event_id=None, sgf_id=None):
 
 def results(request, event_id=None, division_id=None):
     """Show the results of a division."""
-    communitys = request.user.get_communitys()
-    open_events = LeagueEvent.objects.\
-        filter(is_open=True).\
-        filter(Q(community__isnull=True) | Q(community__in=communitys))
-    if not (request.user.is_authenticated and request.user.is_league_admin()):
-        open_events = open_events.filter(is_public=True)
+    open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
     if event_id is None:
         event = Registry.get_primary_event()
     else:
@@ -221,14 +212,8 @@ def ladder(request):
 
 def archives(request):
     """Show a list of all leagues."""
-    communitys = request.user.get_communitys()
-    events = LeagueEvent.objects.filter(
-        Q(community__isnull=True) | Q(community__in=communitys)
-    )
+    events = LeagueEvent.get_events(request.user)
     open_events = events.filter(is_open=True)
-    if not (request.user.is_authenticated and request.user.is_league_admin()):
-        open_events = open_events.filter(is_public=True)
-        events = events.filter(is_public=True)
 
     context = {
         'events': events,
@@ -239,12 +224,7 @@ def archives(request):
 
 
 def event(request, event_id=None, division_id=None, ):
-    communitys = request.user.get_communitys()
-    open_events = LeagueEvent.objects.\
-        filter(is_open=True).\
-        filter(Q(community__isnull=True) | Q(community__in=communitys))
-    if not (request.user.is_authenticated and request.user.is_league_admin()):
-        open_events = open_events.filter(is_public=True)
+    open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
     if event_id is None:
         event = Registry.get_primary_event()
     else:
@@ -260,13 +240,20 @@ def event(request, event_id=None, division_id=None, ):
 
 
 def players(request, event_id=None, division_id=None):
-    communitys = request.user.get_communitys()
-    open_events = LeagueEvent.objects.\
-        filter(is_open=True).\
-        filter(Q(community__isnull=True) | Q(community__in=communitys))
+    if request.user.is_authenticated:
+        communitys = request.user.get_communitys()
+        open_events = LeagueEvent.objects.\
+            filter(is_open=True).\
+            filter(Q(community__isnull=True) | Q(community__in=communitys))
+        if not request.user.is_league_admin:
+            open_events = open_events.filter(is_public=True)
+    else:
+        open_events = LeagueEvent.objects.filter(
+            is_open=True,
+            is_public=True,
+            community__isnull=True
+        )
     can_join = False
-    if not (request.user.is_authenticated and request.user.is_league_admin()):
-        open_events = open_events.filter(is_public=True)
     # if no event is provided, we show all the league members
     if event_id is None:
         users = User.objects.filter(groups__name='league_member')
