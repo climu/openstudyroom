@@ -5,7 +5,7 @@ from django.views.generic.edit import UpdateView
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib.auth.models import Group
-from league.models import User, LeagueEvent
+from league.models import User, LeagueEvent, Sgf
 from .models import Community
 from .forms import CommunityForm, AdminCommunityForm
 from league.forms import LeagueEventForm
@@ -87,15 +87,19 @@ def community_page(request,slug):
     community = get_object_or_404(Community, slug=slug)
     leagues = community.leagueevent_set.all()
     admin = community.is_admin(request.user)
+    if not admin:
+        leagues = leagues.filter(is_public=True)
+    sgfs = Sgf.objects.filter(league_valid=True, events__in=leagues).order_by('-date')
+
     can_join = request.user.is_authenticated() and \
         request.user.is_league_member() and \
         not community.is_member(request.user) and \
         not community.private
-    if not admin:
-        leagues = leagues.filter(is_public=True)
+
     context = {
         'community': community,
         'leagues': leagues,
+        'sgfs': sgfs,
         'admin': community.is_admin(request.user),
         'can_join': can_join,
         'can_quit': community.user_group in request.user.groups.all()
@@ -171,3 +175,15 @@ def community_quit(request, community_pk, user_pk):
         ))
     else:
         raise Http404('what are you doing here ?')
+
+
+def community_results_page(request, slug):
+    community = get_object_or_404(Community, slug=slug)
+    league = LeagueEvent.objects.filter(
+        community=community,
+        is_open=True
+    ).order_by('end_time').first()
+    return HttpResponseRedirect(reverse(
+        'league:results',
+        kwargs={'event_id': league.pk})
+    )

@@ -5,6 +5,8 @@
 <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css' />
 <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.print.css' media='print' />
 <link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/calendar.css'%}"/>
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/qtip2/3.0.3/basic/jquery.qtip.min.css'/>
+<script src='https://cdn.jsdelivr.net/qtip2/3.0.3/basic/jquery.qtip.min.js'></script>
 
 <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js'></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js'></script>
@@ -57,6 +59,29 @@
             });
         }
     },
+    eventRender: function(event, element) {
+      //public
+      if (event.type === 'public'){
+        element.qtip({
+            content: {
+              text: event.description,
+              title: event.title,
+            },
+            position: {
+              my:'left bottom',  // Position my top left...
+              at:'right top',
+              target: 'mouse', // Use the mouse position as the position origin
+              adjust: { // Don't adjust continuously the mouse, just use initial position
+              x:5,
+              y:-5
+              }
+            },
+            show: {
+              solo: true
+            }
+      });//qtip
+      }// closing public
+    }//event render
   });//fullCalendar
 });// document ready
 </script>
