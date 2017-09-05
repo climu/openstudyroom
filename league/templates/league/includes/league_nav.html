@@ -1,9 +1,6 @@
 {% load bootstrap3 %}
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav navbar-left">
-  <li {% if active == 'overview' %} class="active" {% endif %}>
-    <a href="{% url 'league:event' event.pk %}">Overview</a>
-  </li>
   <li {% if active == 'results' %} class="active" {% endif %}>
     <a href="{% url 'league:results' event.pk %}">Results</a>
   </li>
@@ -12,6 +9,9 @@
   </li>
   <li {% if active == 'games' %} class="active" {% endif %}>
     <a href="{% url 'league:games' event.pk %}">Games</a>
+  </li>
+  <li {% if active == 'overview' %} class="active" {% endif %}>
+    <a href="{% url 'league:event' event.pk %}">Infos</a>
   </li>
 </ul>
 {% if event.is_open %}

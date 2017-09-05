@@ -25,6 +25,9 @@ class LeagueEvent(models.Model):
         ('ladder', 'ladder'),
         ('league', 'league'),
         ('tournament', 'tournament'),
+        ('meijin', 'meijin'),
+        ('ddk', 'ddk'),
+
     )
     begin_time = models.DateTimeField(blank=True)
     end_time = models.DateTimeField(blank=True)

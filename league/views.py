@@ -175,7 +175,10 @@ def results(request, event_id=None, division_id=None):
     else:
         division = get_object_or_404(Division, pk=division_id)
     can_join = event.can_join(request.user)
-    results = division.get_results()
+    if division is None:
+        results = None
+    else:
+        results = division.get_results()
     template = loader.get_template('league/results.html')
     context = {
         'event': event,
@@ -191,7 +194,8 @@ def meijin(request):
     """A simple view that redirects to the last open meijin league."""
     league = LeagueEvent.objects.filter(
         event_type='league',
-        is_open=True
+        is_open=True,
+        community__isnull=True
     ).order_by('end_time').first()
     return HttpResponseRedirect(reverse(
         'league:results',
@@ -202,13 +206,25 @@ def ladder(request):
     """A simple view that redirects to the last open ladder league."""
     league = LeagueEvent.objects.filter(
         event_type='ladder',
-        is_open=True
+        is_open=True,
+        community__isnull=True
     ).order_by('end_time').first()
     return HttpResponseRedirect(reverse(
         'league:results',
         kwargs={'event_id': league.pk})
     )
 
+def ddk(request):
+    """A simple view that redirects to the last open ddk league."""
+    league = LeagueEvent.objects.filter(
+        event_type='ddk',
+        is_open=True,
+        community__isnull=True
+    ).order_by('end_time').first()
+    return HttpResponseRedirect(reverse(
+        'league:results',
+        kwargs={'event_id': league.pk})
+    )
 
 def archives(request):
     """Show a list of all leagues."""
@@ -223,7 +239,7 @@ def archives(request):
     return HttpResponse(template.render(context, request))
 
 
-def event(request, event_id=None, division_id=None, ):
+def infos(request, event_id=None, division_id=None, ):
     open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
     if event_id is None:
         event = Registry.get_primary_event()

@@ -24,19 +24,26 @@
 </ul>
 {% include 'league/includes/league_nav.html' with active='results' %}
 
-{% if event.event_type == 'ladder' %}
-
+{% if event.number_divisions > 1 %}
 <ul class="nav nav-pills">
     {% for div in event.get_divisions %}
     <li {% if div == division %}class='active'{%endif%} > {{div|division_link}}</li>
     {% endfor %}
 </ul>
-
+{% endif %}
+{% if division %}
+{% if event.number_players <= 20 %}
 {% include "league/includes/results_ladder.html"  %}
 {% else %}
 
 {% include "league/includes/results_league.html"  %}
 {% endif %}
+{% else %}
+<div class="well">
+  This league is empty !
+</div>
+{% endif %}
+
 {% endblock %}
 
 {% timezone "UTC" %}
