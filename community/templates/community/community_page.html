@@ -1,7 +1,28 @@
 {% extends 'full_width.html' %}
 {% load bootstrap3 league_tags%}
 {% block title %}OSR - {{community.name}}{% endblock %}
+{% block extra_head_js %}
+<script type="text/javascript">
+function load_game(game_id) {
+    $.ajax({
+    type: "GET",
+    url: "/league/game/json/" + game_id,
+    dataType: "json",
+    success: processData,
+    error: function(){ alert("failed"); }
+});
 
+function processData(data)
+{
+    document.getElementById("game_infos").innerHTML= data.game_infos ;
+    var elem = document.getElementById("player");
+    var player = new WGo.BasicPlayer(elem, {
+      sgf: data.sgf
+      });
+};
+return false;};
+</script>
+{% endblock %}
 {% block heading %}
 <div class="page-header">
     <h1> {{community.name}}  </h1>
