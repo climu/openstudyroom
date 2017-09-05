@@ -32,11 +32,10 @@
 </ul>
 {% endif %}
 {% if division %}
-{% if event.number_players <= 25 %}
-{% include "league/includes/results_ladder.html"  %}
-{% else %}
-
+{% if event.type == "league" %}
 {% include "league/includes/results_league.html"  %}
+{% else %}
+{% include "league/includes/results_ladder.html"  %}
 {% endif %}
 {% else %}
 <div class="well">
