@@ -32,7 +32,7 @@
 </ul>
 {% endif %}
 {% if division %}
-{% if event.type == "league" %}
+{% if event.event_type == "league" %}
 {% include "league/includes/results_league.html"  %}
 {% else %}
 {% include "league/includes/results_ladder.html"  %}
