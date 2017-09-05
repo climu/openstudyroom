@@ -34,7 +34,7 @@
 	<tr>
 		<th>Player</th>
 		<th>Check in (min)</th>
-    {% if request.user.is_authenticated and request.user.user_is_league_admin %}
+    {% if request.user.is_authenticated and request.user.is_league_admin %}
     <th> Put up</th>
     {% endif %}
 
@@ -44,7 +44,7 @@
     <tr>
       <td>{{profile.user | user_link}}</td>
       <td>{{forloop.counter |scrap_time}}</td>
-      {% if request.user.is_authenticated and request.user.user_is_league_admin %}
+      {% if request.user.is_authenticated and request.user.is_league_admin %}
       <td>
         <form action="" method="POST" class="form-inline" >{% csrf_token %}
           <input type="hidden" name="action" value="p_status_up">

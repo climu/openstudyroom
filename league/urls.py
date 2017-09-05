@@ -4,10 +4,15 @@ from django.core.urlresolvers import reverse
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.event, name='event'),
+    url(r'^$', views.results, name='results'),
+    # Sad, but for historical reason, info page is named event.
+    # If you want to replace reverses everywhere, be my guest
+    url(r'^infos/$', views.infos, name='event'),
+
     url(r'^results/$', views.results, name='results'),
     url(r'^meijin/$', views.meijin, name='meijin'),
     url(r'^ladder/$', views.ladder, name='ladder'),
+    url(r'^ddk/$', views.ddk, name='ddk'),
     url(r'^admin/event/(?P<to_event_id>[0-9]+)/populate/$',
         views.populate, name='admin_event_populate'),
     url(r'^admin/event/(?P<to_event_id>[0-9]+)/populate/(?P<from_event_id>[0-9]+)/$',
@@ -19,7 +24,8 @@ urlpatterns = [
 
     url(r'^(?P<event_id>[0-9]+)/results/(?P<division_id>[0-9]+)/$', views.results, name='results'),
     url(r'^(?P<event_id>[0-9]+)/results/$', views.results, name='results'),
-    url(r'^(?P<event_id>[0-9]+)/$', views.event, name='event'),
+    url(r'^(?P<event_id>[0-9]+)/$', views.results, name='results'),
+    url(r'^(?P<event_id>[0-9]+)/infos/$', views.infos, name='event'),
 
     url(r'^games/$', views.games, name='games'),
     url(r'^games/(?P<sgf_id>[0-9]+)/$', views.games, name='game'),
@@ -87,4 +93,5 @@ urlpatterns = [
         views.update_all_sgf_check_code, name='update_all_sgf_check_code'),
     url(r'^admin/update-all-sgf/$', views.update_all_sgf, name='update_all_sgf'),
     url(r'^admin/set-meijin/$', views.admin_set_meijin, name='set_meijin'),
+
 ]

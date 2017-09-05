@@ -1,8 +1,8 @@
 {% extends "full_width.html" %}
-{% load static %}
+{% load static community_tags%}
 {% block heading%}
   <div class="page-header">
-      <h1>{% if event.community %}{{event.community}}{%else%}OSR{%endif%} League - {%if event %}{{event}}{% else%}Archives{% endif %}<span id='game-header'>{%if game %} - {{game.black.kgs_username}} vs {{game.white.kgs_username}} {%endif%} </span></h1>
+      <h1>{% if event.community %}{{event.community|community_link}}{%else%}OSR{%endif%} League - {%if event %}{{event}}{% else%}Archives{% endif %}<span id='game-header'>{%if game %} - {{game.black.kgs_username}} vs {{game.white.kgs_username}} {%endif%} </span></h1>
   </div>
   {%endblock%}
   {% block extra_css %}
