@@ -1,0 +1,67 @@
+{% extends 'full_width.html' %}
+{% load bootstrap3 league_tags community_tags%}
+{% block heading %}
+<div class="page-header">
+       <h1> {{community|community_link}} members</h1>
+</div>
+{%endblock%}
+{% block content %}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    Invite a user
+  </div>
+  <div class="panel-body">
+    <form action=" {% url 'community:admin_invite_user' community.pk %}" method="post" >
+        {% csrf_token %}
+        <div class="form-group">
+        <input type="text" name="username" placeholder="Username" >
+
+        <button type="submit" class="btn btn-success btn-sm"  >
+        {% bootstrap_icon "ok" %} Invite  !
+        </button>
+        </div>
+        </form>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    All {{community.name}} members
+  </div>
+<table id="user-table" class="table">
+  <thead>
+    <th>Username</th>
+    <th>KGS username</th>
+    <th>kick out</th>
+  </thead>
+  <tbody>
+{% for user in community_users %}
+<tr>
+  <td>{{user.username}}</td>
+  <td>{{user |user_link}}</td>
+  <td>  <form action=" {% url 'community:community_quit' community.pk user.pk %}" method="post" >
+      {% csrf_token %}
+      <div class="form-group">
+      <input type="hidden" name="action" value="quit">
+      <input type="hidden" name="next" value="{{request.path}}">
+      <button type="submit" class="btn btn-danger btn-sm"  onclick="return confirm('You are about to kick {{user.username}}. Allright?')">
+      {% bootstrap_icon "remove" %} Kick  !
+      </button>
+      </div>
+      </form>
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+{% endblock %}
+{% block extra_js %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+$('#user-table').DataTable();
+} );
+</script>
+{% endblock %}

@@ -6,10 +6,11 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib.auth.models import Group
 from league.models import User, LeagueEvent, Sgf
+from django.contrib import messages
 from .models import Community
-from .forms import CommunityForm, AdminCommunityForm
+from .forms import CommunityForm, AdminCommunityForm, CommunytyUserForm
 from league.forms import LeagueEventForm
-
+from django.db.models import Q
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
@@ -85,6 +86,8 @@ def admin_community_delete(request, pk):
 
 def community_page(request,slug):
     community = get_object_or_404(Community, slug=slug)
+    if community.private and not community.is_member(request.user):
+        raise(Http404('What are you doing here?'))
     leagues = community.leagueevent_set.all()
     admin = community.is_admin(request.user)
     if not admin:
@@ -94,7 +97,7 @@ def community_page(request,slug):
     can_join = request.user.is_authenticated() and \
         request.user.is_league_member() and \
         not community.is_member(request.user) and \
-        not community.private
+        not community.close
 
     context = {
         'community': community,
@@ -107,7 +110,8 @@ def community_page(request,slug):
     return render(request, 'community/community_page.html', context)
 
 def community_list(request):
-    communitys = Community.objects.all()
+    groups = request.user.groups.all()
+    communitys = Community.objects.filter(Q(private=False)|Q(user_group__in=groups))
     return render(
         request,
         'community/community_list.html',
@@ -143,14 +147,15 @@ def community_create_league(request, community_pk):
 def community_join(request, community_pk, user_pk):
     community = get_object_or_404(Community, pk=community_pk)
     user = get_object_or_404(User, pk=user_pk)
-    # Only and admin can join another user
-    if not community.is_admin(user) and (
+    if not community.is_admin(request.user) and (
         not user == request.user or community.close
     ):
         raise Http404('what are you doing here')
 
     if request.method == 'POST':
-        request.user.groups.add(community.user_group)
+        user.groups.add(community.user_group)
+        message = "You just join the " + community.name + " community."
+        messages.success(request, message)
         return HttpResponseRedirect(reverse(
             'community:community_page',
             kwargs={'slug': community.slug}
@@ -163,21 +168,35 @@ def community_join(request, community_pk, user_pk):
 def community_quit(request, community_pk, user_pk):
     community = get_object_or_404(Community, pk=community_pk)
     user = get_object_or_404(User, pk=user_pk)
-    if not community.is_admin(user) and (
-        not user == request.user or community.close
-    ):
+    if not community.is_admin(request.user) and user != request.user:
         raise Http404('what are you doing here')
     if request.method == 'POST':
-        request.user.groups.remove(community.user_group)
-        return HttpResponseRedirect(reverse(
-            'community:community_page',
-            kwargs={'slug': community.slug}
-        ))
+        user.groups.remove(community.user_group)
+        if user == request.user:
+            message = "You just quit the " + community.name + " community."
+            messages.success(request, message)
+            if community.private:
+                return HttpResponseRedirect(reverse(
+                    'community:community_list',
+                ))
+            else:
+                return HttpResponseRedirect(reverse(
+                    'community:community_page',
+                    kwargs={'slug': community.slug}
+                ))
+        else:
+            message = user.username + " is not in your community anymore."
+            messages.success(request, message)
+            return HttpResponseRedirect(reverse(
+                'community:admin_user_list',
+                kwargs={'pk': community.pk}
+            ))
     else:
         raise Http404('what are you doing here ?')
 
 
 def community_results_page(request, slug):
+    """Redirect to the last community open league results page"""
     community = get_object_or_404(Community, slug=slug)
     league = LeagueEvent.objects.filter(
         community=community,
@@ -187,3 +206,41 @@ def community_results_page(request, slug):
         'league:results',
         kwargs={'event_id': league.pk})
     )
+
+
+
+@login_required()
+def admin_user_list(request, pk):
+    """allow admin to manage the users of a community. Usefull for close ones."""
+    community = get_object_or_404(Community, pk=pk)
+    if not community.is_admin(request.user):
+        raise Http404('what are you doing here')
+    community_users = User.objects.filter(groups=community.user_group)
+    return render(
+        request,
+        'community/admin/user_list.html',
+        {'community': community, 'community_users': community_users}
+    )
+
+@login_required()
+def admin_invite_user(request, pk):
+    """Invite a user in a community."""
+    community = get_object_or_404(Community, pk=pk)
+    if not community.is_admin(request.user):
+        raise Http404('what are you doing here')
+    if request.method == 'POST':
+        form = CommunytyUserForm(request.POST)
+        if form.is_valid():
+            user = User.objects.get(username__iexact=form.cleaned_data['username'])
+            user.groups.add(community.user_group)
+            # group = Group.objects.get(name='league_member')/
+            # user.groups.add(group)
+            message = user.username +" is now a member of your community."
+            messages.success(request, message)
+        else:
+            message = "We don't have such a user."
+            messages.success(request, message)
+        return HttpResponseRedirect(reverse(
+            'community:admin_user_list',
+            kwargs={'pk': community.pk}
+        ))

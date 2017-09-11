@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
+from wagtail.wagtailcore.fields import RichTextField
+
 
 
 class Community(models.Model):
@@ -11,7 +13,9 @@ class Community(models.Model):
     user_group = models.ForeignKey(Group, null=True, blank=True, related_name='user_community')
     close = models.BooleanField(default=False)
     private = models.BooleanField(default=False)
-    description = models.TextField(blank=True, max_length=100)
+    description = models.TextField(blank=True, max_length=500)
+    private_description = models.TextField(blank=True, max_length=500)
+
 
     def __str__(self):
         return self.name
