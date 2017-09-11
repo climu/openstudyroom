@@ -11,7 +11,7 @@
 
 	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
 </form>
-<a href="{% url 'community:community_page' community.name %}">
+<a href="{% url 'community:community_page' community.slug %}">
   <button class="btn btn-danger pull-right">
     Cancel
   </button>
