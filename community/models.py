@@ -2,8 +2,8 @@ from django.db import models
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from wagtail.wagtailcore.fields import RichTextField
-
-
+from machina.models.fields import MarkupTextField
+from machina.core import validators
 
 class Community(models.Model):
 
@@ -13,8 +13,12 @@ class Community(models.Model):
     user_group = models.ForeignKey(Group, null=True, blank=True, related_name='user_community')
     close = models.BooleanField(default=False)
     private = models.BooleanField(default=False)
-    description = models.TextField(blank=True, max_length=500)
-    private_description = models.TextField(blank=True, max_length=500)
+    description = MarkupTextField(
+        blank=True, null=True,
+        validators=[validators.NullableMaxLengthValidator(500)])
+    private_description = MarkupTextField(
+        blank=True, null=True,
+        validators=[validators.NullableMaxLengthValidator(500)])
 
 
     def __str__(self):

@@ -1,14 +1,13 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 league_tags%}
+{% load bootstrap3 league_tags community_tags%}
 {% block heading %}
 <div class="page-header">
-    <h1> Edit the {{community.name}} community</h1>
+    <h1> Edit the {{community|community_link}} community</h1>
 </div>
 {%endblock%}
 {% block content %}
 <form action="" method="POST">{% csrf_token %}
 {%bootstrap_form form %}
-
 	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
 </form>
 <a href="{% url 'community:community_page' community.slug %}">
@@ -16,4 +15,13 @@
     Cancel
   </button>
 </a>
+
+
 {% endblock %}
+{% block extra_css %}
+    {{ form.media.css }}
+{% endblock extra_css %}
+
+{% block extra_js %}
+{{ form.media.js }}
+{% endblock extra_js %}
