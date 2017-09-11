@@ -583,7 +583,6 @@ def admin(request):
                 messages.success(request, message)
                 return HttpResponseRedirect(reverse('league:admin'))
     else:
-        sgfs = Sgf.objects.filter(league_valid=False, p_status=0)
         new_users = User.objects.filter(groups__name='new_user')
         form = UploadFileForm()
         context = {

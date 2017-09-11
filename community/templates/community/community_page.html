@@ -34,6 +34,8 @@ return false;};
   <h3> {{community.name}} ({{community.slug}})
   {% if admin %}
   <a href="{% url 'community:community_update' community.pk %}"><button class="btn btn-default pull-right">{% bootstrap_icon 'wrench' %} Edit </button></a>
+  <a href="{% url 'community:admin_user_list' community.pk %}"><button class="btn btn-default pull-right">{% bootstrap_icon 'user' %} Manage users </button></a>
+
   {% endif %}
   {% if can_join %}
   <form action=" {% url 'community:community_join' community.pk request.user.pk %}" method="post" >
@@ -63,7 +65,10 @@ return false;};
 </h3>
 </div>
 <div class="panel-body">
-{{community.description}}
+<p>{{community.description}}</p>
+{% if can_quit %}
+<p>{{community.private_description}}</p>
+{% endif %}
 </div>
 </div>
 <div class="panel panel-default">

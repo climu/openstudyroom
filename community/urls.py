@@ -29,6 +29,16 @@ urlpatterns = [
         name='admin_community_update'
     ),
     url(
+        r'^(?P<pk>[0-9]+)/users/$',
+        views.admin_user_list,
+        name='admin_user_list'
+    ),
+    url(
+        r'^(?P<pk>[0-9]+)/invite/$',
+        views.admin_invite_user,
+        name='admin_invite_user'
+    ),
+    url(
         r'^update/(?P<pk>[0-9]+)/$',
         views.CommunityUpdate.as_view(),
         name='community_update'
