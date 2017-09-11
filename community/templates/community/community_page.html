@@ -1,5 +1,5 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 league_tags%}
+{% load bootstrap3 league_tags static forum_markup_tags%}
 {% block title %}OSR - {{community.name}}{% endblock %}
 {% block extra_head_js %}
 <script type="text/javascript">
@@ -65,10 +65,12 @@ return false;};
 </h3>
 </div>
 <div class="panel-body">
-<p>{{community.description}}</p>
+<p>{{community.description|safe|rendered}}</p>
 {% if can_quit %}
-<p>{{community.private_description}}</p>
+<p>{{community.private_description|safe|rendered}}</p>
 {% endif %}
+
+
 </div>
 </div>
 <div class="panel panel-default">
@@ -161,4 +163,5 @@ $(document).ready(function() {
 } );
 
 </script>
+
 {% endblock %}

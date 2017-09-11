@@ -10,4 +10,12 @@
 {%bootstrap_form form %}
 	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
 </form>
+
 {% endblock %}
+{% block extra_css %}
+    {{ form.media.css }}
+{% endblock extra_css %}
+
+{% block extra_js %}
+{{ form.media.js }}
+{% endblock extra_js %}
