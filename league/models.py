@@ -763,7 +763,11 @@ class Division(models.Model):
         for player in players:
             player.is_active = player.n_games >= min_matchs
 
-        results = sorted(results, key=attrgetter('score'), reverse=True)
+        results = sorted(
+            results,
+            key=attrgetter('score', 'n_games'),
+            reverse=True
+        )
         return results
 
 
