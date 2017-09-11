@@ -584,11 +584,8 @@ def admin(request):
                 return HttpResponseRedirect(reverse('league:admin'))
     else:
         new_users = User.objects.filter(groups__name='new_user')
-        form = UploadFileForm()
         context = {
-            'sgfs': sgfs,
             'new_users': new_users,
-            'form': form,
         }
         template = loader.get_template('league/admin/dashboard.html')
         return HttpResponse(template.render(context, request))
