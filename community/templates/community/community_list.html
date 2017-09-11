@@ -1,5 +1,5 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 community_tags%}
+{% load bootstrap3 community_tags forum_markup_tags%}
 {% block title %}OSR - Communitys {% endblock %}
 {% block heading %}
 <div class="page-header">
@@ -20,7 +20,7 @@ With that in mind, we are very happy to host some league for other friendly go c
         {{community |community_link}}
       </div>
       <div class="panelbody">
-        {{community.description}}
+        {{community.description |safe|rendered|truncatewords_html:30}}
     </div>
   </div>
   {% endfor %}
