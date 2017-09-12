@@ -15,10 +15,10 @@ class Community(models.Model):
     private = models.BooleanField(default=False)
     description = MarkupTextField(
         blank=True, null=True,
-        validators=[validators.NullableMaxLengthValidator(500)])
+        validators=[validators.NullableMaxLengthValidator(2000)])
     private_description = MarkupTextField(
         blank=True, null=True,
-        validators=[validators.NullableMaxLengthValidator(500)])
+        validators=[validators.NullableMaxLengthValidator(2000)])
 
 
     def __str__(self):
