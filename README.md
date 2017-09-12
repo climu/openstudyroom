@@ -16,19 +16,19 @@ You can find a How To deploy this locally in our [wiki](https://github.com/climu
 
 # Project structure
 
-###league
+### league
 That's the main thing. The league app that manage the leagues, players, sgf.
 
 Note that the auth model `league.models.User ` is in here.
 
 The scraper() function inside `league.views` is run by cron every 5 mins.
 
-###home
+### home
 The wagtail (our CMS) app. You will find definitions and templates of our pages, blog post and such in `home.models`.
 
-###fullcalendar
+### fullcalendar
 An homemade app that manage a calendar, public events, and a [game planing tool](https://openstudyroom.org/blog/2017/07/06/game-planing-tool-released-beta-test-needed/).
 The client side is rendered by the js [fullcalendar](https://fullcalendar.io/) library.
 
-###community
+### community
 Allow OSR to host friendly online go community's leagues. See [here](https://openstudyroom.org/community/).

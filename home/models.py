@@ -17,6 +17,10 @@ from wagtailmenus.models import MenuPage
 from fullcalendar.models import AvailableEvent, GameRequestEvent
 from league.models import User
 import datetime
+from wagtail.wagtailcore.signals import page_published
+import requests
+from django.template.loader import render_to_string
+
 
 @register_snippet
 @python_2_unicode_compatible  # provide equivalent __unicode__ and __str__ methods on Python 2
@@ -166,3 +170,31 @@ class StreamFieldEntryPage(EntryPage):
         StreamFieldPanel('streamfield')
     ]
 BlogPage.subpage_types.append(StreamFieldEntryPage)
+
+
+# Let everyone know when a new page is published
+def send_to_discord(sender, **kwargs):
+    instance = kwargs['instance']
+#   the folowing test works only for recent copys of wagatail.
+# I updated and it works...
+    if instance.first_published_at != instance.last_published_at:
+        return
+    url = 'http://example.com/'
+    excerpt = render_to_string(
+        'home/includes/excerpt.html',
+        {'entry': instance}
+    )
+    # I tryed to convert excerpt to markdown using tomd without success
+    values = {
+        "content": "Breaking news on OSR website !",
+        "embeds": [{
+            "title": instance.title,
+            "url": instance.full_url,
+            "description": excerpt,
+        }]
+    }
+    r = requests.post(url, json=values)
+
+
+# Register a receiver
+page_published.connect(send_to_discord, sender=EntryPage)
