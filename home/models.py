@@ -189,7 +189,7 @@ def send_to_discord(sender, **kwargs):
         "content": "Breaking news on OSR website !",
         "embeds": [{
             "title": instance.title,
-            "url": instance.full_url,
+            "url": "https://openstudyroom.org" + instance.url,
             "description": excerpt,
         }]
     }

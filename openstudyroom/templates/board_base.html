@@ -91,6 +91,7 @@
 {% block js %}
 {{ block.super }}
 <script src="{% static 'js/machina.min.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'wgo/shortcode.js' %}" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
   $(function() {
@@ -100,81 +101,11 @@
   </script>
   <script type="text/javascript">
 
- $('.post-content, .post-review, .post-preview ').shortcode({
-   goban: function(done) {
-       tag_open = '<div '
-       tag_content = ''
-       tag_close = '></div>'
-       if (this.options !== undefined){
+$('.post-content ').each(function() {
+    str = preprocessor($( this ).html())
+    $( this ).html(str)
+})
 
-           //set source sgf file
-           if (this.options.sgf !== undefined){
-               tag_content += ' data-wgo=" ' + this.options.sgf + ' " '
-           }else{
-               tag_content += ' data-wgo=" ' + $("div.attachment").find('a').attr('href') + ' " '
-           }
-
-           // activate coordinates or diagram
-           if (this.options.diagram !== undefined){
-               // set empty layout disable scroll and keys
-               tag_content += ' data-wgo-layout="" data-wgo-enablewheel="false" data-wgo-enablekeys="false"';
-               // set limits of the diagram
-               if (this.options.limits !== undefined){
-                   args = this.options.limits.split(',')
-                   config=" section:{top:'" + args[0] +  "', right:'" + args[1] +  "', bottom:'" + args[2] +  "', left:'" + args[3] +  "'}"
-                   tag_content += 'data-wgo-board=" ' + config +'"';
-                // if no limits, we can show coordinates unless coord !=='true'
-               }else if (this.options.coord !== undefined){
-                   if (this.options.coord == 'true'){
-                       var js = "arguments[0].target.setCoordinates(true);";
-                       tag_content += 'data-wgo-onkifuload="' + js + '"';
-                   }
-                }
-            }else{// if no diagram, we activate coordinate by default and allow layout=simple
-
-                //coordinates
-                if (this.options.coord !== undefined){
-                    if (this.options.coord == 'true'){
-                        var js = "arguments[0].target.setCoordinates(true);";
-                        tag_content += 'data-wgo-onkifuload="' + js + '"';
-                    }// coordiantes are deactivated by default, so no need to do anything if coord != true
-                }else{// activate coordinates by default
-                    var js = "arguments[0].target.setCoordinates(true);";
-                    tag_content += 'data-wgo-onkifuload="' + js + '"';
-                }
-                //set minimal layout
-                if (this.options.simple !== undefined){
-                    var layout = "bottom: ['Control']";
-                    tag_content += ' data-wgo-layout="' + layout + '" ';
-                }
-            }
-
-           //set goban to specific move
-           if (this.options.move !== undefined){
-               tag_content += ' data-wgo-move= " ' + this.options.move + ' " '
-           }else{
-               tag_content += ''
-           }
-
-            // set style
-            tag_content += ' style="'
-            //width
-            if (this.options.width !== undefined){
-                tag_content += 'width:' + this.options.width + '; '
-            }
-            if (this.options.float !== undefined){
-                tag_content += 'float:' + this.options.float + '; '
-            }
-            tag_content += '"'
-
-        }else{
-           tag_content = 'data-wgo=" ' + $("div.attachment").find('a').attr('href') + ' " '
-       }
-
-
-       return tag_open + tag_content + tag_close ;
-   },
-});// Shortcode
 
 $('.coord').hover(
     function(){
