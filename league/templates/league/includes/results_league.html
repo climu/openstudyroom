@@ -18,7 +18,7 @@
         {% for player in results %}
         <tr>
           <td>{{forloop.counter}}</td>
-            <td {%if player.is_active %}class="success"{%endif%}>{{player.user | user_link:meijin}}</td>
+            <td >{{player.user | user_link:meijin}}</td>
             <td >{{ player.score }}</td>
             <td>{{ player.n_win }} </td>
             <td>{{ player.n_loss }}</td>
