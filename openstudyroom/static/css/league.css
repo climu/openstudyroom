@@ -33,8 +33,11 @@ body .container{
     .table-league-score-highlight{
         text-align: center;
     }
-    iframe[name="wgo_iframe"]{
-        height:700px;
-        width: 700px;
-        border:none;
+    .inactive{
+        background-color: #ececec;
+        color: #b9b9b9;
+    }
+    .inactive>a{
+            color:#76b9f3;
+
     }

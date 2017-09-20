@@ -131,7 +131,7 @@ replaces the first [goban][/goban] in str by a html goban
 */
 function goban_html_single(str){
     //check if there is a goban tag
-    regex_main = /\[ *?goban.*?\].*?\[ *?\/ *?goban *?\]/
+    regex_main = /\[ *?goban.*?\](.|\n)*?\[ *?\/ *?goban *?\]/
     if(!regex_main.test(str))
         return false
 

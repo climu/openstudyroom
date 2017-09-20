@@ -16,7 +16,9 @@
         <tbody>
         {% for player in results %}
         <tr class="{% cycle 'even-row' 'odd-row' %}">
-            <td class='table-league-player{%if player.is_active %} success{%endif%}'>{{forloop.counter}}. {{player.user | user_link:meijin}}</td>
+            <td class='table-league-player{%if not player.is_active %} inactive{%endif%}'>
+              {{forloop.counter}}. {{player.user | user_link:meijin}}
+            </td>
             <td class='table-league-score-highlight'>{{ player.score }}</td>
             {% for opponent in results %}
 
