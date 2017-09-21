@@ -776,6 +776,7 @@ class LeaguePlayer(models.Model):
     kgs_username = models.CharField(max_length=20, default='')
     event = models.ForeignKey('LeagueEvent')
     division = models.ForeignKey('Division')
+    # p_status is deprecated, we now store that in player profile
     p_status = models.SmallIntegerField(default=0)
 
     class Meta:

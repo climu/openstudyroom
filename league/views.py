@@ -32,8 +32,6 @@ discord_url_file = "/etc/discord_url.txt"
 def scraper():
     """Check kgs to update our db.
     This is called every 5 mins by cron in production.
-    First we check and update kgs online players.
-    then we do one of the 3 actions only:
     - 1: check time since get from kgs
     - 2: Check which players are online on kgs and update db.
     - 3: wait 5 sec
