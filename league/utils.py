@@ -17,11 +17,21 @@ def kgs_connect():
         "locale": "en_US",
     }
     formatted_message = json.dumps(message)
-    response = requests.post(url, formatted_message)
-    time.sleep(2)
+    for i in range(10):
+        response = requests.post(url, formatted_message)
+        time.sleep(3)
+        if response.status_code == 200:
+            break
+    if response.status_code != 200:
+        return False
     cookies = response.cookies
-    r = requests.get(url, cookies=cookies)
-    time.sleep(2)
+    for i in range(10):
+        r = requests.get(url, cookies=cookies)
+        time.sleep(3)
+        if r.status_code == 200:
+            break
+    if response.status_code != 200:
+        return False
     requests.post(url, json.dumps({"type": "LOGOUT"}), cookies=cookies)
     return r
 
