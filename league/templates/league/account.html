@@ -1,5 +1,5 @@
 {% extends "full_width.html" %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags forum_markup_tags %}
 {% load league_tags %}
 {% load bootstrap3 %}
 {% block extra_head_js %}
@@ -54,100 +54,101 @@ return false;};
     He earned respect from all Open Study Room and a teaching game with Alexander Dinerchtein (3p).
 </div>
 {% endif %}
-{% for event in open_events %}
+<div class="panel panel-default">
+<div class="panel-heading clearfix">
+  <h4>
+     {{user.username}} infos
+     {% if request.user == user %}
+      <a href="{% url 'league:profile_update' user.profile.pk %}"><button class="btn btn-default pull-right">{% bootstrap_icon 'wrench' %} Edit </button></a>
+     {% endif %}
+  </h4>
+</div>
+<div class="panel-body">
+<p>{{user.profile.bio|safe|rendered}}</p>
+<p>KGS Username: <a href="http://kgs.gosquares.net/index.rhtml.en?id={{user.profile.kgs_username}}">{{user.profile.kgs_username}}</a></p>
+<p>OGS Username:{% if user.profile.ogs_id > 0 %}
+   <a href="https://online-go.com/player/{{user.profile.ogs_id}}">{{user.profile.ogs_username}}</a></p>
+     {% endif %}
+</div>
+</div>
 
 <div class="panel panel-default">
-<div class="panel-heading"><h4>{{event |event_link}} </h4></div>
-<div class="panel-body">
+  <div class="panel-heading"><h4>{{user.username}} results of passed and open leagues</h4></div>
 
-  {%if event.is_in %}
-  {% with player=event.this_player %}
-  <p><b>{{user.username}}</b> is currently playing for the <b>{{event}}</b> in the <b>{{player.division}}</b> group with the kgs username <b>{{user.kgs_username}}</b>.</p>
-</div>
-  <table id='{{event.pk}}-opponents-table' class=' table table-hover table-condensed'  >
-     <thead>
+<ul class="nav nav-tabs">
+  <li class ="active"><a data-toggle="tab" href="#archives">Archives</a></li>
+  {% for event in open_events %}
+  {% if event.is_in %}
+  <li ><a data-toggle="tab" href="#{{event.pk}}">{{event.name}}</a></li>
+  {% endif %}
+  {%endfor%}
+</ul>
+<div class="tab-content">
+  <div id="archives" class="tab-pane fade in active">
+        <table id='archive-table' class='table' >
+          <thead>
        <tr>
-         <th>Rank</th>
-         <th>Player</th>
-         <th>score</th>
-         <th> {{user.kgs_username}}'s results</th>
+         <th>Event</th>
+         <th>Division</th>
+         <th># win</th>
+         <th># loss</th>
+         <th># games </th>
       </thead>
       <tbody>
-
-    {% with player.get_results as results %}
-    {% for opponent in event.results %}
-    {% if opponent == player %}
-    <tr class="info">
-      {%else%}
-      <tr>
-          {%endif%}
-      <td>{{forloop.counter}}</td>
-      <td>{{opponent.user | user_link:meijin}}</td>
-      <td>{{opponent.score}}
-      <td>
-
-        {% if opponent.kgs_username in results %}
-
-          {% html_one_player_result%}
-
-        {% endif %}
-        </td>
-
+  {% for player in players %}
+    <tr>
+      <td>{{player.event |event_link}}</td>
+      <td>{{player.division |division_link}}</td>
+      <td>{{player.nb_win}}</td>
+      <td>{{player.nb_loss}}</td>
+      <td>{{player.nb_games}}</td>
     </tr>
+  {% endfor %}
+  </tbody>
+  </table>
+  </div>
+  {% for event in open_events %}
+  {% if event.is_in %}
+{% with player=event.this_player %}
+  <div id="{{event.pk}}" class="tab-pane fade ">
+    <table id='{{event.pk}}-opponents-table' class=' table table-hover table-condensed'  >
+       <thead>
+         <tr>
+           <th>Rank</th>
+           <th>Player</th>
+           <th>score</th>
+           <th> {{user.kgs_username}}'s results</th>
+        </thead>
+        <tbody>
+      {% with player.get_results as results %}
+      {% for opponent in event.results %}
+      {% if opponent == player %}
+      <tr class="info">
+        {%else%}
+        <tr>
+            {%endif%}
+        <td>{{forloop.counter}}</td>
+        <td>{{opponent.user | user_link:meijin}}</td>
+        <td>{{opponent.score}}
+        <td>
+          {% if opponent.kgs_username in results %}
+            {% html_one_player_result%}
+          {% endif %}
+          </td>
 
-    {% endfor %}
-    {% endwith %}
-        {% endwith%}
-</tbody>
-</table>
-  {% elif  request.user.is_authenticated and user == request.user %}
-  <form action=" {% url 'league:join_event' event.pk user.pk %}" method="post" class="form">
-  {% csrf_token %}
-  <input type="hidden" name="action" value="join">
-  <input type="hidden" name="next" value="{{request.path}}">
-  <span>You are not playing in {{event}}. Maybe you want to join the {{event.last_division}} ?</span>
-
-  <button type="submit" class="btn btn-primary"  onclick="return confirm('You are about to join the {{event}}. Allright?')">
-  {% bootstrap_icon "ok" %} Join !
-  </button>
-  </form>
+      </tr>
+{%endfor%}
+      {% endwith %}
+      {% endwith %}
+  </tbody>
+  </table>
+  </div>
+  {%endif%}
+    {%endfor%}
 </div>
-  {% else %}
-  {{user.username}} is not playing in {{event}}.
-</div>
-  {%endif %}
-
 </div>
 
 
-
-{% endfor %}
-
-<div class="panel panel-default">
-<div class="panel-heading"><h3>All events</h3></div>
-
-<table id='player-table' class='table' >
-   <thead>
-     <tr>
-       <th>Event</th>
-       <th>Division</th>
-       <th># win</th>
-       <th># loss</th>
-       <th># games </th>
-    </thead>
-    <tbody>
-{% for player in players %}
-  <tr>
-    <td>{{player.event |event_link}}</td>
-    <td>{{player.division |division_link}}</td>
-    <td>{{player.nb_win}}</td>
-    <td>{{player.nb_loss}}</td>
-    <td>{{player.nb_games}}</td>
-  </tr>
-{% endfor %}
-</tbody>
-</table>
-</div>
 
 <div class="panel panel-default">
 <div class="panel-heading"><h3>{{user}} Games</h4></div>
@@ -189,6 +190,8 @@ $(document).ready(function() {
     render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','MMM DD, YYYY' )
   } ],
   "order": [[ 0, "desc" ]]});
+  $('#archive-table').DataTable({});
+
 {% for event in open_events %}
 $('#{{event.pk}}-opponents-table').DataTable({});
 {% endfor %}
