@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Game, Registry, \
     Profile
 from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm, LeagueEventForm, \
-    EmailForm, TimezoneForm
+    EmailForm, TimezoneForm, ProfileForm
 import datetime
 from django.core.urlresolvers import reverse
 from django.db.models import Q
@@ -23,7 +23,7 @@ import json
 from django.utils import timezone
 from time import sleep
 from postman.api import pm_write
-
+from . import ogs
 
 ForumProfile = get_model('forum_member', 'ForumProfile')
 discord_url_file = "/etc/discord_url.txt"
@@ -32,8 +32,6 @@ discord_url_file = "/etc/discord_url.txt"
 def scraper():
     """Check kgs to update our db.
     This is called every 5 mins by cron in production.
-    First we check and update kgs online players.
-    then we do one of the 3 actions only:
     - 1: check time since get from kgs
     - 2: Check which players are online on kgs and update db.
     - 3: wait 5 sec
@@ -105,7 +103,10 @@ def scraper():
 
 def scraper_view(request):
     """Call the scraper."""
-    out = scraper()
+    id = 40077
+    out = ogs.check_user_games(id)
+
+
     return HttpResponse(out)
 
 
@@ -343,6 +344,7 @@ def account(request, user_name=None):
     open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
 
     players = user.leagueplayer_set.order_by('-pk')
+
     sgfs = Sgf.objects.filter(Q(white=user) | Q(black=user))
     if len(sgfs) == 0:
         sgfs = None
@@ -1061,3 +1063,26 @@ def update_all_sgf(request):
             return HttpResponseRedirect(reverse('league:admin'))
     else:
         return render(request, 'league/admin/update_all_sgf.html')
+
+class ProfileUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    form_class = ProfileForm
+    model = Profile
+    template_name_suffix = '_update'
+
+    def test_func(self):
+        user = self.request.user
+        return user.is_authenticated() and \
+            user.is_league_member() and \
+            self.get_object().user == user
+
+    def get_login_url(self):
+        return '/'
+
+    def get_success_url(self):
+        return '/league/account/'
+
+    def form_valid(self, form):
+        self.object = form.save()
+        # do something with self.object
+        # remember the import: from django.http import HttpResponseRedirect
+        return HttpResponseRedirect(self.get_success_url())

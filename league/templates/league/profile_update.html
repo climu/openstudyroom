@@ -1,0 +1,31 @@
+{% extends 'full_width.html' %}
+{% load bootstrap3 league_tags%}
+
+{%block page_intro %}
+
+{% include 'league/includes/user_nav.html' with active='league' %}
+
+{% endblock %}
+{% block title %}OSR league admin - Leagues{% endblock %}
+
+{% block heading %}
+<div class="page-header">
+    <h1>Edit your profile</h1>
+</div>
+{%endblock%}
+{% block content %}
+<form action="" method="POST">{% csrf_token %}
+{%bootstrap_form form %}
+  {% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
+  <a class="btn btn-danger pull-right" href="{% url 'league:league_account' object.user.username %}">
+cancel
+  </a>
+</form>
+{% endblock %}
+{% block extra_css %}
+    {{ form.media.css }}
+{% endblock extra_css %}
+
+{% block extra_js %}
+{{ form.media.js }}
+{% endblock extra_js %}

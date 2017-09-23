@@ -129,7 +129,10 @@ class HomePage(Page):
                     opponents
                 ))
                 context['online_opponents'] = online_opponents
-                game_requests = GameRequestEvent.objects.filter(receivers=user).count()
+                game_requests = GameRequestEvent.objects.filter(
+                    receivers=user,
+                    end__gte=now
+                ).count()
                 context['game_requests'] = game_requests
             me_available = AvailableEvent.objects.filter(
                 user=user,

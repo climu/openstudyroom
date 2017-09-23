@@ -11,6 +11,8 @@ from operator import attrgetter
 from django.core.urlresolvers import reverse
 from django.utils import timezone
 from community.models import Community
+from machina.models.fields import MarkupTextField
+from machina.core import validators
 
 
 # Create your models here.
@@ -159,6 +161,7 @@ class LeagueEvent(models.Model):
 
     @staticmethod
     def get_events(user):
+        """Return all the leagues one user can see/join/play in."""
         if user.is_authenticated:
             communitys = user.get_communitys()
             events = LeagueEvent.objects.filter(
@@ -244,11 +247,14 @@ class Sgf(models.Model):
     black = models.ForeignKey('User', blank=True, related_name='black_sgf', null=True)
     white = models.ForeignKey('User', blank=True, related_name='white_sgf', null=True)
     winner = models.ForeignKey('User', blank=True, related_name='winner_sgf', null=True)
-
+    ogs_id = models.PositiveIntegerField(blank=True, null=True)
     # black, white, winner and events fields will only be populated for valid sgfs
     # status of the sgf:0 already checked
+    #           KGS status:
     # 					1 require checking, sgf added from kgs archive link
     # 					2 require checking with priority,sgf added/changed by admin
+    #           OGS status:
+    #                   3 require checking, sgf added from ogs api. We just got id
 
     def __str__(self):
         return str(self.pk) + ': ' + self.wplayer + ' vs ' + self.bplayer
@@ -447,7 +453,7 @@ class Sgf(models.Model):
 class User(AbstractUser):
     """User used for auth in all project."""
 
-    kgs_username = models.CharField(max_length=20)
+    kgs_username = models.CharField(max_length=20, null=True, blank=True)
 
     def join_event(self, event, division):
         if LeaguePlayer.objects.filter(user=self, event=event).exists():
@@ -660,7 +666,11 @@ class Profile(models.Model):
     user = models.OneToOneField(User)
     kgs_username = models.CharField(max_length=10, blank=True)
     ogs_username = models.CharField(max_length=10, blank=True)
-    bio = models.TextField(blank=True)
+    ogs_id = models.PositiveIntegerField(default=0, blank=True, null=True)
+    bio = MarkupTextField(
+            blank=True, null=True,
+            validators=[validators.NullableMaxLengthValidator(2000)]
+    )
     p_status = models.PositiveSmallIntegerField(default=0)
     last_kgs_online = models.DateTimeField(blank=True, null=True)
     timezone = models.CharField(
@@ -776,6 +786,7 @@ class LeaguePlayer(models.Model):
     kgs_username = models.CharField(max_length=20, default='')
     event = models.ForeignKey('LeagueEvent')
     division = models.ForeignKey('Division')
+    # p_status is deprecated, we now store that in player profile
     p_status = models.SmallIntegerField(default=0)
 
     class Meta:
