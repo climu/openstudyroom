@@ -138,6 +138,6 @@ class ProfileForm(ModelForm):
                 exclude(pk=self.instance.pk).exists():
             raise forms.ValidationError("Someone is already using this OGS username. Please contact an admin")
 
-            self.instance.ogs_id = id
-            self.instance.save()
+        self.instance.ogs_id = id
+        self.instance.save()
         return ogs_username
