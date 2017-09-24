@@ -122,7 +122,6 @@ class ProfileForm(ModelForm):
         model = Profile
         fields = [
             'bio',
-            'kgs_username',
             'ogs_username',
         ]
 
