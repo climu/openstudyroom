@@ -103,10 +103,7 @@ def scraper():
 
 def scraper_view(request):
     """Call the scraper."""
-    id = 40077
-    out = ogs.check_user_games(id)
-
-
+    out = scraper()
     return HttpResponse(out)
 
 
@@ -615,7 +612,15 @@ class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
                 'community:community_page',
                 kwargs={'name': self.get_object().community.name}
             )
-
+    
+    def get_context_data(self, **kwargs):
+        context = super(LeagueEventUpdate, self).get_context_data(**kwargs)
+        league = self.get_object()
+        if league.community is None:
+            context['other_events'] = league.get_other_events
+        else:
+            context['other_events'] = league.get_other_events().filter(community=league.community)
+        return context
 
 class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     form_class = LeagueEventForm
@@ -786,7 +791,7 @@ def admin_division_up_down(request, division_id):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def populate(request, to_event_id, from_event_id=None):
     """
     A view that helps admin to do populate at the end of the month.
@@ -795,6 +800,8 @@ def populate(request, to_event_id, from_event_id=None):
 
     """
     to_event = get_object_or_404(LeagueEvent, pk=to_event_id)
+    if not request.user.is_league_admin(to_event):
+        raise Http404("What are you doing here ?")
     new_players = OrderedDict()
 
     for division in to_event.get_divisions():
@@ -812,7 +819,7 @@ def populate(request, to_event_id, from_event_id=None):
             for division in divisions:
                 division.results = division.get_results()
                 for player in division.results:
-                    if player.is_active:
+                    if player.is_active and form.cleaned_data['player_' + str(player.pk)] != '0':
                         new_division = Division.objects.get(pk=form.cleaned_data['player_' + str(player.pk)])
                         new_player = LeaguePlayer(
                             user=player.user,
@@ -851,7 +858,7 @@ def populate(request, to_event_id, from_event_id=None):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def proceed_populate(request, from_event_id, to_event_id):
     """ Here we actually populate the db with the form from populate view.
     We assume the admin have seen the new events structure in a preview before being here.
@@ -860,13 +867,15 @@ def proceed_populate(request, from_event_id, to_event_id):
     # populate view should have the admin select this event and sending this here in the form.
 
     to_event = get_object_or_404(LeagueEvent, pk=to_event_id)
+    if not request.user.is_league_admin(to_event):
+        raise Http404("What are you doing here ?")
     from_event = get_object_or_404(LeagueEvent, pk=from_event_id)
     if request.method == 'POST':
         form = LeaguePopulateForm(from_event, to_event, request.POST)
         if form.is_valid():
             n = 0
             for player in from_event.get_players():
-                if player.nb_games() >= from_event.min_matchs:
+                if player.nb_games() >= from_event.min_matchs and form.cleaned_data['player_' + str(player.pk)] != '0':
                     n += 1
                     new_division = Division.objects.get(pk=form.cleaned_data['player_' + str(player.pk)])
                     new_player = LeaguePlayer.objects.create(user=player.user,
@@ -875,7 +884,13 @@ def proceed_populate(request, from_event_id, to_event_id):
                                                              division=new_division)
         message = "The new " + to_event.name + " was populated with " + str(n) + " players."
         messages.success(request, message)
-        return HttpResponseRedirect(reverse('league:admin_events'))
+        if request.user.is_league_admin():
+            return HttpResponseRedirect(reverse('league:admin_events'))
+        else:
+            return HttpResponseRedirect(reverse(
+                'community:community_page',
+                args=[to_event.community.slug]
+            ))
     else:
         raise Http404("What are you doing here ?")
 

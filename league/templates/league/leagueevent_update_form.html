@@ -33,7 +33,7 @@
       </button>
        <label class="control-label">from</label>
       <select class="form-control" name="from_event" >
-        {% for event in object.get_other_events %}
+        {% for event in other_events %}
   <option value="{{event.pk}}">{{event}}</option>
   {% endfor %}
 </select>
