@@ -19,7 +19,7 @@ class ActionForm(forms.Form):
 
 class LeagueSignupForm(forms.Form):
     kgs_username = forms.CharField(max_length=10)
-    ogs_username = forms.CharField(max_length=20)
+    ogs_username = forms.CharField(max_length=20, required=False)
     timezone = forms.ChoiceField(
         label='Time Zone',
         choices=[(t, t) for t in pytz.common_timezones],
@@ -35,6 +35,8 @@ class LeagueSignupForm(forms.Form):
 
     def clean_ogs_username(self):
         # Check ogs username to be registered and update ogs_id
+        if not self.cleaned_data['ogs_username']:
+            return ''
         ogs_username = self.cleaned_data['ogs_username']
         if Profile.objects.filter(ogs_username__iexact=ogs_username).exists():
             raise forms.ValidationError("Someone is already using this OGS username. Please contact an admin")
