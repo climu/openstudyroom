@@ -1,6 +1,6 @@
 # openstudyroom
 
-This is the code of the website for the Open Study Room kgs community that runs at [openstudyroom.org](http://openstudyroom.org).
+This is the code of the website for the Open Study Room go/baduk/weiqi community that runs at [openstudyroom.org](http://openstudyroom.org).
 
 This website is written in python and powered by the [django framework](https://www.djangoproject.com/).
 
