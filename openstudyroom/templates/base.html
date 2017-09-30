@@ -7,15 +7,14 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
     <head>
-      <!-- Global Site Tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-106566532-1"></script>
+      <!-- Google Analytics -->
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments)};
-  gtag('js', new Date());
-
-  gtag('config', 'UA-106566532-1');
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-106566532-1', 'auto');
+ga('send', 'pageview');
 </script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+<!-- End Google Analytics -->
 
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -110,9 +109,22 @@ Logout</a>
 
             </div>
   {% endblock %}
-
+  {% if request.user.is_authenticated and not request.user.is_league_member%}
+  <li class="alert alert-info alert-dismissable fade in" style="list-style-type: none;">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  Your account will be activated soon. Be sure you verify your email and played one game in KGS. Contact us if it takes too long. Thanks for waiting !
+  </li>
+  {% endif %}
   {% if messages %}
 <ul class="messages">
+  {% if request.user.is_authenticated and not request.user.is_league_member%}
+  <li class="alert alert-info alert-dismissable fade in" style="list-style-type: none;">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  zetze
+  </li>
+
+  {% endif %}
+
     {% for message in messages %}
     <li class="alert alert-info alert-dismissable fade in" style="list-style-type: none;">
     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -162,6 +174,6 @@ Logout</a>
           {# for machina templates we needs a js block #}
         {% block js %}
         {% endblock %}
-      
+
     </body>
 </html>

@@ -184,9 +184,10 @@ h3 {
 }
 
 .blog_sidebar .rss-sitemap a {
-    color: #999;
-    font-size: 12px;
+    color: #585858;
+    font-size: 30px;
     text-decoration: none;
+    padding-right: 5px;
 }
 
 .blog_sidebar .rss-sitemap i {

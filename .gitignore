@@ -3,6 +3,7 @@
 *.pyc
 __pycache__/
 /openstudyroom/settings/base.py
+/static
 media
 [0-9]*
 /.idea

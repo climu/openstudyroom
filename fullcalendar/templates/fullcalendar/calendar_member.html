@@ -152,10 +152,18 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
 	$(document).ready(function() {
 
 		$('#calendar').fullCalendar({
+      customButtons: {
+        myCustomButton: {
+            text: '?',
+            click: function() {
+              window.open('/calendar/help/', '_blank');
+            }
+        }
+    },
 			header: {
-				left: 'prev,next today',
+				left: 'prev,next today ',
 				center: 'title',
-				right: 'month,agendaWeek'
+				right: 'month,agendaWeek myCustomButton'
 			},
       views: {
         month:{
