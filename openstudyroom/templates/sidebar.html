@@ -1,10 +1,12 @@
 {% load static i18n wagtailcore_tags wagtailimages_tags puput_tags compress wagtailroutablepage_tags %}
 {% load league_tags osr_tags%}
 
-        <div class="rss-sitemap">
+        <div class="rss-sitemap text-justify">
+          {% include 'home/includes/socials.html'  %}
             <a href="{% feeds_url blog_page %}" target="_blank" title="RSS">
-                 <i class="fa fa-rss-square"></i> <span>Feed RSS</span>
+                 <i class="fa fa-rss-square"></i>
             </a>
+
         </div>
           {% include 'fullcalendar/event_list_sidebar.html'  %}
 {% adverts %}
