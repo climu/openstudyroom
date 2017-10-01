@@ -567,8 +567,7 @@ class User(AbstractUser):
 
     @staticmethod
     def kgs_online_users():
-        time_online = timezone.now() - datetime.timedelta(minutes=5)
-        print(time_online)
+        time_online = timezone.now() - datetime.timedelta(minutes=6)
         # First we get all self players in open divisions
         players = LeaguePlayer.objects.filter(
             division__league_event__is_open=True,
@@ -576,45 +575,42 @@ class User(AbstractUser):
         ).values_list('user',flat=True)
         return players
 
+    def check_kgs(self, opponents):
+        """check if a user have played some new games in KGS
 
-    def check_user(self):
-        """Check a user to see if he have play new games.
+                get a list of games from kgs (only 1 request to kgs)
+                for each game we check if it's already in db (comparing urlto)
+                then, for each user.players in open events,
+                we check if user.player and his opponent are in the same division
+                    - if yes: we add them to db with p-status = 1 => to be scraped
+                    - if no: we do nothing
+                We can't get more info on the game yet cause we need the sgf datas for that.
+                So that would imply one additional kgs request per game in very short time.
+                """
 
-        check if a user have play new games:
-        get a list of games from kgs (only 1 request to kgs)
-        for each game we check if it's already in db (comparing urlto)
-        then, for each user.players in open events,
-        we check if user.player and his opponent are in the same division
-            - if yes: we add them to db with p-status = 1 => to be scraped
-            - if no: we do nothing
-        We can't get more info on the game yet cause we need the sgf datas for that.
-        So that would imply one additional kgs request per game in very short time.
-         """
-        kgs_username = self.kgs_username
-
-        self.profile.p_status = 0
-        self.profile.save()
         now = datetime.datetime.today()
+        # Get the time-range to check
         # months is a set with current month
         months = [{'month': now.month, 'year': now.year}]
         if now.day == 1:
             # if we are the 1st of the month, we check both previous month an current
             prev = now.replace(day=1) - datetime.timedelta(days=1)
             months.append({'month': prev.month, 'year': prev.year})
+        kgs_username = self.profile.kgs_username
+        opponents = [opponent.profile.kgs_username.lower() for opponent in opponents]
         list_urlto_games = utils.ask_kgs(
             kgs_username,
             months[0]['year'],
             months[0]['month']
         )
         if len(months) > 1:
-            time.sleep(5)
+            time.sleep(3)
             list_urlto_games += utils.ask_kgs(
                 kgs_username,
                 months[1]['year'],
                 months[1]['month']
             )
         # list_urlto_games=[{url:'url',game_type:'game_type'},{...},...]
-        divisions = self.get_open_divisions()
         for d in list_urlto_games:
             url = d['url']
             game_type = d['game_type']
@@ -623,15 +619,13 @@ class User(AbstractUser):
                 # check if both players are in the league
                 players = utils.extract_players_from_url(url)
                 # no need to check the self to be in the league
-                if players['white'].lower() == self.kgs_username.lower():
-                    opponent = players['black']
+                if players['white'].lower() == self.profile.kgs_username.lower():
+                    opponent = players['black'].lower()
                 else:
-                    opponent = players['white']
+                    opponent = players['white'].lower()
                 # Finally, we check if player and oponents
                 # are in an open event's same division
-                if LeaguePlayer.objects.filter(
-                        kgs_username__iexact=opponent,
-                        division__in=divisions).exists():
+                if opponent in opponents:
                     sgf = Sgf()
                     sgf.wplayer = players['white']
                     sgf.bplayer = players['black']
@@ -639,6 +633,89 @@ class User(AbstractUser):
                     sgf.p_status = 1
                     sgf.game_type = game_type
                     sgf.save()
+
+    def check_ogs(user, opponents):
+        """Checking user for OGS games.
+            Still a work in progress.
+        """
+        # Get the time-range to check
+        # we just create a date with 1st of the month at 00:00
+        now = datetime.datetime.today()
+        if now.day == 1:
+            # if we are the 1st of the month, we go to previous month
+            now = now.replace(day=1) - datetime.timedelta(days=1)
+        # Set day, time to 0
+        time_limit = now.replace(day=1, hour=0, minute=0)
+        ogs_id = user.profile.ogs_id
+        url = 'https://online-go.com/api/v1/players/' + str(ogs_id) + '/games/?ordering=-ended'
+        opponents = [u.profile.ogs_id for u in opponents if u.profile.ogs_id > 0]
+        # we deal with pagination with this while loop
+        while url is not None:
+            request = requests.get(url).json()
+            print('here')
+            print(len(request['results']))
+            url = request['next']
+            print(url)
+            for game in request['results']:
+                print(game['id'])
+                # first we check if we have the same  id in db.
+                # Since it's ordered by time, no need to keep going.
+                if Sgf.objects.filter(ogs_id=game['id']).exists():
+                    print('break1')
+                    break
+                # Then we check if end date og game is too old
+                # 2013-08-31T12:47:34.887Z
+                game_ended = datetime.datetime.strptime(
+                    game['ended'],
+                    '%Y-%m-%dT%H:%M:%S.%fZ')
+                if game_ended < time_limit:
+                    print('break2')
+                    break
+                # we get opponent ogs id
+                if game['white'] == ogs_id:
+                    opponent_ogs_id = game['black']
+                else:
+                    opponent_ogs_id = game['white']
+                # Check if opponent is a opponent
+                if opponent_ogs_id in opponents:
+                    # we should get datas here:
+                    # Time setting
+                    # and update check_sgf to try ogs usernames
+                    # Or just get everything there and that's done.
+                    print('sgf')
+                    sgf = Sgf()
+                    sgf.wplayer = game['players']['white']['username']
+                    sgf.bplayer = game['players']['black']['username']
+                    sgf.urlto = 'https://online-go.com/api/v1/games/' + str(game['id']) + '/sgf/'
+                    sgf.ogs_id = game['id']
+                    sgf.p_status = 1
+                    sgf.save()
+            # this else will be executed only if no break appeared in the inner loop
+            else:
+                print('here')
+                sleep(2)
+                continue
+            # breaking the inner loop will break it all
+            break
+
+
+    def check_user(self):
+        """Check a user to see if he have play new games.
+
+        We test KGS and OGS depending if the user have some usernames in his profile.
+         """
+        # get the opponents one can play with
+        opponents = self.get_opponents()
+        # Ask servers
+        if self.profile.kgs_username is not None:
+            self.check_kgs(opponents)
+#        if self.profile.ogs_id >0:
+#            self.check_ogs(opponents)
+        # Mark the user checked
+        self.profile.p_status = 0
+        self.profile.save()
+
+
 
     def get_timezone(self):
         if (self.is_authenticated() and
@@ -665,7 +742,7 @@ class User(AbstractUser):
 class Profile(models.Model):
     user = models.OneToOneField(User)
     kgs_username = models.CharField(max_length=10, blank=True)
-    ogs_username = models.CharField(max_length=10, blank=True)
+    ogs_username = models.CharField(max_length=20, blank=True)
     ogs_id = models.PositiveIntegerField(default=0, blank=True, null=True)
     bio = MarkupTextField(
             blank=True, null=True,
