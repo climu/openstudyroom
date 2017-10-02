@@ -394,13 +394,12 @@ class Sgf(models.Model):
             (b, m) = (False, m + '; number moves')
         if self.komi != '6.50':
             (b, m) = (False, m + '; komi')
-
         return {'message': m, 'valid': b, 'tag': tag, }
 
     def check_validity(self):
         """Check sgf validity for all open events.
 
-        Return a list of valid leagues is the sgf is valid and False if not
+        Return a list of valid leagues is the sgf is valid and [] if not
         Update the sgf but do NOT save it to db. This way allow some preview.
         I think the way we deal with message could be better:
         maybe a dict with {'event1':'message', 'event2'...}
@@ -411,14 +410,14 @@ class Sgf(models.Model):
             if len(sgfs) > 0:
                 self.league_valid = False
                 self.message = 'same sgf already in db : ' + str(sgfs.first().pk)
-                return False
+                return []
         else:  # If self is already in db, we need to check only with others sgfs
             sgfs = sgfs.exclude(pk=self.pk)
             if len(sgfs) > 0:
                 self.league_valid = False
                 self.message = ';same sgf already in db : ' + str(sgfs.first().pk)
                 # if sgf already in db, no need to perform further.
-                return False
+                return []
 
         events = LeagueEvent.objects.filter(is_open=True)  # get all open events
         message = ''
