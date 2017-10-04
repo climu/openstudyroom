@@ -741,7 +741,7 @@ class User(AbstractUser):
 class Profile(models.Model):
     user = models.OneToOneField(User)
     kgs_username = models.CharField(max_length=10, blank=True)
-    ogs_username = models.CharField(max_length=20, blank=True)
+    ogs_username = models.CharField(max_length=40, blank=True)
     ogs_id = models.PositiveIntegerField(default=0, blank=True, null=True)
     bio = MarkupTextField(
             blank=True, null=True,
