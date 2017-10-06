@@ -493,7 +493,7 @@ class User(AbstractUser):
             player = LeaguePlayer()
             player.event = event
             player.division = division
-            player.kgs_username = self.kgs_username
+            player.kgs_username = self.profile.kgs_username
             player.ogs_username = self.profile.ogs_username
             player.user = self
             player.save()
@@ -692,9 +692,12 @@ class User(AbstractUser):
                     break
                 # Then we check if end date og game is too old
                 # 2013-08-31T12:47:34.887Z
-                game_ended = datetime.datetime.strptime(
-                    game['ended'],
-                    '%Y-%m-%dT%H:%M:%S.%fZ')
+                if game['ended']:
+                    game_ended = datetime.datetime.strptime(
+                        game['ended'],
+                        '%Y-%m-%dT%H:%M:%S.%fZ')
+                else:
+                    continue
                 if game_ended < time_limit:
                     break
                 # we get opponent ogs id
