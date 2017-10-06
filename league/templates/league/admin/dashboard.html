@@ -8,60 +8,65 @@
 {%endblock%}
 {% block content %}
 <div class="row">
-<div class="col-md-7">
+  <div class="panel panel-default">
+  <div class="panel-heading"><h3> List of new users </h3></div>
+    <table id='new_user-table' class='display table' >
+      <thead>
+        <tr><th>username</th><th>email</th><th>kgs_username</th><th>ogs_username</th><th>Delete</th><th>Accept</th>
+        </thead>
+        <tbody>
+          {% for new_user in new_users %}
+          <tr>
+            <td>{{new_user.username}}</td>
+
+            <td>
+              {% with new_user.get_primary_email as email %}
+              {% if email is none %}
+              {{new_user.email}}
+              {% else %}
+              {{email.email}}
+              {% if email.verified %}
+              {% bootstrap_icon "ok" %}
+              {% endif %}
+              {% endif %}
+            </td>
+            {% endwith %}
+            <td><a href="https://www.gokgs.com/gameArchives.jsp?user={{new_user.kgs_username}}" target="_blank">{{new_user.kgs_username}}</a></td>
+            <td>
+              {% if user.profile.ogs_id > 0 %}
+                 <a href="https://online-go.com/player/{{new_user.profile.ogs_id}}">{{new_user.profile.ogs_username}}</a>
+                   {% endif %}
+                </td>
+
+            <td>  <form action=" {% url 'league:admin' %}" method="post" class="form">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="delete_new_user">
+              <input type="hidden" name="user_id" value="{{new_user.pk}}">
+                <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('You are about to delete the new user {{new_user.username}}. Allright?')" >
+                  {% bootstrap_icon "remove" %}
+                </button>
+              </form>
+            </td>
+            <td><form action=" {% url 'league:admin' %}" method="post" class="form">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="welcome_new_user">
+              <input type="hidden" name="user_id" value="{{new_user.pk}}">
+                <button type="submit" class="btn btn-success btn-xs" onclick="return confirm('Accept the new user  {{new_user.username}} as a league memeber ?')">
+                  {% bootstrap_icon "ok" %}
+                </button></form></td>
+          </tr>
+          {% endfor %}
+        </tbdoy>
+    </table>
+
+  </div>
+
 <div class="panel panel-default">
 <div class="panel-heading"><h3> Admin board </h3></div>
 <iframe name="embed_readwrite" frameBorder="0" src="https://mensuel.framapad.org/p/1N0qTQCsk6?showControls=true&showChat=false&showLineNumbers=false&useMonospaceFont=false" width="100%" height="500px"></iframe>
 </div>
 </div>
 
-<div class="col-md-5">
-<div class="panel panel-default">
-<div class="panel-heading"><h3> List of new users </h3></div>
-  <table id='new_user-table' class='display table' >
-    <thead>
-      <tr><th>username</th><th>email</th><th>kgs_username</th><th>Delete</th><th>Accept</th>
-      </thead>
-      <tbody>
-        {% for new_user in new_users %}
-        <tr>
-          <td>{{new_user.username}}</td>
 
-          <td>
-            {% with new_user.get_primary_email as email %}
-            {% if email is none %}
-            {{new_user.email}}
-            {% else %}
-            {{email.email}}
-            {% if email.verified %}
-            {% bootstrap_icon "ok" %}
-            {% endif %}
-            {% endif %}
-          </td>
-          {% endwith %}
-          <td><a href="https://www.gokgs.com/gameArchives.jsp?user={{new_user.kgs_username}}" target="_blank">{{new_user.kgs_username}}</a></td>
-          <td>  <form action=" {% url 'league:admin' %}" method="post" class="form">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="delete_new_user">
-            <input type="hidden" name="user_id" value="{{new_user.pk}}">
-              <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('You are about to delete the new user {{new_user.username}}. Allright?')" >
-                {% bootstrap_icon "remove" %}
-              </button>
-            </form>
-          </td>
-          <td><form action=" {% url 'league:admin' %}" method="post" class="form">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="welcome_new_user">
-            <input type="hidden" name="user_id" value="{{new_user.pk}}">
-              <button type="submit" class="btn btn-success btn-xs" onclick="return confirm('Accept the new user  {{new_user.username}} as a league memeber ?')">
-                {% bootstrap_icon "ok" %}
-              </button></form></td>
-        </tr>
-        {% endfor %}
-      </tbdoy>
-  </table>
-</div>
-</div>
-</div>
 
 {% endblock %}

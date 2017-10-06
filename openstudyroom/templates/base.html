@@ -167,7 +167,7 @@ Logout</a>
         <script type="text/javascript" src="{%static 'wgo/wgo.player.min.js'%}"></script>
 
       {% bootstrap_javascript %}
-
+  <script type="text/javascript">$("[data-toggle=tooltip]").tooltip();</script>
         {% block extra_js %}
             {# Override this in templates to add extra javascript #}
         {% endblock %}

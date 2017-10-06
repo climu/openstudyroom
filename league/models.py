@@ -13,6 +13,7 @@ from django.utils import timezone
 from community.models import Community
 from machina.models.fields import MarkupTextField
 from machina.core import validators
+import json
 
 
 # Create your models here.
@@ -323,19 +324,20 @@ class Sgf(models.Model):
         """Return a list of erros pasring message field."""
         return self.message.split(';')[1:]
 
+
     def parse(self):
         """Parse one sgf.
 
         check the p_status:
             0: return
-            1: we only have urlto and need a kgs request
+            1: we only have urlto and need a server request
             2: uploaded/changed by admin and no kgs_request needed.
         Populate the rows(result, time, date...)
         Does NOT save sgf to db to allow previews of changes
         """
         if self.p_status == 0:
             return
-        if self.p_status == 1:  # we only have the urlto and need a kgs request
+        if self.p_status == 1:  # we only have the urlto and need a server request
             r = requests.get(self.urlto)
             self.sgf_text = r.text
         prop = utils.parse_sgf_string(self.sgf_text)
@@ -364,14 +366,25 @@ class Sgf(models.Model):
         else:
             tag = False
             (b, m) = (False, m + '; Tag missing')
-        wplayer = LeaguePlayer.objects.filter(
-            kgs_username__iexact=self.wplayer,
-            event=event
-        ).first()
-        bplayer = LeaguePlayer.objects.filter(
-            kgs_username__iexact=self.bplayer,
-            event=event
-        ).first()
+        if self.ogs_id is not None:
+            wplayer = LeaguePlayer.objects.filter(
+                ogs_username__iexact=self.wplayer,
+                event=event
+            ).first()
+            bplayer = LeaguePlayer.objects.filter(
+                ogs_username__iexact=self.bplayer,
+                event=event
+            ).first()
+
+        else:
+            wplayer = LeaguePlayer.objects.filter(
+                kgs_username__iexact=self.wplayer,
+                event=event
+            ).first()
+            bplayer = LeaguePlayer.objects.filter(
+                kgs_username__iexact=self.bplayer,
+                event=event
+            ).first()
         if wplayer is not None and bplayer is not None:
             if wplayer.division != bplayer.division:
                 (b, m) = (False, m + '; players not in same division')
@@ -392,7 +405,7 @@ class Sgf(models.Model):
             (b, m) = (False, m + '; no result')
         if self.number_moves < 20:
             (b, m) = (False, m + '; number moves')
-        if self.komi != '6.50':
+        if not self.komi.startswith('6.5'):
             (b, m) = (False, m + '; komi')
         return {'message': m, 'valid': b, 'tag': tag, }
 
@@ -639,7 +652,7 @@ class User(AbstractUser):
         """
         # Get the time-range to check
         # we just create a date with 1st of the month at 00:00
-        now = datetime.datetime.today()
+        now = datetime.datetime.today() - datetime.timedelta(days=30)
         if now.day == 1:
             # if we are the 1st of the month, we go to previous month
             now = now.replace(day=1) - datetime.timedelta(days=1)
@@ -651,16 +664,11 @@ class User(AbstractUser):
         # we deal with pagination with this while loop
         while url is not None:
             request = requests.get(url).json()
-            print('here')
-            print(len(request['results']))
             url = request['next']
-            print(url)
             for game in request['results']:
-                print(game['id'])
                 # first we check if we have the same  id in db.
                 # Since it's ordered by time, no need to keep going.
                 if Sgf.objects.filter(ogs_id=game['id']).exists():
-                    print('break1')
                     break
                 # Then we check if end date og game is too old
                 # 2013-08-31T12:47:34.887Z
@@ -668,7 +676,6 @@ class User(AbstractUser):
                     game['ended'],
                     '%Y-%m-%dT%H:%M:%S.%fZ')
                 if game_ended < time_limit:
-                    print('break2')
                     break
                 # we get opponent ogs id
                 if game['white'] == ogs_id:
@@ -677,22 +684,25 @@ class User(AbstractUser):
                     opponent_ogs_id = game['white']
                 # Check if opponent is a opponent
                 if opponent_ogs_id in opponents:
-                    # we should get datas here:
-                    # Time setting
-                    # and update check_sgf to try ogs usernames
-                    # Or just get everything there and that's done.
-                    print('sgf')
-                    sgf = Sgf()
-                    sgf.wplayer = game['players']['white']['username']
-                    sgf.bplayer = game['players']['black']['username']
-                    sgf.urlto = 'https://online-go.com/api/v1/games/' + str(game['id']) + '/sgf/'
-                    sgf.ogs_id = game['id']
-                    sgf.p_status = 1
-                    sgf.save()
+                    # we need to get timesetting datas here because they are not
+                    # in OGS sgfs
+                    time_settings = json.loads(game["time_control_parameters"])
+                    if time_settings['system'] == "byoyomi":
+                        sgf = Sgf()
+                        sgf.time = time_settings['main_time']
+                        # Sadly byo is recorded as a string 3x30 byo-yomi in db
+                        sgf.byo = str(time_settings['periods']) + 'x' + \
+                            str(time_settings['period_time']) + ' byo-yomi'
+                        sgf.wplayer = game['players']['white']['username']
+                        sgf.bplayer = game['players']['black']['username']
+                        sgf.urlto = 'https://online-go.com/api/v1/games/' +\
+                            str(game['id']) + '/sgf/'
+                        sgf.ogs_id = game['id']
+                        sgf.p_status = 1
+                        sgf.save()
             # this else will be executed only if no break appeared in the inner loop
             else:
-                print('here')
-                sleep(2)
+                time.sleep(2)
                 continue
             # breaking the inner loop will break it all
             break
@@ -708,8 +718,8 @@ class User(AbstractUser):
         # Ask servers
         if self.profile.kgs_username is not None:
             self.check_kgs(opponents)
-#        if self.profile.ogs_id >0:
-#            self.check_ogs(opponents)
+        if self.profile.ogs_id >0:
+            self.check_ogs(opponents)
         # Mark the user checked
         self.profile.p_status = 0
         self.profile.save()
@@ -860,6 +870,7 @@ class Division(models.Model):
 class LeaguePlayer(models.Model):
     user = models.ForeignKey('User')
     kgs_username = models.CharField(max_length=20, default='')
+    ogs_username = models.CharField(max_length=40, null=True, blank=True)
     event = models.ForeignKey('LeagueEvent')
     division = models.ForeignKey('Division')
     # p_status is deprecated, we now store that in player profile
