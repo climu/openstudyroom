@@ -148,7 +148,9 @@ class ProfileForm(ModelForm):
         if Profile.objects.filter(ogs_username__iexact=ogs_username).\
                 exclude(pk=self.instance.pk).exists():
             raise forms.ValidationError("Someone is already using this OGS username. Please contact an admin")
-
         self.instance.ogs_id = id
         self.instance.save()
+        # for now we need to update all players ogs usernames
+        open_players = self.instance.user.leagueplayer_set.filter(event__is_open=True)
+        open_players.update(ogs_username=ogs_username)
         return ogs_username
