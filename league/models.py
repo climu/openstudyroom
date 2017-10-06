@@ -652,7 +652,7 @@ class User(AbstractUser):
         """
         # Get the time-range to check
         # we just create a date with 1st of the month at 00:00
-        now = datetime.datetime.today() - datetime.timedelta(days=30)
+        now = datetime.datetime.today()
         if now.day == 1:
             # if we are the 1st of the month, we go to previous month
             now = now.replace(day=1) - datetime.timedelta(days=1)
