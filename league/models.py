@@ -260,6 +260,37 @@ class Sgf(models.Model):
     def __str__(self):
         return str(self.pk) + ': ' + self.wplayer + ' vs ' + self.bplayer
 
+    def get_players(self, event):
+        """return the players of this sgf for this event."""
+        if self.ogs_id:
+            black_player = LeaguePlayer.objects.filter(
+                event=event,
+                ogs_username__iexact=self.bplayer
+            )
+
+            white_player = LeaguePlayer.objects.filter(
+                event=event,
+                ogs_username__iexact=self.wplayer
+            )
+        else:
+            black_player = LeaguePlayer.objects.filter(
+                event=event,
+                kgs_username__iexact=self.bplayer
+            )
+
+            white_player = LeaguePlayer.objects.filter(
+                event=event,
+                ogs_username__iexact=self.wplayer
+            )
+        if len(black_player) == 1:  # That shouldn't happen, but who knows
+            black_player = black_player.first()
+        else:
+            return False
+        if len(white_player) == 1:
+            white_player = white_player.first()
+        else:
+            return False
+        return {'black': black_player, 'white': white_player}
 
     def update_related(self, events):
         """Update league_valid, events, divisions and users fields.
@@ -286,32 +317,20 @@ class Sgf(models.Model):
         else:
             for event in events:
                 # Then we get the proper players
-                black_player = LeaguePlayer.objects.filter(
-                    event=event,
-                    kgs_username__iexact=self.bplayer
-                )
-                if len(black_player) == 1:  # That shouldn't happen, but who knows
-                    black_player = black_player.first()
-                else:
+                players = self.get_players(event)
+                if not players:
                     return False
-                white_player = LeaguePlayer.objects.filter(
-                    event=event,
-                    kgs_username__iexact=self.wplayer
-                )
-                if len(white_player) == 1:
-                    white_player = white_player.first()
-                else:
-                    return False
+
                 # We add event and division to the sgf
                 self.events.add(event)
-                self.divisions.add(white_player.division)
+                self.divisions.add(players['black'].division)
             # Now we set the fields on the sgf
             if winner == 'black':
-                self.winner = black_player.user
+                self.winner = players['black'].user
             else:
-                self.winner = white_player.user
-            self.white = white_player.user
-            self.black = black_player.user
+                self.winner = players['white'].user
+            self.white = players['white'].user
+            self.black = players['black'].user
             self.league_valid = True
             self.save()
             return True
@@ -475,6 +494,7 @@ class User(AbstractUser):
             player.event = event
             player.division = division
             player.kgs_username = self.kgs_username
+            player.ogs_username = self.profile.ogs_username
             player.user = self
             player.save()
             return True
