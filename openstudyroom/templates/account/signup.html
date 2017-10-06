@@ -34,6 +34,11 @@
             <form id="signup_form" method="post" action="{% url "account_signup" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
                 {% csrf_token %}
                 <legend><h3>Sign up</h3></legend>
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
                 {%bootstrap_field form.username show_label=False addon_before="<span class='glyphicon glyphicon-user'></span>  " %}
                 {%bootstrap_field form.kgs_username show_label=False addon_before="<span class='small'>KGS</span>" %}
                 {%bootstrap_field form.ogs_username show_label=False addon_before="<span class='small'>OGS</span>" %}

@@ -65,9 +65,15 @@ def user_link(user, meijin=None):
         link += 'class="online"'
     else:
         link += 'class="offline"'
-    link += '>' + user.kgs_username
+    if user.profile.kgs_username :
+        tooltip = '<p>KGS: ' + user.profile.kgs_username + '</p>'
+    if user.profile.ogs_username :
+        tooltip += '<p>OGS: ' + user.profile.ogs_username + '</p>'
+
+    link += 'data-toggle="tooltip" data-html="true" rel="tooltip" title="' + tooltip
+    link += '" >' + user.username
     if user == meijin:
-        link += ' <i class="fa fa-trophy" data-toggle="tooltip" title="' + user.kgs_username + ' is OSR Meijin !"></i>'
+        link += ' <i class="fa fa-trophy"></i>'
     link += '</a>'
     return mark_safe(link)
 

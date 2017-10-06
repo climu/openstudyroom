@@ -104,6 +104,12 @@ def ask_kgs(kgs_username, year, month):
 
     return l
 
+def findnth(haystack, needle, n):
+    ''' find the nth needle in a haystack. Return the index'''
+    parts = haystack.split(needle, n+1)
+    if len(parts)<=n+1:
+        return -1
+    return len(haystack)-len(parts[-1])-len(needle)
 
 def parse_sgf_string(sgf_string):
     '''parse a sgf from a string and return a dict:
@@ -137,13 +143,14 @@ def parse_sgf_string(sgf_string):
     # counting the number of moves. Note that there could be a +-1 diff, but we don't really care
     out['number_moves'] = 2 * sgf_string.count(';B[')
     # We create a unique string based on exact time (ms) 5 first black moves where played.
-    code = ""
-    q = 0
-    for n in range(0, 5):
-        p = sgf_string.find('BL[', q)
+    # check code is: yyymmddwplayerbplayernsome black moves
+    code = datetime.datetime.strftime(out['date'], '%Y%m%d') + out['wplayer'] + out['bplayer']
+
+    for n in range(1, 7):
+        p = findnth(sgf_string, 'B[', 8 * n)
         if p != -1:
             q = sgf_string.find(']', p)
-            code += sgf_string[p + 3:q]
+            code += sgf_string[p + 2:q]
     out['check_code'] = code
 
     return out

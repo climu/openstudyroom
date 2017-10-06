@@ -18,8 +18,8 @@ class ActionForm(forms.Form):
 
 
 class LeagueSignupForm(forms.Form):
-    kgs_username = forms.CharField(max_length=10)
-    ogs_username = forms.CharField(max_length=20, required=False)
+    kgs_username = forms.CharField(max_length=10, required=False)
+    ogs_username = forms.CharField(max_length=40, required=False)
     timezone = forms.ChoiceField(
         label='Time Zone',
         choices=[(t, t) for t in pytz.common_timezones],
@@ -30,7 +30,7 @@ class LeagueSignupForm(forms.Form):
     def clean_kgs_username(self):
         kgs_username = self.cleaned_data['kgs_username']
         if Profile.objects.filter(kgs_username__iexact=kgs_username).exists():
-            raise forms.ValidationError("This kgs username is already used by one of our member. You should contact us")
+            self.add_error('kgs_username', "This kgs username is already used by one of our member. You should contact us")
         return kgs_username
 
     def clean_ogs_username(self):
@@ -39,11 +39,20 @@ class LeagueSignupForm(forms.Form):
             return ''
         ogs_username = self.cleaned_data['ogs_username']
         if Profile.objects.filter(ogs_username__iexact=ogs_username).exists():
-            raise forms.ValidationError("Someone is already using this OGS username. Please contact an admin")
+            self.add_error('ogs_username', 'Someone is already using this OGS username. Please contact an admin')
         id = get_user_id(ogs_username)
         if id == 0:
-            raise forms.ValidationError("There is no such user registered at the Online Go Server")
+            self.add_error('ogs_username', 'There is no such user registered at the Online Go Server')
         return ogs_username
+
+    def clean(self):
+        super(LeagueSignupForm, self).clean()
+        print(self.cleaned_data)
+        if not (self.cleaned_data['kgs_username'] or self.cleaned_data['ogs_username']):
+            self.add_error('kgs_username','')
+            self.add_error('ogs_username','')
+            raise forms.ValidationError("You should enter OGS or KGS username")
+        return self.cleaned_data
 
     def signup(self, request, user):
         user.kgs_username = self.cleaned_data['kgs_username']
