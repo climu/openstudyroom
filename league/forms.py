@@ -28,6 +28,8 @@ class LeagueSignupForm(forms.Form):
     )
 
     def clean_kgs_username(self):
+        if not self.cleaned_data['kgs_username']:
+                    return ''
         kgs_username = self.cleaned_data['kgs_username']
         if Profile.objects.filter(kgs_username__iexact=kgs_username).exists():
             self.add_error('kgs_username', "This kgs username is already used by one of our member. You should contact us")
