@@ -117,14 +117,6 @@ Logout</a>
   {% endif %}
   {% if messages %}
 <ul class="messages">
-  {% if request.user.is_authenticated and not request.user.is_league_member%}
-  <li class="alert alert-info alert-dismissable fade in" style="list-style-type: none;">
-  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-  zetze
-  </li>
-
-  {% endif %}
-
     {% for message in messages %}
     <li class="alert alert-info alert-dismissable fade in" style="list-style-type: none;">
     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
