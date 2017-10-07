@@ -280,7 +280,7 @@ class Sgf(models.Model):
 
             white_player = LeaguePlayer.objects.filter(
                 event=event,
-                ogs_username__iexact=self.wplayer
+                kgs_username__iexact=self.wplayer
             )
         if len(black_player) == 1:  # That shouldn't happen, but who knows
             black_player = black_player.first()
@@ -318,9 +318,8 @@ class Sgf(models.Model):
             for event in events:
                 # Then we get the proper players
                 players = self.get_players(event)
-                if not players:
+                if players is False:
                     return False
-
                 # We add event and division to the sgf
                 self.events.add(event)
                 self.divisions.add(players['black'].division)
