@@ -867,14 +867,14 @@ class Division(models.Model):
             loser.n_loss += 1
             loser.n_games += 1
             loser.score += self.league_event.pploss
-            if loser.kgs_username in winner.results:
-                winner.results[loser.kgs_username].append({'id': sgf.pk, 'r': 1})
+            if loser.pk in winner.results:
+                winner.results[loser.pk].append({'id': sgf.pk, 'r': 1})
             else:
-                winner.results[loser.kgs_username] = [{'id': sgf.pk, 'r': 1}]
+                winner.results[loser.pk] = [{'id': sgf.pk, 'r': 1}]
             if winner.kgs_username in loser.results:
-                loser.results[winner.kgs_username].append({'id': sgf.pk, 'r': 0})
+                loser.results[winner.pk].append({'id': sgf.pk, 'r': 0})
             else:
-                loser.results[winner.kgs_username] = [{'id': sgf.pk, 'r': 0}]
+                loser.results[winner.pk] = [{'id': sgf.pk, 'r': 0}]
 
         # now let's set the active flag
         min_matchs = self.league_event.min_matchs
