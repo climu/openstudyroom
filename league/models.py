@@ -871,7 +871,7 @@ class Division(models.Model):
                 winner.results[loser.pk].append({'id': sgf.pk, 'r': 1})
             else:
                 winner.results[loser.pk] = [{'id': sgf.pk, 'r': 1}]
-            if winner.kgs_username in loser.results:
+            if winner.pk in loser.results:
                 loser.results[winner.pk].append({'id': sgf.pk, 'r': 0})
             else:
                 loser.results[winner.pk] = [{'id': sgf.pk, 'r': 0}]
