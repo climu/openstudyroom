@@ -62,13 +62,13 @@ class AvailableEvent(CalEvent):
         for event in availables:
             change = {
                 'time': event.start,
-                'user': event.user.kgs_username,
+                'user': event.user.username,
                 'type': 1  # means the user becomes available
             }
             changes.append(change)
             change = {
                 'time': event.end,
-                'user': event.user.kgs_username,
+                'user': event.user.username,
                 'type': 0  # means the user becomes unavailable
             }
             changes.append(change)
@@ -131,7 +131,7 @@ class GameAppointmentEvent(CalEvent):
 
     def title(self):
         users = self.users.all()
-        return 'Game ' + users[0].kgs_username + ' vs ' + users[1].kgs_username
+        return 'Game ' + users[0].username + ' vs ' + users[1].username
 
     def opponent(self,user):
         """Return the opponent of a game appointment"""

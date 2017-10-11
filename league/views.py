@@ -612,7 +612,7 @@ class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
                 'community:community_page',
                 kwargs={'name': self.get_object().community.name}
             )
-    
+
     def get_context_data(self, **kwargs):
         context = super(LeagueEventUpdate, self).get_context_data(**kwargs)
         league = self.get_object()
@@ -881,6 +881,7 @@ def proceed_populate(request, from_event_id, to_event_id):
                     new_player = LeaguePlayer.objects.create(user=player.user,
                                                              event=to_event,
                                                              kgs_username=player.kgs_username,
+                                                             ogs_username=player.ogs_username,
                                                              division=new_division)
         message = "The new " + to_event.name + " was populated with " + str(n) + " players."
         messages.success(request, message)

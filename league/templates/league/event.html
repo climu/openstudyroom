@@ -34,15 +34,15 @@
   <li>The game can be ranked or free to the convenience of the players.</li>
   <li>Komi must be set to <b>6.5 </b>.</li>
 
-  <li>Using a bot such as Leela or Crazy Stone during league game si strictly forbiden. OSR team might check some game from time to time to look for matching with these go engines.</li>
+  <li>Using a bot such as Leela or Crazy Stone during league game is strictly forbidden. The OSR team might check some games from time to time to look for matching with these go engines.</li>
 </ul>
 <h3> League rules </h3>
 <ul>
-  <li> Players can play up to <b>{{event.nb_matchs}} games</b> against opponents {%if event.type == ladder %} of the same group{%endif%}.</li>
-  <li>A win grant <b>{{event.ppwin}} points</b> and a loss grant <b>{{event.pploss}}</b>.</li>
-  <li>We will keep players who played at least <b>{{event.min_matchs}} games</b>.</li>
+  <li> Players can play up to <b>{{event.nb_matchs}} games</b> against the same opponent {%if event.type == ladder %} within the group{%endif%}.</li>
+  <li>A win grants <b>{{event.ppwin}} points</b> and a loss grants <b>{{event.pploss}}</b>.</li>
+  <li>Players who played at least <b>{{event.min_matchs}} games</b> will be added to the next league, once this one has ended.</li>
 </ul>
-<p>Players are strongly encourage to review the game afterward. If both player have the same rank, or if your opponent can't help you reviewing your game, one should feel free to ask stronger players in our kgs room and/or in our discord channel help for the review.</p>
+<p>Players are strongly encouraged to review their game afterward. If both players have the same rank, or if your opponent can't help you in reviewing the game, one should feel free to ask stronger players in our kgs room and/or in our discord channel help for the review.</p>
 </ul>
 {% endblock %}}
 {% if event.is_open %}
