@@ -102,7 +102,7 @@ def json_feed(request):
             dict = {
                 'id': 'game:' + str(event.pk),
                 'pk': event.pk,
-                'title': 'Game vs ' + opponent.kgs_username,
+                'title': 'Game vs ' + opponent.username,
                 'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
                 'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
                 'is_new': False,
@@ -190,7 +190,7 @@ def json_feed(request):
                     'type': 'my-gr',
                     'color': '#FF8800',
                     'className': 'my-gr',
-                    'users': list(u.kgs_username for u in event.receivers.all())
+                    'users': list(u.username for u in event.receivers.all())
                 }
                 data.append(dict)
 
