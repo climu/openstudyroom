@@ -91,6 +91,8 @@ urlpatterns = [
     url(r'^admin/create-all-profiles/$', views.create_all_profiles, name='create_all_profiles'),
     url(r'^admin/update-all-sgf-check-code/$',
         views.update_all_sgf_check_code, name='update_all_sgf_check_code'),
+    url(r'^admin/update_all_profile_ogs/$',
+    views.update_all_profile_ogs, name='update_all_profile_ogs'),
     url(r'^admin/update-all-sgf/$', views.update_all_sgf, name='update_all_sgf'),
     url(r'^admin/set-meijin/$', views.admin_set_meijin, name='set_meijin'),
     url(

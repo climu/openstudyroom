@@ -1,0 +1,38 @@
+{% extends "full_width.html" %}
+{% load wagtailcore_tags %}
+{% load league_tags %}
+{% load bootstrap3 %}
+
+{% block body_class %}user{% endblock %}
+
+{% block title %}Update all sgfs check code{% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1>Update all sgfs check code</h1>
+</div>
+{%endblock%}
+{% block content %}
+<div class="row">
+  <div class="jumbotron">
+<p>Dear admin.</p>
+<p> Please pay attention to this message and don't proceed before reading</p>
+<p>In this page, you can rescan all sgf in our db and update their check_code. </p>
+<p>If you don't understand what this is about, you should just leave this page. </p>
+<p> If you have any doubt what so ever about wether you should continue or not, you should leave this page.</p>
+<p> If you just changed our check_code and positively want to update all sgf check code, you may proceed.</p>
+  </div>
+  <div class="col-md-4">
+    <a href="{% url 'league:admin' %}"class="btn btn-primary text-left">Back to admin</a>
+  </div>
+  <div class="col-md-4">
+  <form action=" {% url 'league:update_all_profile_ogs'  %}" method="post" class="form">
+{% csrf_token %}
+<input type="hidden" name="action" value="update_all_sgf">
+<button type="submit" class="btn btn-danger"  onclick="return confirm('Are you positively sure you want to reparse all sgf in db and update their fields ?')">
+
+{% bootstrap_icon "warning-sign" %} No fear, I do it !
+</button>
+
+</form>
+</div>
+{% endblock %}
