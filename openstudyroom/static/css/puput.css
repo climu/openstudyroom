@@ -500,7 +500,7 @@ h3 {
     }
 }
 
-.sidebar > li >.rich-text>.richtext-image{
+.sidebar .richtext-image{
 	max-width:100%!important;
 	height: auto;
 }
