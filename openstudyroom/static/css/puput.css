@@ -499,3 +499,8 @@ h3 {
         padding: 5px 10px 0 10px;
     }
 }
+
+.sidebar > li >.rich-text>.richtext-image{
+	max-width:100%!important;
+	height: auto;
+}
