@@ -29,8 +29,8 @@
 	{% for user in users %}
 	<tr>
     <td>{{user.username}}</td>
-    <td>{{user.kgs_username}}</td>
-    <td>{{user.ogs_username}}</td>
+    <td>{{user.profile.kgs_username}}</td>
+    <td>{{user.profile.ogs_username}}</td>
     <td><a href="{% url 'league:admin_user_send_mail' user.pk %}" > {%bootstrap_icon "send"%}</a></td>
 
     <td>
