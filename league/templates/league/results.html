@@ -23,7 +23,6 @@
 
 </ul>
 {% include 'league/includes/league_nav.html' with active='results' %}
-
 {% if event.number_divisions > 1 %}
 <ul class="nav nav-pills">
     {% for div in event.get_divisions %}
@@ -52,6 +51,7 @@
 <script type="text/javascript">
 $(document).ready(function() {
 $('#league-table').DataTable();
+
 } );
 </script>
 {%endif%}

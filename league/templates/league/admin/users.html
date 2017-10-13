@@ -20,15 +20,17 @@
 	<tr>
 		<th>User</th>
 		<th>KGS username</th>
+    <th>OGS username</th>
 		<th>Send email</th>
-        <th>Set meijin</th>
-        <th>Division</th>
+    <th>Set meijin</th>
+    <th>Division</th>
 	</thead>
 	<tbody>
 	{% for user in users %}
 	<tr>
     <td>{{user.username}}</td>
-    <td>{{user|user_link:meijin}}</td>
+    <td>{{user.kgs_username}}</td>
+    <td>{{user.ogs_username}}</td>
     <td><a href="{% url 'league:admin_user_send_mail' user.pk %}" > {%bootstrap_icon "send"%}</a></td>
 
     <td>
@@ -48,7 +50,8 @@
 {% endblock %}
 
 {% block extra_js %}
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 $('#users-table').DataTable();
