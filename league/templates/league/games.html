@@ -24,6 +24,8 @@ function processData(data)
     document.getElementById("game_infos").innerHTML = data.game_infos ;
     document.getElementById("game-header").innerHTML= ' - ' + data.white + ' vs ' + data.black;
     document.title = data.white + ' vs ' + data.black + ' - Open Study Room';
+    $("[data-toggle=tooltip]").tooltip();
+
 };
 return false;};
 </script>
