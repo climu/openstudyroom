@@ -137,6 +137,7 @@ class ProfileForm(ModelForm):
         fields = [
             'bio',
             'ogs_username',
+            'kgs_username',
         ]
 
     def clean_ogs_username(self):
