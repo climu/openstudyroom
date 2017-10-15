@@ -572,7 +572,7 @@ def admin(request):
                         [email.email],
                         fail_silently=False,
                     )
-                message = " You moved " + user.username + "from new user to league member"
+                message = " You moved " + user.username + " from new user to league member"
                 messages.success(request, message)
                 return HttpResponseRedirect(reverse('league:admin'))
             if form.cleaned_data['action'] == "delete_new_user":

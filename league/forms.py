@@ -29,7 +29,7 @@ class LeagueSignupForm(forms.Form):
 
     def clean_kgs_username(self):
         if not self.cleaned_data['kgs_username']:
-                    return ''
+            return ''
         kgs_username = self.cleaned_data['kgs_username']
         if Profile.objects.filter(kgs_username__iexact=kgs_username).exists():
             self.add_error('kgs_username', "This kgs username is already used by one of our member. You should contact us")
@@ -49,7 +49,6 @@ class LeagueSignupForm(forms.Form):
 
     def clean(self):
         super(LeagueSignupForm, self).clean()
-        print(self.cleaned_data)
         if not (self.cleaned_data['kgs_username'] or self.cleaned_data['ogs_username']):
             self.add_error('kgs_username','')
             self.add_error('ogs_username','')
@@ -137,22 +136,46 @@ class ProfileForm(ModelForm):
         fields = [
             'bio',
             'ogs_username',
+            'kgs_username',
         ]
 
+    def clean_kgs_username(self):
+        if not self.cleaned_data['kgs_username']:
+                    return ''
+        kgs_username = self.cleaned_data['kgs_username']
+        if Profile.objects.filter(kgs_username__iexact=kgs_username).\
+                exclude(pk=self.instance.pk).exists():
+            self.add_error('kgs_username', 'Someone is already using this KGS username. Please contact an admin')
+        else:  # Update all related league players kgs username
+            open_players = self.instance.user.leagueplayer_set.filter(event__is_open=True)
+            open_players.update(kgs_username=kgs_username)
+        return kgs_username
+
     def clean_ogs_username(self):
+        if not self.cleaned_data['ogs_username']:
+            return ''
         # Check ogs username to be registered and update ogs_id
         ogs_username = self.cleaned_data['ogs_username']
-        id = get_user_id(ogs_username)
-        if id == 0:
-            raise forms.ValidationError(
-                "There is no such user registered at the Online Go Server"
-            )
-        if Profile.objects.filter(ogs_username__iexact=ogs_username).\
-                exclude(pk=self.instance.pk).exists():
-            raise forms.ValidationError("Someone is already using this OGS username. Please contact an admin")
-        self.instance.ogs_id = id
-        self.instance.save()
-        # for now we need to update all players ogs usernames
-        open_players = self.instance.user.leagueplayer_set.filter(event__is_open=True)
-        open_players.update(ogs_username=ogs_username)
+        if ogs_username:
+            id = get_user_id(ogs_username)
+            if id == 0:
+                self.add_error('ogs_username', 'There is no such user registered at the Online Go Server')
+            elif Profile.objects.filter(ogs_username__iexact=ogs_username).\
+                    exclude(pk=self.instance.pk).exists():
+                self.add_error('ogs_username', 'Someone is already using this OGS username. Please contact an admin')
+            else:
+                # update ogs_id
+                self.instance.ogs_id = id
+                self.instance.save()
+                # update all related players ogs usernames
+                open_players = self.instance.user.leagueplayer_set.filter(event__is_open=True)
+                open_players.update(ogs_username=ogs_username)
         return ogs_username
+
+    def clean(self):
+        super(ProfileForm, self).clean()
+        if not (self.cleaned_data['kgs_username'] or self.cleaned_data['ogs_username']):
+            self.add_error('kgs_username','')
+            self.add_error('ogs_username','')
+            raise forms.ValidationError("You should enter OGS or KGS username")
+        return self.cleaned_data
