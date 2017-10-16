@@ -21,7 +21,7 @@
 {% block title %}My profile - Calendar{% endblock %}
 {% block heading %}
 {% get_current_timezone as TIME_ZONE %}
-{% get_current_language as LANGUAGE_CODE %}
+
 
 <div class="page-header">
     <h1>My profile - Calendar ({{TIME_ZONE}})</h1>
@@ -129,7 +129,7 @@
 
 {% block extra_js %}
 {% get_current_timezone as TIME_ZONE %}
-
+{% get_current_language as LANGUAGE_CODE %}
 <script>
 // we will do some ajax post request and hence we will need to grab csrf from cookie.
 //https://docs.djangoproject.com/en/1.11/ref/csrf/#ajax
@@ -155,7 +155,7 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
 	$(document).ready(function() {
 
 		$('#calendar').fullCalendar({
-      locale:'fr',
+      locale:'{{LANGUAGE_CODE}}',
       customButtons: {
         myCustomButton: {
             text: '?',
