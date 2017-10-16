@@ -1,6 +1,6 @@
 {% extends "full_width.html" %}
 {% load tz static%}
-
+{% load i18n %}
 {% block extra_head_js %}
 <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css' />
 <link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/calendar.css'%}"/>
@@ -15,11 +15,14 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js'></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.8.1/bootstrap-slider.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.6.1/locale-all.js'></script>
 
 {% endblock %}
 {% block title %}My profile - Calendar{% endblock %}
 {% block heading %}
 {% get_current_timezone as TIME_ZONE %}
+{% get_current_language as LANGUAGE_CODE %}
+
 <div class="page-header">
     <h1>My profile - Calendar ({{TIME_ZONE}})</h1>
 </div>
@@ -152,6 +155,7 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
 	$(document).ready(function() {
 
 		$('#calendar').fullCalendar({
+      locale:'fr',
       customButtons: {
         myCustomButton: {
             text: '?',

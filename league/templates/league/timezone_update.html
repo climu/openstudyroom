@@ -1,7 +1,6 @@
 {% extends "full_width.html" %}
 
-{% load bootstrap3 %}
-
+{% load bootstrap3 static calendar_tags %}
 {% block title %} My profile - Timezone{% endblock %}
 {% block heading %}
 <div class="page-header">
@@ -10,10 +9,16 @@
 {%endblock%}
 {% block content %}
 {% include 'league/includes/user_nav.html' with active='manage' %}
+    {% get_now as now %}
+
 <div class="row">
   <div class="col-md-6">
+<div class="well">
+According to your setting your local time should be {{now}}.
+</div>
+
     <p>
-      Setting a timezone for your profile will allow our website to adapt the time to your local timezone everywhere: forum, messages, events...
+          Setting a timezone for your profile will allow our website to adapt the time to your local timezone everywhere: forum, messages, events...
     </p>
     <p>
     If no timezone is set, we show times in <a href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time">UTC</a>.

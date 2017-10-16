@@ -1,6 +1,6 @@
 {% load wagtailcore_tags %}
 {% if entry.excerpt %}
-    {{ entry.excerpt|richtext }}
+    {{ entry.excerpt|richtext|striptags }}
 {% else %}
     {{ entry.body|richtext|truncatewords:30|striptags }}
 {% endif %}

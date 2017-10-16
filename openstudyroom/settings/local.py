@@ -103,6 +103,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -137,7 +138,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-
                 #for wagtailmenus
                 'wagtailmenus.context_processors.wagtailmenus',
                 #for django-messages
@@ -237,9 +237,12 @@ PUPUT_AS_PLUGIN = True
 
 # auth and allauth settings
 LOGIN_REDIRECT_URL = '/'
-ACCOUNT_EMAIL_REQUIRED ='mandatory'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL ='/'
 ACCOUNT_FORMS ={}
 ACCOUNT_SIGNUP_FORM_CLASS = 'league.forms.LeagueSignupForm'
+
 
 # required by MAchina
 CACHES = {
