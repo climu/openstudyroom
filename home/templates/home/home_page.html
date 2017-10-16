@@ -19,7 +19,7 @@
 </div>
 {% endblock %}
 {% block content %}
-<h2> Last News</h2>
+<h2> Lastest News</h2>
   {% with per_page=blog_page.num_entries_page %}
         {# 'paginate' tag cannot render dotted variables, so we need to create a context var #}
 {% paginate per_page entries %}
