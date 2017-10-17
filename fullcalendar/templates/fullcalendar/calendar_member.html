@@ -28,9 +28,11 @@
 </div>
 {%endblock%}
 {% block content %}
+
 <div class= "row">
+
 {% include 'league/includes/user_nav.html' with active='calendar' %}
-<div class="col-md-2 controls">
+<div class="col-md-2 col-ms-2 col-xs-2 controls">
   <div data-spy="affix" data-offset-top="240" style="top:20px;">
     <ul class="nav nav-pills nav-stacked">
       <li id = 'cal-pill' role="presentation" class = 'active'><a href="javascript:void(0)">Calendar</a></li>
@@ -95,7 +97,7 @@
 </div>
 
 
-<div class="col-md-10">
+<div class="col-md-10 col-ms-10 col-xs-10">
 <div id='calendar'></div>
 </div>
 <!-- Modals -->
@@ -123,7 +125,6 @@
 
   </div>
 </div>
-
 {% endblock %}
 
 
