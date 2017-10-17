@@ -1,5 +1,5 @@
 {% extends "full_width.html" %}
-{% load wagtailcore_tags forum_markup_tags %}
+{% load wagtailcore_tags forum_markup_tags l10n i18n %}
 {% load league_tags %}
 {% load bootstrap3 %}
 {% block extra_head_js %}
@@ -43,6 +43,7 @@ return false;};
 </div>
 {%endblock%}
 {% block content %}
+{% language 'en' %}
 {% get_meijin as meijin %}
 
 {% include 'league/includes/user_nav.html' with active='league' %}
@@ -176,6 +177,7 @@ return false;};
 </div>
 {%endif%}
 </div>
+{%endlanguage%}
 {% endblock %}
 
 {% block extra_js %}
