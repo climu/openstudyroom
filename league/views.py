@@ -264,7 +264,8 @@ def players(request, event_id=None, division_id=None):
     can_join = False
     # if no event is provided, we show all the league members
     if event_id is None:
-        users = User.objects.filter(groups__name='league_member')
+        users = User.objects.filter(groups__name='league_member').\
+            prefetch_related('leagueplayer_set', 'profile')
         context = {
             'users': users,
             'open_events': open_events,
@@ -348,7 +349,9 @@ def account(request, user_name=None):
 
     players = user.leagueplayer_set.order_by('-pk')
 
-    sgfs = Sgf.objects.filter(Q(white=user) | Q(black=user))
+    sgfs = Sgf.objects.filter(Q(white=user) | Q(black=user)).\
+        prefetch_related('white', 'black', 'winner').\
+        select_related('white__profile', 'black__profile')
     if len(sgfs) == 0:
         sgfs = None
     for event in open_events:
