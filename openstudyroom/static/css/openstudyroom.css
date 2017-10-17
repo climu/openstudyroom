@@ -114,3 +114,7 @@ blockquote{
    max-width: 100%;
   height:auto!important;
 }
+
+.affix{
+	max-width: 15.3%!important;
+}
