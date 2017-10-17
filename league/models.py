@@ -844,7 +844,7 @@ class Division(models.Model):
             {opponent1 : [{'id':game1.pk, 'r':1/0},{'id':game2.pk, 'r':1/0},...],opponent2:}
         """
         sgfs = self.sgf_set.all()
-        players = LeaguePlayer.objects.filter(division=self)
+        players = LeaguePlayer.objects.filter(division=self).prefetch_related('user__profile')
         # First create a list of players with extra fields
         results = []
         for player in players:

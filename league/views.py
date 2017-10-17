@@ -144,13 +144,19 @@ def games(request, event_id=None, sgf_id=None):
         context.update({'sgf': sgf})
 
     if event_id is None:
-        sgfs = Sgf.objects.filter(league_valid=True).order_by('-date')
+        sgfs = Sgf.objects.filter(league_valid=True).\
+            prefetch_related('white', 'black', 'winner').\
+            select_related('white__profile', 'black__profile').\
+            order_by('-date')
         context.update({'sgfs': sgfs})
         template = loader.get_template('league/archives_games.html')
 
     else:
         event = get_object_or_404(LeagueEvent, pk=event_id)
-        sgfs = event.sgf_set.filter(league_valid=True).order_by('-date')
+        sgfs = event.sgf_set.filter(league_valid=True).\
+            prefetch_related('white', 'black', 'winner').\
+            select_related('white__profile', 'black__profile').\
+            order_by('-date')
         template = loader.get_template('league/games.html')
         can_join = event.can_join(request.user)
         context.update({
