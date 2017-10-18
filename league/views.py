@@ -574,7 +574,7 @@ def admin(request):
            elif action[0:6] == "delete": 
                if action[7:15] == "no_games":# deletion due to no played games
                   utils.quick_send_mail(user,'emails/no_games.txt')
-               #user.delete()            
+               user.delete()            
         else:
            return HttpResponse('failure')
         return HttpResponse('succes')
