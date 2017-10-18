@@ -1,7 +1,8 @@
 # library of useful fonctions
 
 from bs4 import BeautifulSoup
-
+from django.template import loader
+from django.core.mail import send_mail
 import requests
 import re
 import datetime
@@ -154,3 +155,20 @@ def parse_sgf_string(sgf_string):
     out['check_code'] = code
 
     return out
+
+
+def quick_send_mail(user,mail):
+   '''sends 'user' an email with the contents from the template in 'mail' '''
+   address = user.get_primary_email()
+   if address is not None:
+      plaintext = loader.get_template(mail)
+      context = {'user': user}
+      message = plaintext.render(context)
+      send_mail(
+         'Welcome in the Open Study Room',
+         message,
+         'openstudyroom@gmail.com',
+         [address.email],
+         fail_silently=False,
+      )
+

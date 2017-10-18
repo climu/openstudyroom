@@ -552,35 +552,25 @@ def admin_edit_sgf(request, sgf_id):
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin(request):
     if request.method == 'POST':
-        form = ActionForm(request.POST)
-        if form.is_valid():
-            if form.cleaned_data['action'] == "welcome_new_user":
-                user = User.objects.get(pk=form.cleaned_data['user_id'])
+        user_id = request.POST.get('user_id')
+        action = request.POST.get('action')              
+        user = User.objects.get(pk=user_id)
+        if user.groups.filter(name='new_user').exists():          
+           if action == "welcome":
                 user.groups.clear()
                 group = Group.objects.get(name='league_member')
-                user.groups.add(group)
-                # We send a welcome mail only if we have a primary email
-                email = user.get_primary_email()
-                if email is not None:
-                    plaintext = loader.get_template('emails/welcome.txt')
-                    context = {'user': user}
-                    message = plaintext.render(context)
-                    send_mail(
-                        'Welcome in the Open Study Room',
-                        message,
-                        'openstudyroom@gmail.com',
-                        [email.email],
-                        fail_silently=False,
-                    )
-                message = " You moved " + user.username + "from new user to league member"
-                messages.success(request, message)
-                return HttpResponseRedirect(reverse('league:admin'))
-            if form.cleaned_data['action'] == "delete_new_user":
-                user = User.objects.get(pk=form.cleaned_data['user_id'])
-                user.delete()
-                message = " You just deleted " + user.username + "! Bye bye " + user.username + "."
-                messages.success(request, message)
-                return HttpResponseRedirect(reverse('league:admin'))
+                user.groups.add(group)        
+                utils.quick_send_mail(user,'emails/welcome.txt')
+
+           elif action[0:6] == "delete": 
+               if action[7:15] == "no_games":# deletion due to no played games
+                  utils.quick_send_mail(user,'emails/no_games.txt')
+               #user.delete()            
+        else:
+           return HttpResponse('failure')
+        return HttpResponse('succes')
+
+    #on normal /league/admin load
     else:
         new_users = User.objects.filter(groups__name='new_user')
         context = {
