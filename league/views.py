@@ -144,13 +144,19 @@ def games(request, event_id=None, sgf_id=None):
         context.update({'sgf': sgf})
 
     if event_id is None:
-        sgfs = Sgf.objects.filter(league_valid=True).order_by('-date')
+        sgfs = Sgf.objects.filter(league_valid=True).\
+            prefetch_related('white', 'black', 'winner').\
+            select_related('white__profile', 'black__profile').\
+            order_by('-date')
         context.update({'sgfs': sgfs})
         template = loader.get_template('league/archives_games.html')
 
     else:
         event = get_object_or_404(LeagueEvent, pk=event_id)
-        sgfs = event.sgf_set.filter(league_valid=True).order_by('-date')
+        sgfs = event.sgf_set.filter(league_valid=True).\
+            prefetch_related('white', 'black', 'winner').\
+            select_related('white__profile', 'black__profile').\
+            order_by('-date')
         template = loader.get_template('league/games.html')
         can_join = event.can_join(request.user)
         context.update({
@@ -258,7 +264,8 @@ def players(request, event_id=None, division_id=None):
     can_join = False
     # if no event is provided, we show all the league members
     if event_id is None:
-        users = User.objects.filter(groups__name='league_member')
+        users = User.objects.filter(groups__name='league_member').\
+            prefetch_related('leagueplayer_set', 'profile')
         context = {
             'users': users,
             'open_events': open_events,
@@ -342,7 +349,9 @@ def account(request, user_name=None):
 
     players = user.leagueplayer_set.order_by('-pk')
 
-    sgfs = Sgf.objects.filter(Q(white=user) | Q(black=user))
+    sgfs = Sgf.objects.filter(Q(white=user) | Q(black=user)).\
+        prefetch_related('white', 'black', 'winner').\
+        select_related('white__profile', 'black__profile')
     if len(sgfs) == 0:
         sgfs = None
     for event in open_events:

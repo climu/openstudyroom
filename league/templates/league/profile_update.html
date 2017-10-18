@@ -14,8 +14,15 @@
 </div>
 {%endblock%}
 {% block content %}
+
 <form action="" method="POST">{% csrf_token %}
-{%bootstrap_form form %}
+{%bootstrap_field form.bio %}
+<div class="well">
+Please make sure all the league games you have played so far are on the results before changing your KGS or OGS usernames.
+</div>
+{%bootstrap_field form.ogs_username %}
+{%bootstrap_field form.kgs_username %}
+
   {% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
   <a class="btn btn-danger pull-right" href="{% url 'league:league_account' object.user.username %}">
 cancel
