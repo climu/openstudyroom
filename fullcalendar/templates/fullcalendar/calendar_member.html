@@ -158,13 +158,10 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
 var dataUnsaved = false;
 window.onbeforeunload = function(e){
 	if (dataUnsaved){
-		alert('test');
 		var dialogText = 'Data you have entered will not be saved unless you press save, on the left side of the calendar!';
 		e.returnValue = dialogText;
-		$('#save').css("background","#337ab7");
 		return dialogText;
 	}
-		alert('misk');
 	return null;
 }
 
