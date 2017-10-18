@@ -12,7 +12,7 @@
   <div class="panel-heading"><h3> List of new users </h3></div>
     <table id='new_user-table' class='display table' >
       <thead>
-        <tr><th>username</th><th>email</th><th>kgs_username</th><th>ogs_username</th><th>Delete</th><th>Accept</th>
+        <tr><th>username</th><th>email</th><th>kgs_username</th><th>ogs_username</th><th>Delete</th><th>No games</th><th>Accept</th>
         </thead>
         <tbody>
           {% for new_user in new_users %}
@@ -33,27 +33,25 @@
             {% endwith %}
             <td><a href="https://www.gokgs.com/gameArchives.jsp?user={{new_user.kgs_username}}" target="_blank">{{new_user.kgs_username}}</a></td>
             <td>
-              {% if user.profile.ogs_id > 0 %}
+              {% if new_user.profile.ogs_id > 0 %}
                  <a href="https://online-go.com/player/{{new_user.profile.ogs_id}}">{{new_user.profile.ogs_username}}</a>
-                   {% endif %}
-                </td>
-
-            <td>  <form action=" {% url 'league:admin' %}" method="post" class="form">
-              {% csrf_token %}
-              <input type="hidden" name="action" value="delete_new_user">
-              <input type="hidden" name="user_id" value="{{new_user.pk}}">
-                <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('You are about to delete the new user {{new_user.username}}. Allright?')" >
-                  {% bootstrap_icon "remove" %}
-                </button>
-              </form>
+              {% endif %}
             </td>
-            <td><form action=" {% url 'league:admin' %}" method="post" class="form">
-              {% csrf_token %}
-              <input type="hidden" name="action" value="welcome_new_user">
-              <input type="hidden" name="user_id" value="{{new_user.pk}}">
-                <button type="submit" class="btn btn-success btn-xs" onclick="return confirm('Accept the new user  {{new_user.username}} as a league memeber ?')">
-                  {% bootstrap_icon "ok" %}
-                </button></form></td>
+            <td>  
+              <button class="btn newuser btn-danger btn-xs" action="delete" user_name="{{new_user.username}}" user_id="{{new_user.pk}}">
+                {% bootstrap_icon "remove" %}
+              </button>
+            </td>
+            <td>  
+              <button class="btn newuser btn-danger btn-xs" action="delete_no_games" user_name="{{new_user.username}}" user_id="{{new_user.pk}}">
+                {% bootstrap_icon "remove" %}
+              </button>
+            </td>
+            <td>
+              <button class="btn newuser btn-success btn-xs" action="welcome" user_name="{{new_user.username}}" user_id="{{new_user.pk}}">
+                {% bootstrap_icon "ok" %}
+              </button>
+            </td>
           </tr>
           {% endfor %}
         </tbdoy>
@@ -69,4 +67,50 @@
 
 
 
+<script>
+
+// we will do some ajax post request and hence we will need to grab csrf from cookie.
+// https://docs.djangoproject.com/en/1.11/ref/csrf/#ajax
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+$.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
+// end of csrftoken cookie set up
+
+	$('.btn.newuser').click(function(){	
+		var user_id = $(this).attr("user_id"); 
+		var user_name = $(this).attr("user_name");
+		var action = $(this).attr("action");
+		if(!action.startsWith("delete") || confirm('Are you sure you want to delete ' + user_name + ' from the database?') ){
+			//send request to back-end		
+			$.ajax({
+				type:"POST",
+				url: "{% url 'league:admin'%}",
+				data:	{
+					'user_id' : user_id,
+					'action' : action 			
+				}
+			});
+			//hide user
+	                $(this).parent().parent().remove();
+		}	
+	});
+
+
+</script>
+
 {% endblock %}
+

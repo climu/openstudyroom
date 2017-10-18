@@ -1,0 +1,8 @@
+Hello {{user.username}},
+
+
+We noticed your registration, however we require that each user has played at least one game on KGS or OGS. We can see that you have not yet played any games there under the handle '{{user.kgs_username}}'(KGS) {%if user.profile.ogs_id > 0%} or '{{user.profile.ogs_username}}'(OGS){% endif %}.
+
+We do this to make sure that you are really a go player and not a robot. Please feel free to register again when you have played a game.
+
+openstudyroom.org
