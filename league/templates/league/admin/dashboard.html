@@ -37,12 +37,12 @@
                  <a href="https://online-go.com/player/{{new_user.profile.ogs_id}}">{{new_user.profile.ogs_username}}</a>
               {% endif %}
             </td>
-            <td>  
+            <td>
               <button class="btn newuser btn-danger btn-xs" action="delete" user_name="{{new_user.username}}" user_id="{{new_user.pk}}">
                 {% bootstrap_icon "remove" %}
               </button>
             </td>
-            <td>  
+            <td>
               <button class="btn newuser btn-danger btn-xs" action="delete_no_games" user_name="{{new_user.username}}" user_id="{{new_user.pk}}">
                 {% bootstrap_icon "remove" %}
               </button>
@@ -67,6 +67,10 @@
 
 
 
+
+{% endblock %}
+
+{% block extra_js %}
 <script>
 
 // we will do some ajax post request and hence we will need to grab csrf from cookie.
@@ -90,27 +94,25 @@ var csrftoken = getCookie('csrftoken');
 $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
 // end of csrftoken cookie set up
 
-	$('.btn.newuser').click(function(){	
-		var user_id = $(this).attr("user_id"); 
+	$('.btn.newuser').click(function(){
+		var user_id = $(this).attr("user_id");
 		var user_name = $(this).attr("user_name");
 		var action = $(this).attr("action");
 		if(!action.startsWith("delete") || confirm('Are you sure you want to delete ' + user_name + ' from the database?') ){
-			//send request to back-end		
+			//send request to back-end
 			$.ajax({
 				type:"POST",
 				url: "{% url 'league:admin'%}",
 				data:	{
 					'user_id' : user_id,
-					'action' : action 			
+					'action' : action
 				}
 			});
 			//hide user
 	                $(this).parent().parent().remove();
-		}	
+		}
 	});
 
 
 </script>
-
 {% endblock %}
-
