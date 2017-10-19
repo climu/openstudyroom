@@ -567,18 +567,18 @@ def admin(request):
         action = request.POST.get('action')
         user = User.objects.get(pk=user_id)
         if user.groups.filter(name='new_user').exists():
-           if action == "welcome":
+            if action == "welcome":
                 user.groups.clear()
                 group = Group.objects.get(name='league_member')
                 user.groups.add(group)
                 utils.quick_send_mail(user,'emails/welcome.txt')
 
-           elif action[0:6] == "delete":
-               if action[7:15] == "no_games":# deletion due to no played games
-                  utils.quick_send_mail(user,'emails/no_games.txt')
-               user.delete()
+            elif action[0:6] == "delete":
+                if action[7:15] == "no_games":# deletion due to no played games
+                    utils.quick_send_mail(user,'emails/no_games.txt')
+                user.delete()
         else:
-           return HttpResponse('failure')
+            return HttpResponse('failure')
         return HttpResponse('succes')
 
     # on normal /league/admin load
