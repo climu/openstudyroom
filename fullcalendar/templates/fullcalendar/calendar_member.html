@@ -63,7 +63,7 @@
         Save your changes !
       </div>
       <div class="panel-body">
-        <button class='btn btn-primary' id='save'><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save</button>
+        <button class='btn btn-default' id='save'><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save</button>
       </div>
     </div>
     <div class="panel panel-default me-available-controls other-available-controls hidden" >
@@ -125,6 +125,7 @@
 
   </div>
 </div>
+
 {% endblock %}
 
 
@@ -132,6 +133,7 @@
 {% get_current_timezone as TIME_ZONE %}
 {% get_current_language as LANGUAGE_CODE %}
 <script>
+
 // we will do some ajax post request and hence we will need to grab csrf from cookie.
 //https://docs.djangoproject.com/en/1.11/ref/csrf/#ajax
 function getCookie(name) {
@@ -153,17 +155,6 @@ var csrftoken = getCookie('csrftoken');
 $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
 // end of csrftoken cookie set up
 
-
-//
-var dataUnsaved = false;
-window.onbeforeunload = function(e){
-	if (dataUnsaved){
-		var dialogText = 'Data you have entered will not be saved unless you press save, on the left side of the calendar!';
-		e.returnValue = dialogText;
-		return dialogText;
-	}
-	return null;
-}
 
 	$(document).ready(function() {
 
@@ -218,7 +209,6 @@ window.onbeforeunload = function(e){
       },
       //selecting will create an event saying user is available
       select: function(start, end) {
-	dataUnsaved = true;
 				var eventData;
         // the following commented lines is an attempt to set a minimal 1h30
         // The issue is that we then lost overlaping control
@@ -240,14 +230,15 @@ window.onbeforeunload = function(e){
 				$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
 
 				$('#calendar').fullCalendar('unselect');
+        $('#save').attr('class','btn btn-primary');
 			},
       eventResize: function(event, delta) {
-	dataUnsaved = true;
         event.is_change=true;
+        $('#save').attr('class','btn btn-primary')
       },
       eventDrop:function(event, delta){
-	dataUnsaved = true;
         event.is_change=true;
+        $('#save').attr('class','btn btn-primary')
       },
       ///////////////////////////////////////////////////////////////
       // Events source
@@ -274,6 +265,7 @@ window.onbeforeunload = function(e){
     ///////////////////////////////////////////////////////////
       eventRender: function(event, element) {
         if (element.find(".fc-helper")){
+
           event.eventColor='#ffff80';
         }
         // deals with me-available events:
@@ -291,11 +283,11 @@ window.onbeforeunload = function(e){
                   event.className  = 'event-deleted';
                   event.rendering  = 'background';
                   $('#calendar').fullCalendar('updateEvent', event);
+                  $('#save').attr('class','btn btn-primary')
                }
                else{
                   $('#calendar').fullCalendar('removeEvents',event._id);
                }
-               dataUnsaved = true; 
             });// end of closeon
          }
          else if ($('#other-av-pill').hasClass('active')) {
@@ -528,6 +520,7 @@ window.onbeforeunload = function(e){
         }// we clicked on other-available event
       },//dayclick
 
+
     });//fullCalendar
 
 ///////////////////////////////////////////////////////////////
@@ -548,7 +541,7 @@ $('#cancel-game').click(function(){
          $('#calendar').fullCalendar( 'refetchEvents' );
       }
    });
-   
+
    return false;
 });//accept Game request
 
@@ -680,9 +673,9 @@ $('#accept-game-request').click(function(){
 
                 }
        });
-	
-       dataUnsaved = false
+       $('#save').attr('class','btn btn-default')
        return false;
+
       });// closing $("#save").click
 
 
@@ -734,6 +727,7 @@ $('#slider').bootstrapSlider().on('change',function(slider){
 // Menu handling
 ///////////////////////////////////////////////////////////
     $('#me-av-pill').click(function() {
+      $('#save').attr('class','btn btn-default');
       $('li[role="presentation"]').removeClass('active');
       $(this).addClass('active');
       $(".other-available-controls").addClass('hidden');
