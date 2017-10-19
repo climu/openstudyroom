@@ -1,5 +1,5 @@
 {% extends "league/base.html" %}
-{% load tz static league_tags wgo_tags bootstrap3%}
+{% load tz static league_tags wgo_tags bootstrap3 l10n i18n%}
 
 {% block title %}{% if sgf %} {{sgf.black.kgs_username}} vs {{sgf.white.kgs_username}} {% else %}{{event}}- Games{% endif %}{% endblock %}
 {% block extra_head_js %}
