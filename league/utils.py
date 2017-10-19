@@ -1,7 +1,8 @@
 # library of useful fonctions
-
+from django.conf import settings
 from bs4 import BeautifulSoup
-
+from django.template import loader
+from django.core.mail import send_mail
 import requests
 import re
 import datetime
@@ -10,10 +11,18 @@ import time
 
 def kgs_connect():
     url = 'http://www.gokgs.com/json/access'
+    # If you are running this locally and want to run scraper, you should use your own
+    # KGS credential
+    if settings.DEBUG:
+        kgs_password='yourpassword' # change this for local test
+    else:
+        with open('/etc/kgs_password.txt') as f:
+            kgs_password = f.read().strip()
+            
     message = {
         "type": "LOGIN",
-        "name": "OSR",
-        "password": "qx3whs",
+        "name": "OSR", # change this if you are testing locally
+        "password": kgs_password,
         "locale": "en_US",
     }
     formatted_message = json.dumps(message)
@@ -154,3 +163,19 @@ def parse_sgf_string(sgf_string):
     out['check_code'] = code
 
     return out
+
+
+def quick_send_mail(user,mail):
+   '''sends 'user' an email with the contents from the template in 'mail' '''
+   address = user.get_primary_email()
+   if address is not None:
+      plaintext = loader.get_template(mail)
+      context = {'user': user}
+      message = plaintext.render(context)
+      send_mail(
+         'Welcome in the Open Study Room',
+         message,
+         'openstudyroom@gmail.com',
+         [address.email],
+         fail_silently=False,
+      )

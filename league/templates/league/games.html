@@ -1,5 +1,5 @@
 {% extends "league/base.html" %}
-{% load tz static league_tags wgo_tags bootstrap3%}
+{% load tz static league_tags wgo_tags bootstrap3 l10n i18n%}
 
 {% block title %}{% if sgf %} {{sgf.black.kgs_username}} vs {{sgf.white.kgs_username}} {% else %}{{event}}- Games{% endif %}{% endblock %}
 {% block extra_head_js %}
@@ -31,6 +31,8 @@ return false;};
 </script>
 {% endblock %}
 {% block content %}
+{% language 'en' %}
+
 <ul class="nav nav-tabs">
   <li ><a href="{% url 'league:archives' %}">Archives</a></li>
   {%if event not in open_events%}
@@ -79,6 +81,7 @@ return false;};
   {% endif %}
 
   </div>
+  {%endlanguage%}
 {% endblock %}
 
 {% block extra_js %}
