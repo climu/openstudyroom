@@ -1,5 +1,7 @@
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
+from django.conf import settings
+
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Game, Registry, \
     Profile
@@ -562,28 +564,35 @@ def admin_edit_sgf(request, sgf_id):
 def admin(request):
     if request.method == 'POST':
         user_id = request.POST.get('user_id')
-        action = request.POST.get('action')              
+        action = request.POST.get('action')
         user = User.objects.get(pk=user_id)
-        if user.groups.filter(name='new_user').exists():          
+        if user.groups.filter(name='new_user').exists():
            if action == "welcome":
                 user.groups.clear()
                 group = Group.objects.get(name='league_member')
-                user.groups.add(group)        
+                user.groups.add(group)
                 utils.quick_send_mail(user,'emails/welcome.txt')
 
-           elif action[0:6] == "delete": 
+           elif action[0:6] == "delete":
                if action[7:15] == "no_games":# deletion due to no played games
                   utils.quick_send_mail(user,'emails/no_games.txt')
-               user.delete()            
+               user.delete()
         else:
            return HttpResponse('failure')
         return HttpResponse('succes')
 
-    #on normal /league/admin load
+    # on normal /league/admin load
     else:
         new_users = User.objects.filter(groups__name='new_user')
+        # get url of admin board if debug = False
+        if settings.DEBUG:
+            board_url = 'https://mensuel.framapad.org/p/1N0qTQCsk6?showControls=true&showChat=false&showLineNumbers=false&useMonospaceFont=false'
+        else:
+            with open('/etc/admin_board_url.txt') as f:
+                board_url = f.read().strip()
         context = {
             'new_users': new_users,
+            'board_url': board_url,
         }
         template = loader.get_template('league/admin/dashboard.html')
         return HttpResponse(template.render(context, request))
