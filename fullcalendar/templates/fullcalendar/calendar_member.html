@@ -98,6 +98,10 @@
 
 
 <div class="col-md-10 col-ms-10 col-xs-10">
+<div id="info-well" class="text-center alert well">
+Browse all your OSR events.
+</div>
+
 <div id='calendar'></div>
 </div>
 <!-- Modals -->
@@ -732,6 +736,7 @@ $('#slider').bootstrapSlider().on('change',function(slider){
       $(this).addClass('active');
       $(".other-available-controls").addClass('hidden');
       $(".me-available-controls").removeClass('hidden');
+      $("#info-well").text('Drag vertically on the calendar to indicate when you are available.')
       $('#calendar').fullCalendar( 'removeEvents');
       $('#calendar').fullCalendar('changeView', 'agendaWeek');
       $('#calendar').fullCalendar( 'refetchEvents' );
@@ -742,6 +747,7 @@ $('#slider').bootstrapSlider().on('change',function(slider){
       $(this).addClass('active');
       $(".me-available-controls").addClass('hidden');
       $(".other-available-controls").removeClass('hidden');
+      $("#info-well").text('See when other users are available and manage game requests.')
       $('#calendar').fullCalendar( 'removeEvents');
       $('#calendar').fullCalendar('changeView', 'agendaWeek');
       $('#calendar').fullCalendar( 'refetchEvents' );
@@ -752,6 +758,7 @@ $('#slider').bootstrapSlider().on('change',function(slider){
       $(this).addClass('active');
       $(".me-available-controls").addClass('hidden');
       $(".other-available-controls").addClass('hidden');
+      $("#info-well").text('Browse all your OSR events.')
       $('#calendar').fullCalendar( 'removeEvents');
       $('#calendar').fullCalendar('changeView', 'month');
       $('#calendar').fullCalendar( 'refetchEvents' );
