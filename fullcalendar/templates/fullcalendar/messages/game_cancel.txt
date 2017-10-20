@@ -2,7 +2,8 @@
 {% localize off %}
 {% language 'en' %}
 Hello !
-This message was automaticly sent to you to inform that the user {{user.username}} have cancel your game appointment on the {{date|utc}} UTC.
+
+This message was automaticly sent to you to inform that the user {{user.username}} has cancelled your game appointment on {{date|utc}} UTC.
 
 Thanks for playing in the Open Study Room !
 {% endlanguage %}
