@@ -14,7 +14,7 @@
 <div class="row">
   <div class="col-md-6">
 <div class="well">
-According to your setting your local time should be {{now}}.
+According to your setting your local time should be <span id='now'>{{now}}</span>.
 </div>
 
     <p>
@@ -25,10 +25,8 @@ According to your setting your local time should be {{now}}.
     </p>
   </div>
   <div class= "col-md-6">
-    <form action=" {% url 'league:timezone_update' %}" method="post" class="form">
-      {% csrf_token %}
       {% bootstrap_form form %}
-      <button type="submit" class="btn btn-primary" >
+      <button id="send" class="btn btn-primary" >
         {% bootstrap_icon "ok" %} Update timezone
       </button>
     </form>
@@ -36,4 +34,27 @@ According to your setting your local time should be {{now}}.
 
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+{% include 'league/includes/ajax_setup.html' %}
+$(document).ready(function() {
+  $('#send').click(function(){
+    var tz = $( "#id_timezone option:selected" ).text();
+    $.ajax({
+      type:"POST",
+      url: "{% url 'league:timezone_update'%}",
+      data:	{
+        'tz' : tz
+      },
+      success:function(now) {
+      $('#now').text(now)
+    }
+    });
+  });
+
+} );
+
+</script>
 {% endblock %}
