@@ -1,4 +1,10 @@
+{% load l10n i18n tz%}
+{% localize off %}
+{% language 'en' %}
 Hello !
-This message was automaticly sent to you to inform you that the user {{user}} has cancelled your game appointment on {{date}}.
+
+This message was automaticly sent to you to inform that the user {{user.username}} has cancelled your game appointment on {{date|utc}} UTC.
 
 Thanks for playing in the Open Study Room !
+{% endlanguage %}
+{% endlocalize %}

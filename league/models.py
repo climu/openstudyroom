@@ -486,7 +486,7 @@ class User(AbstractUser):
     kgs_username = models.CharField(max_length=20, null=True, blank=True)
 
     def join_event(self, event, division):
-        if LeaguePlayer.objects.filter(user=self, event=event).exists():
+        if not event.can_join(self):
             return False
         else:
             player = LeaguePlayer()

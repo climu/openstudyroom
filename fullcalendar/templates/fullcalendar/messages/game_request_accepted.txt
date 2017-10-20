@@ -1,6 +1,11 @@
-Hello!
-This message was automatically sent to you to inform you that the user {{user}} has accepted your game request!
+{% load l10n i18n tz%}
+{% localize off %}
+{% language 'en' %}
+Hello !
+This message was automaticly sent to you to inform you that the user {{user.username}} have accepted your game request !
 
-You should play a game with him on {{date}} 
+You should play a game with him on the {{date|utc}} UTC.
 
-Thanks for playing in the Open Study Room!
+Thanks for playing in the Open Study Room !
+{% endlanguage %}
+{% endlocalize %}

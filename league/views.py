@@ -22,6 +22,10 @@ from django.views.generic.edit import UpdateView
 from django.views.generic.edit import CreateView
 from machina.core.db.models import get_model
 import json
+import pytz
+from django.template.defaultfilters import date as _date
+from django.template.defaultfilters import time as _time
+
 from django.utils import timezone
 from time import sleep
 from postman.api import pm_write
@@ -115,16 +119,17 @@ def timezone_update(request):
     """Update the timezone of request.user."""
     user = request.user
     if request.method == 'POST':
-        form = TimezoneForm(request.POST)
-        if form.is_valid():
-            user.profile.timezone = form.cleaned_data['timezone']
-            user.profile.save()
-            message = 'successfully updated your timezone'
-            messages.success(request, message)
-    form = TimezoneForm(instance=user.profile)
-    context = {'user': user, 'form': form}
-    template = loader.get_template('league/timezone_update.html')
-    return HttpResponse(template.render(context, request))
+        tz = request.POST.get('tz')
+        user.profile.timezone = tz
+        user.profile.save()
+        now = timezone.now().astimezone(pytz.timezone(tz))
+        now = _date(now) + ' ' + _time(now)
+        return HttpResponse(now)
+    else:
+        form = TimezoneForm(instance=user.profile)
+        context = {'user': user, 'form': form}
+        template = loader.get_template('league/timezone_update.html')
+        return HttpResponse(template.render(context, request))
 
 
 def sgf(request, sgf_id):
@@ -317,6 +322,13 @@ def join_event(request, event_id, user_id):
                         message = "The Event you tryed to join have no division. That's strange."
                     else:
                         if user.join_event(event, division):
+                            meijin_league = LeagueEvent.objects.filter(
+                                event_type='league',
+                                is_open=True,
+                                community__isnull=True
+                            ).order_by('end_time').first()
+                            meijin_division = meijin_league.division_set.first()
+                            user.join_event(meijin_league, meijin_division)
                             message = "Welcome in " + division.name + " ! You can start playing right now."
                         else:
                             message = "Oops ! Something went wrong. You didn't join."

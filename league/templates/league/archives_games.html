@@ -30,6 +30,7 @@ return false;};
 </script>
 {% endblock %}
 {% block content %}
+{% language 'en' %}
 <ul class="nav nav-tabs">
   <li class="active"><a href="{% url 'league:archives' %}">Archives</a></li>
   {% for ev in open_events %}
@@ -71,6 +72,8 @@ return false;};
     </div>
     </div>
   {% endif %}
+  {%endlanguage%}
+  
 {% endblock %}
 </div>
 {% block extra_js %}
