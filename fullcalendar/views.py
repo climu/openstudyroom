@@ -137,9 +137,6 @@ def json_feed(request):
 
                 data.append(dict)
 
-
-
-
         # others availability
         if json.loads(request.GET.get('other-av', False)):
 
@@ -427,7 +424,6 @@ def save(request):
                         ev.end = end
                         ev.save()
                         prev_event = ev
-
 
     return HttpResponse('success')
 
