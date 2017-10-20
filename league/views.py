@@ -322,6 +322,13 @@ def join_event(request, event_id, user_id):
                         message = "The Event you tryed to join have no division. That's strange."
                     else:
                         if user.join_event(event, division):
+                            meijin_league = LeagueEvent.objects.filter(
+                                event_type='league',
+                                is_open=True,
+                                community__isnull=True
+                            ).order_by('end_time').first()
+                            meijin_division = meijin_league.division_set.first()
+                            user.join_event(meijin_league, meijin_division)
                             message = "Welcome in " + division.name + " ! You can start playing right now."
                         else:
                             message = "Oops ! Something went wrong. You didn't join."
