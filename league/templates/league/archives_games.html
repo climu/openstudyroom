@@ -1,5 +1,5 @@
 {% extends "league/base.html" %}
-{% load league_tags wgo_tags%}
+{% load league_tags wgo_tags l10n i18n%}
 
 {% block title %}Archives - Games {% if game %}- {{game.black.kgs_username}} vs {{game.white.kgs_username}} {%endif %}{% endblock %}
 {% block extra_head_js %}
@@ -73,7 +73,7 @@ return false;};
     </div>
   {% endif %}
   {%endlanguage%}
-  
+
 {% endblock %}
 </div>
 {% block extra_js %}
