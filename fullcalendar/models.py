@@ -30,6 +30,26 @@ class PublicEvent(CalEvent):
         public_events = PublicEvent.objects.filter(end__gte=now)
         return public_events
 
+    @staticmethod
+    def get_formated_public_event(start, end, tz):
+        """ return a dict of publics events between start and end formated for json."""
+        public_events = PublicEvent.objects.filter(end__gte=start, start__lte=end)
+        data = []
+        for event in public_events:
+            dict = {
+                'id': 'public:' + str(event.pk),
+                'title': event.title,
+                'description': event.description,
+                'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+                'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+                'is_new': False,
+                'editable': False,
+                'type': 'public',
+            }
+            if event.url:
+                dict['url'] = event.url
+            data.append(dict)
+        return data
 
 class AvailableEvent(CalEvent):
     user = models.ForeignKey(User)
@@ -144,3 +164,26 @@ class GameAppointmentEvent(CalEvent):
         return user.fullcalendar_gameappointmentevent_related.filter(
             start__gte=now
         )
+
+    @staticmethod
+    def get_formated_game_appointments(user, now, tz):
+        data= []
+        game_appointments = user.fullcalendar_gameappointmentevent_related.filter(
+            start__gte=now
+        )
+        for event in game_appointments:
+            opponent = event.opponent(user)
+            dict = {
+                'id': 'game:' + str(event.pk),
+                'pk': event.pk,
+                'title': 'Game vs ' + opponent.username,
+                'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+                'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+                'is_new': False,
+                'editable': False,
+                'type': 'game',
+                'color': '#ff4444'
+            }
+            data.append(dict)
+
+        return data

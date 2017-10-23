@@ -21,12 +21,22 @@ urlpatterns = [
     ),
     url(r'^$', views.calendar_view, name='calendar_view'),
     url(
+        r'^(?P<user_id>[0-9]+)/$',
+        views.calendar_view,
+        name='calendar_view'
+    ),
+    url(
         r'^admin/event-list/$',
         views.admin_cal_event_list,
         name='admin_cal_event_list'
     ),
     url(r'^save/$', views.save, name='save'),
     url(r'^json-feed/$', views.json_feed, name='json_feed'),
+    url(
+        r'^json-feed/(?P<user_id>[0-9]+)/$',
+        views.json_feed_other,
+        name='json_feed_other'
+    ),
     url(
         r'^create-game-request/$',
         views.create_game_request,

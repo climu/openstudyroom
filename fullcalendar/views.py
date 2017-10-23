@@ -45,72 +45,151 @@ class PublicEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return '/'
 
 
-def calendar_view(request):
-    user = request.user
-    if user.is_authenticated and user.is_league_member:
+def calendar_view(request, user_id=None):
+    if user_id is None:
+        user = request.user
+    else:
+        user = get_object_or_404(User, pk=user_id)
+
+    # public calendar for unauth users
+    if not request.user.is_authenticated:
+        template = 'fullcalendar/calendar.html'
+        context = {'user': user}
+    #Own calendar for OSR members
+    elif user == request.user and user.is_league_member:
         template = 'fullcalendar/calendar_member.html'
         context = {
             'user': user,
             'start_time_range': user.profile.start_cal,
             'end_time_range': user.profile.end_cal
         }
+    # Other members calendar
     else:
-        template = 'fullcalendar/calendar.html'
-        context = {'user': user}
+        template = 'fullcalendar/calendar_other_member.html'
+        context = {
+            'user': user,
+            'start_time_range': request.user.profile.start_cal,
+            'end_time_range': request.user.profile.end_cal
+        }
     return render(request, template, context)
+
+@login_required()
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+def json_feed_other(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+    # get user timezone
+    tz = request.user.get_timezone()
+
+    # Get start and end from request and use user tz
+    start = datetime.strptime(request.GET.get('start'), '%Y-%m-%d')
+    start = make_aware(start, tz)
+    end = datetime.strptime(request.GET.get('end'), '%Y-%m-%d')
+    end = make_aware(end, tz)
+
+    # get public events
+    data = PublicEvent.get_formated_public_event(start, end, tz)
+
+    now = timezone.now()
+    # Games appointments
+    data += GameAppointmentEvent.get_formated_game_appointments(user, now, tz)
+    # User's availability
+    available_events = AvailableEvent.objects.filter(
+        user=user,
+        end__gte=now,
+        start__lte=end,
+    )
+    for event in available_events:
+        dict = {
+            'id': 'user-a:' + str(event.pk),
+            'pk': str(event.pk),
+            'title': user.username + ' is available',
+            'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+            'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+            'is_new': False,
+            'type': 'other-available',
+            'color': '#01DF3A',
+            'className': 'other-available',
+            'rendering': 'background',
+            'users': [user.username],
+        }
+        data.append(dict)
+
+    # Game requests
+        # sent by request.user
+    my_game_request = GameRequestEvent.objects.filter(
+        sender=request.user,
+        receivers=user,
+        end__gte=now,
+        start__lte=end,
+    ).prefetch_related('receivers')
+
+    for event in my_game_request:
+        dict = {
+            'id': 'my-gr:' + str(event.pk),
+            'pk': str(event.pk),
+            'title': 'My game request',
+            'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+            'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+            'is_new': False,
+            'editable': False,
+            'type': 'my-gr',
+            'color': '#FF8800',
+            'className': 'my-gr',
+            'users': list(u.username for u in event.receivers.all())
+        }
+        data.append(dict)
+
+        # sent by user
+    his_game_requests = GameRequestEvent.objects.filter(
+            sender=user,
+            receivers=request.user,
+            end__gte=now,
+            start__lte=end,
+    )
+
+    for event in his_game_requests:
+        dict = {
+            'id': 'other-gr:' + str(event.pk),
+            'pk': str(event.pk),
+            'title': event.sender.username + ' game request',
+            'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+            'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+            'is_new': False,
+            'editable': False,
+            'type': 'other-gr',
+            'color': '#009933',
+            'className': 'other-gr',
+            'sender': user.username
+        }
+        data.append(dict)
+    return HttpResponse(json.dumps(data), content_type="application/json")
+
 
 
 def json_feed(request):
     """get all events for one user and serve a json."""
     user = request.user
+    # get user timezone
     if user.is_authenticated:
         tz = user.get_timezone()
     else:
         tz = utc
 
+    # Get start and end from request and use user tz
     start = datetime.strptime(request.GET.get('start'), '%Y-%m-%d')
     start = make_aware(start, tz)
     end = datetime.strptime(request.GET.get('end'), '%Y-%m-%d')
     end = make_aware(end, tz)
 
     # get public events for everyone
-    public_events = PublicEvent.objects.filter(end__gte=start, start__lte=end)
-    data = []
-    for event in public_events:
-        dict = {
-            'id': 'public:' + str(event.pk),
-            'title': event.title,
-            'description': event.description,
-            'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
-            'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
-            'is_new': False,
-            'editable': False,
-            'type': 'public',
-        }
-        if event.url:
-            dict['url'] = event.url
-        data.append(dict)
+    data = PublicEvent.get_formated_public_event(start, end, tz)
+
     # get user related available events and game requests
     if user.is_authenticated() and user.is_league_member():
         now = timezone.now()
         # Games appointments
-        game_appointments = user.fullcalendar_gameappointmentevent_related.filter(
-            start__gte=now
-        )
-        for event in game_appointments:
-            opponent = event.opponent(user)
-            dict = {
-                'id': 'game:' + str(event.pk),
-                'pk': event.pk,
-                'title': 'Game vs ' + opponent.username,
-                'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
-                'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
-                'is_new': False,
-                'editable': False,
-                'type': 'game',
-                'color': '#ff4444'
-            }
-            data.append(dict)
+        data += GameAppointmentEvent.get_formated_game_appointments(user, now, tz)
+
         if json.loads(request.GET.get('me-av', False)):
             # his own availability
             me_available_events = AvailableEvent.objects.filter(
@@ -118,6 +197,7 @@ def json_feed(request):
                 end__gte=now,
                 start__lte=end,
             )
+
             for event in me_available_events:
                 dict = {
                     'id': 'me-a:' + str(event.pk),
@@ -136,6 +216,7 @@ def json_feed(request):
                     dict['editable'] = True
 
                 data.append(dict)
+
 
         # others availability
         if json.loads(request.GET.get('other-av', False)):
@@ -201,7 +282,7 @@ def json_feed(request):
                 dict = {
                     'id': 'other-gr:' + str(event.pk),
                     'pk': str(event.pk),
-                    'title': event.sender.kgs_username + ' game request',
+                    'title': event.sender.username + ' game request',
                     'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
                     'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
                     'is_new': False,
@@ -209,7 +290,7 @@ def json_feed(request):
                     'type': 'other-gr',
                     'color': '#009933',
                     'className': 'other-gr',
-                    'sender': event.sender.kgs_username
+                    'sender': event.sender.username
                 }
                 data.append(dict)
 
@@ -239,7 +320,7 @@ def cancel_game_ajax(request):
             opponent = game_appointment.opponent(user)
             game_appointment.delete()
             # send a message
-            subject = user.kgs_username + ' has cancel your game appointment.'
+            subject = user.username + ' has cancel your game appointment.'
             plaintext = loader.get_template('fullcalendar/messages/game_cancel.txt')
             context = {
                 'user': user,
@@ -272,7 +353,7 @@ def accept_game_request_ajax(request):
         game_appointment.users.add(user, sender)
         game_request.delete()
         # send a message
-        subject = user.kgs_username + ' has accepted your game request.'
+        subject = user.username + ' has accepted your game request.'
         plaintext = loader.get_template('fullcalendar/messages/game_request_accepted.txt')
         context = {
             'user': user,
@@ -330,7 +411,7 @@ def create_game_request(request):
         users_list = json.loads(request.POST.get('users'))
         date = datetime.strptime(request.POST.get('date'), '%Y-%m-%dT%H:%M:%S')
         date = make_aware(date, tz)
-        receivers = User.objects.filter(kgs_username__in=users_list)
+        receivers = User.objects.filter(username__in=users_list)
 
         # a game request should last 1h30
         end = date + timedelta(hours=1, minutes=30)
@@ -341,7 +422,7 @@ def create_game_request(request):
         request.save()
 
         # send a message to all receivers
-        subject = 'Game request from ' + sender.kgs_username \
+        subject = 'Game request from ' + sender.username \
             + ' on ' + date.strftime('%d %b')
         plaintext = loader.get_template('fullcalendar/messages/game_request.txt')
         context = {

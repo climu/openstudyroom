@@ -18,13 +18,13 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.6.1/locale-all.js'></script>
 
 {% endblock %}
-{% block title %}My profile - Calendar{% endblock %}
+{% block title %}{{user.username}} profile - Calendar{% endblock %}
 {% block heading %}
 {% get_current_timezone as TIME_ZONE %}
 
 
 <div class="page-header">
-    <h1>My profile - Calendar ({{TIME_ZONE}})</h1>
+    <h1>{{user.username}} profile - Calendar ({{TIME_ZONE}})</h1>
 </div>
 {%endblock%}
 {% block content %}
@@ -33,40 +33,7 @@
 
 {% include 'league/includes/user_nav.html' with active='calendar' %}
 <div class="col-md-2 col-ms-2 col-xs-2 controls">
-  <div data-spy="affix" data-offset-top="240" style="top:20px;">
-    <ul class="nav nav-pills nav-stacked">
-      <li id = 'cal-pill' role="presentation" class = 'active'><a href="javascript:void(0)">Calendar</a></li>
-      <li id = 'me-av-pill' role="presentation" ><a href="javascript:void(0)">My availabilities</a></li>
-      <li id = 'other-av-pill'role="presentation" class = 'other'><a href="javascript:void(0)">Game planner</a></li>
-    </ul>
-    <div class="panel panel-default other-available-controls  hidden" >
-      <div class="panel-heading">
-        <div class="checkbox div-checkbox ">
-        <label><input id ="check-own" type="checkbox" checked>Show your own availability.</label>
-                </div>
-      </div>
-    </div>
-    <div class="panel panel-default other-available-controls hidden" >
-      <div class="panel-heading">
-        Filter by divisions
-      </div>
-      <div class="panel-body">
-    {% for division in user.get_open_divisions %}
-        <div class="checkbox div-checkbox ">
-          <label><input class ="check-div" value="{{division.pk}}" type="checkbox" checked>{{division.name}}</label>
-        </div>
-    {% endfor %}
-      </div>
-    </div>
-    <div class="panel panel-default me-available-controls  hidden" >
-      <div class="panel-heading">
-        Save your changes !
-      </div>
-      <div class="panel-body">
-        <button class='btn btn-default' id='save'><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save</button>
-      </div>
-    </div>
-    <div class="panel panel-default me-available-controls other-available-controls hidden" >
+    <div class="panel panel-default" >
         <div class="panel-heading">
             Filter time range.
         </div>
@@ -94,12 +61,12 @@
     </div>
 
   </div>
-</div>
+
 
 
 <div class="col-md-10 col-ms-10 col-xs-10">
 <div id="info-well" class="text-center alert well">
-Browse all your OSR events.
+Send {{user.username}} games requests.
 </div>
 
 <div id='calendar'></div>
@@ -154,148 +121,38 @@ $(document).ready(function() {
         header: {
             left: 'prev,next today ',
             center: 'title',
-            right: 'month,agendaWeek myCustomButton'
+            right: 'agendaWeek myCustomButton'
         },
-        views: {
-            month:{
-                selectable:false,
-            }
-        },
+        defaultView:'agendaWeek',
         weekNumbers: true,
         navLinks: true, // can click day/week names to navigate views
         editable: false,
         height: 'auto',
         allDaySlot:false,
         timeFormat: 'H:mm',
-        selectable:true,
-        selectHelper: true,
         minTime: {{start_time_range}} + ":00:00",
         maxTime: {{end_time_range}} + ":00:00",
-
-        //prevent user from selecting multiple day availability
-        selectConstraint: {
-            start: '00:00',
-            end: '24:00',
-        },
-
-        selectAllow:  function(selectInfo){
-            return ($('#me-av-pill').hasClass('active'));
-        },
-        //we don't want to me-available event overlaping
-        selectOverlap: function(event) {
-                return event.type != 'me-available';
-        },
-        eventOverlap: function(stillEvent, movingEvent) {
-            return stillEvent.type != 'me-available';
-        },
-
-        //selecting will create an event saying user is available
-        select: function(start, end) {
-            var eventData;
-            // the following commented lines is an attempt to set a minimal 1h30
-            // The issue is that we then lost overlaping control
-            //var duration = end - start ;
-            //if (duration < 5400000){
-            //  end = start + 5400000 - end;
-            //  }
-            eventData = {
-                title: 'I am available',
-                start: start,
-                end: end,
-                type:'me-available',
-                color: '#ffff80',
-                className :'me-available',
-                is_new : true,
-                is_change:true,
-                editable:true
-            };
-            $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
-            $('#calendar').fullCalendar('unselect');
-            $('#save').attr('class','btn btn-primary');
-        },// select
-
-        eventResize: function(event, delta) {
-            event.is_change=true;
-            $('#save').attr('class','btn btn-primary')
-        },
-
-        eventDrop:function(event, delta){
-            event.is_change=true;
-            $('#save').attr('class','btn btn-primary')
-        },
 
         ///////////////////////////////////////////////////////////////
         // Events source
         ///////////////////////////////////////////////////////////
         events:{
-            url: '{% url "calendar:json_feed" %}',
-            data: function() { // a function that returns an object
-                var div_list = $('.check-div:checkbox:checked').map(function() {
-                    return this.value;
-                }).get();
-                json = JSON.stringify(div_list);
-                return({
-                    'divs':json,
-                    'me-av':!($('#cal-pill').hasClass('active')),
-                    'other-av':($('#other-av-pill').hasClass('active')),
-                    'game-request':!($('#me-av-pill').hasClass('active'))
-                });
-            }
+            url: '{% url "calendar:json_feed_other" user.pk%}',
         },
 
         ///////////////////////////////////////////////////////////////
         // Event Render
         ///////////////////////////////////////////////////////////
         eventRender: function(event, element) {
-            if (element.find(".fc-helper")){
-                event.eventColor='#ffff80';
-            }
-
-            // deals with me-available events:
-            if (event.type === 'me-available'){
-                // If we are on my availability tab we can change thoses.
-                if ($('#me-av-pill').hasClass('active')){
-                    // add a closeon button
-                    element.find(".fc-content").prepend( "<span style='font-size:1.5em;'class='pull-right glyphicon glyphicon-remove-circle closeon' aria-hidden='true'></span>" );
-                    element.find(".closeon").click(function() {
-                        //if the event is not new, we have to create a deleted event to inform the server
-                        if (event.is_new != true){
-                            event.type = 'deleted';
-                            event.is_change = true;
-                            event.className  = 'event-deleted';
-                            event.rendering  = 'background';
-                            $('#calendar').fullCalendar('updateEvent', event);
-                            $('#save').attr('class','btn btn-primary')
-                        }
-                        else{
-                            $('#calendar').fullCalendar('removeEvents',event._id);
-                        }
-                    });// end of closeon
-                }
-                else if ($('#other-av-pill').hasClass('active')) {
-                    element.find(".fc-content").hide();
-                    if (!($('#check-own')[0].checked)) {
-                        element.addClass('hidden');
-                    }
-                }
-                else{
-                    element.addClass('hidden');
-                }
-            }// end of event.type == me-available
 
             // If envent.type is other-available
             if (event.type === 'other-available'){
                 element.addClass('click-me');
                 element.append(event.title);
-                var text ='<ul>';
-                event.users.forEach(function(element){
-                    text +='<li>' + element + '</li>';
-                });
-                text += '</ul> <p> Click to create a game request.</p>';
-                element.qtip({
+                element.qtip({// tooltip
                     content:{
                         title:event.title,
-                        text: text,
+                        text: '<p> Click to create a game request.</p>',
                     },
                     position: {
                         my:'left bottom',  // Position my top left...
@@ -307,26 +164,17 @@ $(document).ready(function() {
                         }
                     },
                     show: {solo: true}
-                });//tooltip
-
+              });//tooltip
                 element.attr('data-users', event.users);
-                if (!($('#other-av-pill').hasClass('active'))){
-                    element.addClass('hidden');
-                }
             }// other-available
 
             // My game requests
             if (event.type === 'my-gr'){
                 element.addClass('click-me');
-                var text = '<ul>';
-                event.users.forEach(function(element){
-                    text +='<li>' + element + '</li>';
-                });
-                text += '</ul> <p> Click to cancel game request.</p>';
-                element.qtip({
+                element.qtip({//tooltip
                     content: {
-                        text: text,
-                        title: 'Waiting on confirmation from:'
+                        text: '<p> Click to cancel game request.</p>',
+                        title: 'Waiting on confirmation from {{user.username}}'
                     },
                     position: {
                         my:'left bottom',  // Position my top left...
@@ -361,10 +209,11 @@ $(document).ready(function() {
                             y:-5
                         }
                     },
-                    show: {solo: true}
-                });//tooltip
-            }//other gr
+                    show: {solo: true
+                  }
 
+              });//tooltip
+            }//other gr
             //game appointments
             if (event.type === 'game'){
                 element.addClass('click-me');
@@ -386,7 +235,7 @@ $(document).ready(function() {
                 });//qtip
             }//game appointments
 
-            //public events
+            //public
             if (event.type === 'public'){
                 element.qtip({
                     content: {
@@ -418,16 +267,13 @@ $(document).ready(function() {
                 calEvent.className = 'my-gr-active';
                 $("#modal-title").text('Game request on ' + calEvent.start.format('lll') + ' ({{TIME_ZONE}})');
                 $("#modal-body").empty();
-                $("#modal-body").append('<p>Waiting on this users confirmation:</p>');
+                $("#modal-body").append('<p>Waiting on {{user.username}} confirmation.</p>');
                 $("#modal-body").attr('data-pk', calEvent.pk);
-                $("#modal-body").append('<p><ul>');
-                calEvent.users.forEach(function(user){
-                    $("#modal-body").append('<li>' + user + '</li>')
-                });
-                $("#modal-body").append('</ul></p>');
                 $("#cancel-game-request").show();
                 $("#game-request-modal").modal();
-                $("#game-request-modal").draggable({handle : ".modal-header"});
+                $("#game-request-modal").draggable({
+                    handle : ".modal-header"
+                });
             }//My game requests
 
             // Others game requests
@@ -441,7 +287,9 @@ $(document).ready(function() {
                 $("#accept-game-request").show();
                 $("#reject-game-request").show();
                 $("#game-request-modal").modal();
-                $("#game-request-modal").draggable({handle : ".modal-header"});
+                $("#game-request-modal").draggable({
+                    handle : ".modal-header"
+                });
             }// Other game requests
 
             // Game
@@ -454,33 +302,29 @@ $(document).ready(function() {
                 $("#modal-body").attr('data-pk', calEvent.pk);
                 $("#cancel-game").show();
                 $("#game-request-modal").modal();
-                $("#game-request-modal").draggable({handle : ".modal-header" });
+                $("#game-request-modal").draggable({
+                    handle : ".modal-header"
+                });
             }//Game
         },// event click
 
         // Day click
         dayClick: function(date, jsEvent, view) {
             var element = jsEvent.target;
-            // check if we clicked on a other-available event
+            // check if we clicked on a background event
             if (element.classList.contains('other-available')) {
                 // empty the message
                 $("#modal-message").hide();
                 $(".modal-button").hide();
-                // get the users available at that time in an array
-                var users = element.getAttribute('data-users').split(',').sort();
                 $("#modal-title").text('Request a game on ' + date.format('lll') + ' ({{TIME_ZONE}})');
                 $("#modal-body").empty();
-                $("#modal-body").append('<p>Select the users you want to send a game request to:</p>');
+                $("#modal-body").append('<p>Send {{user}} a game request.</p>');
                 $("#modal-body").attr('data-date', date.format());
-                users.forEach(function(element){
-                    $("#modal-body").append(
-                        '<div class="checkbox"><label><input class="user-select" type="checkbox" value="'+
-                        element + '" checked>'+ element + '</label></div>');
-                });
-
                 $("#send-game-request").show();
                 $("#game-request-modal").modal();
-                $("#game-request-modal").draggable({handle : ".modal-header"});
+                $("#game-request-modal").draggable({
+                    handle : ".modal-header"
+                });
             }// we clicked on other-available event
         },//dayclick
 
@@ -491,7 +335,6 @@ $(document).ready(function() {
     // Buttons handling
     ///////////////////////////////////////////////////////////
 
-    // Cancel game appointment
     $('#cancel-game').click(function(){
         var pk = $('#modal-body').attr('data-pk');
         $.ajax({
@@ -505,7 +348,7 @@ $(document).ready(function() {
             }
         });
         return false;
-    });//Cancel Game
+    });//accept Game request
 
     // handle the accept game request click
     $('#accept-game-request').click(function(){
@@ -519,8 +362,8 @@ $(document).ready(function() {
                 $('#calendar').fullCalendar( 'removeEvents');
                 $('#calendar').fullCalendar( 'refetchEvents' );
            }
-       });
-       return false;
+        });
+        return false;
     });//accept Game request
 
     // handle the reject game request click
@@ -534,9 +377,9 @@ $(document).ready(function() {
                 $('#game-request-modal').modal('hide');
                 $('#calendar').fullCalendar( 'removeEvents');
                 $('#calendar').fullCalendar( 'refetchEvents' );
-            }
+              }
         });
-        return false;
+    return false;
     });//reject Game request
 
     // handle the cancel game request click
@@ -573,10 +416,10 @@ $(document).ready(function() {
         $.ajax({
             type:"POST",
             url:"{% url 'calendar:create_game_request'%}",
-            data: {
-                'date': date,
-                'users': json
-            },
+                data: {
+                    'date': date,
+                    'users': json
+                },
             success: function(){
                 $('#game-request-modal').modal('hide');
                 $('#calendar').fullCalendar( 'removeEvents');
@@ -585,67 +428,6 @@ $(document).ready(function() {
         });
         return false;
     });// Closing the send game request click
-
-    // Save button
-    $("#save").click(function () {
-        var eventsFromCalendar = $('#calendar').fullCalendar('clientEvents',function (event) {
-            return event.is_change == true;});
-        //to render json from events objects list, we need to deal with circular relation
-        //see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
-        eventsFromCalendar = eventsFromCalendar.map(function(e) {
-            return {
-                start: e.start,
-                end: e.end,
-                title: e.title,
-                type: e.type,
-                is_new: e.is_new,
-                id:e.id,
-                pk:e.pk
-            };
-        });
-        seen = [];
-        var json = JSON.stringify(eventsFromCalendar,function(key, val) {
-            if (val != null && typeof val == "object") {
-                if (seen.indexOf(val) >= 0) {
-                    return;
-                }
-                seen.push(val);
-            }
-            return val;
-        });// end of circular relation thing I don't understand
-
-        $.ajax({
-            type:"POST",
-            url:"{% url 'calendar:save'%}",
-            data: {
-               'events': json
-            },
-            success: function(){
-                $('#calendar').fullCalendar( 'removeEvents');
-                $('#calendar').fullCalendar( 'refetchEvents' );
-            }
-       });
-       $('#save').attr('class','btn btn-default')
-       return false;
-    });// closing $("#save").click
-
-
-    // when a user (un)check a division checkbox
-    // we need to refetch the events
-    $('.check-div').click(function(){
-        //$('#calendar').fullCalendar( 'removeEvents');
-        $('#calendar').fullCalendar( 'refetchEvents' );
-    });
-
-    // Toggle showing his own availibility
-    $('#check-own').click(function(){
-        if ($('#check-own')[0].checked){
-            $('.me-available').removeClass('hidden')
-        }
-        else{
-            $('.me-available').addClass('hidden')
-        }
-    });
 
     ///////////////////////////////////////////////////////////////
     // Filter time range
@@ -673,44 +455,6 @@ $(document).ready(function() {
         var end = slider.value.newValue[1].toString() + ":00" ;
         $('#start-time-range').html(start);
         $('#end-time-range').html(end);
-    });
-
-    ///////////////////////////////////////////////////////////////
-    // Menu handling
-    ///////////////////////////////////////////////////////////
-
-    $('#me-av-pill').click(function() {
-        $('#save').attr('class','btn btn-default');
-        $('li[role="presentation"]').removeClass('active');
-        $(this).addClass('active');
-        $(".other-available-controls").addClass('hidden');
-        $(".me-available-controls").removeClass('hidden');
-        $("#info-well").text('Drag vertically on the calendar to indicate when you are available.')
-        $('#calendar').fullCalendar( 'removeEvents');
-        $('#calendar').fullCalendar('changeView', 'agendaWeek');
-        $('#calendar').fullCalendar( 'refetchEvents' );
-    });
-
-    $('#other-av-pill').click(function() {
-        $('li[role="presentation"]').removeClass('active');
-        $(this).addClass('active');
-        $(".me-available-controls").addClass('hidden');
-        $(".other-available-controls").removeClass('hidden');
-        $("#info-well").text('See when other users are available and manage game requests.')
-        $('#calendar').fullCalendar( 'removeEvents');
-        $('#calendar').fullCalendar('changeView', 'agendaWeek');
-        $('#calendar').fullCalendar( 'refetchEvents' );
-    });
-
-    $('#cal-pill').click(function() {
-        $('li[role="presentation"]').removeClass('active');
-        $(this).addClass('active');
-        $(".me-available-controls").addClass('hidden');
-        $(".other-available-controls").addClass('hidden');
-        $("#info-well").text('Browse all your OSR events.')
-        $('#calendar').fullCalendar( 'removeEvents');
-        $('#calendar').fullCalendar('changeView', 'month');
-        $('#calendar').fullCalendar( 'refetchEvents' );
     });
 
 });// document ready
