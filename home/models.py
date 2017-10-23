@@ -1,5 +1,5 @@
 from __future__ import absolute_import, unicode_literals
-
+from django.conf import settings
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils import timezone
@@ -178,11 +178,16 @@ BlogPage.subpage_types.append(StreamFieldEntryPage)
 # Let everyone know when a new page is published
 def send_to_discord(sender, **kwargs):
     instance = kwargs['instance']
-#   the folowing test works only for recent copys of wagatail.
-# I updated and it works...
+    # Only post new post. No updates.
     if instance.first_published_at != instance.last_published_at:
         return
-    url = 'http://example.com/'
+
+    if settings.DEBUG:
+        discord_url = 'http://example.com/' # change this for local test
+    else:
+        with open('/etc/discord_url.txt') as f:
+                discord_url = f.read().strip()
+
     excerpt = render_to_string(
         'home/includes/excerpt.html',
         {'entry': instance}
@@ -196,7 +201,7 @@ def send_to_discord(sender, **kwargs):
             "description": excerpt,
         }]
     }
-    r = requests.post(url, json=values)
+    r = requests.post(discord_url, json=values)
 
 
 # Register a receiver
