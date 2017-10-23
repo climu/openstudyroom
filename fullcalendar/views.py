@@ -162,7 +162,6 @@ def json_feed_other(request, user_id):
             'sender': user.username
         }
         data.append(dict)
-    print(data)
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
