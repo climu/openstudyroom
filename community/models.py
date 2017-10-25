@@ -13,6 +13,7 @@ class Community(models.Model):
     user_group = models.ForeignKey(Group, null=True, blank=True, related_name='user_community')
     close = models.BooleanField(default=False)
     private = models.BooleanField(default=False)
+    promote = models.BooleanField(default=False)
     description = MarkupTextField(
         blank=True, null=True,
         validators=[validators.NullableMaxLengthValidator(2000)])
