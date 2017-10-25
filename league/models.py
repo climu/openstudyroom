@@ -59,6 +59,10 @@ class LeagueEvent(models.Model):
     # byo yomi time in sec
     byo_time = models.PositiveSmallIntegerField(default=30)
     community = models.ForeignKey(Community, blank=True, null=True)
+    description = MarkupTextField(
+            blank=True, null=True,
+            validators=[validators.NullableMaxLengthValidator(2000)]
+    )
 
 
     class Meta:

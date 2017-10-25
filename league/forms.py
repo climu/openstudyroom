@@ -112,11 +112,12 @@ class LeagueEventForm(forms.ModelForm):
             'byo_time',
             'is_open',
             'is_public',
+            'description',
         ]
         widgets = {
-            'name':forms.TextInput(),
+            'name': forms.TextInput(),
             'begin_time': forms.SelectDateWidget(),
-            'end_time':forms.SelectDateWidget(),
+            'end_time': forms.SelectDateWidget(),
         }
 
 class EmailForm(forms.Form):
