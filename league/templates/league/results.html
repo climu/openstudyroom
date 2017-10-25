@@ -31,7 +31,7 @@
 </ul>
 {% endif %}
 {% if division %}
-{% if event.event_type == "league" %}
+{% if number_players > 20 %}
 {% include "league/includes/results_league.html"  %}
 {% else %}
 {% include "league/includes/results_ladder.html"  %}

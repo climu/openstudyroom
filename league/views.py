@@ -197,6 +197,7 @@ def results(request, event_id=None, division_id=None):
         'results': results,
         'open_events': open_events,
         'can_join': can_join,
+        'number_players': len(results)
     }
     return HttpResponse(template.render(context, request))
 
