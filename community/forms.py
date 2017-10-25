@@ -12,7 +12,8 @@ class AdminCommunityForm(ModelForm):
         'description',
         'private_description',
         'close',
-        'private'
+        'private',
+        'promote'
         ]
 
 class CommunityForm(ModelForm):
