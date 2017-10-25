@@ -671,7 +671,6 @@ class User(AbstractUser):
 
     def check_ogs(user, opponents):
         """Checking user for OGS games.
-            Still a work in progress.
         """
         # Get the time-range to check
         # we just create a date with 1st of the month at 00:00
@@ -692,7 +691,7 @@ class User(AbstractUser):
                 # first we check if we have the same  id in db.
                 # Since it's ordered by time, no need to keep going.
                 if Sgf.objects.filter(ogs_id=game['id']).exists():
-                    break
+                    continue
                 # Then we check if end date og game is too old
                 # 2013-08-31T12:47:34.887Z
                 if game['ended']:
