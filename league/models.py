@@ -166,7 +166,7 @@ class LeagueEvent(models.Model):
         if user.is_authenticated:
             communitys = user.get_communitys()
             events = LeagueEvent.objects.filter(
-                Q(community__isnull=True) | Q(community__in=communitys)
+                Q(community__isnull=True) | Q(community__in=communitys) | Q(community__promote=True)
             )
             if not user.is_league_admin:
                 events = events.filter(is_public=True)

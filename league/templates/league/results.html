@@ -31,11 +31,18 @@
 </ul>
 {% endif %}
 {% if division %}
+
 {% if number_players > 20 %}
 {% include "league/includes/results_league.html"  %}
-{% else %}
+{% else %} {%if number_players > 0 %}
 {% include "league/includes/results_ladder.html"  %}
+{% else %}
+<div class="well">
+  This league is empty !
+</div>
 {% endif %}
+{% endif %}
+
 {% else %}
 <div class="well">
   This league is empty !
