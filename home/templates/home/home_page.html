@@ -27,20 +27,20 @@
       <article class="box page-content blog_grid">
           {% include 'puput/entry_page_header.html' %}
           {% if entry.header_image %}
-              <section>
+              <section><h3>
                   <span class="img-responsive">
                       {% image entry.header_image fill-800x240 as header_image %}
                       <img alt="{{ entry.header_image.title }}" src="{{ header_image.url }}">
-                  </span>
+                  </span></h3>
               </section>
           {% endif %}
-          <section class="article">
+          <section class="article"><h5>
               {% if entry.excerpt %}
                   {{ entry.excerpt|richtext }}
               {% else %}
                   {{ entry.body|richtext|truncatewords_html:70 }}
               {% endif %}
-              <a class="blog_btn continue" href="{% entry_url entry blog_page %}">{% trans 'Continue reading' %} &raquo;</a>
+              <a class="blog_btn continue" href="{% entry_url entry blog_page %}">{% trans 'Continue reading' %} &raquo;</a></h5>
           </section>
       </article>
   {% empty %}
