@@ -66,6 +66,14 @@
         <button class='btn btn-default' id='save'><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save</button>
       </div>
     </div>
+    <div class="panel panel-default me-available-controls  hidden" >
+      <div class="panel-heading">
+        Copy previous week
+      </div>
+      <div class="panel-body">
+        <button class='btn btn-default' id='copy'><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Copy</button>
+      </div>
+    </div>
     <div class="panel panel-default me-available-controls other-available-controls hidden" >
         <div class="panel-heading">
             Filter time range.
@@ -647,6 +655,30 @@ $(document).ready(function() {
         }
     });
 
+    //copy previous week
+    $("#copy").click(function () {
+        var start = $('#calendar').fullCalendar('getView').start;
+        var end = $('#calendar').fullCalendar('getView').end;
+
+        //check if the week is empty
+        var eventsFromCalendar = $('#calendar').fullCalendar('clientEvents', function (event) {
+            return ( event.type == 'me-available' && event.start > start && event.end < end)});
+        if (eventsFromCalendar.length >0) {
+            alert('You canot copy previous week because this week is not empty')
+            return false
+        }
+        var start = $('#calendar').fullCalendar('getView').start;
+        $.ajax({
+            type:"POST",
+            url:"{% url 'calendar:copy_previous_week_ajax'%}",
+            data: {
+                'start': start.format(),
+                'end': end.format()
+            }
+        });
+    $('#calendar').fullCalendar( 'refetchEvents' );
+    });
+
     ///////////////////////////////////////////////////////////////
     // Filter time range
     ///////////////////////////////////////////////////////////
@@ -712,7 +744,6 @@ $(document).ready(function() {
         $('#calendar').fullCalendar('changeView', 'month');
         $('#calendar').fullCalendar( 'refetchEvents' );
     });
-
 });// document ready
 
 </script>
