@@ -14,6 +14,7 @@ from pytz import utc
 from django.utils import timezone
 from postman.api import pm_broadcast, pm_write
 from django.template import loader
+import vobject
 
 
 # Create your views here.
@@ -549,3 +550,21 @@ def copy_previous_week_ajax(request):
         return HttpResponse('success')
     else:
         return HttpResponse('error')
+
+
+def ical(request, user_id):
+    user=User.objects.get(pk=user_id)
+    osr_events = PublicEvent.objects.all()
+    cal = vobject.iCalendar()
+    cal.add('method').value = 'PUBLISH' # IE/Outlook needs this
+    for event in osr_events:
+        vevent = cal.add('vevent')
+        vevent.add('dtstart').value=event.start
+        vevent.add('dtend').value=event.end
+        vevent.add('summary').value=event.title
+        vevent.add('uid').value=str(event.id)
+    icalstream = cal.serialize()
+    response = HttpResponse(icalstream, content_type='text/calendar')
+    response['Filename'] = 'osr.ics' # IE needs this
+    response['Content-Disposition'] = 'attachment; filename=osr.ics'
+    return response
