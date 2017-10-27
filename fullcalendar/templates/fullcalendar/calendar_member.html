@@ -4,6 +4,8 @@
 {% block extra_head_js %}
 <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css' />
 <link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/calendar.css'%}"/>
+<link rel='stylesheet' type="text/css" href="{%static 'css/sidemenu.css'%}"/>
+
 <link rel='stylesheet' href='https://cdn.jsdelivr.net/qtip2/3.0.3/basic/jquery.qtip.min.css'/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.8.1/css/bootstrap-slider.min.css" />
 <script
@@ -32,69 +34,75 @@
 <div class= "row">
 
 {% include 'league/includes/user_nav.html' with active='calendar' %}
-<div class="col-md-2 col-ms-2 col-xs-2 controls">
-  <div data-spy="affix" data-offset-top="240" style="top:20px;">
-    <ul class="nav nav-pills nav-stacked">
-      <li id = 'cal-pill' role="presentation" class = 'active'><a href="javascript:void(0)">Calendar</a></li>
-      <li id = 'me-av-pill' role="presentation" ><a href="javascript:void(0)">My availabilities</a></li>
-      <li id = 'other-av-pill'role="presentation" class = 'other'><a href="javascript:void(0)">Game planner</a></li>
-    </ul>
-    <div class="panel panel-default other-available-controls  hidden" >
-      <div class="panel-heading">
-        <div class="checkbox div-checkbox ">
-        <label><input id ="check-own" type="checkbox" checked>Show your own availability.</label>
-                </div>
-      </div>
+<!-- <div data-spy="affix" data-offset-top="240" style="top:20px;"> -->
+<nav class="navbar navbar-default sidebar" role="navigation">
+    <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
     </div>
-    <div class="panel panel-default other-available-controls hidden" >
-      <div class="panel-heading">
+    <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+          <li id = 'cal-pill' role="presentation" class = 'active'><a href="javascript:void(0)"><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-calendar"></span>Calendar</a></li>
+          <li id = 'me-av-pill' role="presentation" ><a href="javascript:void(0)"><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-user"></span>My availabilities</a></li>
+          <li id = 'other-av-pill'role="presentation" class = 'other'><a href="javascript:void(0)"><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-tasks"></span>Game planner</a></li>
+      </ul>
+  </div>
+<div class="collapse navbar-collapse" >
+
+      <ul class="nav navbar-nav">
+
+  <li class="other-available-controls  hidden" >
+      <p class="checkbox div-checkbox ">
+      <label><input id ="check-own" type="checkbox" checked>Show your own availability.</label>
+  </p>
+    </li>
+    <li class="other-available-controls hidden" >
         Filter by divisions
-      </div>
-      <div class="panel-body">
     {% for division in user.get_open_divisions %}
         <div class="checkbox div-checkbox ">
           <label><input class ="check-div" value="{{division.pk}}" type="checkbox" checked>{{division.name}}</label>
         </div>
     {% endfor %}
-      </div>
-    </div>
-    <div class="panel panel-default me-available-controls  hidden" >
-      <div class="panel-heading">
-        Save your changes !
-      </div>
-      <div class="panel-body">
-        <button class='btn btn-default' id='save'><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save</button>
-      </div>
-    </div>
-    <div class="panel panel-default me-available-controls other-available-controls hidden" >
-        <div class="panel-heading">
-            Filter time range.
-        </div>
-        <div class="panel-body">
-<p>
-            <input id="slider" style="width:100%;"
-	type="text"
-	name="somename"
-	data-provide="slider"
-	data-slider-min="0"
-	data-slider-max="24"
-	data-slider-step="1"
-	data-slider-value="[{{start_time_range}},{{end_time_range}}]"
-    tooltip_split="true"
+</li>
+      <li class="me-available-controls  hidden" >
 
-    >
-</p>
-<p>
-    from <span id="start-time-range">{{start_time_range}}:00</span> to <span id="end-time-range">{{end_time_range}}:00</span>.
-</p>
-<p>
-<button class='btn btn-default' id='filter-time-range'><span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filter</button>
-</p>
+          <button class='btn btn-default' id='save'><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save your changes</button>
+      </li>
+        <li class="me-available-controls  hidden" >
+            <button class='btn btn-default' id='copy'><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Copy previous week</button>
+        </li>
+        <li class="me-available-controls other-available-controls hidden" >
+                Filter time range.
+    <p>
+                <input id="slider" style="width:100%;"
+        type="text"
+        name="somename"
+        data-provide="slider"
+        data-slider-min="0"
+        data-slider-max="24"
+        data-slider-step="1"
+        data-slider-value="[{{start_time_range}},{{end_time_range}}]"
+        tooltip_split="true"
+
+        >
+    </p>
+    <p>
+        from <span id="start-time-range">{{start_time_range}}:00</span> to <span id="end-time-range">{{end_time_range}}:00</span>.
+    </p>
+    <p>
+    <button class='btn btn-default' id='filter-time-range'><span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filter</button>
+    </p>
+</li>
+        </ul>
         </div>
     </div>
 
-  </div>
-</div>
+</nav>
 
 
 <div class="col-md-10 col-ms-10 col-xs-10">
@@ -647,6 +655,30 @@ $(document).ready(function() {
         }
     });
 
+    //copy previous week
+    $("#copy").click(function () {
+        var start = $('#calendar').fullCalendar('getView').start;
+        var end = $('#calendar').fullCalendar('getView').end;
+
+        //check if the week is empty
+        var eventsFromCalendar = $('#calendar').fullCalendar('clientEvents', function (event) {
+            return ( event.type == 'me-available' && event.start > start && event.end < end)});
+        if (eventsFromCalendar.length >0) {
+            alert('You canot copy previous week because this week is not empty')
+            return false
+        }
+        var start = $('#calendar').fullCalendar('getView').start;
+        $.ajax({
+            type:"POST",
+            url:"{% url 'calendar:copy_previous_week_ajax'%}",
+            data: {
+                'start': start.format(),
+                'end': end.format()
+            }
+        });
+    $('#calendar').fullCalendar( 'refetchEvents' );
+    });
+
     ///////////////////////////////////////////////////////////////
     // Filter time range
     ///////////////////////////////////////////////////////////
@@ -712,7 +744,6 @@ $(document).ready(function() {
         $('#calendar').fullCalendar('changeView', 'month');
         $('#calendar').fullCalendar( 'refetchEvents' );
     });
-
 });// document ready
 
 </script>

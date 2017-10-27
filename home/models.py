@@ -185,7 +185,7 @@ def send_to_discord(sender, **kwargs):
     if settings.DEBUG:
         discord_url = 'http://example.com/' # change this for local test
     else:
-        with open('/etc/discord_url.txt') as f:
+        with open('/etc/discord_hook_url.txt') as f:
                 discord_url = f.read().strip()
 
     excerpt = render_to_string(
