@@ -31,10 +31,10 @@ padding-left: 5px;
   display:none!important;
 }
 .other-available-controls{
-  margin-top:10px;
+  padding:10px;
 }
 .me-available-controls{
-  margin-top:10px;
+  padding:10px;
 }
 .modeless{
     top:1%;
