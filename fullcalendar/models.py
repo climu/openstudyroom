@@ -187,7 +187,7 @@ class GameAppointmentEvent(CalEvent):
         """Return all the future game appointments for a user."""
         now = timezone.now()
         return user.fullcalendar_gameappointmentevent_related.filter(
-            start__gte=now
+            end__gte=now
         )
 
     @staticmethod

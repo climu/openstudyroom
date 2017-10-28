@@ -649,6 +649,9 @@ class User(AbstractUser):
         for d in list_urlto_games:
             url = d['url']
             game_type = d['game_type']
+            # don't record the simuls
+            if game_type == 'Simul':
+                continue
             # First we check if we already have a sgf with same urlto in db
             if not Sgf.objects.filter(urlto=url).exists():
                 # check if both players are in the league
