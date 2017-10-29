@@ -1,0 +1,153 @@
+body {
+    height: 3500px;
+    font-family: 'Quicksand', sans-serif;
+    background-color: rgb(67,67,67);
+    background-repeat: repeat-y;
+    background-position: center top;
+    background: linear-gradient(rgb(67,67,67), rgb(27,27,27));
+    /*background-image: url(../static/wood.jpg);*/
+}
+
+#banner {
+    position: absolute;
+    width: 100%;
+    height: 513px;
+    top: 0px;
+    left: 0px;
+    background-color: darkgrey;
+    background-image: url("https://openstudyroom.org/media/images/bar.original.jpg");
+    background-position: center top;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    border-bottom: 20px solid rgb(43,43,43);
+    border-top: 20px solid rgb(43,43,43);
+}
+
+.hide_on_small{
+    visibility: visible;
+    }
+
+.hide_on_phone{
+    visibility: visible;
+    }
+
+h4{
+    font-family: 'Quicksand', sans-serif;
+    text-transform: uppercase;
+    color: rgb(168,123,0);
+    text-align: center;
+    }
+
+h3{
+    font-family: 'Quicksand', sans-serif;
+    color: rgb(168,123,0);
+    text-align: left;
+    }
+
+a{
+    color: rgb(168,123,0);
+    outline: 0;
+    }
+
+a:hover{
+    color: rgb(168,100,0);
+}
+
+#socials{
+    position: absolute;
+    width: 300px;
+    right: 20px;
+    top: 60px;
+    font-size: 25px;
+    text-decoration: none;
+    text-align: right;
+    }
+  #socials a:link {color: #585858; text-decoration: none;}
+  #socials a:hover {color: whitesmoke; text-decoration: none;}
+  #socials a:visited {color: #585858; text-decoration: none;}
+
+.rows{
+    position: relative;
+    top: 0px;
+    margin: 0 auto;
+    text-align: center;
+    min-height: 200px;
+}
+
+.floatbox{
+    display: inline-block;
+    width: 300px;
+    margin: 10px;
+    min-height: 380px;
+    padding: 20px 20px 20px 20px;
+    color: black;
+    /* fallback */    background-color: RGB(277,277,277);
+    background-color: RGBA(277,277,277,0.9);
+    vertical-align:top;
+    box-shadow: 10px 10px 5px RGBA(0,0,0,0.5);
+    text-align: justify;
+}
+
+.floatbox_news{
+    display: inline-block;
+    width: 675px;
+    margin: 10px;
+    padding: 20px 20px 0px 20px;
+    color: white;
+    vertical-align: top;
+    text-align: justify;
+}
+
+.button{
+    background-color: whitesmoke; 
+    border: 1px solid rgb(168,123,0);
+    border-radius: 5px;
+    font-size: 20px;
+    text-decoration: none;
+    padding: 5px 20px 5px 20px; 
+    color: rgb(168,123,0); 
+    cursor: pointer
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+.button:hover {
+    cursor: pointer;
+    background-color: lightgrey;
+    border-color: rgb(168,123,0);
+    color: rgb(168,123,0);
+}
+
+/* for smaller screens */
+
+@media screen and (max-width: 1500px){
+    .hide_on_small{
+        visibility: hidden;
+    }
+}
+
+@media screen and (max-width: 1200px){
+    #socials{
+    font-size: 45px;
+    }
+
+  .hide_on_phone{
+        visibility: hidden;
+    }
+
+  .floatbox{
+  width: 700px;
+  min-height: 270px;
+}
+  .floatbox_news{
+  width: 100%;
+  }
+  
+}
+
+@media screen and (max-width: 1000px){
+  .floatbox{
+  width: 500px;
+  min-height: 350px;
+  }
+}
