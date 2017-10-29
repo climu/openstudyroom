@@ -41,6 +41,7 @@ ga('send', 'pageview');
   <link rel="stylesheet" type="text/css" href="{% static 'css/openstudyroom.css' %}">
 	<link type="text/css" href="{%static 'wgo/wgo.player.css' %}" rel="stylesheet" />
   <link rel="stylesheet" href="{% static 'css/puput.css' %}"/>
+
 {%endcompress%}
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
@@ -57,98 +58,10 @@ ga('send', 'pageview');
     {% endblock %}
 
 <style>
-body {
-    height: 3500px;
-    font-family: 'Quicksand', sans-serif;
-    background-color: rgb(67,67,67);
-    background-repeat: repeat-y;
-    background-position: center top;
-    background: linear-gradient(rgb(67,67,67), rgb(27,27,27));
-    /*background-image: url(../static/wood.jpg);*/
-}
-
-#banner {
-    position: absolute;
-    width: 100%;
-    height: 513px;
-    top: 0px;
-    left: 0px;
-    background-color: darkgrey;
-    background-image: url("https://openstudyroom.org/media/images/bar.original.jpg");
-    background-position: center top;
-    background-repeat: no-repeat;
-    overflow: hidden;
-    border-bottom: 20px solid rgb(43,43,43);
-    border-top: 20px solid rgb(43,43,43);
-}
-
-.hide_on_small{
-    visibility: visible;
-    }
-
-.hide_on_phone{
-    visibility: visible;
-    }
-
-h4{
-    font-family: 'Quicksand', sans-serif;
-    text-transform: uppercase;
-    color: rgb(168,123,0);
-    text-align: center;
-    }
-
-a{
-    color: rgb(168,123,0);
-    outline: 0;
-    }
-
-a:hover{
-    color: rgb(168,100,0);
-}
-
-#socials{
-    position: absolute;
-    width: 300px;
-    right: 20px;
-    top: 60px;
-    font-size: 25px;
-    text-decoration: none;
-    text-align: right;
-    }
-  #socials a:link {color: #585858; text-decoration: none;}
-  #socials a:hover {color: whitesmoke; text-decoration: none;}
-  #socials a:visited {color: #585858; text-decoration: none;}
-
-#row_wrap{
-    position: relative;
-    top: -100px;
-    margin: 0 auto;
-    text-align: center;
-}
-
-/* for smaller screens */
-
-@media screen and (max-width: 1500px){
-    .hide_on_small{
-        visibility: hidden;
-    }
-}
-
-@media screen and (max-width: 1200px){
-    #socials{
-    font-size: 45px;
-    }
-
-@media screen and (max-width: 1200px){
-    .hide_on_phone{
-        visibility: hidden;
-    }
-
-}
-
 </style>
 
 <link href="https://fonts.googleapis.com/css?family=Quicksand:300|Roboto" rel="stylesheet">
+<link type="text/css" href="{%static 'css/style.css' %}" rel="stylesheet" />
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
@@ -246,11 +159,13 @@ a:hover{
       </li>
 
     <!-- links for registered users -->
-      {% if request.user.is_authenticated %}
-
         <li class="nav-item">
           <a class="nav-link disabled">|</a>
         </li>
+
+      {% if request.user.is_authenticated %}
+
+    <!-- dropdown for registered users -->
         <li class="nav-item dropdown">
         	<a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Hello {{ request.user.username }}
@@ -259,7 +174,7 @@ a:hover{
             {% endif %}
             <span class="caret"></span>
 	        </a>
-    <!-- dropdown for registered users -->
+
         <div class="dropdown-menu" aria-labelledby="dropdown01" style="padding-left: 10px; border-radius: 0px; padding-right: 10px;">
         	{% if request.user.is_league_admin %}
         	<a class="dropdown-item" href="#">
@@ -288,16 +203,31 @@ a:hover{
             <a href="{% url "account_logout"%}"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a>
           </a>
 	     </div>
+      </li>
   {% else %}
-                  <a class="dropdown-item" href="#">
-                      <a href="{% url "account_login"%}">Login</a>
-                  </a>
-                  <a class="dropdown-item" href="#">
-                      <a href="{% url "account_signup"%}">Register</a>
-                  </a>
+  
+    <!-- dropdown for not-registered users -->
+        <li class="nav-item dropdown">
+        	<a class="nav-link dropdown-toggle" href="#" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Join us?
+	        </a>
+
+        <div class="dropdown-menu" aria-labelledby="dropdown02" style="padding-left: 10px; border-radius: 0px; padding-right: 10px;">
+          <a class="dropdown-item" href="#">
+              <a href="{% url "account_login"%}">Login</a>
+          </a>
+          <a class="dropdown-item" href="#">
+              <a href="{% url "account_signup"%}">Register</a>
+          </a>
+	     </div>
+      </li>
+
+
+
+
   {% endif %}
 
-          </li>
+
     </div>
   {% endblock %}
     </div>
@@ -323,7 +253,7 @@ a:hover{
 
 
 <!-- content -->
-<div class="container" style="position: relative; margin: 0 auto; top: 400px; width: 1100px; background-color: RGBA(43,43,43,1); box-shadow: 10px 10px 5px RGBA(0,0,0,0.5);">
+<div class="container" style="position: relative; margin: 0 auto; top: 400px; width: 1100px; background-color: RGBA(43,43,43,1); box-shadow: 10px 10px 5px RGBA(0,0,0,0.5); padding-top: 20px; padding-bottom: 20px;">
     {% block postman_menu %}
     {%endblock%}
       {% block heading %}
@@ -337,7 +267,7 @@ a:hover{
     {%block page_intro %} {% endblock %}
 
 <!-- news and the rest -->
-  <div style="position: relative; top: -80px;">
+  <div style="">
     {%block breadcrumb%}{%endblock%}
     {% block page_content%}{% endblock %}
     {% block main %}{% endblock %}

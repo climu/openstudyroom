@@ -7,11 +7,11 @@
 
 
 {% block page_content %}
-    <div class="row">
-      <div class="col-md-8">
+    <div class="rows">
+      <div class="floatbox_news">
         <legend><h3>The Open Study Room</h3></legend>
           <p>
-      Take chance to join an online go community dedicated to play, teach, learn and study the fascinating game of go.
+      Take chance to join an online go community dedicated to playing, teaching, learning and studying the fascinating game of go.
       </p>
       <p>
         It's free, community driven, and we welcome everyone from beginers to strong dans.
@@ -30,10 +30,10 @@
       <p>Setting your timezone will allow our website to adapt all times to your local time.</p>
       </div>
 
-        <div class="col-md-4">
+        <div class="floatbox" style="">
             <form id="signup_form" method="post" action="{% url "account_signup" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
                 {% csrf_token %}
-                <legend><h3>Sign up</h3></legend>
+                <legend><h3 style="color: black">Sign up</h3></legend>
                 {% for error in form.non_field_errors %}
                     <div class="alert alert-danger">
                         <strong>{{ error|escape }}</strong>

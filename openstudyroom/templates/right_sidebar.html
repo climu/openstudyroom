@@ -1,31 +1,12 @@
 {% extends "base.html" %}
 {% block page_content %}
 
-<style>
-.floatbox_news{
-    display: inline-block;
-    width: 635px;
-    margin: 10px;
-    padding: 20px 20px 0px 20px;
-    color: white;
-    vertical-align:top;
-    text-align: justify;
-}
-
-@media screen and (max-width: 1200px){
-  .floatbox_news{
-  width: 100%;
-  }
-
-}
-</style>
-
 <div class="floatbox_news">
 {% block content %} {% endblock %}
 </div>
 
 <div class="floatbox" style="border: 0px; background-color: transparent; box-shadow: none;">
-  <div style="width: 350px; background-color: RGBA(275,275,200,0.9); box-shadow: 10px 10px 5px RGBA(0,0,0,0.5); padding: 10px;">
+  <div style="background-color: RGBA(275,275,200,0.9); box-shadow: 10px 10px 5px RGBA(0,0,0,0.5); padding: 10px;">
     <h4>New to OSR or Go in general?</h4>
     <i>Have some questions? No worries, click <a href="#">here</a> and we will walk you through everything - how our leagues work, where you can watch the lectures, or how to play and learn Go in general. <br>And thanks for joining</i>    
   </div><br>
