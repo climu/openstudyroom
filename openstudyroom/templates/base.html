@@ -36,7 +36,7 @@ ga('send', 'pageview');
 <meta name="title" content="{% block meta_title %}{% if blog_page.seo_title %}{{ blog_page.seo_title }}{% else %}{{ blog_page.title }}{% endif %}{% endblock meta_title %}"/>
 <meta name="description" content="{% block meta_description %}{{ blog_page.search_description }}{% endblock meta_description %}"/>
 {# Global stylesheets #}
-        
+
 {%compress css%}
   <link rel="stylesheet" type="text/css" href="{% static 'css/openstudyroom.css' %}">
 	<link type="text/css" href="{%static 'wgo/wgo.player.css' %}" rel="stylesheet" />
@@ -69,17 +69,17 @@ body {
 
 #banner {
     position: absolute;
-    width: 100%; 
-    height: 513px; 
-    top: 0px; 
-    left: 0px; 
+    width: 100%;
+    height: 513px;
+    top: 0px;
+    left: 0px;
     background-color: darkgrey;
     background-image: url("https://openstudyroom.org/media/images/bar.original.jpg");
     background-position: center top;
     background-repeat: no-repeat;
     overflow: hidden;
     border-bottom: 20px solid rgb(43,43,43);
-    border-top: 20px solid rgb(43,43,43); 
+    border-top: 20px solid rgb(43,43,43);
 }
 
 .hide_on_small{
@@ -107,22 +107,22 @@ a:hover{
 }
 
 #socials{
-    position: absolute; 
-    width: 300px; 
-    right: 20px; 
-    top: 60px; 
-    font-size: 25px; 
+    position: absolute;
+    width: 300px;
+    right: 20px;
+    top: 60px;
+    font-size: 25px;
     text-decoration: none;
     text-align: right;
     }
   #socials a:link {color: #585858; text-decoration: none;}
-  #socials a:hover {color: whitesmoke; text-decoration: none;} 
+  #socials a:hover {color: whitesmoke; text-decoration: none;}
   #socials a:visited {color: #585858; text-decoration: none;}
 
 #row_wrap{
-    position: relative; 
-    top: -100px; 
-    margin: 0 auto; 
+    position: relative;
+    top: -100px;
+    margin: 0 auto;
     text-align: center;
 }
 
@@ -131,24 +131,24 @@ a:hover{
 @media screen and (max-width: 1500px){
     .hide_on_small{
         visibility: hidden;
-    }        
+    }
 }
 
-@media screen and (max-width: 1200px){     
+@media screen and (max-width: 1200px){
     #socials{
-    font-size: 45px; 
+    font-size: 45px;
     }
 
-@media screen and (max-width: 1200px){     
+@media screen and (max-width: 1200px){
     .hide_on_phone{
-        visibility: hidden; 
+        visibility: hidden;
     }
-    
+
 }
 
 </style>
 
-<link href="https://fonts.googleapis.com/css?family=Quicksand:300|Roboto" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css?family=Quicksand:300|Roboto" rel="stylesheet">
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
@@ -157,7 +157,7 @@ a:hover{
 <!-- banner  -->
 <div id="banner"style="z-index:-99"></div>
 
-<!-- NAVBAAAAAAR STARTS HERE-->       
+<!-- NAVBAAAAAAR STARTS HERE-->
         {% block navbar %}
 <div class="container" style="width: 1200px;">
 
@@ -166,7 +166,7 @@ a:hover{
     <!-- social links -->
         <div id="socials" style="">
           {% include 'home/includes/socials.html'  %}
-            <a href="{% feeds_url blog_page %}" target="_blank" data-toggle="tooltip" title="RSS">
+            <a href="/blog/feed/" target="_blank" data-toggle="tooltip" title="RSS">
                  <i class="fa fa-rss-square"></i>
             </a>
         </div>
@@ -174,7 +174,7 @@ a:hover{
     <!-- random quote  THIS SCRIPT SHOULD BE EXTERNALIZED LATER AND POSSIBLY REWRITTEN BY SOMEONE BETTER AT IT -->
   <div id="quote" style="position: absolute; width: 400px; text-align: right; top: 150px; right: 20px; font-size: 30px; font-style: italic; color: black; z-index: -1;">
       "Do not go fishing when your house is on fire"
-      
+
               <script>
                 (function() {
                   var quotes = [
@@ -214,7 +214,7 @@ a:hover{
   <span class="navbar-text hide_on_phone" style="position: absolute; left: 170px; top: 15px;">
     <i>Let's get better together</i>
   </span>
-  
+
     <!-- logo-->
   <a class="hide_on_phone" href="#"><img src="https://openstudyroom.org/media/images/logo_nmBkzHU.original.png" alt="" title="" border="0" height="94" width="187" style="position: absolute; left: 0px; top: 2px"></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsNav" aria-controls="navbarsNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -228,24 +228,24 @@ a:hover{
       <li class="nav-item">
         <a class="nav-link" href="#">LEAGUES</a>
       </li>
-      
+
       <li class="nav-item">
         <a class="nav-link" href="#">CALENDAR</a>
       </li>
-      
+
       <li class="nav-item">
         <a class="nav-link" href="#">FORUMS</a>
       </li>
-      
+
       <li class="nav-item">
         <a class="nav-link" href="#">TEACHERS</a>
       </li>
-      
+
       <li class="nav-item">
         <a class="nav-link" href="#">HELP OSR</a>
       </li>
 
-    <!-- links for registered users -->      
+    <!-- links for registered users -->
       {% if request.user.is_authenticated %}
 
         <li class="nav-item">
@@ -303,7 +303,7 @@ a:hover{
     </div>
 </nav>
 <!--  NAVBAR ENDS HERE YEAH ITS LONG I KNOW TRY TO KEEP UP -->
-  
+
   {% if request.user.is_authenticated and not request.user.is_league_member%}
       <li class="alert alert-info alert-dismissable fade in" style="list-style-type: none;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
