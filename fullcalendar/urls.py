@@ -67,4 +67,10 @@ urlpatterns = [
         views.update_time_range_ajax,
         name='update_time_range_ajax'
     ),
+    url(
+        r'^copy-previous-week-ajax/$',
+        views.copy_previous_week_ajax,
+        name='copy_previous_week_ajax'
+    ),
+    url(r'^ical/(?P<user_id>\d+)/osr.ics$', views.ical, name="osr_ical")
 ]

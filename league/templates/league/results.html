@@ -31,11 +31,18 @@
 </ul>
 {% endif %}
 {% if division %}
-{% if event.event_type == "league" %}
+
+{% if number_players > 20 %}
 {% include "league/includes/results_league.html"  %}
-{% else %}
+{% else %} {%if number_players > 0 %}
 {% include "league/includes/results_ladder.html"  %}
+{% else %}
+<div class="well">
+  This league is empty !
+</div>
 {% endif %}
+{% endif %}
+
 {% else %}
 <div class="well">
   This league is empty !
@@ -46,7 +53,7 @@
 
 {% timezone "UTC" %}
 {% block extra_js %}
-{% if event.event_type == 'league' %}
+{% if number_players > 20 %}
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {

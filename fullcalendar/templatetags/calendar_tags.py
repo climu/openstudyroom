@@ -9,7 +9,6 @@ register = template.Library()
 def public_events(context):
     request = context['request']
     user = request.user
-    public_events = PublicEvent.get_future_public_events().order_by('start')
     if user.is_authenticated and user.is_league_admin():
         my_games = list(GameAppointmentEvent.get_future_games(user))
         public_events = list(PublicEvent.get_future_public_events())
@@ -17,6 +16,7 @@ def public_events(context):
         cal_events = sorted(cal_events, key=lambda k: k.start)
         return cal_events
     else:
+        public_events = PublicEvent.get_future_public_events().order_by('start')
         return public_events
 
 

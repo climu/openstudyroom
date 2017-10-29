@@ -14,6 +14,7 @@ from pytz import utc
 from django.utils import timezone
 from postman.api import pm_broadcast, pm_write
 from django.template import loader
+import vobject
 
 
 # Create your views here.
@@ -197,26 +198,11 @@ def json_feed(request):
                 end__gte=now,
                 start__lte=end,
             )
-
-            for event in me_available_events:
-                dict = {
-                    'id': 'me-a:' + str(event.pk),
-                    'pk': str(event.pk),
-                    'title': 'I am available',
-                    'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
-                    'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
-                    'is_new': False,
-                    'type': 'me-available',
-                    'color': '#ffff80',
-                    'className': 'me-available',
-                }
-                if json.loads(request.GET.get('other-av', False)):
-                    dict['rendering'] = 'background'
-                else:
-                    dict['editable'] = True
-
-                data.append(dict)
-
+            data += AvailableEvent.format_me_availables(
+                me_available_events,
+                json.loads(request.GET.get('other-av', False)),
+                tz
+            )
 
         # others availability
         if json.loads(request.GET.get('other-av', False)):
@@ -529,3 +515,56 @@ def admin_delete_event(request, pk):
     else:
         raise Http404("What are you doing here ?")
     return HttpResponseRedirect(reverse('calendar:admin_cal_event_list'))
+
+@login_required()
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+def copy_previous_week_ajax(request):
+    """ Reproduce the same availability as previous week. Ajax Yo !"""
+    if request.method == 'POST':
+        user = request.user
+        tz = user.get_timezone()
+        start = datetime.strptime(request.POST.get('start'), '%Y-%m-%d')
+        start = make_aware(start, tz)
+        end = datetime.strptime(request.POST.get('end'), '%Y-%m-%d')
+        end = make_aware(end, tz)
+        # First we test if current week is empty
+        week_have_events = AvailableEvent.objects.filter(
+            user=user,
+            end__gte=start,
+            start__lte=end,
+        ).exists()
+        if week_have_events:
+            return HttpResponse('error:week is not empty')
+        previous_events = AvailableEvent.objects.filter(
+            user=user,
+            end__gte=start - timedelta(days=7),
+            start__lte=end - timedelta(days=7),
+        )
+        for event in previous_events:
+            new_event = AvailableEvent(
+                user=event.user,
+                start=event.start + timedelta(days=7),
+                end=event.end + timedelta(days=7)
+            )
+            new_event.save()
+        return HttpResponse('success')
+    else:
+        return HttpResponse('error')
+
+
+def ical(request, user_id):
+    user=User.objects.get(pk=user_id)
+    osr_events = PublicEvent.objects.all()
+    cal = vobject.iCalendar()
+    cal.add('method').value = 'PUBLISH' # IE/Outlook needs this
+    for event in osr_events:
+        vevent = cal.add('vevent')
+        vevent.add('dtstart').value=event.start
+        vevent.add('dtend').value=event.end
+        vevent.add('summary').value=event.title
+        vevent.add('uid').value=str(event.id)
+    icalstream = cal.serialize()
+    response = HttpResponse(icalstream, content_type='text/calendar')
+    response['Filename'] = 'osr.ics' # IE needs this
+    response['Content-Disposition'] = 'attachment; filename=osr.ics'
+    return response

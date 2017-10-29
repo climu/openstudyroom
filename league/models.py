@@ -59,6 +59,10 @@ class LeagueEvent(models.Model):
     # byo yomi time in sec
     byo_time = models.PositiveSmallIntegerField(default=30)
     community = models.ForeignKey(Community, blank=True, null=True)
+    description = MarkupTextField(
+            blank=True, null=True,
+            validators=[validators.NullableMaxLengthValidator(2000)]
+    )
 
 
     class Meta:
@@ -166,7 +170,7 @@ class LeagueEvent(models.Model):
         if user.is_authenticated:
             communitys = user.get_communitys()
             events = LeagueEvent.objects.filter(
-                Q(community__isnull=True) | Q(community__in=communitys)
+                Q(community__isnull=True) | Q(community__in=communitys) | Q(community__promote=True)
             )
             if not user.is_league_admin:
                 events = events.filter(is_public=True)
@@ -645,6 +649,9 @@ class User(AbstractUser):
         for d in list_urlto_games:
             url = d['url']
             game_type = d['game_type']
+            # don't record the simuls
+            if game_type == 'Simul':
+                continue
             # First we check if we already have a sgf with same urlto in db
             if not Sgf.objects.filter(urlto=url).exists():
                 # check if both players are in the league
@@ -667,7 +674,6 @@ class User(AbstractUser):
 
     def check_ogs(user, opponents):
         """Checking user for OGS games.
-            Still a work in progress.
         """
         # Get the time-range to check
         # we just create a date with 1st of the month at 00:00
@@ -688,7 +694,7 @@ class User(AbstractUser):
                 # first we check if we have the same  id in db.
                 # Since it's ordered by time, no need to keep going.
                 if Sgf.objects.filter(ogs_id=game['id']).exists():
-                    break
+                    continue
                 # Then we check if end date og game is too old
                 # 2013-08-31T12:47:34.887Z
                 if game['ended']:

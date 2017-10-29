@@ -190,6 +190,10 @@ def results(request, event_id=None, division_id=None):
         results = None
     else:
         results = division.get_results()
+    if results is None:
+        number_players = 0
+    else:
+        number_players = len(results)
     template = loader.get_template('league/results.html')
     context = {
         'event': event,
@@ -197,6 +201,7 @@ def results(request, event_id=None, division_id=None):
         'results': results,
         'open_events': open_events,
         'can_join': can_join,
+        'number_players': number_players
     }
     return HttpResponse(template.render(context, request))
 

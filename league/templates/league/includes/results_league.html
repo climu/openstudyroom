@@ -16,7 +16,7 @@
         </thead>
         <tbody>
         {% for player in results %}
-        <tr>
+        <tr {%if not player.is_active %}class="inactive"{%endif%}>
           <td>{{forloop.counter}}</td>
             <td >{{player.user | user_link:meijin}}</td>
             <td >{{ player.score }}</td>

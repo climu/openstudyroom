@@ -128,6 +128,31 @@ class AvailableEvent(CalEvent):
                         list_users.append(change['user'])
         return events
 
+    @staticmethod
+    def format_me_availables(events, background, tz):
+        formated_events = []
+
+        for event in events:
+            dict = {
+                'id': 'me-a:' + str(event.pk),
+                'pk': str(event.pk),
+                'title': 'I am available',
+                'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+                'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+                'is_new': False,
+                'type': 'me-available',
+                'color': '#ffff80',
+                'className': 'me-available',
+            }
+            if background:
+                dict['rendering'] = 'background'
+            else:
+                dict['editable'] = True
+
+            formated_events.append(dict)
+
+        return formated_events
+
 
 class GameRequestEvent(CalEvent):
     sender = models.ForeignKey(
@@ -162,7 +187,7 @@ class GameAppointmentEvent(CalEvent):
         """Return all the future game appointments for a user."""
         now = timezone.now()
         return user.fullcalendar_gameappointmentevent_related.filter(
-            start__gte=now
+            end__gte=now
         )
 
     @staticmethod

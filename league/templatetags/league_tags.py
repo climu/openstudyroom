@@ -26,10 +26,10 @@ def html_one_result(context):
                 data-toggle="tooltip" title="' + player.user.username + ' vs ' + \
                 opponent.user.username + '">'
         if game['r'] == 1:
-            html += '<i class="fa fa-circle-o" aria-hidden="true" style="color:green"></i></a>'
+            html += '<i class="fa fa-check" aria-hidden="true" style="color:green"></i></a>'
         # will be glyphicon glyphicon-ok-circle or fontawesome thing
         else:
-            html += '<i class="fa fa-circle" aria-hidden="true" style="color:blue"></i></a>'
+            html += '<i class="fa fa-remove" aria-hidden="true" style="color:red"></i></a>'
 
     return mark_safe(html)
 
@@ -48,10 +48,10 @@ def html_one_player_result(context):
             # here, game['id'] would get you the id of the game to add a link
             html += '<a href="/league/games/' + str(game['id']) + '">'
             if game['r'] == 1:
-                html += '<i class="fa fa-circle-o" aria-hidden="true" style="color:green"></i></a>'
+                html += '<i class="fa fa-check" aria-hidden="true" style="color:green"></i></a>'
             # will be glyphicon glyphicon-ok-circle or fontawesome thing
             else:
-                html += '<i class="fa fa-circle" aria-hidden="true" style="color:blue"></i></a>'
+                html += '<i class="fa fa-remove" aria-hidden="true" style="color:red"></i></a>'
 
     return mark_safe(html)
 

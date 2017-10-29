@@ -1,4 +1,4 @@
-{% load bootstrap3 %}
+{% load bootstrap3 forum_markup_tags %}
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav navbar-left">
   <li {% if active == 'results' %} class="active" {% endif %}>
@@ -31,3 +31,9 @@
   </form>
 {%endif%}
 </nav>
+
+{% if event.description is not None%}
+<div class="alert alert-info" role="alert">
+{{event.description|safe|rendered}}
+</div>
+{%endif%}
