@@ -118,6 +118,12 @@ a:hover{
     color: rgb(168,123,0);
 }
 
+.alert  {
+    position: fixed;
+    top: 0px;
+    left: 50px;
+    right: 50px;
+}
 /* for smaller screens */
 
 @media screen and (max-width: 1500px){

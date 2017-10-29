@@ -240,16 +240,6 @@ ga('send', 'pageview');
         Your account will be activated soon. Make sure you verified your email and you entered a valid KGS or OGS username. Contact us if it takes too long. Thanks for waiting!
       </li>
   {% endif %}
-  {% if messages %}
-      <ul class="messages">
-          {% for message in messages %}
-        <li class="alert alert-info alert-dismissable fade in" style="list-style-type: none;">
-          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-          {{ message }}
-        </li>
-          {% endfor %}
-      </ul>
-  {% endif %}
 
 
 <!-- content -->
@@ -274,6 +264,17 @@ ga('send', 'pageview');
   </div>
 </div>
 
+  {% if messages %}
+      <ul class="messages">
+          {% for message in messages %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          {{ message }}
+        </div>
+          {% endfor %}
+      </ul>
+  {% endif %}
+  
 <!-- Some javascript or something. What does it do exactly? Nobody knows... -->
 {# Global javascript #}
 
