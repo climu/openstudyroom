@@ -1,3 +1,5 @@
+<!-- Hello and welcome to the code :) -->
+
 {% load static wagtailuserbar compress puput_tags %}
 {% load menu_tags osr_tags%}
 {% load bootstrap3 %}
@@ -6,8 +8,9 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
-    <head>
-      <!-- Google Analytics -->
+
+<head>
+<!-- Google Analytics -->
 <script>
 window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
 ga('create', 'UA-106566532-1', 'auto');
@@ -16,118 +19,311 @@ ga('send', 'pageview');
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 <!-- End Google Analytics -->
 
-        <meta charset="utf-8" />
-        <title>
+  <meta charset="utf-8" />
 
-            {% block title %}
-                {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}
-            {% endblock %}
-            {% block title_suffix %}
-                {% with self.get_site.site_name as site_name %}
-                    {% if site_name %}- {{ site_name }}{%else%}- Open Study Room{% endif %}
-                {% endwith %}
-            {% endblock %}
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="title" content="{% block meta_title %}{% if blog_page.seo_title %}{{ blog_page.seo_title }}{% else %}{{ blog_page.title }}{% endif %}{% endblock meta_title %}"/>
-        <meta name="description" content="{% block meta_description %}{{ blog_page.search_description }}{% endblock meta_description %}"/>
-        {# Global stylesheets #}
+<title>
+    {% block title %}
+        {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}
+    {% endblock %}
+    {% block title_suffix %}
+        {% with self.get_site.site_name as site_name %}
+            {% if site_name %}- {{ site_name }}{%else%}- Open Study Room{% endif %}
+        {% endwith %}
+    {% endblock %}
+</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="title" content="{% block meta_title %}{% if blog_page.seo_title %}{{ blog_page.seo_title }}{% else %}{{ blog_page.title }}{% endif %}{% endblock meta_title %}"/>
+<meta name="description" content="{% block meta_description %}{{ blog_page.search_description }}{% endblock meta_description %}"/>
+{# Global stylesheets #}
+        
 {%compress css%}
-        <link rel="stylesheet" type="text/css" href="{% static 'css/openstudyroom.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/openstudyroom.css' %}">
 	<link type="text/css" href="{%static 'wgo/wgo.player.css' %}" rel="stylesheet" />
-
-        <link rel="stylesheet" href="{% static 'css/puput.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/puput.css' %}"/>
 {%endcompress%}
 
-        <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,100italic,100,400italic,500,500italic,700,900,700italic,900italic' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,100italic,100,400italic,500,500italic,700,900,700italic,900italic' rel='stylesheet' type='text/.css'>
 
-	<script src="https://use.fontawesome.com/1602589062.js"></script>
-  <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="  crossorigin="anonymous"></script>
-  {% bootstrap_css %}
+<script src="https://use.fontawesome.com/1602589062.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="  crossorigin="anonymous"></script>
 
-        {% block extra_css %}
-            {# Override this in templates to add extra stylesheets #}
-        {% endblock %}
-        {% block extra_head_js %}
-        {% endblock %}
-    </head>
 
-    <body class="{% block body_class %}{% endblock %}">
-        {% wagtailuserbar %}
+    {% block extra_css %}
+        {# Override this in templates to add extra stylesheets #}
+    {% endblock %}
+    {% block extra_head_js %}
+    {% endblock %}
+
+<style>
+body {
+    height: 3500px;
+    font-family: 'Quicksand', sans-serif;
+    background-color: rgb(67,67,67);
+    background-repeat: repeat-y;
+    background-position: center top;
+    background: linear-gradient(rgb(67,67,67), rgb(27,27,27));
+    /*background-image: url(../static/wood.jpg);*/
+}
+
+#banner {
+    position: absolute;
+    width: 100%; 
+    height: 513px; 
+    top: 0px; 
+    left: 0px; 
+    background-color: darkgrey;
+    background-image: url(../static/bar.jpg);
+    background-position: center top;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    border-bottom: 20px solid rgb(43,43,43);
+    border-top: 20px solid rgb(43,43,43); 
+}
+
+.hide_on_small{
+    visibility: visible;
+    }
+
+.hide_on_phone{
+    visibility: visible;
+    }
+
+h4{
+    font-family: 'Quicksand', sans-serif;
+    text-transform: uppercase;
+    color: rgb(168,123,0);
+    text-align: center;
+    }
+
+a{
+    color: rgb(168,123,0);
+    outline: 0;
+    }
+
+a:hover{
+    color: rgb(168,100,0);
+}
+
+#socials{
+    position: absolute; 
+    width: 300px; 
+    right: 20px; 
+    top: 60px; 
+    font-size: 25px; 
+    text-decoration: none;
+    text-align: right;
+    }
+  #socials a:link {color: #585858; text-decoration: none;}
+  #socials a:hover {color: whitesmoke; text-decoration: none;} 
+  #socials a:visited {color: #585858; text-decoration: none;}
+
+#row_wrap{
+    position: relative; 
+    top: -100px; 
+    margin: 0 auto; 
+    text-align: center;
+}
+
+/* for smaller screens */
+
+@media screen and (max-width: 1500px){
+    .hide_on_small{
+        visibility: hidden;
+    }        
+}
+
+@media screen and (max-width: 1200px){     
+    #socials{
+    font-size: 45px; 
+    }
+
+@media screen and (max-width: 1200px){     
+    .hide_on_phone{
+        visibility: hidden; 
+    }
+    
+}
+
+</style>
+
+<link href="https://fonts.googleapis.com/css?family=Quicksand:300|Roboto" rel="stylesheet"> 
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+{% wagtailuserbar %}
+
+<!-- banner  -->
+<div id="banner"style="z-index:-99"></div>
+
+<!-- NAVBAAAAAAR STARTS HERE-->       
         {% block navbar %}
-              <div class="navbar navbar-inverse navbar-static-top" role="navigation">
-                 <a class="navbar-brand" href="/">Open Study Room</a>
-              {% main_menu  %}
-              <ul class="nav navbar-nav navbar-right" style= "margin-right:5px;">
+<div class="container" style="width: 1200px;">
+
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: RGBA(43,43,43,1); border-bottom: 6px solid grey;">
+
+    <!-- social links -->
+        <div id="socials" style="">
+          {% include 'home/includes/socials.html'  %}
+            <a href="{% feeds_url blog_page %}" target="_blank" data-toggle="tooltip" title="RSS">
+                 <i class="fa fa-rss-square"></i>
+            </a>
+        </div>
+
+    <!-- random quote  THIS SCRIPT SHOULD BE EXTERNALIZED LATER AND POSSIBLY REWRITTEN BY SOMEONE BETTER AT IT -->
+  <div id="quote" style="position: absolute; width: 400px; text-align: right; top: 150px; right: 20px; font-size: 30px; font-style: italic; color: black; z-index: -1;">
+      "Do not go fishing when your house is on fire"
+      
+              <script>
+                (function() {
+                  var quotes = [
+                    {
+                      text: "There is death in hane",
+                    },
+                    {
+                      text: "Do not go fishing when your house is on fire",
+                    },
+                                        {
+                      text: "Capture three to get an eye",
+                    },
+                                        {
+                      text: "If you wish to attack the east, make noise in the west",
+                    },
+                                        {
+                      text: "In the land of the blind, the one-eyed man is king",
+                    },
+                                        {
+                      text: "A rich man should not pick quarrels with poor",
+                    },
+                                        {
+                      text: "A very obvious move should be very suspicious to you",
+                    },
+                    {
+                      text: "Just because you do not know how to respond does not mean you can tenuki",
+                    }
+                  ];
+                  var quote = quotes[Math.floor(Math.random() * quotes.length)];
+                  document.getElementById("quote").innerHTML =
+                    '<p>' + '"' + quote.text + '"' + '</p>'
+                })();
+              </script>
+  </div>
+
+    <!-- catchphrase-->
+  <span class="navbar-text hide_on_phone" style="position: absolute; left: 170px; top: 15px;">
+    <i>Let's get better together</i>
+  </span>
+  
+    <!-- logo-->
+  <a class="hide_on_phone" href="#"><img src="{%static 'logo.png' %}" alt="" title="" border="0" height="94" width="187" style="position: absolute; left: 0px; top: 2px"></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsNav" aria-controls="navbarsNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+    <!-- links -->
+    <div class="collapse navbar-collapse justify-content-md-end" id="navbarsNav">
+    <ul class="navbar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link" href="#">LEAGUES</a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" href="#">CALENDAR</a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" href="#">FORUMS</a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" href="#">TEACHERS</a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" href="#">HELP OSR</a>
+      </li>
+
+    <!-- links for registered users -->      
       {% if request.user.is_authenticated %}
-	{% if request.user.is_league_admin %}
-	<li>
-	<a href="{%url "league:admin" %}"> League admin </a>
-</li>
-	{% endif %}
-        <li class="dropdown">
-	<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-      Hello {{ request.user.username }}
-      {% if postman_unread_count > 0 %}
-       <span class="badge"> {{ postman_unread_count }}</span>
-       {% endif %}
-       <span class="caret"></span>
-	</a>
-    <ul class="dropdown-menu">
+
+        <li class="nav-item">
+          <a class="nav-link disabled">|</a>
+        </li>
+        <li class="nav-item dropdown">
+        	<a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Hello {{ request.user.username }}
+            {% if postman_unread_count > 0 %}
+            <span class="badge"> {{ postman_unread_count }}</span>
+            {% endif %}
+            <span class="caret"></span>
+	        </a>
+    <!-- dropdown for registered users -->
+        <div class="dropdown-menu" aria-labelledby="dropdown01" style="padding-left: 10px; border-radius: 0px; padding-right: 10px;">
+        	{% if request.user.is_league_admin %}
+        	<a class="dropdown-item" href="#">
+        	<a href="{%url "league:admin" %}"> League admin </a>
+        </a>
+        <div class="dropdown-divider"></div>
+        	{% endif %}
+
 	{%if request.user.is_league_member %}
 
-		 <li>
-                      <a href="{% url "league:league_account" %}" >{% bootstrap_icon "user" %} Profile</a>
-      </li>
-      <li>
-        <a href="{% url "postman:inbox" %}" >
-          <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
-          Messages
-          <span class="badge"> {{ postman_unread_count }}</span>
-
-        </a>
-        </li>
+      		<a class="dropdown-item" href="#">
+            <a href="{% url "league:league_account" %}" >{% bootstrap_icon "user" %} Profile</a>
+          </a>
+          <a class="dropdown-item" href="#">
+            <a href="{% url "postman:inbox" %}" >
+              <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+              Messages
+              <span class="badge"> {{ postman_unread_count }}</span>
+            </a>
+          </a>
 
 	{%else%}
-		<div>Your account will be activated soon. Thanks for waiting !</div>
+      		<div>Your account will be activated soon. Thanks for waiting!</div>
 	{%endif%}
-		  <li>
-                     <a href="{% url "account_logout"%}"><i class="fa fa-sign-out" aria-hidden="true"></i>
-Logout</a>
-                  </li>
-	</ul>
-              {% else %}
-                  <li>
+    		  <a class="dropdown-item" href="#">
+            <a href="{% url "account_logout"%}"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a>
+          </a>
+	     </div>
+  {% else %}
+                  <a class="dropdown-item" href="#">
                       <a href="{% url "account_login"%}">Login</a>
-                  </li>
-                  <li>
+                  </a>
+                  <a class="dropdown-item" href="#">
                       <a href="{% url "account_signup"%}">Register</a>
-                  </li>
-              {% endif %}
-            </ul>
+                  </a>
+  {% endif %}
 
-            </div>
+          </li>
+    </div>
   {% endblock %}
+    </div>
+</nav>
+<!--  NAVBAR ENDS HERE YEAH ITS LONG I KNOW TRY TO KEEP UP -->
+  
   {% if request.user.is_authenticated and not request.user.is_league_member%}
-  <li class="alert alert-info alert-dismissable fade in" style="list-style-type: none;">
-  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-  Your account will be activated soon. Be sure you verify your email and you entered a valid KGS or OGS username. Contact us if it takes too long. Thanks for waiting !
-  </li>
+      <li class="alert alert-info alert-dismissable fade in" style="list-style-type: none;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        Your account will be activated soon. Make sure you verified your email and you entered a valid KGS or OGS username. Contact us if it takes too long. Thanks for waiting!
+      </li>
   {% endif %}
   {% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li class="alert alert-info alert-dismissable fade in" style="list-style-type: none;">
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-    {{ message }}
-  </li>
-    {% endfor %}
-</ul>
-{% endif %}
+      <ul class="messages">
+          {% for message in messages %}
+        <li class="alert alert-info alert-dismissable fade in" style="list-style-type: none;">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          {{ message }}
+        </li>
+          {% endfor %}
+      </ul>
+  {% endif %}
 
 
-<div class="container">
-  <div class="row">
+<!-- content -->
+<div class="container" style="position: relative; margin: 0 auto; top: 400px; width: 1100px; background-color: RGBA(43,43,43,1); box-shadow: 10px 10px 5px RGBA(0,0,0,0.5);">
     {% block postman_menu %}
     {%endblock%}
       {% block heading %}
@@ -135,36 +331,36 @@ Logout</a>
                 <div class="page-header">
                     <h1>{{ self.title }}</h1>
                 </div>
-{% endblock %}
+
+<!-- three boxes up top -->
+    {% endblock %}
     {%block page_intro %} {% endblock %}
-  </div>
 
-  <div class="row-fluid">
-      {%block breadcrumb%} {%endblock%}
-{% block page_content%}
-{% endblock %}
-
-{% block main %}{% endblock %}
+<!-- news and the rest -->
+  <div style="position: relative; top: -80px;">
+    {%block breadcrumb%}{%endblock%}
+    {% block page_content%}{% endblock %}
+    {% block main %}{% endblock %}
   </div>
 </div>
-</div>
 
+<!-- Some javascript or something. What does it do exactly? Nobody knows... -->
+{# Global javascript #}
 
-        {# Global javascript #}
+<script type="text/javascript" src="{% static 'js/openstudyroom.js' %}"></script>
 
-        <script type="text/javascript" src="{% static 'js/openstudyroom.js' %}"></script>
+<script type="text/javascript" src="{%static 'wgo/wgo.min.js'%}"></script>
+<script type="text/javascript" src="{%static 'wgo/wgo.player.min.js'%}"></script>
 
-	<script type="text/javascript" src="{%static 'wgo/wgo.min.js'%}"></script>
-        <script type="text/javascript" src="{%static 'wgo/wgo.player.min.js'%}"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 
-      {% bootstrap_javascript %}
-  <script type="text/javascript">$("[data-toggle=tooltip]").tooltip();</script>
-        {% block extra_js %}
-            {# Override this in templates to add extra javascript #}
-        {% endblock %}
-          {# for machina templates we needs a js block #}
-        {% block js %}
-        {% endblock %}
+<!-- Side bowls keep last -->
+<img class="hide_on_small" src="../static/1.png" alt="" title="" border="0" height="562" width="258" style="position: absolute; left: 0px; top: 400px;">
+<img class="hide_on_small" src="../static/2.png" alt="" title="" border="0" height="577" width="295" style="position: absolute; right: -50px; top: 700px;">
+
 
     </body>
 </html>
+<!-- And hey, you made it to the end KUDOS keep up the good work and stop crying -->

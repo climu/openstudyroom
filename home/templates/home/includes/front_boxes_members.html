@@ -1,14 +1,72 @@
-<div class="col-md-4">
-    <div class="panel panel-default">
-      <div class="panel-heading">
+<style>
+
+/* none of this is dependant on bootstrap (hopefully - that crap is clutter and cancer)*/
+.floatbox{
+    display: inline-block;
+    width: 300px;
+    margin: 10px;
+    height: 380px;
+    padding: 20px 20px 0px 20px;
+    color: black;
+    border-top: 25px solid RGB(43,43,43);
+    /* fallback */    background-color: RGB(277,277,277);
+    background-color: RGBA(277,277,277,0.9);
+    vertical-align:top;
+    box-shadow: 10px 10px 5px RGBA(0,0,0,0.5);
+    text-align: justify;
+}
+
+.button{
+    background-color: whitesmoke; 
+    border-color: rgb(168,123,0);
+    border-radius: 5px;
+    font-size: 20px;
+    padding: 5px 20px 5px 20px; 
+    color: rgb(168,123,0); 
+    cursor: pointer
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+.button:hover {
+    cursor: pointer;
+    background-color: lightgrey;
+    border-color: rgb(168,123,0);
+    color: rgb(168,123,0);
+}
+
+/* For smaller screens */
+@media screen and (max-width: 1200px){
+  .floatbox{
+  width: 700px;
+  height: 270px;
+}
+}
+
+@media screen and (max-width: 1000px)
+{
+  .floatbox{
+  width: 500px;
+  height: 350px;
+  }
+}
+</style>
+
+<div id="row_wrap" style="">
+
+<!-- PLAY NOW BOX -->
+  <div class="floatbox">
+
           {% if should_join %}
-          <h4>Join a league</h4>
+            <h4>Join a league</h4><br>
           {% else %}
-          <h4>Play Now</h4>
+            <h4>Play Now</h4>
+            <br>
           {% endif %}
-      </div>
-    <div class="panel-body">
+
+
         {% if should_join %}
+        <br>
         <p>You can easily join a league in the <a href="/league/">league pages</a>.</p>
         <p> See how our leagues works <a href="/league/league-rules/">here.</a> </p>
         {% else %}
@@ -27,51 +85,43 @@
       <p>No opponents are online now on KGS.</p><p> Try planing your games.</p>
       {% endif %}
       {% endif %}
+  
+  </div>
 
-                  </div>
-              </div>
-          </div>
-          <div class="col-md-4">
-              <div class="panel panel-default">
-                  <div class="panel-heading">
-                      <h4><a href="/calendar"> Plan your games</a></h4>
-                  </div>
-                  <div class="panel-body">
-                      {% if availables %}
-                        <p>Some users are availables to play in a near future.
-                         Send them a game request.</a></p>
-                      {% endif %}
-                      {% if not me_available %}
-                      <p>Tell others when you are available so they can schedule games with you.</p>
-                      {% endif %}
-                      {% if game_requests > 0 %}
-                      <p> You have {{game_requests}} game requests. </p>
-                      {% endif %}
-                      <p> Manage all this <a href="/calendar"> here </a> </p>
-                  </div>
-              </div>
-          </div>
-          <div class="col-md-4">
-              <div class="panel panel-default">
-                  <div class="panel-heading">
-                      <h4><a href="/help-osr/">Support the OSR project</a></h4>
-                  </div>
-                  <div class="panel-body">
-                      <p>Click <a href="/help-osr/">here</a> to see various way you can help OSR.</p>
-                      <p>You can also just push the donate button.</p>
+<!-- PLAN GAMES BOX -->   
+  <div class="floatbox">
 
+      <h4><a href="/calendar"> Plan your games</a></h4><br>
+      {% if availables %}
+        Some users are availables to play in a near future.
+        Send them a game request.
+      {% endif %}
+      {% if not me_available %}
+        Tell others when you are available so they can schedule games with you.
+      {% endif %}
+      {% if game_requests > 0 %}
+        You have {{game_requests}} game requests.
+      {% endif %}
+        Manage all this <a href="/calendar"> here. </a>
+ 
+  </div>
 
-        <div class=" text-center" style="margin-top:30px;" >
-    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-    <input type="hidden" name="cmd" value="_s-xclick">
-    <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
-    ">
+<!-- DONATE BOX -->  
+  <div class="floatbox">
 
-            <button type="submit" name="submit" class="btn btn-primary text-uppercase btn-lg">Donate <span class="glyphicon glyphicon-heart" aria-hidden="true"></span></button>
+      <h4><a href="/help-osr/">Support OSR</a></h4><br>
+      Running servers, hiring teachers, and maintaining the website is unfortunately not always free.<br><br> 
+      If you want to contribute click <a href="/help-osr/">here</a> to see various ways you can help OSR. If you really enjoy what we do, consider donating. Thank you.</p>
+
+      <center>
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+          <input type="hidden" name="cmd" value="_s-xclick">
+          <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----">
+          <button type="submit" name="submit" class="button" style="">Donate ♥</button>
+        </form>
+      </center>
 
 
-    </form>
-        </div>
-                  </div>
-              </div>
+ 
+  </div>
 </div>

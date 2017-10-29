@@ -25,52 +25,6 @@ ul.links li ul {
     padding: 0;
 }
 
-ul.sidebar {
-    border-top: 2px solid #222222;
-    background-color: #ededed;
-    padding: 20px;
-    margin-bottom: 50px;
-    list-style: none;
-}
-
-ul.sidebar h4 {
-    font-size: 16px;
-    font-weight: 500;
-    color: #333333;
-    margin-bottom: 20px;
-}
-
-ul.sidebar li {
-    margin: 0 4px 10px 0;
-    list-style: none;
-}
-
-ul.sidebar li.tag {
-    display: inline-block;
-    padding: 3px 10px;
-}
-
-ul.sidebar li.tag a {
-    font-size: 12px;
-}
-
-ul.sidebar li a {
-    font-size: 14px;
-    font-weight: 300;
-}
-
-ul.sidebar ul li i {
-  /*  color: #222222; */
-}
-
-ul.sidebar li > ul{
-  padding-left: 0;
-}
-
-ul.sidebar ul li > ul li {
-    padding-left: 20px;
-}
-
 a {
     transition: 0.5s all;
     -webkit-transition: 0.5s all;

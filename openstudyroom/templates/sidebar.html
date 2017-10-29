@@ -1,14 +1,8 @@
 {% load static i18n wagtailcore_tags wagtailimages_tags puput_tags compress wagtailroutablepage_tags %}
 {% load league_tags osr_tags%}
 
-        <div class="rss-sitemap text-justify">
-          {% include 'home/includes/socials.html'  %}
-            <a href="{% feeds_url blog_page %}" target="_blank" data-toggle="tooltip" title="RSS">
-                 <i class="fa fa-rss-square"></i>
-            </a>
 
-        </div>
-          {% include 'fullcalendar/event_list_sidebar.html'  %}
+{% include 'fullcalendar/event_list_sidebar.html'  %}
 {% adverts %}
 {% last_topics request as topics %}
 
@@ -43,7 +37,3 @@
            {% categories_list %}
         </ul>
 
-        <ul class="sidebar">
-           <li><h4>{% trans 'Tags' %}</h4></li>
-           {% tags_list %}
-        </ul>
