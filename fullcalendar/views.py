@@ -1,23 +1,22 @@
+from datetime import datetime, timedelta
+import json
+import vobject
+
 from django.shortcuts import render, get_object_or_404
 from django.views.generic.edit import UpdateView, CreateView
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from datetime import datetime, timedelta
-import json
 from django.utils.timezone import make_aware
+from django.utils import timezone
+from django.template import loader
+from postman.api import pm_broadcast, pm_write
+from pytz import utc
+
 from league.models import User
 from .forms import UTCPublicEventForm
 from .models import PublicEvent, AvailableEvent, GameRequestEvent, GameAppointmentEvent
-from pytz import utc
-from django.utils import timezone
-from postman.api import pm_broadcast, pm_write
-from django.template import loader
-import vobject
-
-
-# Create your views here.
 
 
 class PublicEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -460,21 +459,20 @@ def save(request):
                     ev.delete()
 
             elif event['is_new']:  # we create a new event on server
-                if end > now:
-                    if event['type'] == 'me-available':
-                        # If this event start exactly at the same time as the
-                        # previous event ended, we just merge those events.
-                        if prev_event is not None and start == prev_event.end:
-                            prev_event.end = end
-                            prev_event.save()
+                if end > now and event['type'] == 'me-available':
+                    # If this event start exactly at the same time as the
+                    # previous event ended, we just merge those events.
+                    if prev_event is not None and start == prev_event.end:
+                        prev_event.end = end
+                        prev_event.save()
 
-                        else:
-                            new_event = AvailableEvent.objects.create(
-                                start=start,
-                                end=end,
-                                user=user
-                                )
-                            prev_event = new_event
+                    else:
+                        new_event = AvailableEvent.objects.create(
+                            start=start,
+                            end=end,
+                            user=user
+                            )
+                        prev_event = new_event
 
             elif end > now:  # the event must have been moved or resized.
                 pk = event['pk']
@@ -559,10 +557,10 @@ def ical(request, user_id):
     cal.add('method').value = 'PUBLISH' # IE/Outlook needs this
     for event in osr_events:
         vevent = cal.add('vevent')
-        vevent.add('dtstart').value=event.start
-        vevent.add('dtend').value=event.end
-        vevent.add('summary').value=event.title
-        vevent.add('uid').value=str(event.id)
+        vevent.add('dtstart').value = event.start
+        vevent.add('dtend').value = event.end
+        vevent.add('summary').value = event.title
+        vevent.add('uid').value = str(event.id)
     icalstream = cal.serialize()
     response = HttpResponse(icalstream, content_type='text/calendar')
     response['Filename'] = 'osr.ics' # IE needs this

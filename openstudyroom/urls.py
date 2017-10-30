@@ -8,7 +8,6 @@ from search import views as search_views
 from wagtail.wagtailadmin import urls as wagtailadmin_urls
 from wagtail.wagtailcore import urls as wagtail_urls
 from wagtail.wagtaildocs import urls as wagtaildocs_urls
-from allauth.account.views import LoginView, SignupView
 from machina.app import board
 
 urlpatterns = [
@@ -24,7 +23,7 @@ urlpatterns = [
 #    url(r'^accounts/login/$',LoginView.as_view(), name="auth_login"),
 #    url(r'^accounts/signup/$',SignupView.as_view(), name="registration_register"),
 
-    url(r'^calendar/', include('fullcalendar.urls',namespace='calendar')),
+    url(r'^calendar/', include('fullcalendar.urls', namespace='calendar')),
 
     url(r'^accounts/', include('allauth.urls')),
     url(r'^forum/', include(board.urls)),
@@ -41,6 +40,7 @@ urlpatterns = [
     #    url(r'^pages/', include(wagtail_urls)),
 ]
 if settings.DEBUG:
+    # pylint: disable=ungrouped-imports
     import debug_toolbar
     urlpatterns = [
         url(r'^__debug__/', include(debug_toolbar.urls)),
@@ -50,7 +50,6 @@ if settings.DEBUG:
 if settings.DEBUG:
     from django.conf.urls.static import static
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-
     # Serve static and media files from development server
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,7 +1,8 @@
 from django import template
-from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
+
 from league.models import Registry
+
 register = template.Library()
 
 
@@ -66,9 +67,9 @@ def user_link(user, meijin=None):
     else:
         link += 'class="offline"'
     tooltip = ''
-    if user.profile.kgs_username :
+    if user.profile.kgs_username:
         tooltip += '<p>KGS: ' + user.profile.kgs_username + '</p>'
-    if user.profile.ogs_username :
+    if user.profile.ogs_username:
         tooltip += '<p>OGS: ' + user.profile.ogs_username + '</p>'
 
     link += 'data-toggle="tooltip" data-html="true" rel="tooltip" title="' + tooltip
@@ -133,15 +134,15 @@ def boolean_icon(b):
 
 
 @register.filter()
-def p_status(p_status):
-    if p_status == 0:
+def p_status(status):
+    if status == 0:
         return mark_safe("0 : already scraped")
-    elif p_status == 1:
+    elif status == 1:
         return mark_safe("1 : to be scraped")
-    elif p_status == 2:
+    elif status == 2:
         return mark_safe("2 : to be scraped soon")
     else:
-        return mark_safe(str(p_status) + " : something wrong")
+        return mark_safe(str(status) + " : something wrong")
 
 
 @register.filter()

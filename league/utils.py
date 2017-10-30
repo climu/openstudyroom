@@ -1,24 +1,25 @@
-# library of useful fonctions
-from django.conf import settings
-from bs4 import BeautifulSoup
-from django.template import loader
-from django.core.mail import send_mail
-import requests
-import re
+# library of useful functions
+
 import datetime
 import json
 import time
+
+from bs4 import BeautifulSoup
+from django.conf import settings
+from django.template import loader
+from django.core.mail import send_mail
+import requests
 
 def kgs_connect():
     url = 'http://www.gokgs.com/json/access'
     # If you are running this locally and want to run scraper, you should use your own
     # KGS credential
     if settings.DEBUG:
-        kgs_password='yourpassword' # change this for local test
+        kgs_password = 'yourpassword' # change this for local test
     else:
         with open('/etc/kgs_password.txt') as f:
             kgs_password = f.read().strip()
-            
+
     message = {
         "type": "LOGIN",
         "name": "OSR", # change this if you are testing locally
@@ -26,7 +27,7 @@ def kgs_connect():
         "locale": "en_US",
     }
     formatted_message = json.dumps(message)
-    for i in range(10):
+    for _ in range(10):
         response = requests.post(url, formatted_message)
         time.sleep(3)
         if response.status_code == 200:
@@ -34,7 +35,7 @@ def kgs_connect():
     if response.status_code != 200:
         return False
     cookies = response.cookies
-    for i in range(10):
+    for _ in range(10):
         r = requests.get(url, cookies=cookies)
         time.sleep(3)
         if r.status_code == 200:
@@ -116,7 +117,7 @@ def ask_kgs(kgs_username, year, month):
 def findnth(haystack, needle, n):
     ''' find the nth needle in a haystack. Return the index'''
     parts = haystack.split(needle, n+1)
-    if len(parts)<=n+1:
+    if len(parts) <= n+1:
         return -1
     return len(haystack)-len(parts[-1])-len(needle)
 
@@ -165,17 +166,17 @@ def parse_sgf_string(sgf_string):
     return out
 
 
-def quick_send_mail(user,mail):
-   '''sends 'user' an email with the contents from the template in 'mail' '''
-   address = user.get_primary_email()
-   if address is not None:
-      plaintext = loader.get_template(mail)
-      context = {'user': user}
-      message = plaintext.render(context)
-      send_mail(
-         'Welcome in the Open Study Room',
-         message,
-         'openstudyroom@gmail.com',
-         [address.email],
-         fail_silently=False,
-      )
+def quick_send_mail(user, mail):
+    '''sends 'user' an email with the contents from the template in 'mail' '''
+    address = user.get_primary_email()
+    if address is not None:
+        plaintext = loader.get_template(mail)
+        context = {'user': user}
+        message = plaintext.render(context)
+        send_mail(
+           'Welcome in the Open Study Room',
+           message,
+           'openstudyroom@gmail.com',
+           [address.email],
+           fail_silently=False,
+        )

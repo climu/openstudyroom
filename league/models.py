@@ -1,22 +1,24 @@
-from django.db import models
-import datetime
-import time
-from . import utils
-import requests
-from django.contrib.auth.models import AbstractUser
 from collections import defaultdict
-from django.db.models import Q
-import pytz
-from operator import attrgetter
-from django.core.urlresolvers import reverse
-from django.utils import timezone
-from community.models import Community
-from machina.models.fields import MarkupTextField
-from machina.core import validators
+import datetime
 import json
+from operator import attrgetter
+import time
 
+from django.contrib.auth.models import AbstractUser
+from django.core.urlresolvers import reverse
+from django.db import models
+from django.db.models import Q
+from django.utils import timezone
+from machina.core import validators
+from machina.models.fields import MarkupTextField
+import pytz
+import requests
 
-# Create your models here.
+from community.models import Community
+
+from . import utils
+
+# pylint: disable=no-member
 
 class LeagueEvent(models.Model):
     """A League.
@@ -118,7 +120,7 @@ class LeagueEvent(models.Model):
         return n
 
     def number_inactives_players(self):
-        return (self.number_players() - self.number_actives_players())
+        return self.number_players() - self.number_actives_players()
 
     def last_division_order(self):
         if self.division_set.exists():
@@ -215,9 +217,9 @@ class Registry(models.Model):
         return r.kgs_delay
 
     @staticmethod
-    def set_time_kgs(time):
+    def set_time_kgs(time_kgs):
         r = Registry.objects.get(pk=1)
-        r.time_kgs = time
+        r.time_kgs = time_kgs
         r.save()
 
 
@@ -256,8 +258,8 @@ class Sgf(models.Model):
     # black, white, winner and events fields will only be populated for valid sgfs
     # status of the sgf:0 already checked
     #           KGS status:
-    # 					1 require checking, sgf added from kgs archive link
-    # 					2 require checking with priority,sgf added/changed by admin
+    #                   1 require checking, sgf added from kgs archive link
+    #                   2 require checking with priority,sgf added/changed by admin
     #           OGS status:
     #                   3 require checking, sgf added from ogs api. We just got id
 
@@ -607,7 +609,7 @@ class User(AbstractUser):
         players = LeaguePlayer.objects.filter(
             division__league_event__is_open=True,
             user__profile__last_kgs_online__gt=time_online
-        ).values_list('user',flat=True)
+        ).values_list('user', flat=True)
         return players
 
     def check_kgs(self, opponents):
@@ -672,7 +674,7 @@ class User(AbstractUser):
                     sgf.game_type = game_type
                     sgf.save()
 
-    def check_ogs(user, opponents):
+    def check_ogs(self, opponents):
         """Checking user for OGS games.
         """
         # Get the time-range to check
@@ -683,7 +685,7 @@ class User(AbstractUser):
             now = now.replace(day=1) - datetime.timedelta(days=1)
         # Set day, time to 0
         time_limit = now.replace(day=1, hour=0, minute=0)
-        ogs_id = user.profile.ogs_id
+        ogs_id = self.profile.ogs_id
         url = 'https://online-go.com/api/v1/players/' + str(ogs_id) + '/games/?ordering=-ended'
         opponents = [u.profile.ogs_id for u in opponents if u.profile.ogs_id > 0]
         # we deal with pagination with this while loop
@@ -746,7 +748,7 @@ class User(AbstractUser):
         # Ask servers
         if self.profile.kgs_username is not None:
             self.check_kgs(opponents)
-        if self.profile.ogs_id >0:
+        if self.profile.ogs_id > 0:
             self.check_ogs(opponents)
         # Mark the user checked
         self.profile.p_status = 0

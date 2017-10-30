@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
-from wagtail.wagtailcore.fields import RichTextField
 from machina.models.fields import MarkupTextField
 from machina.core import validators
 
@@ -26,7 +25,7 @@ class Community(models.Model):
         return self.name
 
     @classmethod
-    def create(cls,name, slug):
+    def create(cls, name, slug):
         '''We create the admin and users group before creating the community object'''
 
         if not Group.objects.filter(name=slug + '_community_admin').exists():
