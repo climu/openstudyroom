@@ -23,7 +23,7 @@ from postman.api import pm_write
 import pytz
 
 from . import utils
-from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Game, Registry, \
+from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
     Profile
 from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm, LeagueEventForm, \
     EmailForm, TimezoneForm, ProfileForm
