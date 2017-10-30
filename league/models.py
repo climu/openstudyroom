@@ -340,10 +340,6 @@ class Sgf(models.Model):
             self.save()
             return True
 
-    def has_game(self):
-        """Deprecated. We should use league_valid from now on."""
-        return Game.objects.filter(sgf=self).exists()
-
     def get_messages(self):
         """Return a list of erros pasring message field."""
         return self.message.split(';')[1:]
@@ -988,73 +984,3 @@ class LeaguePlayer(models.Model):
             if n_white + n_black < self.event.nb_matchs:
                 opponents.append(player)
         return opponents
-
-class Game(models.Model):
-    """This model is deprecated and should be deleted soon."""
-
-    sgf = models.OneToOneField('Sgf')
-    event = models.ForeignKey('LeagueEvent', blank=True, null=True)
-    black = models.ForeignKey('LeaguePlayer',
-                              related_name='black',
-                              blank=True,
-                              null=True)
-    white = models.ForeignKey('LeaguePlayer',
-                              related_name='white',
-                              blank=True,
-                              null=True)
-    winner = models.ForeignKey('LeaguePlayer',
-                               related_name='winner',
-                               blank=True,
-                               null=True)
-
-    def __str__(self):
-        return str(self.pk) + ': ' + self.black.kgs_username + ' vs ' + self.white.kgs_username
-
-    @staticmethod
-    def create_game(sgf):
-        """Create a game related to the sgf.
-        does NOT perform any check on the sgf. Just uses the league_valid flag
-        Please use check_validity before calling this
-        return true if successfully create a game, false otherwise"""
-
-        # check if we already got a game with this sgf
-        if (Game.objects.filter(sgf=sgf).exists() or
-                not (sgf.league_valid) or
-                (sgf.event is None)):
-            return False
-        event = sgf.event
-        # check players before saving the game otherwise we can't delete it:
-        # calling unscore will raise error.
-        # I guess that's why they do db normalisation
-        whites = LeaguePlayer.objects.filter(kgs_username__iexact=sgf.wplayer).filter(event=event)
-        if len(whites) == 1:
-            white = whites.first()
-        else:
-            return False
-        blacks = LeaguePlayer.objects.filter(kgs_username__iexact=sgf.bplayer).filter(event=event)
-        if len(blacks) == 1:
-            black = blacks.first()
-        else:
-            return False
-        game = Game()
-        game.event = event
-        game.sgf = sgf
-        game.save()  # we need to save it to be able to add a OnetoOnefield
-        game.black = black
-        game.white = white
-        game.save()
-        # add the winner field and score the results :
-        if sgf.result.find('B+') == 0:
-            game.winner = blacks.first()
-            game.winner.score_win()
-            game.white.score_loss()
-        elif sgf.result.find('W+') == 0:
-            game.winner = whites.first()
-            game.winner.score_win()
-            game.black.score_loss()
-        else:
-            # this shouldn't work this delete() will call unscore who needs a winner field.
-            game.delete()
-            return False
-        game.save()
-        return True
