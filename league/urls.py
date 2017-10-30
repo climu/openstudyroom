@@ -92,7 +92,6 @@ urlpatterns = [
         views.update_all_sgf_check_code, name='update_all_sgf_check_code'),
     url(r'^admin/update_all_profile_ogs/$',
     views.update_all_profile_ogs, name='update_all_profile_ogs'),
-    url(r'^admin/update-all-sgf/$', views.update_all_sgf, name='update_all_sgf'),
     url(r'^admin/set-meijin/$', views.admin_set_meijin, name='set_meijin'),
     url(
         r'^profile/(?P<pk>[0-9]+)/update$',
