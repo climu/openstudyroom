@@ -899,11 +899,11 @@ def proceed_populate(request, from_event_id, to_event_id):
                 if player.nb_games() >= from_event.min_matchs and form.cleaned_data['player_' + str(player.pk)] != '0':
                     n += 1
                     new_division = Division.objects.get(pk=form.cleaned_data['player_' + str(player.pk)])
-                    new_player = LeaguePlayer.objects.create(user=player.user,
-                                                             event=to_event,
-                                                             kgs_username=player.kgs_username,
-                                                             ogs_username=player.ogs_username,
-                                                             division=new_division)
+                    LeaguePlayer.objects.create(user=player.user,
+                                                event=to_event,
+                                                kgs_username=player.kgs_username,
+                                                ogs_username=player.ogs_username,
+                                                division=new_division)
         message = "The new " + to_event.name + " was populated with " + str(n) + " players."
         messages.success(request, message)
         if request.user.is_league_admin():

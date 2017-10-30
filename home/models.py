@@ -203,6 +203,7 @@ def send_to_discord(sender, **kwargs):
         }]
     }
     r = requests.post(discord_url, json=values)
+    r.raise_for_status()
 
 
 # Register a receiver

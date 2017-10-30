@@ -428,12 +428,6 @@ def create_game_request(request):
 
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
-def game_request_list(request):
-    user = request.user
-    game_requests = GameRequestEvent.objects.filter(receivers=user,)
-
-@login_required()
-@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def save(request):
     """Get events modification from calendar ajax post."""
     user = request.user
@@ -551,7 +545,6 @@ def copy_previous_week_ajax(request):
 
 
 def ical(request, user_id):
-    user=User.objects.get(pk=user_id)
     osr_events = PublicEvent.objects.all()
     cal = vobject.iCalendar()
     cal.add('method').value = 'PUBLISH' # IE/Outlook needs this
