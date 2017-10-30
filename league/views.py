@@ -1,13 +1,12 @@
+from collections import OrderedDict
+import json
+import datetime
+from time import sleep
+
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.conf import settings
-
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Game, Registry, \
-    Profile
-from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm, LeagueEventForm, \
-    EmailForm, TimezoneForm, ProfileForm
-import datetime
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
@@ -15,21 +14,19 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
-from collections import OrderedDict
-from . import utils
 from django.core.mail import send_mail
-from django.views.generic.edit import UpdateView
-from django.views.generic.edit import CreateView
-from machina.core.db.models import get_model
-import json
-import pytz
-from django.template.defaultfilters import date as _date
-from django.template.defaultfilters import time as _time
-
+from django.views.generic.edit import CreateView, UpdateView
+from django.template.defaultfilters import date as _date, time as _time
 from django.utils import timezone
-from time import sleep
+from machina.core.db.models import get_model
 from postman.api import pm_write
-from . import ogs
+import pytz
+
+from . import utils
+from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Game, Registry, \
+    Profile
+from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm, LeagueEventForm, \
+    EmailForm, TimezoneForm, ProfileForm
 
 ForumProfile = get_model('forum_member', 'ForumProfile')
 discord_url_file = "/etc/discord_url.txt"
@@ -93,7 +90,7 @@ def scraper():
         profiles = Profile.objects.filter(user__leagueplayer__event__in=events) \
             .distinct().order_by('-p_status')
         # if everyone has been checked.
-        if not (profiles.filter(p_status__gt=0).exists()):
+        if not profiles.filter(p_status__gt=0).exists():
             profiles.update(p_status=1)
         if profiles.filter(p_status=2).exists():
             user = profiles.filter(p_status=2)[0].user
@@ -132,7 +129,7 @@ def timezone_update(request):
         return HttpResponse(template.render(context, request))
 
 
-def sgf(request, sgf_id):
+def download_sgf(request, sgf_id):
     """Download one sgf file."""
     sgf = get_object_or_404(Sgf, pk=sgf_id)
     response = HttpResponse(sgf.sgf_text, content_type='application/octet-stream')
@@ -141,7 +138,7 @@ def sgf(request, sgf_id):
     return response
 
 
-def games(request, event_id=None, sgf_id=None):
+def list_games(request, event_id=None, sgf_id=None):
     """List all games and allow to show one with wgo."""
     open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
 
@@ -174,7 +171,7 @@ def games(request, event_id=None, sgf_id=None):
     return HttpResponse(template.render(context, request))
 
 
-def results(request, event_id=None, division_id=None):
+def division_results(request, event_id=None, division_id=None):
     """Show the results of a division."""
     open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
     if event_id is None:
@@ -271,7 +268,7 @@ def infos(request, event_id=None, division_id=None, ):
     return HttpResponse(template.render(context, request))
 
 
-def players(request, event_id=None, division_id=None):
+def list_players(request, event_id=None, division_id=None):
     open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
     can_join = False
     # if no event is provided, we show all the league members
@@ -320,27 +317,26 @@ def join_event(request, event_id, user_id):
     if request.user.is_league_admin or request.user == user:
         if request.method == 'POST':
             form = ActionForm(request.POST)
-            if form.is_valid():
-                if form.cleaned_data['action'] == 'join':
-                    division = event.last_division()
-                    if not division:  # the event have no division
-                        message = "The Event you tryed to join have no division. That's strange."
+            if form.is_valid() and form.cleaned_data['action'] == 'join':
+                division = event.last_division()
+                if not division:  # the event have no division
+                    message = "The Event you tryed to join have no division. That's strange."
+                else:
+                    if user.join_event(event, division):
+                        meijin_league = LeagueEvent.objects.filter(
+                            event_type='league',
+                            is_open=True,
+                            community__isnull=True
+                        ).order_by('end_time').first()
+                        meijin_division = meijin_league.division_set.first()
+                        user.join_event(meijin_league, meijin_division)
+                        message = "Welcome in " + division.name + " ! You can start playing right now."
                     else:
-                        if user.join_event(event, division):
-                            meijin_league = LeagueEvent.objects.filter(
-                                event_type='league',
-                                is_open=True,
-                                community__isnull=True
-                            ).order_by('end_time').first()
-                            meijin_division = meijin_league.division_set.first()
-                            user.join_event(meijin_league, meijin_division)
-                            message = "Welcome in " + division.name + " ! You can start playing right now."
-                        else:
-                            message = "Oops ! Something went wrong. You didn't join."
-                    messages.success(request, message)
-                    return HttpResponseRedirect(form.cleaned_data['next'])
+                        message = "Oops ! Something went wrong. You didn't join."
+                messages.success(request, message)
+                return HttpResponseRedirect(form.cleaned_data['next'])
     else:
-        message = "What are you doing here ?"
+        message = "What are you doing here?"
         messages.success(request, message)
     return HttpResponseRedirect('/')
 
@@ -588,11 +584,11 @@ def admin(request):
                 user.groups.clear()
                 group = Group.objects.get(name='league_member')
                 user.groups.add(group)
-                utils.quick_send_mail(user,'emails/welcome.txt')
+                utils.quick_send_mail(user, 'emails/welcome.txt')
 
             elif action[0:6] == "delete":
                 if action[7:15] == "no_games":# deletion due to no played games
-                    utils.quick_send_mail(user,'emails/no_games.txt')
+                    utils.quick_send_mail(user, 'emails/no_games.txt')
                 user.delete()
         else:
             return HttpResponse('failure')
@@ -903,11 +899,11 @@ def proceed_populate(request, from_event_id, to_event_id):
                 if player.nb_games() >= from_event.min_matchs and form.cleaned_data['player_' + str(player.pk)] != '0':
                     n += 1
                     new_division = Division.objects.get(pk=form.cleaned_data['player_' + str(player.pk)])
-                    new_player = LeaguePlayer.objects.create(user=player.user,
-                                                             event=to_event,
-                                                             kgs_username=player.kgs_username,
-                                                             ogs_username=player.ogs_username,
-                                                             division=new_division)
+                    LeaguePlayer.objects.create(user=player.user,
+                                                event=to_event,
+                                                kgs_username=player.kgs_username,
+                                                ogs_username=player.ogs_username,
+                                                division=new_division)
         message = "The new " + to_event.name + " was populated with " + str(n) + " players."
         messages.success(request, message)
         if request.user.is_league_admin():
@@ -1123,9 +1119,9 @@ class ProfileUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return '/league/account/'
 
     def form_valid(self, form):
+        # pylint: disable=attribute-defined-outside-init
         self.object = form.save()
         # do something with self.object
-        # remember the import: from django.http import HttpResponseRedirect
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -1137,8 +1133,8 @@ def update_all_profile_ogs(request):
         if form.is_valid():
             profiles = Profile.objects.filter(ogs_id__gt=0)
             for profile in profiles:
-                    open_players = profile.user.leagueplayer_set.filter(event__is_open=True)
-                    open_players.update(ogs_username=profile.ogs_username)
+                open_players = profile.user.leagueplayer_set.filter(event__is_open=True)
+                open_players.update(ogs_username=profile.ogs_username)
             message = "Successfully updated " + str(profiles.count()) + " sgfs."
             messages.success(request, message)
             return HttpResponseRedirect(reverse('league:admin'))

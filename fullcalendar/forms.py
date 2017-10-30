@@ -1,10 +1,8 @@
 from django import forms
-from django.forms import ModelForm, Textarea
-from .models import PublicEvent
-from django.utils import timezone
-from time import gmtime, strftime
-from datetime import datetime
+from django.forms import ModelForm
 from pytz import utc
+
+from .models import PublicEvent
 
 class UTCPublicEventForm(ModelForm):
     '''a form that force time to be entered with UTC'''
@@ -13,7 +11,7 @@ class UTCPublicEventForm(ModelForm):
 
     class Meta:
         model = PublicEvent
-        fields = ('title','start', 'end','url','description')
+        fields = ('title', 'start', 'end', 'url', 'description')
 
     def clean(self):
         '''convert replace timezones to utc'''

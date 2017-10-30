@@ -1,9 +1,8 @@
 from django import template
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
-from league.models import Registry
-register = template.Library()
 
+register = template.Library()
 
 @register.filter()
 def community_link(community, slug=None):

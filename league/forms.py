@@ -1,20 +1,19 @@
 from django import forms
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import  Group
-from .models import User, Division, LeagueEvent, Profile
 from django.forms import ModelForm
-from .ogs import get_user_id
-#from machina.apps.forum_member.forms import ForumProfileForm
 import pytz
 
+from .models import Division, LeagueEvent, Profile
+from .ogs import get_user_id
+
 class SgfAdminForm(forms.Form):
-    sgf = forms.CharField(label='sgf data',widget=forms.Textarea(attrs={'cols': 60, 'rows': 20}))
-    url = forms.CharField(label ="KGS archive link",required=False)
+    sgf = forms.CharField(label='sgf data', widget=forms.Textarea(attrs={'cols': 60, 'rows': 20}))
+    url = forms.CharField(label="KGS archive link", required=False)
 
 class ActionForm(forms.Form):
-    action = forms.CharField(label ='action',widget=forms.HiddenInput())
-    user_id = forms.IntegerField(label ='user_id',widget=forms.HiddenInput(),required=False)
-    next = forms.CharField(label ='next',widget=forms.HiddenInput(),required=False)
+    action = forms.CharField(label='action', widget=forms.HiddenInput())
+    user_id = forms.IntegerField(label='user_id', widget=forms.HiddenInput(), required=False)
+    next = forms.CharField(label='next', widget=forms.HiddenInput(), required=False)
 
 
 class LeagueSignupForm(forms.Form):
@@ -50,8 +49,8 @@ class LeagueSignupForm(forms.Form):
     def clean(self):
         super(LeagueSignupForm, self).clean()
         if not (self.cleaned_data['kgs_username'] or self.cleaned_data['ogs_username']):
-            self.add_error('kgs_username','')
-            self.add_error('ogs_username','')
+            self.add_error('kgs_username', '')
+            self.add_error('ogs_username', '')
             raise forms.ValidationError("You should enter OGS or KGS username")
         return self.cleaned_data
 
@@ -76,13 +75,13 @@ class UploadFileForm(forms.Form):
 
 class LeaguePopulateForm(forms.Form):
     # a form related to a set of leagueplayers with one field per player.
-    def __init__(self, from_event,to_event,  *args, **kwargs):
+    def __init__(self, from_event, to_event, *args, **kwargs):
         super(LeaguePopulateForm, self).__init__(*args, **kwargs)
         players = from_event.get_players()
         divisions = to_event.get_divisions()
         for player in players:
-            choices =  [(division.pk, division.name) for division in divisions] + [(0, 'drop')]
-            self.fields[ 'player_'+str(player.pk)] = forms.ChoiceField(choices=choices, required=False)
+            choices = [(division.pk, division.name) for division in divisions] + [(0, 'drop')]
+            self.fields['player_'+str(player.pk)] = forms.ChoiceField(choices=choices, required=False)
             # an attempt to set initial choice with same order... failed.
             #division =divisions.filter(order=player.division.order).first()
             #if division != None:
@@ -142,7 +141,7 @@ class ProfileForm(ModelForm):
 
     def clean_kgs_username(self):
         if not self.cleaned_data['kgs_username']:
-                    return ''
+            return ''
         kgs_username = self.cleaned_data['kgs_username']
         if Profile.objects.filter(kgs_username__iexact=kgs_username).\
                 exclude(pk=self.instance.pk).exists():
@@ -176,7 +175,7 @@ class ProfileForm(ModelForm):
     def clean(self):
         super(ProfileForm, self).clean()
         if not (self.cleaned_data['kgs_username'] or self.cleaned_data['ogs_username']):
-            self.add_error('kgs_username','')
-            self.add_error('ogs_username','')
+            self.add_error('kgs_username', '')
+            self.add_error('ogs_username', '')
             raise forms.ValidationError("You should enter OGS or KGS username")
         return self.cleaned_data

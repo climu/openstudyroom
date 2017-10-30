@@ -1,16 +1,17 @@
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import UpdateView
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import user_passes_test, login_required
-from django.contrib.auth.models import Group
-from league.models import User, LeagueEvent, Sgf
 from django.contrib import messages
+from django.db.models import Q
+
+from league.forms import LeagueEventForm
+from league.models import User, LeagueEvent, Sgf
+
 from .models import Community
 from .forms import CommunityForm, AdminCommunityForm, CommunytyUserForm
-from league.forms import LeagueEventForm
-from django.db.models import Q
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
@@ -70,7 +71,7 @@ class CommunityUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_community_delete(request, pk):
-    community = get_object_or_404(Community,pk=pk)
+    community = get_object_or_404(Community, pk=pk)
     if request.method == 'POST':
         admin_group = community.admin_group
         user_group = community.user_group
@@ -81,13 +82,13 @@ def admin_community_delete(request, pk):
         return HttpResponseRedirect(reverse('community:admin_community_list'))
 
     else:
-        raise(Http404('What are you doing here?'))
+        raise Http404('What are you doing here?')
 
 
-def community_page(request,slug):
+def community_page(request, slug):
     community = get_object_or_404(Community, slug=slug)
     if community.private and not community.is_member(request.user):
-        raise(Http404('What are you doing here?'))
+        raise Http404('What are you doing here?')
     leagues = community.leagueevent_set.all()
     admin = community.is_admin(request.user)
     if not admin:
@@ -122,7 +123,7 @@ def community_list(request):
 def community_create_league(request, community_pk):
     community = get_object_or_404(Community, pk=community_pk)
     if not community.is_admin(request.user):
-        raise(Http404('What are you doing here?'))
+        raise Http404('What are you doing here?')
     else:
         if request.method == 'POST':
             league = LeagueEvent(community=community)
@@ -206,7 +207,6 @@ def community_results_page(request, slug):
         'league:results',
         kwargs={'event_id': league.pk})
     )
-
 
 
 @login_required()

@@ -1,0 +1,21 @@
+language: python
+
+python:
+  - '3.4'
+  - 'nightly'
+
+sudo: false
+
+cache: pip
+
+install:
+  - pip install --quiet --requirement requirements.txt
+  - pip install --quiet pylint pylint-django
+
+script:
+  - pylint community fixtures fullcalendar home league openstudyroom search wgo manage.py
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change

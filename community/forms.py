@@ -1,8 +1,9 @@
 from django import forms
-from django.contrib.auth import get_user_model
 from django.forms import ModelForm
-from .models import Community
+
 from league.models import User
+
+from .models import Community
 
 class AdminCommunityForm(ModelForm):
     class Meta:

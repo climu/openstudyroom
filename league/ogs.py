@@ -1,6 +1,5 @@
 """Get data from ogs api."""
 import requests
-from .models import Sgf
 
 
 def get_user_id(username):

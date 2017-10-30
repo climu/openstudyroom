@@ -1,12 +1,7 @@
 from django.db import models
 from django.utils import timezone
-from django.db.models import Q
-from operator import attrgetter
-import datetime
-from league.models import User, Division
-from postman.api import pm_broadcast
 
-# Create your models here.
+from league.models import User
 
 
 class CalEvent(models.Model):
@@ -178,7 +173,7 @@ class GameAppointmentEvent(CalEvent):
         users = self.users.all()
         return 'Game ' + users[0].username + ' vs ' + users[1].username
 
-    def opponent(self,user):
+    def opponent(self, user):
         """Return the opponent of a game appointment"""
         return self.users.exclude(pk=user.pk).first()
 
@@ -192,7 +187,7 @@ class GameAppointmentEvent(CalEvent):
 
     @staticmethod
     def get_formated_game_appointments(user, now, tz):
-        data= []
+        data = []
         game_appointments = user.fullcalendar_gameappointmentevent_related.filter(
             start__gte=now
         )
