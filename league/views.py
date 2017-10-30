@@ -1075,32 +1075,6 @@ def create_all_profiles(request):
         return render(request, 'league/admin/create_all_profiles.html')
 
 
-@login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
-def update_all_sgf(request):
-    if request.method == 'POST':
-        form = ActionForm(request.POST)
-        if form.is_valid():
-            games = Game.objects.all()
-            for game in games:
-                sgf = game.sgf
-                sgf.black = game.black.user
-                sgf.white = game.white.user
-                sgf.winner = game.winner.user
-                sgf.divisions.add(game.white.division)
-                sgf.events.add(game.event)
-                sgf.save()
-
-            message = "Successfully updated " + str(games.count()) + " sgfs."
-            messages.success(request, message)
-            return HttpResponseRedirect(reverse('league:admin'))
-        else:
-            message = "Something went wrong (form is not valid)"
-            messages.success(request, message)
-            return HttpResponseRedirect(reverse('league:admin'))
-    else:
-        return render(request, 'league/admin/update_all_sgf.html')
-
 class ProfileUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     form_class = ProfileForm
     model = Profile
