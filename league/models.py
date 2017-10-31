@@ -1,22 +1,24 @@
-from django.db import models
-import datetime
-import time
-from . import utils
-import requests
-from django.contrib.auth.models import AbstractUser
 from collections import defaultdict
-from django.db.models import Q
-import pytz
-from operator import attrgetter
-from django.core.urlresolvers import reverse
-from django.utils import timezone
-from community.models import Community
-from machina.models.fields import MarkupTextField
-from machina.core import validators
+import datetime
 import json
+from operator import attrgetter
+import time
 
+from django.contrib.auth.models import AbstractUser
+from django.core.urlresolvers import reverse
+from django.db import models
+from django.db.models import Q
+from django.utils import timezone
+from machina.core import validators
+from machina.models.fields import MarkupTextField
+import pytz
+import requests
 
-# Create your models here.
+from community.models import Community
+
+from . import utils
+
+# pylint: disable=no-member
 
 class LeagueEvent(models.Model):
     """A League.
@@ -118,7 +120,7 @@ class LeagueEvent(models.Model):
         return n
 
     def number_inactives_players(self):
-        return (self.number_players() - self.number_actives_players())
+        return self.number_players() - self.number_actives_players()
 
     def last_division_order(self):
         if self.division_set.exists():
@@ -215,9 +217,9 @@ class Registry(models.Model):
         return r.kgs_delay
 
     @staticmethod
-    def set_time_kgs(time):
+    def set_time_kgs(time_kgs):
         r = Registry.objects.get(pk=1)
-        r.time_kgs = time
+        r.time_kgs = time_kgs
         r.save()
 
 
@@ -256,8 +258,8 @@ class Sgf(models.Model):
     # black, white, winner and events fields will only be populated for valid sgfs
     # status of the sgf:0 already checked
     #           KGS status:
-    # 					1 require checking, sgf added from kgs archive link
-    # 					2 require checking with priority,sgf added/changed by admin
+    #                   1 require checking, sgf added from kgs archive link
+    #                   2 require checking with priority,sgf added/changed by admin
     #           OGS status:
     #                   3 require checking, sgf added from ogs api. We just got id
 
@@ -337,10 +339,6 @@ class Sgf(models.Model):
             self.league_valid = True
             self.save()
             return True
-
-    def has_game(self):
-        """Deprecated. We should use league_valid from now on."""
-        return Game.objects.filter(sgf=self).exists()
 
     def get_messages(self):
         """Return a list of erros pasring message field."""
@@ -607,7 +605,7 @@ class User(AbstractUser):
         players = LeaguePlayer.objects.filter(
             division__league_event__is_open=True,
             user__profile__last_kgs_online__gt=time_online
-        ).values_list('user',flat=True)
+        ).values_list('user', flat=True)
         return players
 
     def check_kgs(self, opponents):
@@ -672,7 +670,7 @@ class User(AbstractUser):
                     sgf.game_type = game_type
                     sgf.save()
 
-    def check_ogs(user, opponents):
+    def check_ogs(self, opponents):
         """Checking user for OGS games.
         """
         # Get the time-range to check
@@ -683,7 +681,7 @@ class User(AbstractUser):
             now = now.replace(day=1) - datetime.timedelta(days=1)
         # Set day, time to 0
         time_limit = now.replace(day=1, hour=0, minute=0)
-        ogs_id = user.profile.ogs_id
+        ogs_id = self.profile.ogs_id
         url = 'https://online-go.com/api/v1/players/' + str(ogs_id) + '/games/?ordering=-ended'
         opponents = [u.profile.ogs_id for u in opponents if u.profile.ogs_id > 0]
         # we deal with pagination with this while loop
@@ -715,7 +713,7 @@ class User(AbstractUser):
                     # we need to get timesetting datas here because they are not
                     # in OGS sgfs
                     time_settings = json.loads(game["time_control_parameters"])
-                    if time_settings['system'] == "byoyomi":
+                    if 'system' in time_settings and time_settings['system'] == "byoyomi":
                         sgf = Sgf()
                         sgf.time = time_settings['main_time']
                         # Sadly byo is recorded as a string 3x30 byo-yomi in db
@@ -746,7 +744,7 @@ class User(AbstractUser):
         # Ask servers
         if self.profile.kgs_username is not None:
             self.check_kgs(opponents)
-        if self.profile.ogs_id >0:
+        if self.profile.ogs_id > 0:
             self.check_ogs(opponents)
         # Mark the user checked
         self.profile.p_status = 0
@@ -986,73 +984,3 @@ class LeaguePlayer(models.Model):
             if n_white + n_black < self.event.nb_matchs:
                 opponents.append(player)
         return opponents
-
-class Game(models.Model):
-    """This model is deprecated and should be deleted soon."""
-
-    sgf = models.OneToOneField('Sgf')
-    event = models.ForeignKey('LeagueEvent', blank=True, null=True)
-    black = models.ForeignKey('LeaguePlayer',
-                              related_name='black',
-                              blank=True,
-                              null=True)
-    white = models.ForeignKey('LeaguePlayer',
-                              related_name='white',
-                              blank=True,
-                              null=True)
-    winner = models.ForeignKey('LeaguePlayer',
-                               related_name='winner',
-                               blank=True,
-                               null=True)
-
-    def __str__(self):
-        return str(self.pk) + ': ' + self.black.kgs_username + ' vs ' + self.white.kgs_username
-
-    @staticmethod
-    def create_game(sgf):
-        """Create a game related to the sgf.
-        does NOT perform any check on the sgf. Just uses the league_valid flag
-        Please use check_validity before calling this
-        return true if successfully create a game, false otherwise"""
-
-        # check if we already got a game with this sgf
-        if (Game.objects.filter(sgf=sgf).exists() or
-                not (sgf.league_valid) or
-                (sgf.event is None)):
-            return False
-        event = sgf.event
-        # check players before saving the game otherwise we can't delete it:
-        # calling unscore will raise error.
-        # I guess that's why they do db normalisation
-        whites = LeaguePlayer.objects.filter(kgs_username__iexact=sgf.wplayer).filter(event=event)
-        if len(whites) == 1:
-            white = whites.first()
-        else:
-            return False
-        blacks = LeaguePlayer.objects.filter(kgs_username__iexact=sgf.bplayer).filter(event=event)
-        if len(blacks) == 1:
-            black = blacks.first()
-        else:
-            return False
-        game = Game()
-        game.event = event
-        game.sgf = sgf
-        game.save()  # we need to save it to be able to add a OnetoOnefield
-        game.black = black
-        game.white = white
-        game.save()
-        # add the winner field and score the results :
-        if sgf.result.find('B+') == 0:
-            game.winner = blacks.first()
-            game.winner.score_win()
-            game.white.score_loss()
-        elif sgf.result.find('W+') == 0:
-            game.winner = whites.first()
-            game.winner.score_win()
-            game.black.score_loss()
-        else:
-            # this shouldn't work this delete() will call unscore who needs a winner field.
-            game.delete()
-            return False
-        game.save()
-        return True

@@ -1,15 +1,14 @@
 from django.conf.urls import url
-from django.core.urlresolvers import reverse
 
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.results, name='results'),
+    url(r'^$', views.division_results, name='results'),
     # Sad, but for historical reason, info page is named event.
     # If you want to replace reverses everywhere, be my guest
     url(r'^infos/$', views.infos, name='event'),
 
-    url(r'^results/$', views.results, name='results'),
+    url(r'^results/$', views.division_results, name='results'),
     url(r'^meijin/$', views.meijin, name='meijin'),
     url(r'^ladder/$', views.ladder, name='ladder'),
     url(r'^ddk/$', views.ddk, name='ddk'),
@@ -22,22 +21,22 @@ urlpatterns = [
         views.proceed_populate, name='admin_proceed_populate'),
     url(r'^archives/$', views.archives, name='archives'),
 
-    url(r'^(?P<event_id>[0-9]+)/results/(?P<division_id>[0-9]+)/$', views.results, name='results'),
-    url(r'^(?P<event_id>[0-9]+)/results/$', views.results, name='results'),
-    url(r'^(?P<event_id>[0-9]+)/$', views.results, name='results'),
+    url(r'^(?P<event_id>[0-9]+)/results/(?P<division_id>[0-9]+)/$', views.division_results, name='results'),
+    url(r'^(?P<event_id>[0-9]+)/results/$', views.division_results, name='results'),
+    url(r'^(?P<event_id>[0-9]+)/$', views.division_results, name='results'),
     url(r'^(?P<event_id>[0-9]+)/infos/$', views.infos, name='event'),
 
-    url(r'^games/$', views.games, name='games'),
-    url(r'^games/(?P<sgf_id>[0-9]+)/$', views.games, name='game'),
-    url(r'^(?P<event_id>[0-9]+)/games/$', views.games, name='games'),
-    url(r'^(?P<event_id>[0-9]+)/games/(?P<sgf_id>[0-9]+)/$', views.games, name='game'),
+    url(r'^games/$', views.list_games, name='games'),
+    url(r'^games/(?P<sgf_id>[0-9]+)/$', views.list_games, name='game'),
+    url(r'^(?P<event_id>[0-9]+)/games/$', views.list_games, name='games'),
+    url(r'^(?P<event_id>[0-9]+)/games/(?P<sgf_id>[0-9]+)/$', views.list_games, name='game'),
 
-    url(r'^players/$', views.players, name='players'),
-    url(r'^(?P<event_id>[0-9]+)/players/$', views.players, name='players'),
+    url(r'^players/$', views.list_players, name='players'),
+    url(r'^(?P<event_id>[0-9]+)/players/$', views.list_players, name='players'),
 
     url(r'^discord/$', views.discord_redirect, name='discord_redirect'),
 
-    url(r'^sgf/(?P<sgf_id>[0-9]+)/$', views.sgf, name='sgf'),
+    url(r'^sgf/(?P<sgf_id>[0-9]+)/$', views.download_sgf, name='sgf'),
     url(r'^account/timezone/$', views.timezone_update, name='timezone_update'),
 
 
@@ -93,7 +92,6 @@ urlpatterns = [
         views.update_all_sgf_check_code, name='update_all_sgf_check_code'),
     url(r'^admin/update_all_profile_ogs/$',
     views.update_all_profile_ogs, name='update_all_profile_ogs'),
-    url(r'^admin/update-all-sgf/$', views.update_all_sgf, name='update_all_sgf'),
     url(r'^admin/set-meijin/$', views.admin_set_meijin, name='set_meijin'),
     url(
         r'^profile/(?P<pk>[0-9]+)/update$',

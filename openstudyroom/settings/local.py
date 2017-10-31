@@ -11,11 +11,13 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 from __future__ import absolute_import, unicode_literals
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import os
+
 from machina import get_apps as get_machina_apps
 from machina import MACHINA_MAIN_TEMPLATE_DIR
 from machina import MACHINA_MAIN_STATIC_DIR
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
@@ -115,7 +117,7 @@ MIDDLEWARE = [
     'wagtail.wagtailcore.middleware.SiteMiddleware',
     'wagtail.wagtailredirects.middleware.RedirectMiddleware',
 
-	# Machina
+    # Machina
     'machina.apps.forum_permission.middleware.ForumPermissionMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'league.middleware.TimezoneMiddleware'
@@ -129,7 +131,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(PROJECT_DIR, 'templates'),
-	    MACHINA_MAIN_TEMPLATE_DIR,
+            MACHINA_MAIN_TEMPLATE_DIR,
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -144,16 +146,10 @@ TEMPLATES = [
                 #'django_messages.context_processors.inbox',
                 'postman.context_processors.inbox',
 
-		# Machina
-		'machina.core.context_processors.metadata',
+                # Machina
+                'machina.core.context_processors.metadata',
 
-
-		        # Machina
-		      'machina.core.context_processors.metadata',
-
-              'django.template.context_processors.request',
-
-
+                'django.template.context_processors.request',
             ],
         },
     },
@@ -239,8 +235,8 @@ PUPUT_AS_PLUGIN = True
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL ='/'
-ACCOUNT_FORMS ={}
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/'
+ACCOUNT_FORMS = {}
 ACCOUNT_SIGNUP_FORM_CLASS = 'league.forms.LeagueSignupForm'
 
 
@@ -276,7 +272,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 
 
 CRON_CLASSES = [
-	'league.cron.ScraperCronJob',
+    'league.cron.ScraperCronJob',
 ]
 
 SECRET_KEY = 'yourlocalsecretkey'

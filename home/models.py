@@ -1,25 +1,27 @@
 from __future__ import absolute_import, unicode_literals
+
+import datetime
+
 from django.conf import settings
 from django.db import models
+from django.template.loader import render_to_string
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils import timezone
 from django import forms
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore.fields import RichTextField, StreamField
 from wagtail.wagtailsnippets.models import register_snippet
-from wagtail.wagtailsearch import index
-from wagtail.wagtailadmin.edit_handlers import FieldPanel, FieldRowPanel, MultiFieldPanel, InlinePanel, PageChooserPanel, StreamFieldPanel
-from wagtail.wagtailcore.blocks import TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, RichTextBlock, RawHTMLBlock, IntegerBlock
+from wagtail.wagtailadmin.edit_handlers import FieldPanel, StreamFieldPanel
+from wagtail.wagtailcore.blocks import TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, \
+        RichTextBlock, RawHTMLBlock, IntegerBlock
 from wagtail.wagtailimages.blocks import ImageChooserBlock
 from wagtail.wagtaildocs.blocks import DocumentChooserBlock
-from puput.models import EntryPage, BlogPage
-from wagtailmenus.models import MenuPage
-from fullcalendar.models import AvailableEvent, GameRequestEvent
-from league.models import User
-import datetime
 from wagtail.wagtailcore.signals import page_published
+from wagtailmenus.models import MenuPage
+from puput.models import EntryPage, BlogPage
 import requests
-from django.template.loader import render_to_string
+
+from fullcalendar.models import AvailableEvent, GameRequestEvent
 
 
 @register_snippet
@@ -65,7 +67,7 @@ class HTMLAlignmentChoiceBlock(FieldBlock):
 
 class WgoAlignmentChoiceBlock(FieldBlock):
     field = forms.ChoiceField(choices=(
-        ('normal', 'Normal'), ('right', 'Right'),('left','Left'),
+        ('normal', 'Normal'), ('right', 'Right'), ('left', 'Left'),
     ))
 
 
@@ -105,7 +107,7 @@ class MyStreamBlock(StreamBlock):
 
 
 class HomePage(Page):
-     def get_context(self, request, *args, **kwargs):
+    def get_context(self, request, *args, **kwargs):
         entries = EntryPage.objects.live().order_by('-date')
         blog_page = BlogPage.objects.all().first()
         context = super(HomePage, self).get_context(request, *args, **kwargs)
@@ -143,16 +145,15 @@ class HomePage(Page):
         return context
 
 
-
 class FullWidthPage(MenuPage):
-    body = StreamField(MyStreamBlock(),blank=True)
+    body = StreamField(MyStreamBlock(), blank=True)
 
     content_panels = Page.content_panels + [
         StreamFieldPanel('body'),
     ]
 
 class RightSidebarPage(MenuPage):
-    body = StreamField(MyStreamBlock(),blank=True)
+    body = StreamField(MyStreamBlock(), blank=True)
 
     content_panels = Page.content_panels + [
 
@@ -160,7 +161,7 @@ class RightSidebarPage(MenuPage):
     ]
 
 class LeftSidebarPage(MenuPage):
-    body = StreamField(MyStreamBlock(),blank=True)
+    body = StreamField(MyStreamBlock(), blank=True)
 
     content_panels = Page.content_panels + [
 
@@ -168,7 +169,7 @@ class LeftSidebarPage(MenuPage):
     ]
 
 class StreamFieldEntryPage(EntryPage):
-    streamfield = StreamField(MyStreamBlock(),blank=True)
+    streamfield = StreamField(MyStreamBlock(), blank=True)
     content_panels = EntryPage.content_panels + [
         StreamFieldPanel('streamfield')
     ]
@@ -186,7 +187,7 @@ def send_to_discord(sender, **kwargs):
         discord_url = 'http://example.com/' # change this for local test
     else:
         with open('/etc/discord_hook_url.txt') as f:
-                discord_url = f.read().strip()
+            discord_url = f.read().strip()
 
     excerpt = render_to_string(
         'home/includes/excerpt.html',
@@ -202,6 +203,7 @@ def send_to_discord(sender, **kwargs):
         }]
     }
     r = requests.post(discord_url, json=values)
+    r.raise_for_status()
 
 
 # Register a receiver

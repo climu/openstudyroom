@@ -1,10 +1,9 @@
 from django.contrib import admin
-from django.contrib.auth.models import  Group
 
 # Register your models here.
 
 from .models import Sgf, User, LeagueEvent, Division, LeaguePlayer,\
-    Game, Registry, Profile
+    Registry, Profile
 
 #we create groups new_user, league_member and league_admin to help manage the league
 #if not Group.objects.filter(name='new_user').exists():
@@ -22,7 +21,6 @@ mymodels = [
     LeagueEvent,
     Division,
     LeaguePlayer,
-    Game,
     Registry,
     Profile,
 ]

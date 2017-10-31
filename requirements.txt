@@ -1,4 +1,4 @@
-appdirs==1.4.0
+appdirs>=1.4.2
 bbcode==1.0.24
 beautifulsoup4==4.6.0
 bs4==0.0.1
@@ -32,7 +32,7 @@ oauthlib==2.0.1
 olefile==0.44
 packaging==16.8
 Pillow==4.2.1
-psycopg2==2.6.2
+psycopg2>=2.7
 puput==0.8
 pybbm==0.18.4
 pyparsing==2.1.10
