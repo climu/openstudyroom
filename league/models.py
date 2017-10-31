@@ -713,7 +713,7 @@ class User(AbstractUser):
                     # we need to get timesetting datas here because they are not
                     # in OGS sgfs
                     time_settings = json.loads(game["time_control_parameters"])
-                    if time_settings['system'] == "byoyomi":
+                    if 'system' in time_settings and time_settings['system'] == "byoyomi":
                         sgf = Sgf()
                         sgf.time = time_settings['main_time']
                         # Sadly byo is recorded as a string 3x30 byo-yomi in db
