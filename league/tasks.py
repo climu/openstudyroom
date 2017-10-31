@@ -7,6 +7,7 @@ from .models import Profile
 import requests
 import json
 
+@shared_task
 def kgs_update_online():
     chain = kgs_connect.s() | kgs_update_online_with_cookies.s()
     chain()
@@ -22,7 +23,7 @@ def kgs_connect(self):
     # If you are running this locally, you should use your own
     # KGS credential
     if settings.DEBUG:
-        kgs_password = 'ùypassword' # change this for local test
+        kgs_password = 'mypasword' # change this for local test
     else:
         with open('/etc/kgs_password.txt') as f:
             kgs_password = f.read().strip()
@@ -49,7 +50,6 @@ def kgs_update_online_with_cookies(self, cookies):
     url = 'http://www.gokgs.com/json/access'
     response = requests.get(url, cookies=cookies)
     if response.status_code == 200:
-        print('yay')
         now = timezone.now()
         for m in json.loads(response.text)['messages']:
             if m['type'] == 'ROOM_JOIN' and m['channelId'] == 3627409:
@@ -62,3 +62,9 @@ def kgs_update_online_with_cookies(self, cookies):
                 break
     else:
         self.retry()
+
+
+@shared_task
+def test_task():
+    print('testing')
+    return 'testing'

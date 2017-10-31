@@ -99,7 +99,8 @@ INSTALLED_APPS = [
 
     'fullcalendar',
 
-    'community'
+    'community',
+    'django_celery_beat'
 
 ]+ get_machina_apps()
 
@@ -304,3 +305,4 @@ CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_ACCEPT_CONTENT = ['pickle']
 CELERY_TASK_SERIALIZER = 'pickle'
 CELERY_RESULT_SERIALIZER = 'pickle'
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
