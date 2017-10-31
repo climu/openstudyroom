@@ -175,32 +175,26 @@ ga('send', 'pageview');
             <span class="caret"></span>
 	        </a>
 
-        <div class="dropdown-menu" aria-labelledby="dropdown01" style="padding-left: 10px; border-radius: 0px; padding-right: 10px;">
+        <div class="dropdown-menu" aria-labelledby="dropdown01" style="">
         	{% if request.user.is_league_admin %}
-        	<a class="dropdown-item" href="#">
-        	<a href="{%url "league:admin" %}"> League admin </a>
-        </a>
+        	<a class="dropdown-item" href="{%url "league:admin" %}">League admin</a>
         <div class="dropdown-divider"></div>
         	{% endif %}
 
 	{%if request.user.is_league_member %}
 
-      		<a class="dropdown-item" href="#">
-            <a href="{% url "league:league_account" %}" >{% bootstrap_icon "user" %} Profile</a>
-          </a>
-          <a class="dropdown-item" href="#">
-            <a href="{% url "postman:inbox" %}" >
+            <a class="dropdown-item" href="{% url "league:league_account" %}" >{% bootstrap_icon "user" %} Profile</a>
+          <a class="dropdown-item" href="{% url "postman:inbox" %}">
               <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
               Messages
               <span class="badge"> {{ postman_unread_count }}</span>
-            </a>
           </a>
 
 	{%else%}
       		<div>Your account will be activated soon. Thanks for waiting!</div>
 	{%endif%}
-    		  <a class="dropdown-item" href="#">
-            <a href="{% url "account_logout"%}"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a>
+    		  <a class="dropdown-item" href="{% url "account_logout"%}">
+            <i class="fa fa-sign-out" aria-hidden="true"></i>Logout
           </a>
 	     </div>
       </li>
@@ -212,13 +206,9 @@ ga('send', 'pageview');
             Join us?
 	        </a>
 
-        <div class="dropdown-menu" aria-labelledby="dropdown02" style="padding-left: 10px; border-radius: 0px; padding-right: 10px;">
-          <a class="dropdown-item" href="#">
-              <a href="{% url "account_login"%}">Login</a>
-          </a>
-          <a class="dropdown-item" href="#">
-              <a href="{% url "account_signup"%}">Register</a>
-          </a>
+        <div class="dropdown-menu" aria-labelledby="dropdown02" style="">
+          <a href="{% url "account_login"%}" class="dropdown-item">Login</a>
+          <a class="dropdown-item" href="{% url "account_signup"%}">Register</a>
 	     </div>
       </li>
 
@@ -235,7 +225,7 @@ ga('send', 'pageview');
 <!--  NAVBAR ENDS HERE YEAH ITS LONG I KNOW TRY TO KEEP UP -->
 
   {% if request.user.is_authenticated and not request.user.is_league_member%}
-      <li class="alert alert-info alert-dismissable fade in" style="list-style-type: none;">
+      <li class="alert alert-info alert-dismissable fade show" style="list-style-type: none;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
         Your account will be activated soon. Make sure you verified your email and you entered a valid KGS or OGS username. Contact us if it takes too long. Thanks for waiting!
       </li>

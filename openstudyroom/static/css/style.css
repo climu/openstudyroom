@@ -46,11 +46,17 @@ h3{
 
 a{
     color: rgb(168,123,0);
-    outline: 0;
+    outline: none;
     }
 
 a:hover{
     color: rgb(168,100,0);
+    outline: none;
+}
+
+a:active{
+    color: rgb(168,100,0);
+    outline: none;
 }
 
 #socials{
@@ -116,6 +122,11 @@ a:hover{
     background-color: lightgrey;
     border-color: rgb(168,123,0);
     color: rgb(168,123,0);
+    outline: none;
+}
+
+.button:active {
+    outline: none;
 }
 
 .alert  {
