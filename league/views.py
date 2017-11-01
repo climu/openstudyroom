@@ -57,9 +57,8 @@ def scraper():
     for m in json.loads(r.text)['messages']:
         if m['type'] == 'ROOM_JOIN' and m['channelId'] == 3627409:
             for kgs_user in m['users']:
-                osr_user = User.objects.filter(kgs_username__iexact=kgs_user['name']).first()
-                if osr_user is not None:
-                    profile = osr_user.profile
+                profile = Profile.objects.filter(kgs_username__iexact=kgs_user['name']).first()
+                if profile is not None:
                     profile.last_kgs_online = now
                     profile.save()
     # 3 wait a bit
