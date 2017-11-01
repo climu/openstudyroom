@@ -205,7 +205,7 @@ def division_results(request, event_id=None, division_id=None):
 def meijin(request):
     """A simple view that redirects to the last open meijin league."""
     league = LeagueEvent.objects.filter(
-        event_type='league',
+        event_type='meijin',
         is_open=True,
         community__isnull=True
     ).order_by('end_time').first()
