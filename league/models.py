@@ -994,7 +994,7 @@ class LeaguePlayer(models.Model):
         self.save()
 
     def get_opponents(self):
-        """return a list of players
+        """return a list of players"""
         players = LeaguePlayer.objects.filter(division=self.division).exclude(pk=self.pk)
         opponents = []
         for player in players:
