@@ -34,6 +34,7 @@ class LeagueEvent(models.Model):
         ('ddk', 'ddk'),
 
     )
+    #start and end of the league
     begin_time = models.DateTimeField(blank=True)
     end_time = models.DateTimeField(blank=True)
     # This should have been a charfield from the start.
@@ -60,7 +61,9 @@ class LeagueEvent(models.Model):
     main_time = models.PositiveSmallIntegerField(default=1800)
     # byo yomi time in sec
     byo_time = models.PositiveSmallIntegerField(default=30)
+    #if the league is a community league
     community = models.ForeignKey(Community, blank=True, null=True)
+    #small text to show on league pages
     description = MarkupTextField(
             blank=True, null=True,
             validators=[validators.NullableMaxLengthValidator(2000)]
@@ -99,6 +102,7 @@ class LeagueEvent(models.Model):
         return n
 
     def percent_game_played(self):
+        """Return the % of game played in regard of all possible games"""
         p = self.possible_games()
         if p == 0:
             n = 100
@@ -107,12 +111,15 @@ class LeagueEvent(models.Model):
         return n
 
     def get_divisions(self):
+        """Return all divisions of this league"""
         return self.division_set.all()
 
     def get_players(self):
+        """Return all leagueplayers of this league"""
         return self.leagueplayer_set.all()
 
     def number_actives_players(self):
+        """Return the number of active players."""
         n = 0
         for player in self.get_players():
             if player.nb_games() >= self.min_matchs:
@@ -120,24 +127,29 @@ class LeagueEvent(models.Model):
         return n
 
     def number_inactives_players(self):
+        """Return the number of inactives players."""
         return self.number_players() - self.number_actives_players()
 
     def last_division_order(self):
+        """Return the order of the last division of the league"""
         if self.division_set.exists():
             return self.division_set.last().order
         else:
             return -1
 
     def last_division(self):
+        """get last division of a league"""
         if self.division_set.exists():
             return self.division_set.last()
         else:
             return False
 
     def get_other_events(self):
+        """Returns all other leagues. Why?"""
         return LeagueEvent.objects.all().exclude(pk=self.pk)
 
     def is_close(self):
+        """ why on earth?"""
         return self.is_close
 
     def nb_month(self):
@@ -600,6 +612,7 @@ class User(AbstractUser):
 
     @staticmethod
     def kgs_online_users():
+        """Return a list of all user in open leagues online on KGS."""
         time_online = timezone.now() - datetime.timedelta(minutes=6)
         # First we get all self players in open divisions
         players = LeaguePlayer.objects.filter(
@@ -733,7 +746,6 @@ class User(AbstractUser):
             # breaking the inner loop will break it all
             break
 
-
     def check_user(self):
         """Check a user to see if he have play new games.
 
@@ -750,9 +762,8 @@ class User(AbstractUser):
         self.profile.p_status = 0
         self.profile.save()
 
-
-
     def get_timezone(self):
+        """Return the timezone of a user"""
         if (self.is_authenticated() and
                 hasattr(self, 'profile') and
                 self.profile.timezone is not None):
@@ -762,12 +773,14 @@ class User(AbstractUser):
         return tz
 
     def set_meijin(self):
+        """Set a user as OSR meijin"""
         r = Registry.objects.get(pk=1)
         r.meijin = self
         r.save()
         return True
 
     def get_communitys(self):
+        """Get all communities a user is in"""
         communitys = self.groups.filter(name__endswith='community_member')
         communitys = list(Community.objects.filter(user_group__in=communitys))
         return communitys
@@ -775,16 +788,22 @@ class User(AbstractUser):
 
 
 class Profile(models.Model):
+    """A user profile. Store settings and infos about a user."""
     user = models.OneToOneField(User)
     kgs_username = models.CharField(max_length=10, blank=True)
     ogs_username = models.CharField(max_length=40, blank=True)
+    #ogs_id is set in ogs.get_user_id
     ogs_id = models.PositiveIntegerField(default=0, blank=True, null=True)
+    #User can write what he wants in bio
     bio = MarkupTextField(
             blank=True, null=True,
             validators=[validators.NullableMaxLengthValidator(2000)]
     )
+    # p_status help manage the scraplist
     p_status = models.PositiveSmallIntegerField(default=0)
+    #kgs_online shoudl be updated every 5 mins in scraper
     last_kgs_online = models.DateTimeField(blank=True, null=True)
+    #Calendar settings
     timezone = models.CharField(
         max_length=100,
         choices=[(t, t) for t in pytz.common_timezones],
@@ -798,6 +817,7 @@ class Profile(models.Model):
 
 
 class Division(models.Model):
+    """A group of players in a league"""
     league_event = models.ForeignKey('LeagueEvent')
     name = models.TextField(max_length=20)
     order = models.SmallIntegerField(default=0)
@@ -823,12 +843,14 @@ class Division(models.Model):
         return int(n * (n - 1) * self.league_event.nb_matchs / 2)
 
     def is_first(self):
+        """return a boolean being True if the division is the first of the league."""
         return not Division.objects.filter(
             league_event=self.league_event,
             order__lt=self.order
         ).exists()
 
     def is_last(self):
+        """return a boolean being True if the division is the last of the league."""
         return not Division.objects.filter(
             league_event=self.league_event,
             order__gt=self.order
@@ -972,6 +994,7 @@ class LeaguePlayer(models.Model):
         self.save()
 
     def get_opponents(self):
+        """return a list of players
         players = LeaguePlayer.objects.filter(division=self.division).exclude(pk=self.pk)
         opponents = []
         for player in players:
