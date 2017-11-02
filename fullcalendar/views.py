@@ -546,9 +546,17 @@ def copy_previous_week_ajax(request):
 
 def ical(request, user_id):
     osr_events = PublicEvent.objects.all()
+    user = get_object_or_404(User, pk=user_id)
+    user_game_appointments = GameAppointmentEvent.get_future_games(user)
     cal = vobject.iCalendar()
     cal.add('method').value = 'PUBLISH' # IE/Outlook needs this
     for event in osr_events:
+        vevent = cal.add('vevent')
+        vevent.add('dtstart').value = event.start
+        vevent.add('dtend').value = event.end
+        vevent.add('summary').value = event.title
+        vevent.add('uid').value = str(event.id)
+    for event in user_game_appointments:
         vevent = cal.add('vevent')
         vevent.add('dtstart').value = event.start
         vevent.add('dtend').value = event.end
