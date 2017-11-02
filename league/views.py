@@ -357,7 +357,7 @@ def account(request, user_name=None):
             # maybe a view with a list of all our users might be cool redirection here
             return HttpResponseRedirect('/')
     else:
-        user = get_object_or_404(User,username = user_name)
+        user = get_object_or_404(User, username=user_name)
         #user = User.objects.get(username=user_name)
 
     if not user.is_league_member():
