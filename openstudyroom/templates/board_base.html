@@ -85,6 +85,7 @@
   </div>
   {% block content %}
   {% endblock content %}
+
 </div>
 {% endblock body %}
 
@@ -97,11 +98,20 @@
   $(function() {
     machina.init();
     {% block onbodyload %}{% endblock onbodyload %}
+
+    action = "window.open('/forum/forum/announcements-26/topic/how-to-display-gobans-in-our-forums-77/', '_blank')"
+    str = '<div class="btn-group"><button onclick="'+action+'"type="button" class="btn-sm btn btn-info">'
+    str += '<span> How to add a goban?</span></button></div>'
+    action = "window.open('https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet', '_blank')"
+    str += '<div class="btn-group"><button onclick="'+action+'"type="button" class="btn-sm btn btn-info">'
+    str += '<span> Needs help formating?</span></button></div>'
+
+    $('.md-header').append(str)
   });
   </script>
   <script type="text/javascript">
 
-$('.post-content ').each(function() {
+$('.post-content').each(function() {
     str = preprocessor($( this ).html())
     $( this ).html(str)
 })
