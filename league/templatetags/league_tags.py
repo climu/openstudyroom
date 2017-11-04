@@ -41,10 +41,9 @@ def html_one_player_result(context):
     # this filter only works called from a context where player an opponent exists
     opponent = context['opponent']
     results = context['results']
-    opponent_kgs = opponent.kgs_username
     html = ""
-    if opponent_kgs in results:
-        result = results[opponent_kgs]
+    if opponent.user.pk in results:
+        result = results[opponent.user.pk]
         for game in result:
             # here, game['id'] would get you the id of the game to add a link
             html += '<a href="/league/games/' + str(game['id']) + '">'

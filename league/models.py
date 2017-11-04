@@ -948,7 +948,7 @@ class LeaguePlayer(models.Model):
                 'id': sgf.pk,
                 'r': 1 if won else 0
             }
-            resultsDict[opponent.kgs_username].append(record)
+            resultsDict[opponent.pk].append(record)
 
         for sgf in white_sgfs:
             opponent = sgf.black
@@ -957,7 +957,7 @@ class LeaguePlayer(models.Model):
                 'id': sgf.pk,
                 'r': 1 if won else 0
             }
-            resultsDict[opponent.kgs_username].append(record)
+            resultsDict[opponent.pk].append(record)
         return resultsDict
 
     def nb_win(self):
