@@ -41,6 +41,7 @@ def scraper():
     Do only one of the above actions
     - 4.1 look for some sgfs that analyse and maybe pulled as games
     - 4.2 check a player
+    This is not a view. belongs in utils. Don't forget  to update cronjob tho.
     """
 
     # 1 check time since get from kgs
@@ -57,9 +58,8 @@ def scraper():
     for m in json.loads(r.text)['messages']:
         if m['type'] == 'ROOM_JOIN' and m['channelId'] == 3627409:
             for kgs_user in m['users']:
-                osr_user = User.objects.filter(kgs_username__iexact=kgs_user['name']).first()
-                if osr_user is not None:
-                    profile = osr_user.profile
+                profile = Profile.objects.filter(kgs_username__iexact=kgs_user['name']).first()
+                if profile is not None:
                     profile.last_kgs_online = now
                     profile.save()
     # 3 wait a bit
@@ -206,7 +206,7 @@ def division_results(request, event_id=None, division_id=None):
 def meijin(request):
     """A simple view that redirects to the last open meijin league."""
     league = LeagueEvent.objects.filter(
-        event_type='league',
+        event_type='meijin',
         is_open=True,
         community__isnull=True
     ).order_by('end_time').first()
@@ -253,6 +253,7 @@ def archives(request):
 
 
 def infos(request, event_id=None, division_id=None, ):
+    """Show infos of one league: rules..."""
     open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
     if event_id is None:
         event = Registry.get_primary_event()
@@ -269,9 +270,10 @@ def infos(request, event_id=None, division_id=None, ):
 
 
 def list_players(request, event_id=None, division_id=None):
+    """List all player of a league with related stats. Allow to filter by division."""
     open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
     can_join = False
-    # if no event is provided, we show all the league members
+    # if no event is provided, we show all the league members in archive template
     if event_id is None:
         users = User.objects.filter(groups__name='league_member').\
             prefetch_related('leagueplayer_set', 'profile')
@@ -304,6 +306,7 @@ def list_players(request, event_id=None, division_id=None):
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def join_event(request, event_id, user_id):
+    """Add a user to a league. After some check we calls the models.LeagueEvent.join_event method."""
     event = get_object_or_404(LeagueEvent, pk=event_id)
     # No one should join a close event
     if not event.is_open:
@@ -340,11 +343,11 @@ def join_event(request, event_id, user_id):
         messages.success(request, message)
     return HttpResponseRedirect('/')
 
+
 def account(request, user_name=None):
     """Show a user account.
     if url ask for a user( /league/user/climu) display that user profile.
     if none, we check if user is auth and, if so,  we display his own profile.
-    In the template, we will display a join button only if user is auth and request.user == user
     """
     # if no user provide  by url, we check if user is auth and if so display hi own profile
     if user_name is None:
@@ -354,8 +357,8 @@ def account(request, user_name=None):
             # maybe a view with a list of all our users might be cool redirection here
             return HttpResponseRedirect('/')
     else:
-        # user = get_object_or_404(User,username = user_name)
-        user = User.objects.get(username=user_name)
+        user = get_object_or_404(User, username=user_name)
+        #user = User.objects.get(username=user_name)
 
     if not user.is_league_member():
         return HttpResponseRedirect('/')
@@ -390,7 +393,7 @@ def account(request, user_name=None):
 
 
 def game_api(request, sgf_id):
-    """ will return a json containing:
+    """Returns a json to be use in game pages. Json is formated as:
     'infos': players, date, league, group, permalink, download link.
     'sgf': sgf datas as plain text string
     """
@@ -406,9 +409,92 @@ def game_api(request, sgf_id):
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
+def scrap_list(request):
+    open_events = LeagueEvent.objects.filter(is_open=True)
+    profiles = Profile.objects.filter(user__leagueplayer__event__in=open_events)\
+        .distinct().order_by('-p_status')
+    context = {
+        'open_events': open_events,
+        'profiles': profiles
+    }
+    return render(request, 'league/scrap_list.html', context)
+
+
+@login_required()
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+def scrap_list_up(request, profile_id):
+    """ Set user profile p_status to 2 so this user will be checked soon"""
+    profile = get_object_or_404(Profile, pk=profile_id)
+    if profile.p_status == 2:
+        message = str(profile.user) + ' will already be scraped with hight priority'
+        messages.success(request, message)
+        return HttpResponseRedirect(reverse('league:scrap_list'))
+    if profile.user == request.user or request.user.is_league_admin():
+        if request.method == 'POST':
+            form = ActionForm(request.POST)
+            if form.is_valid():
+                if form.cleaned_data['action'] == 'p_status_up':
+                    profile.p_status = 2
+                    profile.save()
+                    message = 'You just moved ' + str(profile.user.username) + ' up the scrap list'
+                    messages.success(request, message)
+                    return HttpResponseRedirect(reverse('league:scrap_list'))
+    raise Http404("What are you doing here ?")
+
+
+#################################################################
+####    ADMINS views    #########################################
+#################################################################
+
+
+@login_required()
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+def admin(request):
+    """Main admin view. Template will show:
+        - admin board: embebed google doc.
+        - list of new users. Ajax buttons to accept, delete or delete with message the users.
+    """
+    if request.method == 'POST':
+        # Ajax actions to accept, delete or delete with message the new users.
+        user_id = request.POST.get('user_id')
+        action = request.POST.get('action')
+        user = User.objects.get(pk=user_id)
+        if user.groups.filter(name='new_user').exists():
+            if action == "welcome":
+                user.groups.clear()
+                group = Group.objects.get(name='league_member')
+                user.groups.add(group)
+                utils.quick_send_mail(user, 'emails/welcome.txt')
+
+            elif action[0:6] == "delete":
+                if action[7:15] == "no_games":# deletion due to no played games
+                    utils.quick_send_mail(user, 'emails/no_games.txt')
+                user.delete()
+        else:
+            return HttpResponse('failure')
+        return HttpResponse('succes')
+
+    # on normal /league/admin load
+    else:
+        new_users = User.objects.filter(groups__name='new_user')
+        # get url of admin board if debug = False
+        if settings.DEBUG:
+            board_url = 'https://mensuel.framapad.org/p/1N0qTQCsk6?showControls=true&showChat=false&showLineNumbers=false&useMonospaceFont=false'
+        else:
+            with open('/etc/admin_board_url.txt') as f:
+                board_url = f.read().strip()
+        context = {
+            'new_users': new_users,
+            'board_url': board_url,
+        }
+        template = loader.get_template('league/admin/dashboard.html')
+        return HttpResponse(template.render(context, request))
+
+
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_set_meijin(request):
+    """Set one user to be meijin. Calls user.set_meijin methods."""
     if request.method == 'POST':
         form = ActionForm(request.POST)
         if form.is_valid():
@@ -422,14 +508,23 @@ def admin_set_meijin(request):
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_sgf_list(request):
+    """Show all sgf (valids or not) for admins."""
     sgfs = Sgf.objects.all()
     context = {'sgfs': sgfs}
     return render(request, 'league/admin/sgf_list.html', context)
 
 
+# Next 3 views handle sgf upload.
+# Worklfow is: handle_upload_sgf -> upload_sgf -> create_sgf
+
+
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def handle_upload_sgf(request):
+    """Get sgf datas from an uploaded file and redctect to upload_sgf view.
+        sgf datas are store in request.session. Maybe we could avoid that.
+        create a form from it and loads the template should make it?
+    """
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -446,6 +541,7 @@ def handle_upload_sgf(request):
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def create_sgf(request):
+    """Actually create a sgf db entry. Should be called after upload_sgf."""
     if request.method == 'POST':
         form = SgfAdminForm(request.POST)
         if form.is_valid():
@@ -468,6 +564,9 @@ def create_sgf(request):
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def upload_sgf(request):
+    """THis view allow user to preview sgf with wgo along with valid status of the sgf.
+        Can call save_sgf from it.
+    """
     if request.method == 'POST':
         form = SgfAdminForm(request.POST)
         if form.is_valid():
@@ -510,6 +609,7 @@ def upload_sgf(request):
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_save_sgf(request, sgf_id):
+    """update an existing sgf"""
     sgf = get_object_or_404(Sgf, pk=sgf_id)
     if request.method == 'POST':
         form = SgfAdminForm(request.POST)
@@ -529,6 +629,7 @@ def admin_save_sgf(request, sgf_id):
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_delete_sgf(request, sgf_id):
+    """Delete a sgf from database."""
     sgf = get_object_or_404(Sgf, pk=sgf_id)
     if request.method == 'POST':
         message = 'successfully deleted the sgf ' + str(sgf)
@@ -542,6 +643,10 @@ def admin_delete_sgf(request, sgf_id):
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_edit_sgf(request, sgf_id):
+    """Show sgf preview in wgo and test if sgf is valid.
+        Allow user to change raw sgf data in text field.
+        Admin can call delete_sgf or save_sgf after preview.
+    """
     sgf = get_object_or_404(Sgf, pk=sgf_id)
     if request.method == 'POST':
         form = SgfAdminForm(request.POST)
@@ -572,48 +677,8 @@ def admin_edit_sgf(request, sgf_id):
         return render(request, 'league/admin/sgf_edit.html', context)
 
 
-@login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
-def admin(request):
-    if request.method == 'POST':
-        user_id = request.POST.get('user_id')
-        action = request.POST.get('action')
-        user = User.objects.get(pk=user_id)
-        if user.groups.filter(name='new_user').exists():
-            if action == "welcome":
-                user.groups.clear()
-                group = Group.objects.get(name='league_member')
-                user.groups.add(group)
-                utils.quick_send_mail(user, 'emails/welcome.txt')
-
-            elif action[0:6] == "delete":
-                if action[7:15] == "no_games":# deletion due to no played games
-                    utils.quick_send_mail(user, 'emails/no_games.txt')
-                user.delete()
-        else:
-            return HttpResponse('failure')
-        return HttpResponse('succes')
-
-    # on normal /league/admin load
-    else:
-        new_users = User.objects.filter(groups__name='new_user')
-        # get url of admin board if debug = False
-        if settings.DEBUG:
-            board_url = 'https://mensuel.framapad.org/p/1N0qTQCsk6?showControls=true&showChat=false&showLineNumbers=false&useMonospaceFont=false'
-        else:
-            with open('/etc/admin_board_url.txt') as f:
-                board_url = f.read().strip()
-        context = {
-            'new_users': new_users,
-            'board_url': board_url,
-        }
-        template = loader.get_template('league/admin/dashboard.html')
-        return HttpResponse(template.render(context, request))
-
-
-
-
 class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """ Update a league"""
     form_class = LeagueEventForm
     model = LeagueEvent
     template_name_suffix = '_update_form'
@@ -644,6 +709,7 @@ class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return context
 
 class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    """Create a league"""
     form_class = LeagueEventForm
     model = LeagueEvent
     template_name_suffix = '_create_form'
@@ -661,6 +727,7 @@ class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_events(request, event_id=None):
+    """List all leagues for admins"""
     events = LeagueEvent.objects.all().order_by("-begin_time")
     primary_event = Registry.get_primary_event().pk
     edit_event = -1
@@ -677,6 +744,7 @@ def admin_events(request, event_id=None):
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_events_set_primary(request, event_id):
+    """Set an event primary event."""
     event = get_object_or_404(LeagueEvent, pk=event_id)
     if request.method == 'POST':
         form = ActionForm(request.POST)
@@ -693,6 +761,7 @@ def admin_events_set_primary(request, event_id):
 
 @login_required()
 def admin_delete_division(request, division_id):
+    """Delete a division"""
     division = get_object_or_404(Division, pk=division_id)
     event = division.league_event
     if not request.user.is_league_admin(event):
@@ -717,6 +786,7 @@ def admin_delete_division(request, division_id):
 
 @login_required()
 def admin_events_delete(request, event_id):
+    """Delete a league."""
     event = get_object_or_404(LeagueEvent, pk=event_id)
     if not request.user.is_league_admin(event):
         raise Http404("What are you doing here ?")
@@ -735,6 +805,7 @@ def admin_events_delete(request, event_id):
 
 @login_required()
 def admin_create_division(request, event_id):
+    """Create a division."""
     event = get_object_or_404(LeagueEvent, pk=event_id)
     if not request.user.is_league_admin(event):
         raise Http404("What are you doing here ?")
@@ -753,6 +824,7 @@ def admin_create_division(request, event_id):
 
 @login_required()
 def admin_rename_division(request, division_id):
+    """Rename a division"""
     division = get_object_or_404(Division, pk=division_id)
     event = division.league_event
     if not request.user.is_league_admin(event):
@@ -957,7 +1029,9 @@ def admin_user_send_mail(request, user_id):
 
 
 def discord_redirect(request):
-    """loads discord invite url from discord_url_file and redirects the user if he passes the tests."""
+    """loads discord invite url from discord_url_file and redirects the user if he passes the tests.
+        deprecated. Should be removed since OSR discord is public now.
+    """
     if request.user.is_authenticated and request.user.is_league_member:
         with open(discord_url_file) as f:
             disc_url = f.read().strip()
@@ -1000,6 +1074,7 @@ def update_all_sgf_check_code(request):
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_users_list(request, event_id=None, division_id=None):
+    """Show all users for admins."""
     event = None
     division = None
     if event_id is None:
@@ -1021,42 +1096,11 @@ def admin_users_list(request, event_id=None, division_id=None):
     return render(request, 'league/admin/users.html', context)
 
 
-def scrap_list(request):
-    open_events = LeagueEvent.objects.filter(is_open=True)
-    profiles = Profile.objects.filter(user__leagueplayer__event__in=open_events)\
-        .distinct().order_by('-p_status')
-    context = {
-        'open_events': open_events,
-        'profiles': profiles
-    }
-    return render(request, 'league/scrap_list.html', context)
-
-
-@login_required()
-@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
-def scrap_list_up(request, profile_id):
-    """ Set user profile p_status to 2 so this user will be checked soon"""
-    profile = get_object_or_404(Profile, pk=profile_id)
-    if profile.p_status == 2:
-        message = str(profile.user) + ' will already be scraped with hight priority'
-        messages.success(request, message)
-        return HttpResponseRedirect(reverse('league:scrap_list'))
-    if profile.user == request.user or request.user.is_league_admin():
-        if request.method == 'POST':
-            form = ActionForm(request.POST)
-            if form.is_valid():
-                if form.cleaned_data['action'] == 'p_status_up':
-                    profile.p_status = 2
-                    profile.save()
-                    message = 'You just moved ' + str(profile.user.username) + ' up the scrap list'
-                    messages.success(request, message)
-                    return HttpResponseRedirect(reverse('league:scrap_list'))
-    raise Http404("What are you doing here ?")
-
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def create_all_profiles(request):
+    """Create all profiles for users. Should be removed now"""
     if request.method == 'POST':
         form = ActionForm(request.POST)
         if form.is_valid():
@@ -1076,6 +1120,7 @@ def create_all_profiles(request):
 
 
 class ProfileUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """Update a user profile"""
     form_class = ProfileForm
     model = Profile
     template_name_suffix = '_update'
@@ -1102,6 +1147,7 @@ class ProfileUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def update_all_profile_ogs(request):
+    """Update all profiles OGS ids. Should be removed now"""
     if request.method == 'POST':
         form = ActionForm(request.POST)
         if form.is_valid():
