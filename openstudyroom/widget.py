@@ -1,10 +1,6 @@
 from __future__ import unicode_literals
 
-from django.forms.widgets import Select
 from django.forms.widgets import Textarea
-from django.utils.encoding import force_text
-from django.utils.html import conditional_escape
-from django.utils.html import escape
 
 class MarkdownTextareaWidget(Textarea):
     """ A simple Textarea widget using the simplemde JS library to provide Markdown editor. """
