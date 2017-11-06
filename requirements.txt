@@ -52,3 +52,6 @@ wagtailmenus==2.1.3
 webencodings==0.5.1
 Willow==0.4
 vobject
+mistune
+pylint
+django-pylint
