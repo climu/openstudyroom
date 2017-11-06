@@ -14,7 +14,7 @@ class MarkdownTextareaWidget(Textarea):
             '//cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js'
         )
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         attrs = {} if attrs is None else attrs
         classes = attrs.get('classes', '')
         attrs['data-provide'] = "markdown"
