@@ -605,7 +605,7 @@
         this.$editor.addClass('md-editor-disabled');
         this.disableButtons('all');
       }
-
+      this.$options.afterPreview(this);
       return this;
     },
     hidePreview: function() {
@@ -1493,6 +1493,7 @@
     onShow: function(e) {},
     onPreview: function(e) {},
     onPreviewEnd: function(e) {},
+    afterPreview: function(e) {},
     onSave: function(e) {},
     onBlur: function(e) {},
     onFocus: function(e) {},

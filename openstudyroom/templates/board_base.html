@@ -59,7 +59,6 @@
 </div>
 <div id="count-wgo" data-count-wgo="0"></div>
 
-
 {%endblock%}
 <div class="container" id="main_container">
   <div class="row">
@@ -83,6 +82,7 @@
       {% block messages %}{% include "partials/messages.html" %}{% endblock messages %}
     </div>
   </div>
+
   {% block content %}
   {% endblock content %}
 
@@ -98,6 +98,33 @@
   $(function() {
     machina.init();
     {% block onbodyload %}{% endblock onbodyload %}
+
+    $("#id_content").markdown({
+      afterPreview:function(e){
+        $("div[data-wgo]").each(function() {
+          var elem=$( this )[0];
+          // get coords info
+          coord = ($( this ).attr('data-wgo-onkifuload') == "arguments[0].target.setCoordinates(true);");
+          var player = new WGo.BasicPlayer(elem, {
+              sgfFile: $( this ).attr('data-wgo'),
+              move: parseInt($( this ).attr('data-wgo-move')),
+              kifuLoaded:function(e) {
+                  if (coord) {
+                      e.target.setCoordinates(true);
+                  }
+              },
+              enableKeys:false, //disable keys in preview to avoid conflicts
+              board: $( this ).attr('data-wgo-board'),
+              layout:$( this ).attr('data-wgo-layout')
+            })
+        });
+      },
+      onPreview: function(e) {
+        //using our preprocessor from shortcode.js
+        var str = preprocessor(e.parseContent());
+        return(str)
+      }
+  });
 
     action = "window.open('/forum/forum/announcements-26/topic/how-to-display-gobans-in-our-forums-77/', '_blank')"
     str = '<div class="btn-group"><button onclick="'+action+'"type="button" class="btn-sm btn btn-info">'

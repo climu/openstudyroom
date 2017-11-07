@@ -18,7 +18,7 @@ class MarkdownTextareaWidget(Textarea):
         attrs = {} if attrs is None else attrs
         classes = attrs.get('classes', '')
         #attrs['id'] = "markdown-editor"
-        attrs['data-provide'] = "markdown"
-        attrs['data-height'] = "500"
+        #attrs['data-provide'] = "markdown"
+        #attrs['data-height'] = "500"
         attrs['class'] = classes + ' machina-mde-markdown'
         return super(MarkdownTextareaWidget, self).render(name, value, attrs)
