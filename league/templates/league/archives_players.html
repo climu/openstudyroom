@@ -52,7 +52,11 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-$('#player-table').DataTable();
+$('#player-table').DataTable({
+    language: {
+        searchPlaceholder: "OSR/KGS/OGS username"
+    }
+});
 } );
 </script>
 {% endblock %}
