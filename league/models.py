@@ -499,6 +499,13 @@ class User(AbstractUser):
 
     kgs_username = models.CharField(max_length=20, null=True, blank=True)
 
+    def __init__(self):
+        AbstractUser.__init__(self)
+        self.n_loss = None
+        self.n_win = None
+        self.n_games = None
+
+
     def join_event(self, event, division):
         if not event.can_join(self):
             return False
@@ -511,6 +518,9 @@ class User(AbstractUser):
             player.user = self
             player.save()
             return True
+
+
+
 
     def is_online_kgs(self):
         """return a boolean saying if a user is online on KGS."""
@@ -557,6 +567,7 @@ class User(AbstractUser):
         return self.leagueplayer_set.all().count()
 
     def nb_win(self):
+        #return self.winner_sgf.count()
         players = self.leagueplayer_set.all()
         n = 0
         for player in players:
@@ -569,6 +580,13 @@ class User(AbstractUser):
         for player in players:
             n += player.nb_loss()
         return n
+
+    def get_stats(self):
+        """get number of games, win, loss and add them as attributes to self."""
+        self.n_games = self.black_sgf.count() + self.white_sgf.count()
+        self.n_win = self.winner_sgf.count()
+        self.n_loss = self.n_games - self.n_win
+        return self
 
     def get_primary_email(self):
         return self.emailaddress_set.filter(primary=True).first()

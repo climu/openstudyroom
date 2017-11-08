@@ -2,61 +2,59 @@
 {% block title %}Archives- Players{% endblock %}
 {% load league_tags %}
 {% block content %}
-<ul class="nav nav-tabs">
-  <li class="active"><a href="{% url 'league:archives' %}">Archives</a></li>
-  {% for ev in open_events %}
-  <li>
-    <a href ="{% url 'league:players' ev.pk %}">{{ev.name}}</a>
-  </li>
-  {% endfor %}
-  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="{% url 'league:archives' %}">Archives</a></li>
+    {% for ev in open_events %}
+      <li>
+        <a href ="{% url 'league:players' ev.pk %}">{{ev.name}}</a>
+      </li>
+    {% endfor %}
+    <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
   </ul>
-<nav class="navbar navbar-default">
-<ul class="nav navbar-nav navbar-left">
-  <li><a href="{% url 'league:archives' %}">Leagues</a></li>
-  <li class="active"><a href="{% url 'league:players'  %}">Players</a></li>
-  <li><a href="{% url 'league:games' %}">Games</a></li>
-</ul>
+  <nav class="navbar navbar-default">
+  <ul class="nav navbar-nav navbar-left">
+    <li><a href="{% url 'league:archives' %}">Leagues</a></li>
+    <li class="active"><a href="{% url 'league:players'  %}">Players</a></li>
+    <li><a href="{% url 'league:games' %}">Games</a></li>
+  </ul>
 
-
-</nav>
-<div class="well"> This table show all users of the Open Study Room since it's creation.</div>
-<table id='player-table' class=' table table-hover '  >
-   <thead>
-     <tr>
-       <th>Player</th>
-       <th># leagues</th>
-       <th># Win</th>
-       <th># Loss</th>
-       <th># Games</th>
-     </tr>
-   </thead>
-   <tbody>
-     {% for u in users %}
-     <tr>
-       <td>{{u | user_link}}</td>
-       <td>{{u.nb_players}}</td>
-       <td>{{u.nb_win}}</td>
-       <td>{{u.nb_loss}}</td>
-       <td>{{u.nb_games}}</td>
-
+  </nav>
+  <div class="well"> This table show all users of the Open Study Room since it's creation.</div>
+  <table id='player-table' class=' table table-hover '  >
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th># leagues</th>
+        <th># Win</th>
+        <th># Loss</th>
+        <th># Games</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{u | user_link}}</td>
+        <td>{{u.nb_players}}</td>
+        <td>{{u.n_win}}</td>
+        <td>{{u.n_loss}}</td>
+        <td>{{u.n_games}}</td>
     </tr>
      {% endfor %}
    </tbody>
-
 {% endblock %}
 
 {% block extra_js %}
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
 
 <script type="text/javascript">
-$(document).ready(function() {
-$('#player-table').DataTable({
-    language: {
+  $(document).ready(function() {
+    $('#player-table').DataTable({
+      language: {
         searchPlaceholder: "OSR/KGS/OGS username"
-    }
-});
-} );
+      }
+    });
+  } );
 </script>
+
 {% endblock %}
