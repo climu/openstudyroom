@@ -499,8 +499,8 @@ class User(AbstractUser):
 
     kgs_username = models.CharField(max_length=20, null=True, blank=True)
 
-    def __init__(self):
-        AbstractUser.__init__(self)
+    def __init__(self, *args, **kwargs):
+        AbstractUser.__init__(self, *args, **kwargs)
         self.n_loss = None
         self.n_win = None
         self.n_games = None
