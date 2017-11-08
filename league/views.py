@@ -276,7 +276,13 @@ def list_players(request, event_id=None, division_id=None):
     # if no event is provided, we show all the league members in archive template
     if event_id is None:
         users = User.objects.filter(groups__name='league_member').\
-            prefetch_related('leagueplayer_set', 'profile')
+            prefetch_related(
+                'leagueplayer_set',
+                'winner_sgf',
+                'black_sgf',
+                'white_sgf',
+                'profile')
+        users = [user.get_stats for user in users]
         context = {
             'users': users,
             'open_events': open_events,
