@@ -1,7 +1,7 @@
 import mistune
 
 class osr_renderer(mistune.Renderer):
-    def autolink(renderer, link, is_email=False, *args, **kwargs):
+    def autolink(self, link, is_email=False):
         """ All point here is to disable autolink feature."""
         return link
 
