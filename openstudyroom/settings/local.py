@@ -258,7 +258,7 @@ HAYSTACK_CONNECTIONS = {
 }
 
 MACHINA_BASE_TEMPLATE_NAME = 'full_width.html'
-MACHINA_MARKUP_LANGUAGE = ('mistune.markdown', {'safe_mode': True})
+MACHINA_MARKUP_LANGUAGE = ('openstudyroom.mistune.osr_markdown', {'safe_mode': True})
 MACHINA_MARKUP_WIDGET = 'openstudyroom.widget.MarkdownTextareaWidget'
 MACHINA_FORUM_NAME = 'OSR Forums'
 
