@@ -8,7 +8,7 @@ from django.template import loader
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -66,11 +66,10 @@ def scraper():
     sleep(2)
 
     # 4.1 look for some sgfs that we analyse and maybe record as games
-    sgfs = Sgf.objects.filter(p_status=2)
-    if len(sgfs) == 0:
-        sgfs = Sgf.objects.filter(p_status=1)
-    if len(sgfs) > 0:
-        sgf = sgfs[0]
+    sgf = Sgf.objects.filter(p_status=2).first()
+    if sgf is None:
+        sgf = Sgf.objects.filter(p_status=1).first()
+    if sgf is not None:
         # parse the sgf datas to populate the rows -> KGS archive request
         sgf = sgf.parse()
         # if the sgf doesn't have a result (unfinished game) we just delete it
@@ -148,7 +147,7 @@ def list_games(request, event_id=None, sgf_id=None):
         context.update({'sgf': sgf})
 
     if event_id is None:
-        sgfs = Sgf.objects.filter(league_valid=True).\
+        sgfs = Sgf.objects.defer('sgf_text').filter(league_valid=True).\
             prefetch_related('white', 'black', 'winner').\
             select_related('white__profile', 'black__profile').\
             order_by('-date')
@@ -278,9 +277,18 @@ def list_players(request, event_id=None, division_id=None):
         users = User.objects.filter(groups__name='league_member').\
             prefetch_related(
                 'leagueplayer_set',
-                'winner_sgf',
-                'black_sgf',
-                'white_sgf',
+                Prefetch(
+                    'winner_sgf',
+                    queryset=Sgf.objects.defer('sgf_text').all()
+                ),
+                Prefetch(
+                    'black_sgf',
+                    queryset=Sgf.objects.defer('sgf_text').all()
+                ),
+                Prefetch(
+                    'white_sgf',
+                    queryset=Sgf.objects.defer('sgf_text').all()
+                ),
                 'profile')
         users = [user.get_stats for user in users]
         context = {
@@ -373,7 +381,7 @@ def account(request, user_name=None):
 
     players = user.leagueplayer_set.order_by('-pk')
 
-    sgfs = Sgf.objects.filter(Q(white=user) | Q(black=user)).\
+    sgfs = Sgf.objects.defer('sgf_text').filter(Q(white=user) | Q(black=user)).\
         prefetch_related('white', 'black', 'winner').\
         select_related('white__profile', 'black__profile')
     if len(sgfs) == 0:
@@ -515,7 +523,7 @@ def admin_set_meijin(request):
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def admin_sgf_list(request):
     """Show all sgf (valids or not) for admins."""
-    sgfs = Sgf.objects.all()
+    sgfs = Sgf.objects.defer('sgf_text').all()
     context = {'sgfs': sgfs}
     return render(request, 'league/admin/sgf_list.html', context)
 

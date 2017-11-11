@@ -887,7 +887,7 @@ class Division(models.Model):
             - is_active : true/false
             {opponent1 : [{'id':game1.pk, 'r':1/0},{'id':game2.pk, 'r':1/0},...],opponent2:}
         """
-        sgfs = self.sgf_set.all()
+        sgfs = self.sgf_set.defer('sgf_text').all()
         players = LeaguePlayer.objects.filter(division=self).prefetch_related('user__profile')
         # First create a list of players with extra fields
         results = []
