@@ -19,7 +19,7 @@ DATABASES = {
     }
 }
 
-ALLOWED_HOSTS = ['104.131.4.65', 'openstudyroom.org']
+ALLOWED_HOSTS = ['openstudyroom.org', 'dev.openstudyroom.org']
 
 LOGGING = {
     'version': 1,
