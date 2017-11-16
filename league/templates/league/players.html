@@ -8,28 +8,68 @@
 <ul class="nav nav-tabs">
   <li ><a href="{% url 'league:archives' %}">Archives</a></li>
   {%if event not in open_events%}
-  <li class="active">{{event |event_link}}</li>
-    {%endif%}
+    <li class="active">{{event |event_link}}</li>
+  {%endif%}
   {% for ev in open_events %}
-  <li {%if ev == event %} class="active"{%endif %}>
-    <a href ="{% url 'league:players' ev.pk %}">
-      {% if ev.community %}
-      ({{ev.community.slug}})
-      {% endif %}
-      {{ev.name}}
-    </a>
+    <li {%if ev == event %} class="active"{%endif %}>
+      <a href ="{% url 'league:players' ev.pk %}">
+        {% if ev.community %}
+        ({{ev.community.slug}})
+        {% endif %}
+        {{ev.name}}
+      </a>
     </li>
   {% endfor %}
   <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
 </ul>
+
 {% include 'league/includes/league_nav.html' with active='players' %}
-<div class="well"> This table show all users who play{% if not event.is_open %}ed{% endif %} in the {{event.name}}.</div>
-{% for division in divisions %}
-<div class="checkbox div-checkbox ">
-  <label><input class ="check-div"  onchange="filterme()" value="{{division}}" type="checkbox" checked>{{division.name}}</label>
+
+<div class="well">
+  This table show all users who play{% if not event.is_open %}ed{% endif %} in the {{event.name}}.
 </div>
-{% endfor %}
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Filter by division
+      </div>
+      <div class="panel-body">
+        {% for division in divisions %}
+          <div class="checkbox div-checkbox ">
+            <label>
+              <input class ="check-div"  onchange="filterdivs()" value="{{division}}" type="checkbox" checked>{{division.name}}
+            </label>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+<div class="col-md-6">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Filter by server
+    </div>
+    <div class="panel-body">
+      <div class="checkbox div-checkbox ">
+        <label>
+          <input id="check-kgs" onchange="filterkgs()" value="KGS" type="checkbox" checked>
+          KGS
+        </label>
+      </div>
+      <div class="checkbox div-checkbox ">
+        <label>
+          <input id="check-ogs" onchange="filterogs()" value="OGS" type="checkbox" checked>
+          OGS
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="controls"></div>
+
 <table id='player-table' class=' table table-hover '  >
    <thead>
      <tr>
@@ -40,23 +80,28 @@
        <th># Win</th>
        <th># Loss</th>
        <th># Games</th>
+       <th class="hidden">OGS</th>
+       <th class="hidden">KGS</th>
      </tr>
    </thead>
    <tbody>
-     {% for division in divisions %}
-     {% for player in division.results %}
-       <tr>
-       <td>{{player.division |division_link}}</td>
-       <td>{{forloop.counter}}</td>
-       <td>{{player.user | user_link:meijin}}</td>
-       <td>{{player.score}}</td>
-       <td>{{player.n_win}}</td>
-       <td>{{player.n_loss}}</td>
-       <td>{{player.n_games}}</td>
-       </tr>
-     {% endfor %}
-     {%endfor%}
-   </tbody>
+    {% for division in divisions %}
+      {% for player in division.results %}
+        <tr>
+          <td>{{player.division |division_link}}</td>
+          <td>{{forloop.counter}}</td>
+          <td>{{player.user | user_link:meijin}}</td>
+          <td>{{player.score}}</td>
+          <td>{{player.n_win}}</td>
+          <td>{{player.n_loss}}</td>
+          <td>{{player.n_games}}</td>
+          <td class="hidden">{% if player.user.profile.ogs_id > 0 %}1 {%else%}0{%endif%}</td>
+          <td class="hidden">{% if player.user.profile.kgs_username %}1 {%else%}0{%endif%}</td>
+        </tr>
+      {% endfor %}
+    {%endfor%}
+  </tbody>
+</table>
 
 {% endblock %}
 {% timezone "UTC" %}
@@ -66,22 +111,20 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
- $('#player-table').DataTable({
+  $('#player-table').DataTable({
     language: {
         searchPlaceholder: "OSR/KGS/OGS username"
     }
   //"dom":'<"col-md-2"lf>rt<"col-sm-5"i><"col-sm-5"p>'
-}//<"H"lr>ft<"F"ip>'
-);
+  }//<"H"lr>ft<"F"ip>'
+  );
+});
 
-} );
-
-function filterme() {
+function filterdivs() {
   //build a regex filter string with an or(|) condition
   var divs = $('.check-div:checkbox:checked').map(function() {
     return '^' + this.value + '\$';
   }).get().join('|');
-  console.log(divs.length);
   var table =  $('#player-table').DataTable();
   if (divs.length == 0){
     table
@@ -95,19 +138,50 @@ function filterme() {
     .columns( 0 )
     .search(divs,true,false)
     .draw()
+  }
 }
+
+function filterogs() {
+  var table =  $('#player-table').DataTable();
+  if ($('#check-ogs')[0].checked){
+  table
+    .columns( 8 )
+    .search('')
+    .draw()
+  }
+  else{
+    table
+      .columns( 8 )
+      .search(1)
+      .draw()
+  }
 }
+
+function filterkgs() {
+  var table =  $('#player-table').DataTable();
+  if ($('#check-kgs')[0].checked){
+  table
+    .columns( 7 )
+    .search('')
+    .draw()
+  }
+  else{
+    table
+      .columns( 7 )
+      .search(1)
+      .draw()
+  }
+}
+
 </script>
 {% if event.is_open %}
-
-<script type="text/javascript" src="{% static 'jquery.countdown/jquery.countdown.min.js' %}"></script>
-<script type="text/javascript">
-var end = Date.now() + {{event.remaining_sec}};
-$("#countdown").countdown(end,function(event) {
-    $(this).html(event.strftime('League ends in %D day%!D %H:%M:%S'));
-  });
-</script>
-
+  <script type="text/javascript" src="{% static 'jquery.countdown/jquery.countdown.min.js' %}"></script>
+  <script type="text/javascript">
+    var end = Date.now() + {{event.remaining_sec}};
+    $("#countdown").countdown(end,function(event) {
+      $(this).html(event.strftime('League ends in %D day%!D %H:%M:%S'));
+    });
+  </script>
 {% endif %}
 {% endblock %}
 {% endtimezone %}
