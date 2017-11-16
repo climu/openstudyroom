@@ -156,7 +156,13 @@ def list_games(request, event_id=None, sgf_id=None):
 
     else:
         event = get_object_or_404(LeagueEvent, pk=event_id)
-        sgfs = event.sgf_set.filter(league_valid=True).\
+        sgfs = event.sgf_set.only(
+            'date',
+            'black',
+            'white',
+            'winner',
+            'result',
+            'league_valid').filter(league_valid=True).\
             prefetch_related('white', 'black', 'winner').\
             select_related('white__profile', 'black__profile').\
             order_by('-date')
