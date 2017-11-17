@@ -50,7 +50,7 @@ class AvailableEvent(CalEvent):
     user = models.ForeignKey(User)
 
     @staticmethod
-    def get_formated_other_available(user, division_list):
+    def get_formated_other_available(user, division_list, server_list):
         """Return the other-available events related to a user for the divisions
         in division_list
 
@@ -68,7 +68,7 @@ class AvailableEvent(CalEvent):
         }
         """
         now = timezone.now()
-        list_users = user.get_opponents(division_list)
+        list_users = user.get_opponents(division_list, server_list)
         availables = AvailableEvent.objects.filter(
             end__gte=now,
             user__in=list_users

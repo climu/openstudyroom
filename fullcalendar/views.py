@@ -205,11 +205,12 @@ def json_feed(request):
 
         # others availability
         if json.loads(request.GET.get('other-av', False)):
-
-            leagues_list = json.loads(request.GET.get('divs', ''))
+            server_list = json.loads(request.GET.get('servers', []))
+            leagues_list = json.loads(request.GET.get('divs', []))
             events = AvailableEvent.get_formated_other_available(
                 user,
-                leagues_list
+                leagues_list,
+                server_list
             )
             for event in events:
                 # event is formated like this:

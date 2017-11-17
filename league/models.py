@@ -596,9 +596,10 @@ class User(AbstractUser):
         players = self.leagueplayer_set.all()
         return Division.objects.filter(leagueplayer__in=players, league_event__is_open=True)
 
-    def get_opponents(self, divs_list=None):
+    def get_opponents(self, divs_list=None, server_list=None):
         """return a list of all user self can play with.
-        return False if the user is not in any active league.
+
+        return empty list if the user is not in any active league.
         The optional param divs_list allow to filter only opponents of some divisions.
         Maybe at some point we should have the divisions in which on can play with
         as well as the number of games remaining.
@@ -608,13 +609,22 @@ class User(AbstractUser):
         if divs_list is not None:
             players = players.filter(division__in=divs_list)
         if len(players) == 0:
-            return False
+            return []
         # For each player, we get related opponents
         opponents = []
         for player in players:
             division = player.division
             player_opponents = LeaguePlayer.objects.filter(
                 division=division).exclude(pk=player.pk)
+            if server_list is not None:
+                if 'OGS' in server_list:
+                    player_opponents = player_opponents.exclude(
+                        user__profile__ogs_id=0
+                    )
+                if 'KGS' in server_list:
+                    player_opponents = player_opponents\
+                        .exclude(user__profile__kgs_username__isnull=True)\
+                        .exclude(user__profile__kgs_username=u'')
             for opponent in player_opponents:
                 n_black = player.user.black_sgf.get_queryset().filter(
                     divisions=division,

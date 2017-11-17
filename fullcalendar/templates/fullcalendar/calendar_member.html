@@ -65,10 +65,19 @@
         Filter by divisions
     {% for division in user.get_open_divisions %}
         <div class="checkbox div-checkbox ">
-          <label><input class ="check-div" value="{{division.pk}}" type="checkbox" checked>{{division.name}}</label>
+          <label><input class ="refetch check-div" value="{{division.pk}}" type="checkbox" checked>{{division.name}}</label>
         </div>
     {% endfor %}
-</li>
+    </li>
+    <li class="other-available-controls hidden" >
+        Filter by go servers
+      <div class="checkbox div-checkbox ">
+          <label><input class ="check-srv refetch" value="KGS" type="checkbox">KGS</label>
+      </div>
+      <div class="checkbox div-checkbox ">
+          <label><input class ="check-srv refetch" value="OGS" type="checkbox">OGS</label>
+      </div>
+    </li>
       <li class="me-available-controls  hidden" >
 
           <button class='btn btn-default' id='save'><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save your changes</button>
@@ -241,9 +250,14 @@ $(document).ready(function() {
                 var div_list = $('.check-div:checkbox:checked').map(function() {
                     return this.value;
                 }).get();
-                json = JSON.stringify(div_list);
+                div_list = JSON.stringify(div_list);
+                var server_list = $('.check-srv:checkbox:checked').map(function() {
+                    return this.value;
+                }).get();
+                server_list = JSON.stringify(server_list);
                 return({
-                    'divs':json,
+                    'divs':div_list,
+                    'servers':server_list,
                     'me-av':!($('#cal-pill').hasClass('active')),
                     'other-av':($('#other-av-pill').hasClass('active')),
                     'game-request':!($('#me-av-pill').hasClass('active'))
@@ -640,7 +654,7 @@ $(document).ready(function() {
 
     // when a user (un)check a division checkbox
     // we need to refetch the events
-    $('.check-div').click(function(){
+    $('.refetch').click(function(){
         //$('#calendar').fullCalendar( 'removeEvents');
         $('#calendar').fullCalendar( 'refetchEvents' );
     });
