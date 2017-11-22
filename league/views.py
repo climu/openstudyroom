@@ -347,7 +347,7 @@ def join_event(request, event_id, user_id):
                 else:
                     if user.join_event(event, division):
                         meijin_league = LeagueEvent.objects.filter(
-                            event_type='league',
+                            event_type='meijin',
                             is_open=True,
                             community__isnull=True
                         ).order_by('end_time').first()
