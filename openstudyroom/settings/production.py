@@ -35,7 +35,7 @@ LOGGING = {
     },
     'handlers': {
         'file': {
-            'level': 'DEBUG',
+            'level': 'WARNING',
             'class': 'logging.FileHandler',
             'filename': 'mysite.log',
             'formatter': 'verbose'
@@ -45,11 +45,11 @@ LOGGING = {
         'django': {
             'handlers':['file'],
             'propagate': True,
-            'level':'DEBUG',
+            'level':'WARNING',
         },
         'MYAPP': {
             'handlers': ['file'],
-            'level': 'DEBUG',
+            'level': 'WARNING',
         },
     }
 }
