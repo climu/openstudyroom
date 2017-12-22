@@ -798,9 +798,7 @@ def admin_delete_division(request, division_id):
                     message = "You just deleted the empty division" + str(division) + "."
                 division.delete()
                 messages.success(request, message)
-                return HttpResponseRedirect(
-                    reverse('league:admin_events_update', kwargs={'pk': event.pk}))
-
+                return HttpResponseRedirect(form.cleaned_data['next'])
     raise Http404("What are you doing here ?")
 
 
@@ -857,8 +855,7 @@ def admin_rename_division(request, division_id):
             division.name = form.cleaned_data['name']
             division.save()
             messages.success(request, message)
-            return HttpResponseRedirect(
-                reverse('league:admin_events_update', kwargs={'pk': event.pk}))
+            return HttpResponseRedirect(form.cleaned_data['next'])
     raise Http404("What are you doing here ?")
 
 

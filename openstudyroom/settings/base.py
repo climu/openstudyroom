@@ -98,6 +98,7 @@ INSTALLED_APPS = [
     'fullcalendar',
 
     'community',
+    'tournament'
 
 ]+ get_machina_apps()
 

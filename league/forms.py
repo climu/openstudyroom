@@ -88,9 +88,10 @@ class LeaguePopulateForm(forms.Form):
             #    self.fields['player_'+str(player.pk)].inital = (division.pk,division.name)
 
 class DivisionForm(ModelForm):
+    next = forms.CharField(label='next', widget=forms.HiddenInput(), required=False)
     class Meta:
         model = Division
-        fields = ['name']
+        fields = ['name', 'next']
 
 
 class LeagueEventForm(forms.ModelForm):

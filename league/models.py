@@ -861,7 +861,7 @@ class Division(models.Model):
         return self.sgf_set.distinct().count()
 
     def get_players(self):
-        return self.leagueplayer_set.all().order_by('-score')
+        return self.leagueplayer_set.all()
 
     def number_players(self):
         return self.leagueplayer_set.count()
@@ -945,10 +945,10 @@ class Division(models.Model):
 
 class LeaguePlayer(models.Model):
     user = models.ForeignKey('User')
-    kgs_username = models.CharField(max_length=20, default='')
+    kgs_username = models.CharField(max_length=20, default='',null=True, blank=True)
     ogs_username = models.CharField(max_length=40, null=True, blank=True)
     event = models.ForeignKey('LeagueEvent')
-    division = models.ForeignKey('Division')
+    division = models.ForeignKey('Division',null=True, blank=True)
     # p_status is deprecated, we now store that in player profile
     p_status = models.SmallIntegerField(default=0)
 

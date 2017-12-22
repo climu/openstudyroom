@@ -1,0 +1,134 @@
+{% extends 'league/admin/base.html' %}
+{% load bootstrap3 static league_tags%}
+{% block title %}OSR league admin - Manage a tournament{% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1>{{tournament.name}} settings & players</h1>
+</div>
+{%endblock%}
+{% block content %}
+<div class="row">
+  <div class="col-md-2">
+    {% include 'tournament/includes/manage_menu.html' with active='settings'%}
+  </div>
+  <div class="col-md-4">
+    <legend>Tournament settings </legend>
+    <form action="" method="POST">{% csrf_token %}
+       {% bootstrap_form form %}
+        {% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
+    </form>
+  </div>
+  <div class="col-md-6">
+    <legend>Players </legend>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Invite a user
+      </div>
+      <div class="panel-body">
+        <form action="{% url 'tournament:tournament_invite_user' tournament.pk %}" method="post" >
+            {% csrf_token %}
+            <div class="form-group">
+            <input type="text" name="username" placeholder="OSR Username" >
+
+            <button type="submit" class="pull-right btn btn-success btn-sm"  >
+            {% bootstrap_icon "plus" %}
+            </button>
+            </div>
+            </form>
+      </div>
+    </div>
+
+    <div class="panel panel-danger ">
+      <div class="panel-heading clearfix">
+        Remove players by droping them here.
+      </div>
+      <div id="remove_players"class='panel-body'>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading clearfix">
+        {{players|length}} registered players
+        <button id="save_players_order" class="btn btn-default btn-sm pull-right">
+          Save
+        </button>
+      </div>
+      <div class="row">
+      <div class="col-md-2">
+        <ul class="list-group">
+          {% for player in players %}
+          <li class="list-group-item">
+          <big>
+              {{forloop.counter}}
+          </big>
+          </li>
+          {% endfor %}
+        </ul>
+
+      </div>
+      <div  class="col-md-10">
+        <div id="players_list">
+          {%for player in players %}
+            <li data-id={{player.pk}} class="list-group-item">
+              {{player.user | user_link}}
+              <span class="group_name pull-right">
+              </span>
+            </li>
+          {%endfor%}
+      </div>
+    </div>
+
+    </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_css %}
+    {{ form.media.css }}
+
+
+{% endblock extra_css %}
+
+{% block extra_js %}
+{{ form.media.js }}
+<script src="//cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+<script>
+// ajax crfs setup
+{% include 'league/includes/ajax_setup.html' %}
+var players_list_sortable = Sortable.create(players_list,{
+  group: {
+    name: 'players_list',
+    pull:true,
+    put: true,
+    revertClone: true,
+  }
+});
+
+var remove_players_sortable = Sortable.create(remove_players,{
+  group: {
+    name: 'players_list',
+    put:true,
+    pull:true
+  },
+});
+
+$('#save_players_order').click(function(){
+  json_players_list = JSON.stringify(players_list_sortable.toArray());
+  json_removed_players = JSON.stringify(remove_players_sortable.toArray());
+
+  $.ajax({
+      type:"POST",
+      url:"{% url 'tournament:save_players_order' tournament.pk%}",
+      data: {
+          'players_list': json_players_list,
+          'removed_players': json_removed_players
+      },
+  });
+  $('#remove_players li').remove()
+});
+
+</script>
+{% endblock extra_js %}
