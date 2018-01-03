@@ -129,13 +129,6 @@ def save_players_order(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     if request.method == 'POST':
         players_list = json.loads(request.POST.get('players_list'))
-        removed_players = json.loads(request.POST.get('removed_players'))
-        # Let's removed some players:
-        if removed_players:
-            for id in removed_players:
-                player = get_object_or_404(TournamentPlayer, pk=id)
-                player.delete()
-
         # Now we update the players order
         for order, id in enumerate(players_list):
             player = get_object_or_404(TournamentPlayer, pk=id)
@@ -158,7 +151,7 @@ def create_group(request, tournament_id):
             group.league_event = tournament
             group.order = tournament.last_division_order() + 1
             group.save()
-        return HttpResponseRedirect(reverse('tournament:manage_tournament', kwargs={'tournament_id': tournament_id}))
+        return HttpResponseRedirect(reverse('tournament:tournament_manage_groups', kwargs={'tournament_id': tournament_id}))
     else:
         raise Http404("What are you doing here ?")
 

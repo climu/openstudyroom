@@ -1,6 +1,6 @@
 {% extends 'league/admin/base.html' %}
 {% load bootstrap3 static league_tags tournament_tags%}
-{% block title %}OSR league admin - Create new Event{% endblock %}
+{% block title %}Manage tournament groups{% endblock %}
 {% block heading %}
 <div class="page-header">
     <h1>{{tournament.name}} groups</h1>
@@ -25,9 +25,6 @@
   <div class="panel panel-default">
     <div class="panel-heading clearfix">
       {{players|length}} registered players
-      <button id="save_players_order" class="btn btn-default btn-sm pull-right">
-        Save
-      </button>
     </div>
     <div class="row">
     <div class="col-md-2">
@@ -45,7 +42,11 @@
     <div  class="col-md-10">
       <div id="players_list">
         {%for player in players %}
-          <li data-id={{player.pk}} class="list-group-item">
+          <li data-id={{player.pk}} class="list-group-item
+          {% if player.division %}
+            disabled
+          {% endif %}
+          ">
             {{player.user | user_link}}
             <span class="group_name pull-right">
               {{player.division.name}}
@@ -144,46 +145,47 @@
 // ajax crfs setup
 {% include 'league/includes/ajax_setup.html' %}
 var players_list_sortable = Sortable.create(players_list,{
-group: {
-  name: 'players_list',
-  pull: function (to) {
-    if (to.el.id == 'remove_players'){
-      return true;
-    }
-    else{
-      return 'clone'
-    }
-  },
-  put:function (to, from) {
-    return (from.el.id == 'remove_players');
-  },
-  revertClone: true,
+    group: {
+      name: 'players_list',
+      pull: function (to) {
+        if (to.el.id == 'remove_players'){
+          return false;
+        }
+        else{
+          return 'clone'
+        }
+      },
+      put:false,
+      revertClone: true,
 
-}
+
+  },
+  sort:false
 });
 
 var remove_players_sortable = Sortable.create(remove_players,{
-group: {
-  name: 'players_list',
-  put:true
-},
-// Element is dropped into the list from another list
-onAdd: function (evt) {
-  if (evt.from.id != 'players_list'){
-    evt.item.outerHTML = "";
-  }
+    group: {
+      name: 'players_list',
+      put:true
+    },
+    // Element is dropped into the list from another list
+    onAdd: function (evt) {
+      if (evt.from.id != 'players_list'){
+        evt.item.outerHTML = "";
+      }
 
-  id = $(evt.item).attr('data-id')
-  // remove group_name element of the item
-//  item.children('.group_name').html('')
-  // add indicator at players list
-  $('#players_list')
-    .children(`[data-id='${id}']`)
-    .not('.sortable-ghost')
-    .children('.group_name')
-    .html('')
+      id = $(evt.item).attr('data-id')
+      // remove group_name element of the item
+    //  item.children('.group_name').html('')
+      // add indicator at players list
+      var player_list_element = $('#players_list')
+        .children(`[data-id='${id}']`)
+        .not('.sortable-ghost');
+      player_list_element.children('.group_name')
+          .html("");
+      player_list_element.removeClass('disabled');
 
-},
+    },
 });
 
 {% for group in groups %}
@@ -216,46 +218,34 @@ onAdd: function (evt) {
   id = $(evt.item).attr('data-id')
   // remove group_name element of the item
   $(evt.item).children('.group_name').html('')
-  // add indicator at players list
-  $('#players_list')
+  // add indicator at players list and disable class
+  var player_list_element = $('#players_list')
     .children(`[data-id='${id}']`)
-    .not('.sortable-ghost')
-    .children('.group_name')
-    .html($(evt.to).attr('data-group-name'));
+    .not('.sortable-ghost');
+  player_list_element.children('.group_name')
+      .html($(evt.to).attr('data-group-name'));
+  player_list_element.addClass('disabled');
+
 }
 }
 );
 {% endfor %}
 $('#save_groups_button').click(function(){
-var dict = {};
-{% for group in groups %}
-  dict[{{group.pk}}] = group_{{group.pk}}_sortable.toArray();
-{% endfor %}
-json_groups = JSON.stringify(dict);
-console.log(json_groups);
-$.ajax({
-    type:"POST",
-    url:"{% url 'tournament:save_groups' tournament.pk%}",
-    data: {
-        'groups': json_groups,
-    },
-});
+    var dict = {};
+    {% for group in groups %}
+      dict[{{group.pk}}] = group_{{group.pk}}_sortable.toArray();
+    {% endfor %}
+    json_groups = JSON.stringify(dict);
+    console.log(json_groups);
+    $.ajax({
+        type:"POST",
+        url:"{% url 'tournament:save_groups' tournament.pk%}",
+        data: {
+            'groups': json_groups,
+        },
+    });
 });
 
-$('#save_players_order').click(function(){
-json_players_list = JSON.stringify(players_list_sortable.toArray());
-json_removed_players = JSON.stringify(remove_players_sortable.toArray());
-
-$.ajax({
-    type:"POST",
-    url:"{% url 'tournament:save_players_order' tournament.pk%}",
-    data: {
-        'players_list': json_players_list,
-        'removed_players': json_removed_players
-    },
-});
-$('#remove_players li').remove()
-});
 
 </script>
 {% endblock extra_js %}

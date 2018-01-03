@@ -38,13 +38,6 @@
       </div>
     </div>
 
-    <div class="panel panel-danger ">
-      <div class="panel-heading clearfix">
-        Remove players by droping them here.
-      </div>
-      <div id="remove_players"class='panel-body'>
-      </div>
-    </div>
     <div class="panel panel-default">
       <div class="panel-heading clearfix">
         {{players|length}} registered players
@@ -56,7 +49,7 @@
       <div class="col-md-2">
         <ul class="list-group">
           {% for player in players %}
-          <li class="list-group-item">
+          <li class="list-group-item clearfix">
           <big>
               {{forloop.counter}}
           </big>
@@ -68,9 +61,15 @@
       <div  class="col-md-10">
         <div id="players_list">
           {%for player in players %}
-            <li data-id={{player.pk}} class="list-group-item">
+            <li data-id={{player.pk}} class="list-group-item clearfix">
               {{player.user | user_link}}
               <span class="group_name pull-right">
+                  <form action="{%url 'tournament:tournament_remove_player' tournament.id player.id %}"method="post" >
+                      {% csrf_token %}
+                      <button type="submit" class="pull-right btn btn-danger btn-sm"  >
+                      {% bootstrap_icon "remove" %}
+                      </button>
+                  </form>
               </span>
             </li>
           {%endfor%}
@@ -107,27 +106,16 @@ var players_list_sortable = Sortable.create(players_list,{
   }
 });
 
-var remove_players_sortable = Sortable.create(remove_players,{
-  group: {
-    name: 'players_list',
-    put:true,
-    pull:true
-  },
-});
 
 $('#save_players_order').click(function(){
   json_players_list = JSON.stringify(players_list_sortable.toArray());
-  json_removed_players = JSON.stringify(remove_players_sortable.toArray());
-
   $.ajax({
       type:"POST",
       url:"{% url 'tournament:save_players_order' tournament.pk%}",
       data: {
           'players_list': json_players_list,
-          'removed_players': json_removed_players
       },
   });
-  $('#remove_players li').remove()
 });
 
 </script>

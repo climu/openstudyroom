@@ -5,7 +5,7 @@ from . import views
 urlpatterns = [
     url(
         r'^create/$',
-        views.TournamentCreate.as_view(success_url='/league/admin/events/'),
+        views.TournamentCreate.as_view(success_url='/tournament/list/'),
         name='create'
     ),
     url(
