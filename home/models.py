@@ -206,5 +206,6 @@ def send_to_discord(sender, **kwargs):
     r.raise_for_status()
 
 
-# Register a receiver
+# Register two receivers
 page_published.connect(send_to_discord, sender=EntryPage)
+page_published.connect(send_to_discord, sender=StreamFieldEntryPage)
