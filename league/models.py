@@ -371,6 +371,11 @@ class Sgf(models.Model):
             return
         if self.p_status == 1:  # we only have the urlto and need a server request
             r = requests.get(self.urlto)
+            if r.status_code == 403:
+                # that's how OGS tells us a game is private.
+                # game will then be deleted in scraper since results will still be ?
+                # Starting to be a mess :(
+                return self
             self.sgf_text = r.text
         prop = utils.parse_sgf_string(self.sgf_text)
         # prop['time'] = int(prop['time'])
