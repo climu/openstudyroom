@@ -73,6 +73,7 @@ def scraper():
         # parse the sgf datas to populate the rows -> KGS archive request
         sgf = sgf.parse()
         # if the sgf doesn't have a result (unfinished game) we just delete it
+        # If the game was a OGS private game result will also be '?'. See models.sgf.parse
         if sgf.result == '?':
             sgf.delete()
         else:
