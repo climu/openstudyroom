@@ -437,7 +437,7 @@ class Sgf(models.Model):
             (b, m) = (False, m + '; no result')
         if self.number_moves < 20:
             (b, m) = (False, m + '; number moves')
-        if not self.komi.startswith('6.5'):
+        if not str(self.komi.startswith('6.5')):
             (b, m) = (False, m + '; komi')
         return {'message': m, 'valid': b, 'tag': tag, }
 
