@@ -3,6 +3,8 @@ from __future__ import absolute_import, unicode_literals
 # pylint: disable=import-error,wildcard-import,unused-wildcard-import
 
 from .base import *
+import os
+import raven
 
 DEBUG = False
 
@@ -35,7 +37,7 @@ LOGGING = {
     },
     'handlers': {
         'file': {
-            'level': 'WARNING',
+            'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': 'mysite.log',
             'formatter': 'verbose'
@@ -45,11 +47,11 @@ LOGGING = {
         'django': {
             'handlers':['file'],
             'propagate': True,
-            'level':'WARNING',
+            'level':'DEBUG',
         },
         'MYAPP': {
             'handlers': ['file'],
-            'level': 'WARNING',
+            'level': 'DEBUG',
         },
     }
 }
@@ -68,3 +70,12 @@ EMAIL_HOST_PASSWORD = GMAIL_PASS
 EMAIL_HOST_USER = 'openstudyroom@gmail.com'
 EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+
+RAVEN_CONFIG = {
+    'dsn': 'https://4fc2585f995348249682113f91124169:0e0c5bc2df38456090293fc24e43ce76@sentry.io/240861',
+    # If you are using git, you can also automatically configure the
+    # release based on the git info.
+    'release': raven.fetch_git_sha(os.path.abspath(os.pardir)),
+}
