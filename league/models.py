@@ -255,7 +255,7 @@ class Sgf(models.Model):
     handicap = models.SmallIntegerField(default=0)
     komi = models.DecimalField(default=6.5, max_digits=5, decimal_places=2)
     byo = models.CharField(max_length=20, default='sgf')
-    time = models.SmallIntegerField(default=19)
+    time = models.PositiveIntegerField(default=19)
     game_type = models.CharField(max_length=20, default='Free')
     message = models.CharField(max_length=100, default='nothing', blank=True)
     number_moves = models.SmallIntegerField(default=100)
@@ -953,7 +953,7 @@ class LeaguePlayer(models.Model):
     kgs_username = models.CharField(max_length=20, default='')
     ogs_username = models.CharField(max_length=40, null=True, blank=True)
     event = models.ForeignKey('LeagueEvent')
-    division = models.ForeignKey('Division')
+    division = models.ForeignKey('Division', null=True)
     # p_status is deprecated, we now store that in player profile
     p_status = models.SmallIntegerField(default=0)
 
