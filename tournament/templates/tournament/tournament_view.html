@@ -1,0 +1,30 @@
+{% extends 'full_width.html' %}
+{% load bootstrap3 league_tags static%}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
+{% endblock %}
+
+
+
+{% block title %}{{tournament.name}}{% endblock %}
+
+{% block heading %}
+  <div class="page-header">
+    <h1>{{tournament.name}}</h1>
+  </div>
+{%endblock%}
+
+{% block content %}
+  {% if groups %}
+    <div class="col-md-3">
+      {% for group in groups %}
+        {% include 'league/includes/results_ladder.html' with results=group.results %}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="col-md-7">
+    bla
+  </div>
+
+{%endblock%}

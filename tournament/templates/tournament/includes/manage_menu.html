@@ -10,6 +10,8 @@
   </a>
 </li>
 <li role="presentation" {% if active == 'brackets'%}class="active"{% endif %}>
+  <a href={%url 'tournament:tournament_manage_brackets' tournament.pk %}>
   Brackets
+</a>
 </li>
 </ul>

@@ -4,6 +4,11 @@ from . import views
 
 urlpatterns = [
     url(
+        r'^(?P<tournament_id>[0-9]+)/$',
+        views.tournament_view,
+        name='tournament_manage_settings'
+    ),
+    url(
         r'^create/$',
         views.TournamentCreate.as_view(success_url='/tournament/list/'),
         name='create'
@@ -22,6 +27,11 @@ urlpatterns = [
         r'^(?P<tournament_id>[0-9]+)/groups/$',
         views.tournament_manage_groups,
         name='tournament_manage_groups'
+    ),
+    url(
+        r'^(?P<tournament_id>[0-9]+)/brackets/$',
+        views.tournament_manage_brackets,
+        name='tournament_manage_brackets'
     ),
     url(
         r'^invite/(?P<tournament_id>[0-9]+)$',

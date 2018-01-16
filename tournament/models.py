@@ -41,12 +41,15 @@ class TournamentGroup(Division):
 
 
 class Bracket(models.Model):
+    tournament = models.ForeignKey(Tournament, null=True)
     order = models.PositiveSmallIntegerField()
+
 
 
 class Match(models.Model):
     """ A tournament match"""
     sgf = models.ForeignKey(Sgf, blank=True, null=True)
+    bracket = models.ForeignKey(Bracket, blank=True, null=True)
     player_1 = models.ForeignKey(LeaguePlayer, null=True, related_name="player_1_match")
     player_2 = models.ForeignKey(LeaguePlayer, null=True, related_name="player_2_match")
     round = models.PositiveSmallIntegerField()

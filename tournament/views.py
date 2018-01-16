@@ -14,6 +14,27 @@ from django.core.urlresolvers import reverse
 from league.models import User
 import json
 
+def tournament_view(request,tournament_id):
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    players = TournamentPlayer.objects.filter(event=tournament).order_by('order')
+    groups = TournamentGroup.objects.filter(league_event=tournament).order_by('order')
+    brackets = tournament.bracket_set.all()
+
+    for group in groups:
+        results = group.get_results()
+        group.results = results
+    context = {
+        'tournament': tournament,
+        'players': players,
+        'groups': groups,
+        'brackets': brackets
+    }
+    template = loader.get_template('tournament/tournament_view.html')
+    return HttpResponse(template.render(context, request))
+############################################################################
+###                  Admin views                                         ###
+############################################################################
+
 class TournamentCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     """Create a tournament"""
     form_class = TournamentForm
@@ -66,6 +87,21 @@ def tournament_manage_groups(request, tournament_id):
         'groups': groups
     }
     template = loader.get_template('tournament/manage_groups.html')
+    return HttpResponse(template.render(context, request))
+
+@login_required()
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+def tournament_manage_brackets(request, tournament_id):
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    players = TournamentPlayer.objects.filter(event=tournament).order_by('order')
+    brackets = tournament.bracket_set.all()
+    groups = TournamentGroup.objects.filter(league_event=tournament).order_by('order')
+    context = {
+        'tournament': tournament,
+        'players': players,
+        'groups': groups
+    }
+    template = loader.get_template('tournament/manage_brackets.html')
     return HttpResponse(template.render(context, request))
 
 @login_required()
