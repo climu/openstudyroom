@@ -11,6 +11,11 @@
 {% endblock %}
 {% block page_content %}
     <div class="row">
+
+<div class="alert alert-danger">
+  We faced a server issue and lost all data since from 12 to 18 January. If you register in this timerange, we are sorry to say we lost your account. Please register again.
+See <a href="/blog/2018/01/18/server-issue-one-week-datas-loss-games-will-be-fine/">here</a> for details or contact us at openstudyroom@gmail.com.
+</div>
         <div class="col-md-4">
             <form method="POST" action="{% url "account_login" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
                 {% csrf_token %}
