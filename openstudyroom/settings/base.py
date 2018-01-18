@@ -98,7 +98,7 @@ INSTALLED_APPS = [
     'fullcalendar',
 
     'community',
-    
+
     #for sentry
     'raven.contrib.django.raven_compat',
 
