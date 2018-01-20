@@ -1,3 +1,4 @@
+{% load league_tags %}
 <div class="col-md-4">
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -18,7 +19,7 @@
         {% for user in online_opponents %}
             <li>
                 <a href="/league/account/{{user.username}}/">
-                    {{user.kgs_username}}
+                    {{user|user_link}}
                 </a>
             </li>
         {% endfor %}
@@ -38,8 +39,9 @@
                   </div>
                   <div class="panel-body">
                       {% if availables %}
-                        <p>Some users are availables to play in a near future.
-                         Send them a game request.</a></p>
+                      {% for available in availables %}
+                      <p>{{available.user|user_link}} wants to play on the {{available.start|date:"j b"}} {{available.start|time}} -> {{available.end|time}}</p>
+                      {% endfor %}
                       {% endif %}
                       {% if not me_available %}
                       <p>Tell others when you are available so they can schedule games with you.</p>
