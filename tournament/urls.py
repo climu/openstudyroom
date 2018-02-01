@@ -39,9 +39,9 @@ urlpatterns = [
         name='tournament_invite_user'
     ),
     url(
-        r'^quit/(?P<tournament_id>[0-9]+)/(?P<player_id>[0-9]+)/$',
-        views.tournament_remove_player,
-        name='tournament_remove_player'
+        r'^quit/(?P<tournament_id>[0-9]+)//$',
+        views.tournament_remove_players,
+        name='tournament_remove_players'
     ),
     url(
         r'^save_players_order/(?P<tournament_id>[0-9]+)/$',

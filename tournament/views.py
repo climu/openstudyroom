@@ -143,18 +143,14 @@ def tournament_invite_user(request, tournament_id):
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
-def tournament_remove_player(request, tournament_id, player_id):
-    """Remove a player from a tournament"""
-    tournament = get_object_or_404(Tournament, pk=tournament_id)
-    player = get_object_or_404(TournamentPlayer, pk=player_id)
+def tournament_remove_players(request, tournament_id):
+    """Remove a player from a tournament ajax powa"""
     if request.method == "POST":
-        player.delete()
-        message = player.user.username + " is no longer in " + tournament.name + " tournament."
-        messages.success(request, message)
-        return HttpResponseRedirect(reverse(
-            'tournament:tournament_manage_settings',
-            kwargs={'tournament_id': tournament.pk}
-        ))
+        tournament = get_object_or_404(Tournament, pk=tournament_id)
+        players_list = json.loads(request.POST.get('players_list'))
+        players = TournamentPlayer.objects.filter( pk__in=players_list)
+        players.delete()
+        return HttpResponse("success")
     else:
         raise Http404('what are you doing here ?')
 

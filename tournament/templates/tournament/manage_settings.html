@@ -44,15 +44,19 @@
         <button id="save_players_order" class="btn btn-default btn-sm pull-right">
           Save
         </button>
+        <button id="remove_players" class="btn btn-default btn-sm pull-right">
+          remove
+        </button>
+        <button id="shuffle_players" class="btn btn-default btn-sm pull-right">
+         shuffle
+        </button>
       </div>
       <div class="row">
       <div class="col-md-2">
         <ul class="list-group">
           {% for player in players %}
           <li class="list-group-item clearfix">
-          <big>
               {{forloop.counter}}
-          </big>
           </li>
           {% endfor %}
         </ul>
@@ -63,14 +67,11 @@
           {%for player in players %}
             <li data-id={{player.pk}} class="list-group-item clearfix">
               {{player.user | user_link}}
-              <span class="group_name pull-right">
-                  <form action="{%url 'tournament:tournament_remove_player' tournament.id player.id %}"method="post" >
-                      {% csrf_token %}
-                      <button type="submit" class="pull-right btn btn-danger btn-sm"  >
-                      {% bootstrap_icon "remove" %}
-                      </button>
-                  </form>
-              </span>
+
+                  <div class="checkbox div-checkbox group_name pull-right">
+                    <input class ="refetch check-player" value="{{player.pk}}" type="checkbox" >
+                  </div>
+
             </li>
           {%endfor%}
       </div>
@@ -92,11 +93,26 @@
 
 {% block extra_js %}
 {{ form.media.js }}
-<script src="//cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script src="/static/js/Sortable.min.js"></script>
+
 
 <script>
 // ajax crfs setup
 {% include 'league/includes/ajax_setup.html' %}
+
+function shuffle(array){
+    var currentIndex = array.length, temporaryValue, randomIndex;
+    while (0 !== currentIndex){
+
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+    return array;
+}
+
 var players_list_sortable = Sortable.create(players_list,{
   group: {
     name: 'players_list',
@@ -116,6 +132,42 @@ $('#save_players_order').click(function(){
           'players_list': json_players_list,
       },
   });
+});
+
+$('#remove_players').click(function(){
+    var selected_players = $('.check-player:checkbox:checked').map(function() {
+        return this.value;
+    }).get();
+  json_players_list = JSON.stringify(selected_players);
+  $.ajax({
+      type:"POST",
+      url:"{% url 'tournament:tournament_remove_players' tournament.pk%}",
+      data: {
+          'players_list': json_players_list,
+      },
+     success: function(){
+         console.log($('.check-player:checkbox:checked'))
+        $('.check-player:checkbox:checked').outerHTML = "";
+     }
+  });
+  return false;
+
+});
+
+$('#shuffle_players').click(function(){
+    var players = players_list_sortable.toArray();
+    var unselected_players = $('.check-player:checkbox:unchecked').map(function() {
+        return this.value;
+    }).get();
+    // we don't want to shuffle the not selected players
+    shuffle_players = shuffle(players)
+    // swap fixed elements back to their original position
+    for player in unselected_players:
+        index = players.indexOf(player)
+        shuffle_players[pos], items[index] = items[index], items[pos]
+    players_list_sortable.sort(shuffle(selected_players));
+
+
 });
 
 </script>
