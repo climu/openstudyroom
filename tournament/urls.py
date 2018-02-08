@@ -6,7 +6,7 @@ urlpatterns = [
     url(
         r'^(?P<tournament_id>[0-9]+)/$',
         views.tournament_view,
-        name='tournament_manage_settings'
+        name='view'
     ),
     url(
         r'^create/$',
@@ -20,28 +20,28 @@ urlpatterns = [
     ),
     url(
         r'^(?P<tournament_id>[0-9]+)/settings/$',
-        views.tournament_manage_settings,
-        name='tournament_manage_settings'
+        views.manage_settings,
+        name='manage_settings'
     ),
     url(
         r'^(?P<tournament_id>[0-9]+)/groups/$',
-        views.tournament_manage_groups,
-        name='tournament_manage_groups'
+        views.manage_groups,
+        name='manage_groups'
     ),
     url(
         r'^(?P<tournament_id>[0-9]+)/brackets/$',
-        views.tournament_manage_brackets,
-        name='tournament_manage_brackets'
+        views.manage_brackets,
+        name='manage_brackets'
     ),
     url(
         r'^invite/(?P<tournament_id>[0-9]+)$',
-        views.tournament_invite_user,
-        name='tournament_invite_user'
+        views.invite_user,
+        name='invite_user'
     ),
     url(
         r'^quit/(?P<tournament_id>[0-9]+)//$',
-        views.tournament_remove_players,
-        name='tournament_remove_players'
+        views.remove_players,
+        name='remove_players'
     ),
     url(
         r'^save_players_order/(?P<tournament_id>[0-9]+)/$',
@@ -52,6 +52,11 @@ urlpatterns = [
         r'^create-group/(?P<tournament_id>[0-9]+)/$',
         views.create_group,
         name='create_group'
+    ),
+    url(
+        r'^create-bracket/(?P<tournament_id>[0-9]+)/$',
+        views.create_bracket,
+        name='create_bracket'
     ),
     url(
         r'^save-groups/(?P<tournament_id>[0-9]+)/$',

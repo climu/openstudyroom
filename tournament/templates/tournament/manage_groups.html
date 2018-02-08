@@ -139,7 +139,8 @@
 
 {% block extra_js %}
 {{ form.media.js }}
-<script src="/static/js/Sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.6.1/Sortable.min.js"></script>
+
 
 
 
@@ -238,7 +239,6 @@ $('#save_groups_button').click(function(){
       dict[{{group.pk}}] = group_{{group.pk}}_sortable.toArray();
     {% endfor %}
     json_groups = JSON.stringify(dict);
-    console.log(json_groups);
     $.ajax({
         type:"POST",
         url:"{% url 'tournament:save_groups' tournament.pk%}",

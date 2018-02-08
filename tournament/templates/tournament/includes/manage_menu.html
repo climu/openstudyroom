@@ -1,16 +1,16 @@
 <ul class="nav nav-pills nav-stacked">
 <li role="presentation" {% if active == 'settings'%}class="active"{% endif %}>
-  <a href={%url 'tournament:tournament_manage_settings' tournament.pk %}>
+  <a href={%url 'tournament:manage_settings' tournament.pk %}>
     Settings & players
   </a>
 </li>
 <li role="presentation" {% if active == 'groups'%}class="active"{% endif %}>
-  <a href={%url 'tournament:tournament_manage_groups' tournament.pk %}>
+  <a href={%url 'tournament:manage_groups' tournament.pk %}>
     Groups
   </a>
 </li>
 <li role="presentation" {% if active == 'brackets'%}class="active"{% endif %}>
-  <a href={%url 'tournament:tournament_manage_brackets' tournament.pk %}>
+  <a href={%url 'tournament:manage_brackets' tournament.pk %}>
   Brackets
 </a>
 </li>

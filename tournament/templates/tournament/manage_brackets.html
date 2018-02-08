@@ -1,5 +1,8 @@
 {% extends 'league/admin/base.html' %}
 {% load bootstrap3 static league_tags tournament_tags%}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
+{% endblock %}
 {% block title %}Manage tournament brackets{% endblock %}
 {% block heading %}
 <div class="page-header">
@@ -8,8 +11,92 @@
 {%endblock%}
 {% block content %}
 <div class="row">
-  <div class="col-md-2">
+  <div class="col-md-1">
     {% include 'tournament/includes/manage_menu.html' with active='brackets' %}
   </div>
+  <div class = "col-md-2">
+  {% if groups %}
+  {% for group in groups %}
+  <h2>{{group.name}}</h2>
+  <div id="group_{{group.pk}}_players" data-group-name="{{group.name}}" class="panel-body group_players">
+      {%for player in group.get_tournament_players %}
+          <li data-id={{player.pk}} class="list-group-item">
+            {{player.user | user_link}}
+          </li>
+
+        </li>
+      {%endfor%}
+</div>
+  {% endfor %}
+  {% else %}
+  {% endif %}
+</div>
+  <div class = "col-md-9">
+    <div class="row">
+      <div class="panel panel-default">
+        <div class="panel-heading"> Create a new Bracket
+          <form action="" method="POST" class="form-inline" >
+            {% csrf_token %}
+            <button type="submit" formaction="{% url 'tournament:create_bracket' tournament.pk %}" class="btn btn-success btn-sm  pull-right">
+              {% bootstrap_icon "plus" %}
+            </button>
+          </form>
+          </div>
+        </div>
+    </div>
+    {% for bracket in brackets %}
+    <div class="row">
+    {% with bracket.get_rounds as rounds %}
+      {% for round in rounds %}
+
+      <div class="col-md-2">
+        <div class="panel panel-default">
+            <div class="panel-body">
+
+          {% for match in round.get_matchs %}
+          <div>{{match.bracket}}</div>
+          {% endfor %}
+      </div>
+    </div>
+
+  </div>
+
+
+      {% endfor %}
+    <div class="col-md-2">
+      <div class="panel panel-default">
+          <div class="panel-body">
+      Create new round!
+    </div>
+  </div>
+
+    </div>
+  </div>
+  </div>
+    {% endwith %}
+
+    {% endfor %}
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.6.1/Sortable.min.js"></script>
+
+
+<script>
+// ajax crfs setup
+{% include 'league/includes/ajax_setup.html' %}
+
+{% for group in groups %}
+var group_{{group.pk}}_sortable = Sortable.create(group_{{group.pk}}_players,{
+  group: {
+    name: 'players_list',
+    pull: true,
+  },
+    sort: false,
+});
+{% endfor %}
+</script>
 
 {% endblock %}

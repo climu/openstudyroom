@@ -63,10 +63,17 @@ def tournament_list(request):
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
-def tournament_manage_settings(request, tournament_id):
+def manage_settings(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
-    players = TournamentPlayer.objects.filter(event=tournament).order_by('order')
+
+    if request.method == 'POST':
+        form = TournamentForm(request.POST, instance=tournament)
+        if form.is_valid:
+            form.save()
+
     form = TournamentForm(instance=tournament)
+
+    players = TournamentPlayer.objects.filter(event=tournament).order_by('order')
     context = {
         'tournament': tournament,
         'players': players,
@@ -77,7 +84,7 @@ def tournament_manage_settings(request, tournament_id):
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
-def tournament_manage_groups(request, tournament_id):
+def manage_groups(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     players = TournamentPlayer.objects.filter(event=tournament).order_by('order')
     groups = TournamentGroup.objects.filter(league_event=tournament).order_by('order')
@@ -91,22 +98,43 @@ def tournament_manage_groups(request, tournament_id):
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
-def tournament_manage_brackets(request, tournament_id):
+def create_bracket(request, tournament_id):
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    if request.method == 'POST':
+        bracket = Bracket(tournament=tournament)
+        bracket.order = tournament.last_bracket_order() + 1
+        bracket.save()
+    return HttpResponseRedirect(reverse(
+        'tournament:manage_brackets',
+        kwargs={'tournament_id': tournament.pk}
+    ))
+
+
+@login_required()
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+def manage_brackets(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     players = TournamentPlayer.objects.filter(event=tournament).order_by('order')
     brackets = tournament.bracket_set.all()
+    if not brackets.first().match_set.all():
+        brackets.first().generate_bracket()
     groups = TournamentGroup.objects.filter(league_event=tournament).order_by('order')
+    for group in groups:
+        results = group.get_results()
+        group.results = results
+
     context = {
         'tournament': tournament,
         'players': players,
-        'groups': groups
+        'groups': groups,
+        'brackets': brackets
     }
     template = loader.get_template('tournament/manage_brackets.html')
     return HttpResponse(template.render(context, request))
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
-def tournament_invite_user(request, tournament_id):
+def invite_user(request, tournament_id):
     """Invite a user in a tournament."""
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     if request.method == 'POST':
@@ -117,10 +145,10 @@ def tournament_invite_user(request, tournament_id):
                 event=tournament,
                 user=user
             ).exists():
-                message = {{user.username}} + " is already in the tournament."
+                message = user.username + " is already in the tournament."
                 messages.success(request, message)
                 return HttpResponseRedirect(reverse(
-                    'tournament:tournament_manage_settings',
+                    'tournament:manage_settings',
                     kwargs={'tournament_id': tournament.pk}
                 ))
 
@@ -137,13 +165,13 @@ def tournament_invite_user(request, tournament_id):
             message = "We don't have such a user."
             messages.success(request, message)
         return HttpResponseRedirect(reverse(
-            'tournament:tournament_manage_settings',
+            'tournament:manage_settings',
             kwargs={'tournament_id': tournament.pk}
         ))
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
-def tournament_remove_players(request, tournament_id):
+def remove_players(request, tournament_id):
     """Remove a player from a tournament ajax powa"""
     if request.method == "POST":
         tournament = get_object_or_404(Tournament, pk=tournament_id)

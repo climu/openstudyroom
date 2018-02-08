@@ -1,0 +1,37 @@
+{% load league_tags %}
+{% get_meijin as meijin %}
+
+<div class='table-responsive'>
+    <table id='example' class='table table-bordered  table-hover table-condensed' >
+        <thead class='table-league-highlight'>
+        <tr>
+            <th>player</th>
+            <th>score</th>
+            {% for player in results %}
+            <th>
+                <div class="kgs_username">{{ player.user.username }}</div>
+            </th>
+            {% endfor %}
+        </thead>
+        <tbody>
+        {% for player in results %}
+        <tr  class="{% cycle 'even-row' 'odd-row' %}">
+            <td class='table-league-player{%if not player.is_active %} inactive{%endif%}'  data-id={{player.pk}}>
+              {{forloop.counter}}. {{player.user | user_link:meijin}}
+            </td>
+            <td class='table-league-score-highlight'>{{ player.score }}</td>
+            {% for opponent in results %}
+
+            {% if forloop.counter == forloop.parentloop.counter %}
+            <td class="table-league-highlight {% cycle 'even-column' 'odd-column' %}">
+                {% else %}
+            <td class="{% cycle 'even-column' 'odd-column' %}">
+              {% html_one_result %}
+            </td>
+            {% endif %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

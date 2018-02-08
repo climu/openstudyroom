@@ -25,7 +25,7 @@
         Invite a user
       </div>
       <div class="panel-body">
-        <form action="{% url 'tournament:tournament_invite_user' tournament.pk %}" method="post" >
+        <form action="{% url 'tournament:invite_user' tournament.pk %}" method="post" >
             {% csrf_token %}
             <div class="form-group">
             <input type="text" name="username" placeholder="OSR Username" >
@@ -93,7 +93,7 @@
 
 {% block extra_js %}
 {{ form.media.js }}
-<script src="/static/js/Sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.6.1/Sortable.min.js"></script>
 
 
 <script>
@@ -103,7 +103,6 @@
 function shuffle(array){
     var currentIndex = array.length, temporaryValue, randomIndex;
     while (0 !== currentIndex){
-
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex -= 1;
         temporaryValue = array[currentIndex];
@@ -124,6 +123,10 @@ var players_list_sortable = Sortable.create(players_list,{
 
 
 $('#save_players_order').click(function(){
+  var ok = confirm("Save players order?");
+  if ( ok == false ) {
+    return false;
+  }
   json_players_list = JSON.stringify(players_list_sortable.toArray());
   $.ajax({
       type:"POST",
@@ -135,38 +138,50 @@ $('#save_players_order').click(function(){
 });
 
 $('#remove_players').click(function(){
+
     var selected_players = $('.check-player:checkbox:checked').map(function() {
         return this.value;
     }).get();
-  json_players_list = JSON.stringify(selected_players);
-  $.ajax({
+    var ok = confirm("Remove the "+ selected_players.length +" selected players?");
+    if ( ok == false ) {
+      return false;
+    }
+    json_players_list = JSON.stringify(selected_players);
+    $.ajax({
       type:"POST",
-      url:"{% url 'tournament:tournament_remove_players' tournament.pk%}",
+      url:"{% url 'tournament:remove_players' tournament.pk%}",
       data: {
           'players_list': json_players_list,
       },
      success: function(){
-         console.log($('.check-player:checkbox:checked'))
-        $('.check-player:checkbox:checked').outerHTML = "";
-     }
-  });
-  return false;
-
+       selected_players.forEach(function(player){
+          $('.list-group-item[data-id='+player+']')[0].outerHTML = "";
+       });
+      }
+   });
 });
 
 $('#shuffle_players').click(function(){
+    var ok = confirm("Shuffle the selected players?");
+    if ( ok == false ) {
+      return false;
+    }
     var players = players_list_sortable.toArray();
-    var unselected_players = $('.check-player:checkbox:unchecked').map(function() {
+    var unselected_players = $('.check-player:input:checkbox:not(:checked)').map(function() {
         return this.value;
     }).get();
     // we don't want to shuffle the not selected players
-    shuffle_players = shuffle(players)
+    shuffle_players = shuffle(players);
+    // It seems that the previous line change players array and randomize it.
+    players = players_list_sortable.toArray();
     // swap fixed elements back to their original position
-    for player in unselected_players:
-        index = players.indexOf(player)
-        shuffle_players[pos], items[index] = items[index], items[pos]
-    players_list_sortable.sort(shuffle(selected_players));
-
+    unselected_players.forEach(function(player) {
+        old_index = players.indexOf(player);
+        new_index = shuffle_players.indexOf(player);
+        shuffle_players[new_index] = shuffle_players[old_index];
+        shuffle_players[old_index] = player;
+    players_list_sortable.sort(shuffle_players);
+  });
 
 });
 
