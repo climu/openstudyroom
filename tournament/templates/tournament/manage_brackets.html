@@ -26,6 +26,7 @@
 
         </li>
       {%endfor%}
+
 </div>
   {% endfor %}
   {% else %}
@@ -50,27 +51,27 @@
       {% for round in rounds %}
 
       <div class="col-md-2">
-        <div class="panel panel-default">
-            <div class="panel-body">
-
           {% for match in round.get_matchs %}
-          <div>{{match.bracket}}</div>
-          {% endfor %}
+          <div class="panel panel-default">
+              <div class="panel-body" id="match_{{match.pk}}" data-round="{{round.pk}}">
+                  {% if match.player_1 %}
+                  <li class="list-group-item" data-id={{player.pk}} data-round="{{round.pk}}">{{match.player_1}}</li>
+                  {% endif %}
+                  {% if match.player_2 %}
+                  <li class="list-group-item" data-id={{player.pk}} data-round="{{round.pk}}">{{match.player_2}}</li>
+                  {% endif %}
       </div>
     </div>
+          {% endfor %}
+
 
   </div>
 
 
       {% endfor %}
-    <div class="col-md-2">
-      <div class="panel panel-default">
-          <div class="panel-body">
-      Create new round!
-    </div>
-  </div>
 
-    </div>
+
+
   </div>
   </div>
     {% endwith %}
@@ -81,7 +82,7 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.6.1/Sortable.min.js"></script>
+<script src="{% static '/js/Sortable.min.js'%}"></script>
 
 
 <script>
@@ -92,11 +93,39 @@
 var group_{{group.pk}}_sortable = Sortable.create(group_{{group.pk}}_players,{
   group: {
     name: 'players_list',
-    pull: true,
+    pull: 'clone',
+    put: false,
   },
     sort: false,
 });
 {% endfor %}
+
+{% for bracket in brackets %}
+{% with bracket.get_rounds as rounds %}
+  {% for round in rounds %}
+      {% for match in round.get_matchs %}
+        var match_{{match.pk}}_sortable = Sortable.create(match_{{match.pk}},{
+          group: {
+            name: 'players_list',
+            pull: function (to){
+                to = $(to.el)
+                if (to.attr('data-round') <= {{round.pk}}){
+                    return true;
+                }
+                else {
+                    return 'clone';
+                }
+            },
+            put: true
+          },
+            sort: true,
+        });
+{% endfor %}
+{% endfor %}
+{% endwith %}
+
+{% endfor %}
+
 </script>
 
 {% endblock %}

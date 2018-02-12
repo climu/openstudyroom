@@ -116,6 +116,8 @@ def manage_brackets(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     players = TournamentPlayer.objects.filter(event=tournament).order_by('order')
     brackets = tournament.bracket_set.all()
+    if not brackets:
+        Bracket.objects.create(tournament=tournament, order=0)
     if not brackets.first().match_set.all():
         brackets.first().generate_bracket()
     groups = TournamentGroup.objects.filter(league_event=tournament).order_by('order')
