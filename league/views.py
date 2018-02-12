@@ -500,8 +500,9 @@ def admin(request):
                 if not user.profile.ogs_username:
                     oname = ""
                 else:
-                    oname = "OGS : " + user.profile.ogs_username + " " + "[https://online-go.com/player/" + str(user.profile.ogs_id) + "/]"
-                values = {"content":  welcome + kname + oname} 
+                    oname = "OGS : " + user.profile.ogs_username
+                    olink = oname + " [https://online-go.com/player/" + str(user.profile.ogs_id) + "]"
+                values = {"content":  welcome + kname + olink}
                 requests.post(discord_url, json=values)
             elif action[0:6] == "delete":
                 if action[7:15] == "no_games":# deletion due to no played games
