@@ -488,11 +488,11 @@ def admin(request):
                 user.groups.add(group)
                 utils.quick_send_mail(user, 'emails/welcome.txt')
             
-                    if settings.DEBUG:
-                        discord_url = 'http://example.com/' # change this for local test
-                    else:
-                        with open('/etc/discord_hook_url.txt') as f:
-                            discord_url = f.read().strip()             
+                if settings.DEBUG:
+                    discord_url = 'http://example.com/' # change this for local test
+                else:
+                    with open('/etc/discord_hook_url.txt') as f:
+                        discord_url = f.read().strip()             
 
                 welcome = "Please welcome our new member " + user.username + " with a violent game of baduk. \n"
 
