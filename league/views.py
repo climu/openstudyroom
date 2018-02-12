@@ -508,7 +508,7 @@ def admin(request):
                                 
                 values = {"content":  welcome + kname + oname} 
 
-                r = requests.post(discord_url, json=values)
+                requests.post(discord_url, json=values)
 
             elif action[0:6] == "delete":
                 if action[7:15] == "no_games":# deletion due to no played games
