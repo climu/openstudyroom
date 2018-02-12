@@ -21,6 +21,7 @@ from django.utils import timezone
 from machina.core.db.models import get_model
 from postman.api import pm_write
 import pytz
+import requests
 
 from . import utils
 from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
@@ -486,7 +487,19 @@ def admin(request):
                 group = Group.objects.get(name='league_member')
                 user.groups.add(group)
                 utils.quick_send_mail(user, 'emails/welcome.txt')
-
+                if settings.DEBUG:
+                    discord_url = 'http://exemple.com' # change this for local test
+                else:
+                    with open('/etc/discord_hook_url.txt') as f:
+                        discord_url = f.read().strip()
+                message = "Please welcome our new member " + user.username + " with a violent game of baduk. \n"
+                if user.profile.kgs_username:
+                    message += "KGS : " + user.profile.kgs_username + " \n"
+                if user.profile.ogs_username:
+                    message += "OGS : [" + user.profile.ogs_username +\
+                        "](https://online-go.com/player/" + str(user.profile.ogs_id) + ")"
+                values = {"content": message}
+                requests.post(discord_url, json=values)
             elif action[0:6] == "delete":
                 if action[7:15] == "no_games":# deletion due to no played games
                     utils.quick_send_mail(user, 'emails/no_games.txt')
