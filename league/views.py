@@ -488,21 +488,17 @@ def admin(request):
                 user.groups.add(group)
                 utils.quick_send_mail(user, 'emails/welcome.txt')
                 if settings.DEBUG:
-                    discord_url = 'http://example.com/' # change this for local test
+                    discord_url = 'http://exemple.com' # change this for local test
                 else:
                     with open('/etc/discord_hook_url.txt') as f:
                         discord_url = f.read().strip()
-                welcome = "Please welcome our new member " + user.username + " with a violent game of baduk. \n"
-                if not user.profile.kgs_username:
-                    kname = ""
-                else:
-                    kname = "KGS : " + user.profile.kgs_username + " \n"
-                if not user.profile.ogs_username:
-                    oname = ""
-                else:
-                    oname = "OGS : " + user.profile.ogs_username
-                    olink = oname + " [https://online-go.com/player/" + str(user.profile.ogs_id) + "]"
-                values = {"content":  welcome + kname + olink}
+                message = "Please welcome our new member " + user.username + " with a violent game of baduk. \n"
+                if user.profile.kgs_username:
+                    message += "KGS : " + user.profile.kgs_username + " \n"
+                if user.profile.ogs_username:
+                    message += "OGS : [" + user.profile.ogs_username +\
+                        "](https://online-go.com/player/" + str(user.profile.ogs_id) + ")"
+                values = {"content": message}
                 requests.post(discord_url, json=values)
             elif action[0:6] == "delete":
                 if action[7:15] == "no_games":# deletion due to no played games
