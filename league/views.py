@@ -61,10 +61,12 @@ def scraper():
             for kgs_user in m['users']:
                 profile = Profile.objects.filter(kgs_username__iexact=kgs_user['name']).first()
                 if profile is not None:
+                    profile.kgs_rank = kgs_user['rank'] # scraping the rank of the players
                     profile.last_kgs_online = now
                     profile.save()
     # 3 wait a bit
     sleep(2)
+
 
     # 4.1 look for some sgfs that we analyse and maybe record as games
     sgf = Sgf.objects.filter(p_status=2).first()

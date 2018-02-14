@@ -825,6 +825,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User)
     kgs_username = models.CharField(max_length=10, blank=True)
     ogs_username = models.CharField(max_length=40, blank=True)
+    kgs_rank = models.CharField(max_length=40, blank=True)
     #ogs_id is set in ogs.get_user_id
     ogs_id = models.PositiveIntegerField(default=0, blank=True, null=True)
     #User can write what he wants in bio
@@ -952,6 +953,7 @@ class LeaguePlayer(models.Model):
     user = models.ForeignKey('User')
     kgs_username = models.CharField(max_length=20, default='')
     ogs_username = models.CharField(max_length=40, null=True, blank=True)
+    #kgs_rank = models.CharField(max_length=20, default='')
     event = models.ForeignKey('LeagueEvent')
     division = models.ForeignKey('Division', null=True)
     # p_status is deprecated, we now store that in player profile
