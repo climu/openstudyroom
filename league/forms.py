@@ -119,10 +119,12 @@ class LeagueEventForm(forms.ModelForm):
             'end_time': forms.SelectDateWidget(),
         }
 
+
 class EmailForm(forms.Form):
     subject = forms.CharField(required=True)
     copy_to = forms.CharField(required=False)
     message = forms.CharField(widget=forms.Textarea())
+
 
 class TimezoneForm(forms.ModelForm):
     class Meta:
@@ -136,9 +138,7 @@ class ProfileForm(ModelForm):
         fields = [
             'bio',
             'ogs_username',
-            'kgs_username',
-            'kgs_rank',
-            'ogs_rank'
+            'kgs_username'
         ]
 
     def clean_kgs_username(self):

@@ -21,6 +21,7 @@ def get_user_rank(id_number):
     else:
         return None
 
+
 def get_user_id(username):
     """Test if a username is registered in ogs and return his id if so.
     Otherwise we return 0"""

@@ -794,7 +794,7 @@ class User(AbstractUser):
             self.check_kgs(opponents)
         if self.profile.ogs_id > 0:
             self.check_ogs(opponents)
-            self.profile.ogs_rank = get_user_rank(self.profile.ogs_id) # set new rank
+            self.profile.ogs_rank = get_user_rank(self.profile.ogs_id)  # set new rank
         # Mark the user checked
         self.profile.p_status = 0
         self.profile.save()
@@ -823,7 +823,6 @@ class User(AbstractUser):
         return communitys
 
 
-
 class Profile(models.Model):
     """A user profile. Store settings and infos about a user."""
     user = models.OneToOneField(User)
@@ -831,18 +830,18 @@ class Profile(models.Model):
     ogs_username = models.CharField(max_length=40, blank=True)
     kgs_rank = models.CharField(max_length=40, blank=True)
     ogs_rank = models.CharField(max_length=40, blank=True)
-    #ogs_id is set in ogs.get_user_id
+    # ogs_id is set in ogs.get_user_id
     ogs_id = models.PositiveIntegerField(default=0, blank=True, null=True)
-    #User can write what he wants in bio
+    # User can write what he wants in bio
     bio = MarkupTextField(
             blank=True, null=True,
             validators=[validators.NullableMaxLengthValidator(2000)]
     )
     # p_status help manage the scraplist
     p_status = models.PositiveSmallIntegerField(default=0)
-    #kgs_online shoudl be updated every 5 mins in scraper
+    # kgs_online shoudl be updated every 5 mins in scraper
     last_kgs_online = models.DateTimeField(blank=True, null=True)
-    #Calendar settings
+    # Calendar settings
     timezone = models.CharField(
         max_length=100,
         choices=[(t, t) for t in pytz.common_timezones],
