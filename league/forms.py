@@ -137,7 +137,8 @@ class ProfileForm(ModelForm):
             'bio',
             'ogs_username',
             'kgs_username',
-            'kgs_rank'
+            'kgs_rank',
+            'ogs_rank'
         ]
 
     def clean_kgs_username(self):

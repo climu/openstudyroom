@@ -45,6 +45,7 @@ def scraper():
     This is not a view. belongs in utils. Don't forget  to update cronjob tho.
     """
 
+
     # 1 check time since get from kgs
     now = timezone.now()
     last_kgs = Registry.get_time_kgs()

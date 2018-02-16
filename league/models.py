@@ -17,6 +17,8 @@ import requests
 from community.models import Community
 
 from . import utils
+from .ogs import get_user_id
+from .ogs import get_user_rank
 
 # pylint: disable=no-member
 
@@ -730,6 +732,7 @@ class User(AbstractUser):
         ogs_id = self.profile.ogs_id
         url = 'https://online-go.com/api/v1/players/' + str(ogs_id) + '/games/?ordering=-ended'
         opponents = [u.profile.ogs_id for u in opponents if u.profile.ogs_id > 0]
+
         # we deal with pagination with this while loop
         while url is not None:
             request = requests.get(url).json()
@@ -791,6 +794,7 @@ class User(AbstractUser):
             self.check_kgs(opponents)
         if self.profile.ogs_id > 0:
             self.check_ogs(opponents)
+            self.profile.ogs_rank = get_user_rank(self.profile.ogs_id) # set new rank
         # Mark the user checked
         self.profile.p_status = 0
         self.profile.save()
@@ -826,6 +830,7 @@ class Profile(models.Model):
     kgs_username = models.CharField(max_length=10, blank=True)
     ogs_username = models.CharField(max_length=40, blank=True)
     kgs_rank = models.CharField(max_length=40, blank=True)
+    ogs_rank = models.CharField(max_length=40, blank=True)
     #ogs_id is set in ogs.get_user_id
     ogs_id = models.PositiveIntegerField(default=0, blank=True, null=True)
     #User can write what he wants in bio
