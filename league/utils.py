@@ -15,16 +15,16 @@ def kgs_connect():
     # If you are running this locally and want to run scraper, you should use your own
     # KGS credential
     if settings.DEBUG:
-        kgs_password = 'yourpassword' # change this for local test
+        kgs_password = 'password' # change this for local test
     else:
         with open('/etc/kgs_password.txt') as f:
             kgs_password = f.read().strip()
 
     message = {
         "type": "LOGIN",
-        "name": "OSR", # change this if you are testing locally
+        "name": "OSR",  # change this if you are testing locally
         "password": kgs_password,
-        "locale": "en_US",
+        "locale": "de_DE",
     }
     formatted_message = json.dumps(message)
     for _ in range(10):

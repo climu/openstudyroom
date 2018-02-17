@@ -67,9 +67,11 @@ def user_link(user, meijin=None):
         link += 'class="offline"'
     tooltip = ''
     if user.profile.kgs_username:
-        tooltip += '<p>KGS: ' + user.profile.kgs_username + '</p>'
+        k_info = user.profile.kgs_username + " " + user.profile.kgs_rank
+        tooltip += '<p>KGS: ' + k_info + '</p>'
     if user.profile.ogs_username:
-        tooltip += '<p>OGS: ' + user.profile.ogs_username + '</p>'
+        o_info = user.profile.ogs_username + " " + user.profile.ogs_rank
+        tooltip += '<p>OGS: ' + o_info + '</p>'
 
     link += 'data-toggle="tooltip" data-html="true" rel="tooltip" title="' + tooltip
     link += '" >' + user.username

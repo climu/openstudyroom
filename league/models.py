@@ -17,6 +17,7 @@ import requests
 from community.models import Community
 
 from . import utils
+from .ogs import get_user_rank
 
 # pylint: disable=no-member
 
@@ -730,6 +731,7 @@ class User(AbstractUser):
         ogs_id = self.profile.ogs_id
         url = 'https://online-go.com/api/v1/players/' + str(ogs_id) + '/games/?ordering=-ended'
         opponents = [u.profile.ogs_id for u in opponents if u.profile.ogs_id > 0]
+
         # we deal with pagination with this while loop
         while url is not None:
             request = requests.get(url).json()
@@ -791,6 +793,7 @@ class User(AbstractUser):
             self.check_kgs(opponents)
         if self.profile.ogs_id > 0:
             self.check_ogs(opponents)
+            self.profile.ogs_rank = get_user_rank(self.profile.ogs_id)  # set new rank
         # Mark the user checked
         self.profile.p_status = 0
         self.profile.save()
@@ -819,24 +822,25 @@ class User(AbstractUser):
         return communitys
 
 
-
 class Profile(models.Model):
     """A user profile. Store settings and infos about a user."""
     user = models.OneToOneField(User)
     kgs_username = models.CharField(max_length=10, blank=True)
     ogs_username = models.CharField(max_length=40, blank=True)
-    #ogs_id is set in ogs.get_user_id
+    kgs_rank = models.CharField(max_length=40, blank=True)
+    ogs_rank = models.CharField(max_length=40, blank=True)
+    # ogs_id is set in ogs.get_user_id
     ogs_id = models.PositiveIntegerField(default=0, blank=True, null=True)
-    #User can write what he wants in bio
+    # User can write what he wants in bio
     bio = MarkupTextField(
             blank=True, null=True,
             validators=[validators.NullableMaxLengthValidator(2000)]
     )
     # p_status help manage the scraplist
     p_status = models.PositiveSmallIntegerField(default=0)
-    #kgs_online shoudl be updated every 5 mins in scraper
+    # kgs_online shoudl be updated every 5 mins in scraper
     last_kgs_online = models.DateTimeField(blank=True, null=True)
-    #Calendar settings
+    # Calendar settings
     timezone = models.CharField(
         max_length=100,
         choices=[(t, t) for t in pytz.common_timezones],
@@ -952,6 +956,7 @@ class LeaguePlayer(models.Model):
     user = models.ForeignKey('User')
     kgs_username = models.CharField(max_length=20, default='')
     ogs_username = models.CharField(max_length=40, null=True, blank=True)
+    #kgs_rank = models.CharField(max_length=20, default='')
     event = models.ForeignKey('LeagueEvent')
     division = models.ForeignKey('Division', null=True)
     # p_status is deprecated, we now store that in player profile
