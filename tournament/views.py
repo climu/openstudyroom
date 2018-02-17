@@ -7,7 +7,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.decorators import user_passes_test, login_required
 import datetime
 from community.forms import CommunytyUserForm
-from .models import Tournament, Bracket, Match, TournamentPlayer, TournamentGroup
+from .models import Tournament, Bracket, Match, TournamentPlayer, TournamentGroup, Round
 from .forms import TournamentForm, TournamentGroupForm
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -112,10 +112,37 @@ def create_bracket(request, tournament_id):
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def create_match(request, round_id):
-    round = get_object_or_404(Bracket, pk=round_id)
+    round = get_object_or_404(Round, pk=round_id)
     if request.method == 'POST':
         round.create_match()
 
+    return HttpResponseRedirect(reverse(
+        'tournament:manage_brackets',
+        kwargs={'tournament_id': round.bracket.tournament.pk}
+    ))
+
+@login_required()
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+def delete_match(request, round_id):
+    """Delete the last match of a tournament"""
+    round = get_object_or_404(Round, pk= round_id)
+    match = round.match_set.all().order_by(-'order').last()
+    if match.player_1 or match.player_2:
+        message = "Last match of " + round.name + " have players. Remove players before deleting the match "
+        messages.success(request, message)
+        return HttpResponseRedirect(reverse(
+            'tournament:manage_brackets',
+            kwargs={'tournament_id': round.bracket.tournament.pk}
+        ))
+
+@login_required()
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+def create_round(request, bracket_id):
+    bracket = get_object_or_404(Bracket, pk=bracket_id)
+    if request.method == 'POST':
+        order = bracket.round_set.all().order_by('order').last().order + 1
+        round = Round.objects.create(bracket=bracket, order=order)
+        Match.objects.create(bracket=bracket, round=round, order=0)
     return HttpResponseRedirect(reverse(
         'tournament:manage_brackets',
         kwargs={'tournament_id': bracket.tournament.pk}
@@ -224,7 +251,7 @@ def create_group(request, tournament_id):
             group.league_event = tournament
             group.order = tournament.last_division_order() + 1
             group.save()
-        return HttpResponseRedirect(reverse('tournament:tournament_manage_groups', kwargs={'tournament_id': tournament_id}))
+        return HttpResponseRedirect(reverse('tournament:manage_groups', kwargs={'tournament_id': tournament_id}))
     else:
         raise Http404("What are you doing here ?")
 

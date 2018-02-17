@@ -42,10 +42,11 @@
         <div class="panel-heading">
           <form action="" method="POST" class="form-inline" >
             {% csrf_token %}
-            <button type="submit" formaction="{% url 'tournament:create_bracket' tournament.pk %}" class="btn btn-default btn-sm">
-              {% bootstrap_icon "plus" %} Create a new Bracket
+            <button type="submit" formaction="{% url 'tournament:create_round' bracket.pk %}" class="btn btn-default btn-sm">
+              {% bootstrap_icon "plus" %} Create a new round
             </button>
           </form>
+
           </div>
         </div>
     </div>
@@ -58,7 +59,7 @@
         <form action="" method="POST" class="form-inline" >
           {% csrf_token %}
         <button type="submit" formaction="{% url 'tournament:create_match' round.pk %}" class="btn btn-default btn-sm">
-          {% bootstrap_icon "plus" %} 
+          {% bootstrap_icon "plus" %}
         </button>
       </form>
       </div>

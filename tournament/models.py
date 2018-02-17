@@ -58,8 +58,10 @@ class Bracket(models.Model):
         return self.round_set.all()
 
     def create_round(self):
-        order = self.round_set.all().order_by('order').last().order +1
+        print('jj')
+        order = self.round_set.all().order_by('order').last().order + 1
         round = Round.objects.create(bracket=self, order=order)
+        print(round)
         Match.objects.create(bracket=self, round=round, order=0)
         return round
 

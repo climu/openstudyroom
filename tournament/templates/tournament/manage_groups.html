@@ -46,11 +46,13 @@
           {% if player.division %}
             disabled
           {% endif %}
+           clearfix
           ">
             {{player.user | user_link}}
             <span class="group_name pull-right">
               {{player.division.name}}
             </span>
+
           </li>
         {%endfor%}
     </div>
@@ -113,9 +115,13 @@
 
   <div id="group_{{group.pk}}_players" data-group-name="{{group.name}}" class="panel-body group_players">
       {%for player in group.get_tournament_players %}
-          <li data-id={{player.pk}} class="list-group-item">
+          <li data-id={{player.pk}} class="list-group-item clearfix">
             {{player.user | user_link}}
+            <div class="checkbox div-checkbox pull-right">
+              <input class ="refetch check-player" value="{{player.pk}}" type="checkbox" >
+            </div>
           </li>
+
 
         </li>
       {%endfor%}
@@ -147,6 +153,19 @@
 <script>
 // ajax crfs setup
 {% include 'league/includes/ajax_setup.html' %}
+
+function shuffle(array){
+    var currentIndex = array.length, temporaryValue, randomIndex;
+    while (0 !== currentIndex){
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+    return array;
+}
+
 var players_list_sortable = Sortable.create(players_list,{
     group: {
       name: 'players_list',
@@ -213,7 +232,6 @@ var group_{{group.pk}}_sortable = Sortable.create(group_{{group.pk}}_players,{
           return false
         }
       }
-
       return true
     }
 },
@@ -228,7 +246,10 @@ onAdd: function (evt) {
   player_list_element.children('.group_name')
       .html($(evt.to).attr('data-group-name'));
   player_list_element.addClass('disabled');
-
+  // if we put a new player, we had the select box to the item
+  if (evt.from.id == 'players_list'){
+    $(evt.item).append('<div class="checkbox div-checkbox pull-right"><input class ="refetch check-player" value="{{player.pk}}" type="checkbox" ></div>')
+  }
 }
 }
 );
@@ -248,6 +269,30 @@ $('#save_groups_button').click(function(){
     });
 });
 
+
+$('#shuffle_players').click(function(){
+    var ok = confirm("Shuffle the selected players?");
+    if ( ok == false ) {
+      return false;
+    }
+    var players = players_list_sortable.toArray();
+    var unselected_players = $('.check-player:input:checkbox:not(:checked)').map(function() {
+        return this.value;
+    }).get();
+    // we don't want to shuffle the not selected players
+    shuffle_players = shuffle(players);
+    // It seems that the previous line change players array and randomize it.
+    players = players_list_sortable.toArray();
+    // swap fixed elements back to their original position
+    unselected_players.forEach(function(player) {
+        old_index = players.indexOf(player);
+        new_index = shuffle_players.indexOf(player);
+        shuffle_players[new_index] = shuffle_players[old_index];
+        shuffle_players[old_index] = player;
+    players_list_sortable.sort(shuffle_players);
+  });
+
+});
 
 </script>
 {% endblock extra_js %}

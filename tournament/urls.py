@@ -68,4 +68,9 @@ urlpatterns = [
         views.create_match,
         name='create_match'
     ),
+    url(
+        r'^create-round/(?P<bracket_id>[0-9]+)/$',
+        views.create_round,
+        name='create_round'
+    ),
 ]
