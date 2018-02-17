@@ -63,4 +63,9 @@ urlpatterns = [
         views.save_groups,
         name='save_groups'
     ),
+    url(
+        r'^create-match/(?P<round_id>[0-9]+)/$',
+        views.create_match,
+        name='create_match'
+    ),
 ]

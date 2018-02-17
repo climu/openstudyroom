@@ -109,6 +109,17 @@ def create_bracket(request, tournament_id):
         kwargs={'tournament_id': tournament.pk}
     ))
 
+@login_required()
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+def create_match(request, round_id):
+    round = get_object_or_404(Bracket, pk=round_id)
+    if request.method == 'POST':
+        round.create_match()
+
+    return HttpResponseRedirect(reverse(
+        'tournament:manage_brackets',
+        kwargs={'tournament_id': bracket.tournament.pk}
+    ))
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)

@@ -1,0 +1,31 @@
+/*
+ *  Flex Layout Specifics
+*/
+.bracket{
+  display:flex;
+  flex-direction:row;
+}
+.round{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  list-style:none;
+  width: 200px;
+  padding:5px;
+}
+  .round .spacer{ flex-grow:1; }
+  .round .spacer:first-child,
+  .round .spacer:last-child{ flex-grow:.5; }
+
+  .round .game-spacer{
+    flex-grow:1;
+  }
+
+.big_spacer{
+min-height: 45px;
+}
+.match{
+  min-height: 80px;
+  padding:0px;
+  margin:0;
+}

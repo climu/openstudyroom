@@ -28,13 +28,13 @@
 <tbody>
   {% for tournament in tournaments %}
   <tr>
-    <td>{{tournament.name}}</td>
+    <td><a href="{% url "tournament:view" tournament.pk %}">{{tournament.name}}</a></td>
 
     <td>{{tournament.begin_time |date:'M d, Y H:i'}}</td>
     <td>{{tournament.end_time |date:'M d, Y H:i'}}</td>
 
     <td>
-      <a href="{% url 'tournament:tournament_manage_settings' tournament.pk %}">
+      <a href="{% url 'tournament:manage_settings' tournament.pk %}">
         {% bootstrap_icon 'wrench' %}
       </a>
     </td>

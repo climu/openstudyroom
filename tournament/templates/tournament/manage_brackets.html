@@ -2,6 +2,8 @@
 {% load bootstrap3 static league_tags tournament_tags%}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
+
 {% endblock %}
 {% block title %}Manage tournament brackets{% endblock %}
 {% block heading %}
@@ -18,7 +20,7 @@
   {% if groups %}
   {% for group in groups %}
   <h2>{{group.name}}</h2>
-  <div id="group_{{group.pk}}_players" data-group-name="{{group.name}}" class="panel-body group_players">
+  <div id="group_{{group.pk}}_players" data-round="-1" class="panel-body group_players">
       {%for player in group.get_tournament_players %}
           <li data-id={{player.pk}} class="list-group-item">
             {{player.user | user_link}}
@@ -33,47 +35,61 @@
   {% endif %}
 </div>
   <div class = "col-md-9">
+
+    {% for bracket in brackets %}
     <div class="row">
       <div class="panel panel-default">
-        <div class="panel-heading"> Create a new Bracket
+        <div class="panel-heading">
           <form action="" method="POST" class="form-inline" >
             {% csrf_token %}
-            <button type="submit" formaction="{% url 'tournament:create_bracket' tournament.pk %}" class="btn btn-success btn-sm  pull-right">
-              {% bootstrap_icon "plus" %}
+            <button type="submit" formaction="{% url 'tournament:create_bracket' tournament.pk %}" class="btn btn-default btn-sm">
+              {% bootstrap_icon "plus" %} Create a new Bracket
             </button>
           </form>
           </div>
         </div>
     </div>
-    {% for bracket in brackets %}
-    <div class="row">
     {% with bracket.get_rounds as rounds %}
+    <div class="row bracket">
+    {% for round in rounds %}
+      <ul class="round">
+    <li class="panel panel-default match">
+      <div class="panel-heading">
+        <form action="" method="POST" class="form-inline" >
+          {% csrf_token %}
+        <button type="submit" formaction="{% url 'tournament:create_match' round.pk %}" class="btn btn-default btn-sm">
+          {% bootstrap_icon "plus" %} 
+        </button>
+      </form>
+      </div>
+    </li>
+  </ul>
+    {% endfor %}
+  </div>
+    <div class="row bracket">
       {% for round in rounds %}
-
-      <div class="col-md-2">
+      <ul class="round">
           {% for match in round.get_matchs %}
-          <div class="panel panel-default">
-              <div class="panel-body" id="match_{{match.pk}}" data-round="{{round.pk}}">
+          <li class="spacer">&nbsp;</li>
+          <li class="panel panel-default match">
+              <div class="panel-body match" id="match_{{match.pk}}" data-match="{{match.pk}}" data-round="{{round.pk}}">
                   {% if match.player_1 %}
-                  <li class="list-group-item" data-id={{player.pk}} data-round="{{round.pk}}">{{match.player_1}}</li>
+                  <div class="list-group-item" data-id={{player.pk}} data-round="{{round.pk}}">{{match.player_1}}</div>
                   {% endif %}
                   {% if match.player_2 %}
-                  <li class="list-group-item" data-id={{player.pk}} data-round="{{round.pk}}">{{match.player_2}}</li>
+                  <div class="list-group-item" data-id={{player.pk}} data-round="{{round.pk}}">{{match.player_2}}</div>
                   {% endif %}
-      </div>
-    </div>
+                </div>
+              </li>
+
           {% endfor %}
-
-
-  </div>
+          <li class="spacer">&nbsp;</li>
+        </ul>
 
 
       {% endfor %}
-
-
-
   </div>
-  </div>
+
     {% endwith %}
 
     {% endfor %}
@@ -82,7 +98,8 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static '/js/Sortable.min.js'%}"></script>
+<script src="//cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
 
 
 <script>
@@ -94,9 +111,21 @@ var group_{{group.pk}}_sortable = Sortable.create(group_{{group.pk}}_players,{
   group: {
     name: 'players_list',
     pull: 'clone',
-    put: false,
+    put: function (to, from, item){
+      from = $(from.el)
+      if (from.attr('data-round')>0){
+        return true
+      }
+      else{
+        return false
+      }
+
+    },
   },
     sort: false,
+    onAdd: function (evt){
+      evt.item.outerHTML = "";
+    }
 });
 {% endfor %}
 
@@ -119,6 +148,11 @@ var group_{{group.pk}}_sortable = Sortable.create(group_{{group.pk}}_players,{
             put: true
           },
             sort: true,
+            onAdd: function (evt){
+              if ($(evt.from).attr('data-round') > {{round.pk}}){
+                evt.item.outerHTML = ""
+              }
+            }
         });
 {% endfor %}
 {% endfor %}

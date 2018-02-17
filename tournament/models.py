@@ -57,17 +57,29 @@ class Bracket(models.Model):
     def get_rounds(self):
         return self.round_set.all()
 
+    def create_round(self):
+        order = self.round_set.all().order_by('order').last().order +1
+        round = Round.objects.create(bracket=self, order=order)
+        Match.objects.create(bracket=self, round=round, order=0)
+        return round
+
     def generate_bracket(self):
-        """Create a small 2 round bracket matches"""
+        """Create a small 2 round bracket matches."""
         round = Round.objects.create(bracket=self, order=0)
         Match.objects.create(bracket=self, round=round, order=0)
         Match.objects.create(bracket=self, round=round, order=1)
         round = Round.objects.create(bracket=self, order=1)
         Match.objects.create(bracket=self, round=round, order=0)
 
+    def create_round(self):
+        """Create a round."""
+
+        return self
+
 
 class Round(models.Model):
     """A tournament round."""
+    name = models.TextField(max_length=10, blank=True, null=True)
     bracket = models.ForeignKey(Bracket, blank=True, null=True)
     order = models.PositiveSmallIntegerField()
 
@@ -76,6 +88,13 @@ class Round(models.Model):
 
     def get_matchs(self):
         return self.match_set.all()
+
+    def create_match(self):
+        order = self.match_set.all().order_by('order').last().order + 1
+        Match.objects.create(bracket=self.bracket, round=self, order=order)
+        return self
+
+
 
 class Match(models.Model):
     """ A tournament match"""
