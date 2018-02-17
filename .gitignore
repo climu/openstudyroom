@@ -6,4 +6,3 @@ __pycache__/
 media
 /.idea
 *.sqlite3
-[0-9]*
