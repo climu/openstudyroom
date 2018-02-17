@@ -62,8 +62,7 @@ def scraper():
             for kgs_user in m['users']:
                 profile = Profile.objects.filter(kgs_username__iexact=kgs_user['name']).first()
                 if profile is not None:
-                    if 'rank' in kgs_user:
-                        profile.kgs_rank = kgs_user['rank'] # scraping the rank of the players
+                    profile.kgs_rank = kgs_user['rank'] # scraping the rank of the players
                     profile.last_kgs_online = now
                     profile.save()
     # 3 wait a bit
