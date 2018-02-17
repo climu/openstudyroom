@@ -67,9 +67,9 @@ return false;};
   {% if user.profile.bio is not None %}
 <p>{{user.profile.bio|safe|rendered}}</p>
 {% endif %}
-<p>KGS Username: <a href="http://kgs.gosquares.net/index.rhtml.en?id={{user.profile.kgs_username}}">{{user.profile.kgs_username}} ({{user.profile.kgs_rank}})</a></p>
+<p>KGS Username: <a href="http://kgs.gosquares.net/index.rhtml.en?id={{user.profile.kgs_username}}">{{user.profile.kgs_username}} {% if user.profile.kgs_rank %}({{user.profile.kgs_rank}}){% endif %}</a></p>
 <p>OGS Username:{% if user.profile.ogs_id > 0 %}
-   <a href="https://online-go.com/player/{{user.profile.ogs_id}}">{{user.profile.ogs_username}} ({{user.profile.ogs_rank}})</a></p>
+   <a href="https://online-go.com/player/{{user.profile.ogs_id}}">{{user.profile.ogs_username}} {% if user.profile.ogs_rank %}({{user.profile.ogs_rank}}){% endif %}</a></p>
      {% endif %}
 </div>
 </div>

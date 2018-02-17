@@ -1,6 +1,7 @@
 """Get data from ogs api."""
-import requests
 from math import log, ceil
+
+import requests
 
 
 def get_user_rank(id_number):

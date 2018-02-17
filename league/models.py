@@ -17,7 +17,6 @@ import requests
 from community.models import Community
 
 from . import utils
-from .ogs import get_user_id
 from .ogs import get_user_rank
 
 # pylint: disable=no-member

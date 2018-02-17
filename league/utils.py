@@ -23,7 +23,7 @@ def kgs_connect():
     message = {
         "type": "LOGIN",
         "name": "OSR",  # change this if you are testing locally
-        "password": 'password',
+        "password": kgs_password,
         "locale": "de_DE",
     }
     formatted_message = json.dumps(message)
