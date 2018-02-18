@@ -127,11 +127,12 @@ def delete_match(request, round_id):
     """Delete the last match of a tournament"""
     round = get_object_or_404(Round, pk=round_id)
     match = round.match_set.all().order_by('order').last()
-    if match.player_1 or match.player_2:
-        message = "Last match of " + round.name + " have players. Remove players before deleting the match "
-        messages.success(request, message)
-    elif request.method == 'POST':
-        round.delete_match()
+    if match is not None:
+        if match.player_1 or match.player_2:
+            message = "Last match of " + round.name + " have players. Remove players before deleting the match "
+            messages.success(request, message)
+        elif request.method == 'POST':
+            round.delete_match()
     return HttpResponseRedirect(reverse(
         'tournament:manage_brackets',
         kwargs={'tournament_id': round.bracket.tournament.pk}
@@ -202,6 +203,10 @@ def save_brackets(request, tournament_id):
                             match.player_2 = player_2
                         if len(players) <3:
                             match.save()
+                    else:
+                        match.player_1 = None
+                        match.player_2 = None
+                        match.save()
 
     return HttpResponse("success")
 
