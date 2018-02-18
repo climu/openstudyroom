@@ -11,6 +11,8 @@
   justify-content:center;
   list-style:none;
   width: 200px;
+  min-width: 200px;
+
   padding:5px;
 }
   .round .spacer{ flex-grow:1; }
@@ -27,5 +29,15 @@ min-height: 45px;
 .match{
   min-height: 80px;
   padding:0px;
+  margin:0;
+}
+
+.round-control-top{
+  padding:0px 1px 5px 1px;
+  margin:0;
+}
+
+.round-control-botom{
+  padding:5px 1px 0px 1px;
   margin:0;
 }
