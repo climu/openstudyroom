@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import user_passes_test, login_required
 import datetime
 from community.forms import CommunytyUserForm
 from .models import Tournament, Bracket, Match, TournamentPlayer, TournamentGroup, Round
-from .forms import TournamentForm, TournamentGroupForm
+from .forms import TournamentForm, TournamentGroupForm, RoundForm
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from league.models import User
@@ -125,28 +125,86 @@ def create_match(request, round_id):
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def delete_match(request, round_id):
     """Delete the last match of a tournament"""
-    round = get_object_or_404(Round, pk= round_id)
-    match = round.match_set.all().order_by(-'order').last()
+    round = get_object_or_404(Round, pk=round_id)
+    match = round.match_set.all().order_by('order').last()
     if match.player_1 or match.player_2:
         message = "Last match of " + round.name + " have players. Remove players before deleting the match "
         messages.success(request, message)
-        return HttpResponseRedirect(reverse(
-            'tournament:manage_brackets',
-            kwargs={'tournament_id': round.bracket.tournament.pk}
-        ))
+    elif request.method == 'POST':
+        round.delete_match()
+    return HttpResponseRedirect(reverse(
+        'tournament:manage_brackets',
+        kwargs={'tournament_id': round.bracket.tournament.pk}
+    ))
+
+@login_required()
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+def rename_round(request, round_id):
+    round = get_object_or_404(Round, pk=round_id)
+    if request.method == 'POST':
+        form = RoundForm(request.POST)
+        if form.is_valid():
+            round.name = form.cleaned_data['name']
+            round.save()
+    return HttpResponseRedirect(reverse(
+        'tournament:manage_brackets',
+        kwargs={'tournament_id': round.bracket.tournament.pk}
+    ))
+
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
 def create_round(request, bracket_id):
     bracket = get_object_or_404(Bracket, pk=bracket_id)
     if request.method == 'POST':
-        order = bracket.round_set.all().order_by('order').last().order + 1
-        round = Round.objects.create(bracket=bracket, order=order)
-        Match.objects.create(bracket=bracket, round=round, order=0)
+        form = RoundForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            order = bracket.round_set.all().order_by('order').last().order + 1
+            round = Round.objects.create(bracket=bracket, order=order, name=name)
+            Match.objects.create(bracket=bracket, round=round, order=0)
     return HttpResponseRedirect(reverse(
         'tournament:manage_brackets',
         kwargs={'tournament_id': bracket.tournament.pk}
     ))
+
+
+@login_required()
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+def delete_round(request, round_id):
+    round = get_object_or_404(Round, pk=round_id)
+    if request.method == 'POST':
+        round.delete()
+    return HttpResponseRedirect(reverse(
+        'tournament:manage_brackets',
+        kwargs={'tournament_id': round.bracket.tournament.pk}
+    ))
+
+@login_required()
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+def save_brackets(request, tournament_id):
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    if request.method == 'POST':
+        brackets = json.loads(request.POST.get('brackets'))
+        print(brackets)
+        for bracket_id, rounds in brackets.items():
+            bracket = get_object_or_404(Bracket, pk=bracket_id, tournament=tournament)
+            for round_id, matches in rounds.items():
+                round = get_object_or_404(Round, pk=round_id, bracket=bracket)
+                for match_id, players in matches.items():
+                    match = get_object_or_404(Match, pk=match_id, round=round)
+                    if len(players) > 0:
+                        player_1 = get_object_or_404(TournamentPlayer, pk=players[0], event=tournament)
+                        match.player_1 = player_1
+                        match.player_2 = None
+                        if len(players) == 2:
+                            player_2 = get_object_or_404(TournamentPlayer, pk=players[1], event=tournament)
+                            match.player_2 = player_2
+                        if len(players) <3:
+                            match.save()
+
+    return HttpResponse("success")
+
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)

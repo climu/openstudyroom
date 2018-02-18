@@ -55,10 +55,10 @@ class Bracket(models.Model):
         return self.tournament.name + " " + str(self.order)
 
     def get_rounds(self):
+        self.round_set.all()
         return self.round_set.all()
 
     def create_round(self):
-        print('jj')
         order = self.round_set.all().order_by('order').last().order + 1
         round = Round.objects.create(bracket=self, order=order)
         print(round)
@@ -73,15 +73,11 @@ class Bracket(models.Model):
         round = Round.objects.create(bracket=self, order=1)
         Match.objects.create(bracket=self, round=round, order=0)
 
-    def create_round(self):
-        """Create a round."""
-
-        return self
 
 
 class Round(models.Model):
     """A tournament round."""
-    name = models.TextField(max_length=10, blank=True, null=True)
+    name = models.TextField(max_length=10, blank=True, null=True, default="")
     bracket = models.ForeignKey(Bracket, blank=True, null=True)
     order = models.PositiveSmallIntegerField()
 
@@ -92,10 +88,21 @@ class Round(models.Model):
         return self.match_set.all()
 
     def create_match(self):
-        order = self.match_set.all().order_by('order').last().order + 1
+        last_match = self.match_set.all().order_by('order').last()
+        if last_match:
+            order = last_match.order + 1
+        else:
+            order = 0
         Match.objects.create(bracket=self.bracket, round=self, order=order)
         return self
 
+    def delete_match(self):
+        match = self.match_set.all().order_by('order').last()
+        if match.player_1 or match.player_2:
+            return
+        else:
+            match.delete()
+            return
 
 
 class Match(models.Model):

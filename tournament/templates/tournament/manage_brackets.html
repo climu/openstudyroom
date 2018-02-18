@@ -13,10 +13,16 @@
 {%endblock%}
 {% block content %}
 <div class="row">
-  <div class="col-md-1">
-    {% include 'tournament/includes/manage_menu.html' with active='brackets' %}
-  </div>
+  {% include 'tournament/includes/manage_menu.html' with active='brackets' %}
+</div>
+<div class="row">
   <div class = "col-md-2">
+
+        <button id="save_tournament" class="btn btn-success btn-sm">
+            {% bootstrap_icon "ok" %} save
+          </button>
+
+
   {% if groups %}
   {% for group in groups %}
   <h2>{{group.name}}</h2>
@@ -34,38 +40,59 @@
   {% else %}
   {% endif %}
 </div>
-  <div class = "col-md-9">
+  <div class = "col-md-10">
 
     {% for bracket in brackets %}
-    <div class="row">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <form action="" method="POST" class="form-inline" >
-            {% csrf_token %}
-            <button type="submit" formaction="{% url 'tournament:create_round' bracket.pk %}" class="btn btn-default btn-sm">
-              {% bootstrap_icon "plus" %} Create a new round
-            </button>
-          </form>
 
-          </div>
-        </div>
-    </div>
     {% with bracket.get_rounds as rounds %}
     <div class="row bracket">
     {% for round in rounds %}
       <ul class="round">
     <li class="panel panel-default match">
-      <div class="panel-heading">
-        <form action="" method="POST" class="form-inline" >
-          {% csrf_token %}
-        <button type="submit" formaction="{% url 'tournament:create_match' round.pk %}" class="btn btn-default btn-sm">
-          {% bootstrap_icon "plus" %}
-        </button>
-      </form>
-      </div>
-    </li>
+      <div class="panel-heading round-control-top">
+        <form action="" method="POST" class="form-inline" >{% csrf_token %}
+          <div class="form-group">
+          <input type="hidden" name="next" value="{{request.path}}">
+          <input id="name" class="form-control" style="max-width:145px;"name="name" placeholder="round name" value="{{round.name}}" title=""  type="text">
+          <button type="submit" formaction="{% url 'tournament:rename_round' round.pk %}" class="btn btn-primary btn-sm">
+            {% bootstrap_icon 'refresh' %}
+          </button>
+        </form>
+          </div>
+          </div>
+          <div class="panel-body round-control-botom">
+            <form action="" method="POST" class="form-inline" >{% csrf_token %}
+              <button type="submit" formaction="{% url 'tournament:create_match' round.pk %}" class="btn btn-default btn-sm">
+                {% bootstrap_icon "plus" %}
+              </button>
+              <button type="submit" formaction="{% url 'tournament:delete_match' round.pk %}" class="btn btn-default btn-sm">
+                {% bootstrap_icon "minus" %}
+              </button>
+              <button type="submit" formaction="{% url 'tournament:delete_round' round.pk %}" class="btn btn-danger btn-sm pull-right">
+                {% bootstrap_icon "remove" %}
+              </button>
+            </div>
+          </form>
+        </li>
+
   </ul>
     {% endfor %}
+    <ul class="round">
+    <li class="panel panel-default match">
+    <div class="panel-body match">
+      <form action="" method="POST" class="form-inline" >{% csrf_token %}
+        <div class="form-group">
+        <input type="hidden" name="next" value="{{request.path}}">
+        <input id="name" class="form-control" name="name" placeholder=" new round name"  title=""  type="text">
+      <button type="submit" formaction="{% url 'tournament:create_round' bracket.pk %}" class="btn btn-success btn-sm">
+    {% bootstrap_icon 'plus' %} create new round
+    </button>
+    </div>
+    </form>
+    </div>
+    </li>
+    </ul>
+
   </div>
     <div class="row bracket">
       {% for round in rounds %}
@@ -75,10 +102,10 @@
           <li class="panel panel-default match">
               <div class="panel-body match" id="match_{{match.pk}}" data-match="{{match.pk}}" data-round="{{round.pk}}">
                   {% if match.player_1 %}
-                  <div class="list-group-item" data-id={{player.pk}} data-round="{{round.pk}}">{{match.player_1}}</div>
+                  <div class="list-group-item" data-id="{{match.player_1.pk}}" data-round="{{round.pk}}">{{match.player_1.user |user_link}}</div>
                   {% endif %}
                   {% if match.player_2 %}
-                  <div class="list-group-item" data-id={{player.pk}} data-round="{{round.pk}}">{{match.player_2}}</div>
+                  <div class="list-group-item" data-id="{{match.player_2.pk}}" data-round="{{round.pk}}">{{match.player_2.user |user_link}}</div>
                   {% endif %}
                 </div>
               </li>
@@ -161,6 +188,35 @@ var group_{{group.pk}}_sortable = Sortable.create(group_{{group.pk}}_players,{
 
 {% endfor %}
 
+$('#save_tournament').click(function(){
+  var dict = {};
+  var bracket = {};
+  var round = {};
+  {% for bracket in brackets %}
+    {% with bracket.get_rounds as rounds %}
+    {% for round in rounds %}
+      {% for match in round.get_matchs %}
+      console.log(match_{{match.pk}}_sortable.toArray())
+        round[{{match.pk}}] = match_{{match.pk}}_sortable.toArray();
+      {% endfor %}
+      bracket[{{round.pk}}] = round
+      round = {}
+    {% endfor %}
+      dict[{{bracket.pk}}] = bracket
+      bracket = {}
+    {% endwith %}
+  {% endfor %}
+  console.log(dict)
+  json_brackets = JSON.stringify(dict);
+  $.ajax({
+    type:"POST",
+    url:"{% url 'tournament:save_brackets' tournament.pk %}",
+    data: {
+        'brackets': json_brackets,
+    },
+
+ });
+});
 </script>
 
 {% endblock %}

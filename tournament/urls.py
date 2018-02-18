@@ -69,8 +69,28 @@ urlpatterns = [
         name='create_match'
     ),
     url(
+        r'^delete_match/(?P<round_id>[0-9]+)/$',
+        views.delete_match,
+        name='delete_match'
+    ),
+    url(
         r'^create-round/(?P<bracket_id>[0-9]+)/$',
         views.create_round,
         name='create_round'
+    ),
+    url(
+        r'^rename-round/(?P<round_id>[0-9]+)/$',
+        views.rename_round,
+        name='rename_round'
+    ),
+    url(
+        r'^delete-round/(?P<round_id>[0-9]+)/$',
+        views.delete_round,
+        name='delete_round'
+    ),
+    url(
+        r'^save-brackets/(?P<tournament_id>[0-9]+)/$',
+        views.save_brackets,
+        name='save_brackets'
     ),
 ]

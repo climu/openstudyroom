@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import Group
 from django.forms import ModelForm
-from .models import Tournament, TournamentGroup
+from .models import Tournament, TournamentGroup, Round
 import pytz
 
 class TournamentForm(forms.ModelForm):
@@ -27,4 +27,9 @@ class TournamentForm(forms.ModelForm):
 class TournamentGroupForm(ModelForm):
     class Meta:
         model = TournamentGroup
+        fields = ['name']
+
+class RoundForm(ModelForm):
+    class Meta:
+        model = Round
         fields = ['name']

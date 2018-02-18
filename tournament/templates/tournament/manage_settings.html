@@ -8,9 +8,10 @@
 {%endblock%}
 {% block content %}
 <div class="row">
-  <div class="col-md-2">
-    {% include 'tournament/includes/manage_menu.html' with active='settings'%}
-  </div>
+    {% include 'tournament/includes/manage_menu.html' with active='settings' %}
+</div>
+<div class="row">
+
   <div class="col-md-4">
     <legend>Tournament settings </legend>
     <form action="" method="POST">{% csrf_token %}
