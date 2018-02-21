@@ -1,10 +1,7 @@
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav navbar-left">
-  <li ><a href="{% url "league:admin" %}">Dashboard</a></li>
-  <li ><a href="{% url "league:admin_events" %}">Leagues</a></li>
-  <li ><a href="{% url "league:admin_sgf" %}">SGFs</a></li>
-  <li ><a href="{% url "league:admin_users_list" %}">Users</a></li>
-  <li ><a href="{% url "calendar:admin_cal_event_list" %}">Events</a></li>
-  <li ><a href="{% url "community:admin_community_list" %}">Communities</a></li>
+  <li ><a href="{% url "tournament:view" tournament.pk%}">Infos</a></li>
+  <li ><a href="{% url "tournament:games" tournament.pk%}">Games</a></li>
+
 </ul>
 </nav>

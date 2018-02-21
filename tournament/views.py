@@ -11,10 +11,11 @@ from .models import Tournament, Bracket, Match, TournamentPlayer, TournamentGrou
 from .forms import TournamentForm, TournamentGroupForm, RoundForm
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from league.models import User
+from league.models import User, Sgf
+from league.forms import SgfAdminForm, ActionForm
 import json
 
-def tournament_view(request,tournament_id):
+def tournament_view(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     players = TournamentPlayer.objects.filter(event=tournament).order_by('order')
     groups = TournamentGroup.objects.filter(league_event=tournament).order_by('order')
@@ -31,6 +32,29 @@ def tournament_view(request,tournament_id):
     }
     template = loader.get_template('tournament/tournament_view.html')
     return HttpResponse(template.render(context, request))
+
+def games(request, tournament_id, sgf_id=None):
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    sgfs = tournament.sgf_set.only(
+        'date',
+        'black',
+        'white',
+        'winner',
+        'result',
+        'league_valid').filter(league_valid=True).\
+        prefetch_related('white', 'black', 'winner').\
+        select_related('white__profile', 'black__profile').\
+        order_by('-date')
+    context = {
+        'sgfs': sgfs,
+        'tournament': tournament,
+    }
+    if sgf_id is not None:
+        sgf = get_object_or_404(Sgf, pk=sgf_id)
+        context.update({'sgf':sgf})
+    template = loader.get_template('tournament/games.html')
+    return HttpResponse(template.render(context, request))
+
 ############################################################################
 ###                  Admin views                                         ###
 ############################################################################
@@ -161,9 +185,40 @@ def create_round(request, bracket_id):
         form = RoundForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data['name']
-            order = bracket.round_set.all().order_by('order').last().order + 1
+            last_round = bracket.round_set.all().order_by('order').last()
+            if last_round:
+                order = bracket.round_set.all().order_by('order').last().order + 1
+            else:
+                order = 0
             round = Round.objects.create(bracket=bracket, order=order, name=name)
             Match.objects.create(bracket=bracket, round=round, order=0)
+    return HttpResponseRedirect(reverse(
+        'tournament:manage_brackets',
+        kwargs={'tournament_id': bracket.tournament.pk}
+    ))
+
+
+@login_required()
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+def rename_bracket(request, bracket_id):
+    bracket = get_object_or_404(Bracket, pk=bracket_id)
+    if request.method == 'POST':
+        form = RoundForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            bracket.name = name
+            bracket.save()
+    return HttpResponseRedirect(reverse(
+        'tournament:manage_brackets',
+        kwargs={'tournament_id': bracket.tournament.pk}
+    ))
+
+@login_required()
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+def delete_bracket(request, bracket_id):
+    bracket = get_object_or_404(Bracket, pk=bracket_id)
+    if request.method == 'POST':
+            bracket.delete()
     return HttpResponseRedirect(reverse(
         'tournament:manage_brackets',
         kwargs={'tournament_id': bracket.tournament.pk}
@@ -180,6 +235,7 @@ def delete_round(request, round_id):
         'tournament:manage_brackets',
         kwargs={'tournament_id': round.bracket.tournament.pk}
     ))
+
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
@@ -221,19 +277,144 @@ def manage_brackets(request, tournament_id):
         Bracket.objects.create(tournament=tournament, order=0)
     if not brackets.first().match_set.all():
         brackets.first().generate_bracket()
-    groups = TournamentGroup.objects.filter(league_event=tournament).order_by('order')
-    for group in groups:
-        results = group.get_results()
-        group.results = results
-
     context = {
         'tournament': tournament,
         'players': players,
-        'groups': groups,
-        'brackets': brackets
+        'brackets': brackets,
     }
+    groups = TournamentGroup.objects.filter(league_event=tournament).order_by('order')
+    if groups is not None:
+        # get the players that are not in any groups
+        seeded_players = players.filter(division=None)
+        for group in groups:
+            results = group.get_results()
+            group.results = results
+        context.update({
+            'seeded_players': seeded_players,
+            'groups': groups
+        })
+
     template = loader.get_template('tournament/manage_brackets.html')
     return HttpResponse(template.render(context, request))
+
+@login_required()
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+def manage_games(request, tournament_id):
+    """Manage tournament games."""
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    games = Sgf.objects.filter(events=tournament)
+    if request.method == 'POST':
+        pass
+    context = {
+        'tournament': tournament,
+        'games': games
+    }
+    template = loader.get_template('tournament/manage_games.html')
+    return HttpResponse(template.render(context, request))
+
+
+@login_required()
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+def set_stage(request, tournament_id):
+    """Set the stage of a tournament."""
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    if request.method == 'POST':
+        form = ActionForm(request.POST)
+        if form.is_valid():
+            stage = form.cleaned_data['action']
+            if int(stage) < 3:
+                print(stage)
+                tournament.stage = stage
+                tournament.save()
+            return HttpResponseRedirect(form.cleaned_data['next'])
+    raise Http404("What are you doing here ?")
+
+
+@login_required()
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+def create_sgf(request, tournament_id):
+    """Actually create a sgf db entry. Should be called after upload_sgf."""
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    if request.method == 'POST':
+        form = SgfAdminForm(request.POST)
+        if form.is_valid():
+            sgf = Sgf()
+            sgf.sgf_text = form.cleaned_data['sgf']
+            sgf.p_status = 2
+            sgf = sgf.parse()
+            check = tournament.check_sgf_validity(sgf)
+            if sgf.league_valid:
+                sgf.save()
+                sgf.update_related([tournament])
+                if tournament.stage == 2:
+                    match = check['match']
+                    if match is not None:
+                        match.sgf = sgf
+                        [bplayer, wplayer] = sgf.get_players(tournament)
+                        bplayer = TournamentPlayer(pk=bplayer.pk)
+                        wplayer = TournamentPlayer(pk=wplayer.pk)
+                        if sgf.white == sgf.winner:
+                            match.winner = wplayer
+                        else:
+                            match.winner = bplayer
+                        match.save()
+                message = " Succesfully created a SGF"
+                messages.success(request, message)
+            else:
+                message = " the sgf didn't seems to pass the tests"
+                messages.success(request, message)
+    return HttpResponseRedirect(reverse(
+        'tournament:manage_games',
+        kwargs={'tournament_id': tournament.pk}
+    ))
+
+@login_required()
+@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+def upload_sgf(request, tournament_id):
+    """THis view allow user to preview sgf with wgo along with valid status of the sgf.
+        Can call save_sgf from it.
+    """
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    if request.method == 'POST':
+        form = SgfAdminForm(request.POST)
+        if form.is_valid():
+            sgf = Sgf()
+            sgf.sgf_text = form.cleaned_data['sgf']
+            sgf.p_status = 2
+            sgf = sgf.parse()
+            check = tournament.check_sgf_validity(sgf)
+            form = SgfAdminForm(initial={'sgf': sgf.sgf_text})
+            context = {
+                'tournament': tournament,
+                'sgf': sgf,
+                'form': form,
+                'match': check['match'],
+                'group': check['group']
+            }
+            template = loader.get_template('tournament/upload_sgf.html')
+            return HttpResponse(template.render(context, request))
+    else:
+        if 'sgf_data' in request.session:
+            if request.session['sgf_data'] is None:
+                raise Http404("What are you doing here ?")
+            sgf = Sgf()
+            sgf.sgf_text = request.session['sgf_data']
+            request.session['sgf_data'] = None
+            sgf.p_status = 2
+            sgf = sgf.parse()
+            check = tournament.check_sgf_validity(sgf)
+            form = SgfAdminForm(initial={'sgf': sgf.sgf_text})
+            context = {
+                'tournament': tournament,
+                'sgf': sgf,
+                'form': form,
+                'match': check['match'],
+                'group': check['group']
+            }
+            template = loader.get_template('tournament/upload_sgf.html')
+            return HttpResponse(template.render(context, request))
+        else:
+            raise Http404("What are you doing here ?")
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)

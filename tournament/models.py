@@ -11,11 +11,16 @@ from league.models import LeagueEvent, LeaguePlayer, Sgf, Division
 # Create your models here.
 class Tournament(LeagueEvent):
     """ A Tournament is an interface to LeagueEvent
+    stage is the stage of the tournament:
+    - 0: tournament is close
+    - 1: group stage
+    - 2: bracket stage
     """
+    stage = models.PositiveSmallIntegerField(default=0)
 
     def __init__(self, *args, **kwargs):
         LeagueEvent.__init__(self, *args, **kwargs)
-        self.type = 'tournament'
+        self.event_type = 'tournament'
 
     def last_player_order(self):
         last_player = TournamentPlayer.objects.filter(event=self).order_by('order').last()
@@ -25,22 +30,87 @@ class Tournament(LeagueEvent):
             return last_player.order
 
     def last_bracket_order(self):
-        """ Return the last bracket order."""
+        """Return the last bracket order."""
         last_bracket = Bracket.objects.filter(tournament=self).order_by('order').last()
         if last_bracket is None:
             return 0
         else:
             return last_bracket.order
 
+    def check_sgf_validity(self, sgf):
+        """Check if a sgf is valid for a tournament.
+
+        return a dict as such:
+        """
+        out = {
+            'valid': False,
+            'message': 'Tournament is closed',
+            'group': None,
+            'match': None
+        }
+        if self.stage == 0:
+            return out
+
+        settings = sgf.check_event_settings(self)
+        if not settings['valid']:
+            out.update({'message': settings['message']})
+        elif self.stage == 1:
+            group = sgf.check_players(self)
+            if group['valid']:
+                out.update({
+                    'valid': True,
+                    'group': group['division']
+                })
+            else:
+                out.update({'message': group['message']})
+
+        elif self.stage == 2:
+            [bplayer, wplayer] = sgf.get_players(self)
+            bplayer = TournamentPlayer(pk=bplayer.pk)
+            wplayer = TournamentPlayer(pk=wplayer.pk)
+
+            if wplayer is not None and bplayer is not None:
+                match = wplayer.can_play_in_brackets(bplayer)
+                if match is not None:
+                    out.update({
+                        'valid': True,
+                        'match': match,
+                        'message': ''
+                    })
+                else:
+                    out.update({'message': '; Not a match'})
+            else:
+                out.update({'message': '; One of the player is not a league player'})
+        else:
+            out.update({'message': '; This tournament stage is wrong'})
+        sgf.message = out['message']
+        sgf.league_valid = out['valid']
+        return out
+
+
 class TournamentPlayer(LeaguePlayer):
     order = models.PositiveSmallIntegerField()
 
+    def can_play_in_brackets(self, player):
+        """Check if 2 players can play in the bracket stage.
+
+        Return the corresponding match if it exists and None otherwise.
+        """
+        matchs = Match.objects.filter(player_1=self, player_2=player, winner=None)
+        if len(matchs) > 0:
+            return matchs.first()
+
+        matchs = Match.objects.filter(player_1=player, player_2=self, winner=None)
+        if len(matchs) > 0:
+            return matchs.first()
+
+        return None
 
 class TournamentGroup(Division):
 
     def get_tournament_players(self):
         """Return an ordered list of 4 players of this group.
-        If the group has less than 4 players, we fill it with None
+        If the group has less than 4 players, we fill it with None. Do we?
         """
         players = list(TournamentPlayer.objects.filter(division=self).order_by('order'))
         return players
@@ -48,6 +118,7 @@ class TournamentGroup(Division):
 
 
 class Bracket(models.Model):
+    name = models.TextField(max_length=20, blank=True, null=True, default="")
     tournament = models.ForeignKey(Tournament, null=True)
     order = models.PositiveSmallIntegerField(default=0)
 
@@ -77,7 +148,7 @@ class Bracket(models.Model):
 
 class Round(models.Model):
     """A tournament round."""
-    name = models.TextField(max_length=10, blank=True, null=True, default="")
+    name = models.TextField(max_length=20, blank=True, null=True, default="")
     bracket = models.ForeignKey(Bracket, blank=True, null=True)
     order = models.PositiveSmallIntegerField()
 
@@ -106,10 +177,18 @@ class Round(models.Model):
 
 
 class Match(models.Model):
-    """ A tournament match"""
-    sgf = models.ForeignKey(Sgf, blank=True, null=True)
+    """ A tournament match.
+
+    A match can have a winner without a sgf if a player is seeded.
+    """
+    sgf = models.ForeignKey(
+        Sgf,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL)
     bracket = models.ForeignKey(Bracket, blank=True, null=True)
     round = models.ForeignKey(Round, blank=True, null=True)
-    player_1 = models.ForeignKey(LeaguePlayer, blank=True, null=True, related_name="player_1_match")
-    player_2 = models.ForeignKey(LeaguePlayer, blank=True, null=True, related_name="player_2_match")
+    player_1 = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name="player_1_match")
+    player_2 = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name="player_2_match")
+    winner = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name="winner_match")
     order = models.PositiveSmallIntegerField()
