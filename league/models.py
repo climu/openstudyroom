@@ -907,6 +907,8 @@ class Division(models.Model):
             player.n_games = 0
             player.score = 0
             player.results = {}
+            player.sos = 0
+            player.sodos = 0
             results.append(player)
         for sgf in sgfs:
             if sgf.winner == sgf.white:
@@ -934,6 +936,17 @@ class Division(models.Model):
         min_matchs = self.league_event.min_matchs
         for player in players:
             player.is_active = player.n_games >= min_matchs
+
+        # calulcate the sos for each player
+        for player in players:
+            for opponent, info in player.results.items():
+                for opponent_player in players:
+                    if opponent is opponent_player.pk:
+                        for list_item in info:
+                            if list_item.get('r') is 1:
+                                player.sodos += opponent_player.n_win
+                        player.sos += opponent_player.n_win
+                        break
 
         results = sorted(
             results,
