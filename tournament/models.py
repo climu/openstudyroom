@@ -5,6 +5,7 @@ This is heavily inspire from https://github.com/kevinharvey/django-tourney and m
 
 from django.db import models
 from collections import defaultdict
+from operator import attrgetter
 from league.models import LeagueEvent, LeaguePlayer, Sgf, Division
 
 
@@ -32,6 +33,7 @@ class Tournament(LeagueEvent):
         else:
             return last_bracket.order
 
+
 class TournamentPlayer(LeaguePlayer):
     order = models.PositiveSmallIntegerField()
 
@@ -44,7 +46,6 @@ class TournamentGroup(Division):
         """
         players = list(TournamentPlayer.objects.filter(division=self).order_by('order'))
         return players
-
 
 
 class Bracket(models.Model):
