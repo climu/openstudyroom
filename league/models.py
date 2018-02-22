@@ -428,8 +428,8 @@ class Sgf(models.Model):
                 (b, m) = (False, m + '; players not in same division')
             else:
                 w_results = wplayer.get_results()
-                if self.bplayer in w_results:
-                    if len(w_results[self.bplayer]) >= event.nb_matchs:
+                if bplayer.user.pk in w_results:
+                    if len(w_results[bplayer.user.pk]) >= event.nb_matchs:
                         (b, m) = (False, m + '; max number of games')
         else:
             (b, m) = (False, m + '; One of the players is not a league player')
@@ -478,6 +478,8 @@ class Sgf(models.Model):
         valid_events = []
         for event in events:
             check = self.check_validity_event(event)
+            print(event)
+            print(check)
             # if the game is taged for this event, we keep this events message
             if check['tag']:
                 message = check['message']
