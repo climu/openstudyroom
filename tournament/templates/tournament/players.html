@@ -1,0 +1,35 @@
+{% extends 'full_width.html' %}
+{% load bootstrap3 league_tags static forum_markup_tags%}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
+
+{% endblock %}
+
+
+
+{% block heading %}
+  <div class="page-header">
+    <h1>{{tournament.name}} players</h1>
+  </div>
+{%endblock%}
+
+{% block content %}
+{% include 'tournament/includes/tournament_menu.html' %}
+
+
+<div class="row">
+
+{%for player in players %}
+<div class="col-md-2">
+<div class="panel-default">
+  <div class="panel-heading">
+    {{player.user |user_link}}
+  </div>
+</div>
+</div>
+{% endfor %}
+</div>
+
+
+{% endblock %}

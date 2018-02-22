@@ -55,6 +55,19 @@ def games(request, tournament_id, sgf_id=None):
     template = loader.get_template('tournament/games.html')
     return HttpResponse(template.render(context, request))
 
+def players(request, tournament_id):
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    players = tournament.leagueplayer_set.all()
+    context = {
+        'tournament': tournament,
+        'players': players
+    }
+    template = loader.get_template('tournament/players.html')
+    return HttpResponse(template.render(context, request))
+
+
+
+
 ############################################################################
 ###                  Admin views                                         ###
 ############################################################################

@@ -14,6 +14,11 @@ urlpatterns = [
         name='games'
     ),
     url(
+        r'^(?P<tournament_id>[0-9]+)/players/$',
+        views.players,
+        name='players'
+    ),
+    url(
         r'^(?P<tournament_id>[0-9]+)/games/(?P<sgf_id>[0-9]+)$',
         views.games,
         name='games'
