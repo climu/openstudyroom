@@ -169,6 +169,9 @@ class GameAppointmentEvent(CalEvent):
         related_query_name="%(app_label)s_%(class)ss",
     )
 
+    def __str__(self):
+        return self.start.strftime("%x") + self.title()
+
     def title(self):
         users = self.users.all()
         return 'Game ' + users[0].username + ' vs ' + users[1].username
