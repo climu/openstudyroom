@@ -27,7 +27,7 @@
 min-height: 45px;
 }
 .match{
-  min-height: 80px;
+  min-height: 82px;
   padding:0px;
   margin:0;
 }
@@ -40,4 +40,14 @@ min-height: 45px;
 .round-control-botom{
   padding:5px 1px 0px 1px;
   margin:0;
+}
+
+.match-display{
+  min-height: 60px;
+  padding:0px;
+  margin:0;
+}
+
+.player{
+  height: 20px;
 }

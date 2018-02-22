@@ -109,7 +109,7 @@
         type="submit"
         formaction="{% url 'tournament:delete_bracket' bracket.pk %}"
         class="btn btn-danger btn-sm pull-right"
-        onclick="alert('Are you sure you want to delete this bracket?')">
+        onclick="return confirm('Are you sure you want to delete this bracket?')">
         {% bootstrap_icon "remove" %} Delete the bracket
     </button>
 </div>
@@ -126,7 +126,7 @@
           <div class="form-group">
           <input type="hidden" name="next" value="{{request.path}}">
           <input id="name" class="form-control" style="max-width:145px;"name="name" placeholder="round name" value="{{round.name}}" title=""  type="text">
-          <button type="submit" formaction="{% url 'tournament:rename_round' round.pk %}" class="btn btn-primary btn-sm">
+          <button title="rename round" type="submit" formaction="{% url 'tournament:rename_round' round.pk %}" class="btn btn-primary btn-sm">
             {% bootstrap_icon 'refresh' %}
           </button>
         </div>
@@ -135,13 +135,13 @@
 
           <div class="panel-body round-control-botom">
             <form action="" method="POST" class="form-inline" >{% csrf_token %}
-              <button type="submit" formaction="{% url 'tournament:create_match' round.pk %}" class="btn btn-default btn-sm">
+              <button title="Add a new match" type="submit" formaction="{% url 'tournament:create_match' round.pk %}" class="btn btn-default btn-sm">
                 {% bootstrap_icon "plus" %}
               </button>
-              <button type="submit" formaction="{% url 'tournament:delete_match' round.pk %}" class="btn btn-default btn-sm">
+              <button title="Delete last match" type="submit" formaction="{% url 'tournament:delete_match' round.pk %}" class="btn btn-default btn-sm">
                 {% bootstrap_icon "minus" %}
               </button>
-              <button type="submit" formaction="{% url 'tournament:delete_round' round.pk %}" class="btn btn-danger btn-sm pull-right">
+              <button title="Delete all round" type="submit" formaction="{% url 'tournament:delete_round' round.pk %}" onclick="return confirm('Really delete this round and all his matches')" class="btn btn-danger btn-sm pull-right">
                 {% bootstrap_icon "remove" %}
               </button>
             </div>
@@ -173,13 +173,16 @@
           {% for match in round.get_matchs %}
           <li class="spacer">&nbsp;</li>
           <li class="panel panel-default match">
-              <div class="panel-body match"
+              <div class="panel-body match {% if match.sgf %} played {% endif %}"
                     id="match_{{match.pk}}"
                     data-match="{{match.pk}}"
                      data-round="{{round.pk}}"
                      data-bracket="{{bracket.pk}}">
                   {% if match.player_1 %}
-                  <div class="list-group-item" data-id="{{match.player_1.pk}}">
+                  <div
+                    class="list-group-item
+                    {% if match.sgf and match.winner == match.player_1 %}list-group-item-success{% endif %}"
+                    data-id="{{match.player_1.pk}}">
                     {{match.player_1.user |user_link}}
                     <div class="checkbox div-checkbox pull-right">
                       <input class ="refetch check-player" value="{{player.pk}}" type="checkbox" >
@@ -187,8 +190,9 @@
                  </div>
                   {% endif %}
                   {% if match.player_2 %}
-                  <div class="list-group-item"
-                  data-id="{{match.player_2.pk}}">
+                  <div
+                    class="list-group-item {% if match.sgf and match.winner == match.player_2 %}list-group-item-success{% endif %}"
+                    data-id="{{match.player_2.pk}}">
                     {{match.player_2.user |user_link}}
                     <div class="checkbox div-checkbox pull-right">
                       <input class ="refetch check-player" value="{{player.pk}}" type="checkbox" >
@@ -294,10 +298,13 @@ var seeds_sortable = Sortable.create(seeds,{
               if (($(evt.from).attr('data-round') > {{round.pk}}) && ($(evt.from).attr('data-bracket') == {{bracket.pk}})) {
                 evt.item.outerHTML = "";
               }
-            else if ($(evt.from).hasClass('group_players')){
-              // if we put a new player, we had the select box to the item
-                $(evt.item).append('<div class="checkbox div-checkbox pull-right"><input class ="refetch check-player" value="{{player.pk}}" type="checkbox" ></div>')
-              }
+            else{
+              $(evt.item).removeClass('list-group-item-success')
+              if ($(evt.from).hasClass('group_players')){
+                // if we put a new player, we had the select box to the item
+                  $(evt.item).append('<div class="checkbox div-checkbox pull-right"><input class ="refetch check-player" value="{{player.pk}}" type="checkbox" ></div>')
+                }
+            }
             },
             delay: 10
         });

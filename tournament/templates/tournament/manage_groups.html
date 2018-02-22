@@ -33,10 +33,8 @@
     <div class="col-md-2">
       <ul class="list-group">
         {% for player in players %}
-        <li class="list-group-item">
-        <big>
+        <li class="list-group-item player">
             {{forloop.counter}}
-        </big>
         </li>
         {% endfor %}
       </ul>
@@ -49,7 +47,7 @@
           {% if player.division %}
             disabled
           {% endif %}
-           clearfix
+           clearfix player
           ">
             {{player.user | user_link}}
             <span class="group_name pull-right">
