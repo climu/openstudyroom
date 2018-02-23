@@ -15,6 +15,19 @@ from league.models import User, Sgf
 from league.forms import SgfAdminForm, ActionForm
 import json
 
+
+def about(request, tournament_id):
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    admin = tournament.is_admin(request.user)
+
+    context = {
+        'tournament': tournament,
+        'admin': admin
+    }
+    template = loader.get_template('tournament/about.html')
+    return HttpResponse(template.render(context, request))
+
+
 def tournament_view(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     players = TournamentPlayer.objects.filter(event=tournament).order_by('order')

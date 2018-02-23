@@ -24,6 +24,11 @@ class TournamentForm(forms.ModelForm):
             'end_time': forms.SelectDateWidget(),
         }
 
+class TournamentAboutForm(ModelForm):
+    class Meta:
+        model = Tournament
+        fields = ['description', 'about']
+
 class TournamentGroupForm(ModelForm):
     class Meta:
         model = TournamentGroup
