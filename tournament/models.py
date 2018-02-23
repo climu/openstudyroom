@@ -5,6 +5,7 @@ This is heavily inspire from https://github.com/kevinharvey/django-tourney and m
 
 from django.db import models
 from collections import defaultdict
+from operator import attrgetter
 from league.models import LeagueEvent, LeaguePlayer, Sgf, Division
 
 
@@ -36,6 +37,7 @@ class Tournament(LeagueEvent):
             return 0
         else:
             return last_bracket.order
+
 
     def check_sgf_validity(self, sgf):
         """Check if a sgf is valid for a tournament.
@@ -88,6 +90,7 @@ class Tournament(LeagueEvent):
         return out
 
 
+
 class TournamentPlayer(LeaguePlayer):
     order = models.PositiveSmallIntegerField()
 
@@ -114,7 +117,6 @@ class TournamentGroup(Division):
         """
         players = list(TournamentPlayer.objects.filter(division=self).order_by('order'))
         return players
-
 
 
 class Bracket(models.Model):

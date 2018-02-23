@@ -12,6 +12,8 @@
                 <div class="kgs_username">{{ player.user.username }}</div>
             </th>
             {% endfor %}
+            <th>sos</th>
+            <th>sodos</th>
         </thead>
         <tbody>
         {% for player in results %}
@@ -26,10 +28,12 @@
             <td class="table-league-highlight {% cycle 'even-column' 'odd-column' %}">
                 {% else %}
             <td class="{% cycle 'even-column' 'odd-column' %}">
-              {% html_one_result %}
+              {% html_points_amount %}
             </td>
             {% endif %}
             {% endfor %}
+            <td>{{ player.sos }}</td>
+            <td>{{ player.sodos }}</td>
         </tr>
         {% endfor %}
         </tbody>
