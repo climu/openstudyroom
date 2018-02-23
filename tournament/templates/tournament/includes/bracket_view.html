@@ -1,45 +1,57 @@
 {% load bootstrap3 league_tags tournament_tags%}
 
-  {% for bracket in brackets %}
-
+{% for bracket in brackets %}
+  <legend >
+  {{bracket.name}}
+  </legend>
   {% with bracket.get_rounds as rounds %}
-  <legend> {{bracket.name}}</legend>
-  <div class="row bracket">
-
-
-  {% for round in rounds %}
-	<ul class="round ">
-    <legend> {{round.name}}</legend>
-    {% for match in round.get_matchs %}
-		<li class="spacer">&nbsp;</li>
-
-    <li class="panel panel-default ">
-        <div class="panel-body match-display">
-          <div class="col-md-8">
-		<div class="game game-toper">
-      {%if match.player_1 %}
-        {{match.player_1.user | user_link}}
-      {% endif %}
-    </div><p></p>
-		<div class="game game-bottom ">
-      {%if match.player_2 %}
-        {{match.player_2.user | user_link}}
-      {% endif %}
-      </div>
+  <div class=" bracket">
+    {% for round in rounds %}
+      <ul class="round">
+        <li><legend >{{round.name}}</legend></li>
+      </ul>
+    {% endfor %}
   </div>
-  <div class="col-md-4">
-    {% if match.sgf %}
-    {{match.sgf.result |slice:":5"}}
-    {%endif%}
-  </div>
-</div>
-  </li>
-  {% endfor %}
-		<li class="spacer">&nbsp;</li>
+    <div class="bracket">
 
-	</ul>
-  {% endfor %}
-{% endwith %}
-</div>
+    {% for round in rounds %}
+      <ul class="round">
+
+        {% for match in round.get_matchs %}
+        <li class="spacer">&nbsp;</li>
+        <li class="panel panel-default match">
+            <div class="panel-body match {% if match.sgf %} played {% endif %}"
+                  id="match_{{match.pk}}"
+                  data-match="{{match.pk}}"
+                   data-round="{{round.pk}}"
+                   data-bracket="{{bracket.pk}}">
+                {% if match.player_1 %}
+                <div
+                  class="list-group-item
+                  {% if match.sgf and match.winner == match.player_1 %}list-group-item-success{% endif %}"
+                  data-id="{{match.player_1.pk}}">
+                  {{match.player_1.user |user_link}}
+               </div>
+                {% endif %}
+                {% if match.player_2 %}
+                <div
+                  class="list-group-item {% if match.sgf and match.winner == match.player_2 %}list-group-item-success{% endif %}"
+                  data-id="{{match.player_2.pk}}">
+                  {{match.player_2.user |user_link}}
+                </div>
+                {% endif %}
+
+              </div>
+            </li>
+
+        {% endfor %}
+        <li class="spacer">&nbsp;</li>
+      </ul>
+
+
+    {% endfor %}
+  </div>
+
+  {% endwith %}
 
 {% endfor %}

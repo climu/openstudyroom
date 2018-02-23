@@ -28,6 +28,9 @@ class Tournament(LeagueEvent):
     def __init__(self, *args, **kwargs):
         LeagueEvent.__init__(self, *args, **kwargs)
         self.event_type = 'tournament'
+        self.ppwin = 1
+        self.ppwin = 0
+        self.min_matchs = 0
 
     def is_admin(self, user):
         return user.is_league_admin() or user.groups.filter(name='tournament_master').exists()

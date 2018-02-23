@@ -1,9 +1,22 @@
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav navbar-left">
-  <li ><a href="{% url "tournament:view" tournament.pk%}">Infos</a></li>
-  <li ><a href="{% url "tournament:games" tournament.pk%}">Games</a></li>
-  <li ><a href="{% url "tournament:players" tournament.pk%}">Players</a></li>
-
+  <li {% if active == "about" %}class="active"{% endif %}>
+    <a href="{% url "tournament:about" tournament.pk%}">About</a>
+  </li>
+  {% if groups %}
+  <li {% if active == "groups" %}class="active"{% endif %}>
+    <a href="{% url "tournament:groups" tournament.pk%}">Groups</a>
+  </li>
+  {% endif %}
+  <li {% if active == "brackets" %}class="active"{% endif %}>
+    <a href="{% url "tournament:brackets" tournament.pk%}">Brackets</a>
+  </li>
+  <li {% if active == "games" %}class="active"{% endif %}>
+    <a href="{% url "tournament:games" tournament.pk%}">Games</a>
+  </li>
+  <li {% if active == "players" %}class="active"{% endif %}>
+    <a href="{% url "tournament:players" tournament.pk%}">Players</a>
+  </li>
 
 </ul>
 </nav>

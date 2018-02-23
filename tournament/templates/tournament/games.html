@@ -1,5 +1,5 @@
 {% extends "full_width.html" %}
-{% load tz static league_tags wgo_tags bootstrap3 l10n i18n%}
+{% load tz static league_tags forum_markup_tags wgo_tags bootstrap3 l10n i18n%}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
   <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
@@ -44,9 +44,10 @@ return false;};
 
 {% block content %}
 {% language 'en' %}
-{% include 'tournament/includes/tournament_menu.html' %}
+{% include 'tournament/includes/tournament_menu.html' with active="games"%}
+<div class="well">{{tournament.description|safe|rendered}}</div>
 <div class ="row">
-  <div class="well"> This table show all games that have been played in the {{tournament.name}}</div>
+
 <div  class="col-md-4">
   <div id ="game_infos">
     {% if sgf %}

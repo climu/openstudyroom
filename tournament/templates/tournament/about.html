@@ -6,6 +6,8 @@
 
 {% endblock %}
 
+
+
 {% block title %}{{tournament.name}}{% endblock %}
 
 {% block heading %}
@@ -15,21 +17,20 @@
 {%endblock%}
 
 {% block content %}
-{% include 'tournament/includes/tournament_menu.html' %}
-<p>{{tournament.description|safe|rendered}}</p>
-  {% if groups %}
-  <div class="row">
+{% include 'tournament/includes/tournament_menu.html' with active="about"%}
 
-      {% for group in groups %}
-      <div class="col-md-3">
-      <h2>{{group.name}}</h2>
-        {% include 'league/includes/results_ladder.html' with results=group.results %}
-        </div>
-      {% endfor %}
+<div class="well">{{tournament.description|safe|rendered}}</div>
+{% if admin %}
+<div style="float:right;">
+<a href="{% url 'tournament:edit_about' tournament.pk %}" class="btn btn-warning">
+    Edit
+</a>
 </div>
-  {% endif %}
+{% endif %}
+<p>{{tournament.about|safe|rendered}}</p>
+
+
 </div>
 
-{% include 'tournament/includes/bracket_view.html'%}
 
 {%endblock%}

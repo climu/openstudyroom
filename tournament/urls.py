@@ -9,9 +9,29 @@ urlpatterns = [
         name='view'
     ),
     url(
+        r'^(?P<tournament_id>[0-9]+)/about/$',
+        views.about,
+        name='about'
+    ),
+    url(
+        r'^(?P<tournament_id>[0-9]+)/groups/$',
+        views.groups,
+        name='groups'
+    ),
+    url(
+        r'^(?P<tournament_id>[0-9]+)/about/edit/$',
+        views.edit_about,
+        name='edit_about'
+    ),
+    url(
         r'^(?P<tournament_id>[0-9]+)/games/$',
         views.games,
         name='games'
+    ),
+    url(
+        r'^(?P<tournament_id>[0-9]+)/brackets/$',
+        views.brackets,
+        name='brackets'
     ),
     url(
         r'^(?P<tournament_id>[0-9]+)/players/$',
