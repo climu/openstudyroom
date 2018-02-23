@@ -1,38 +1,45 @@
-<div class="bracket">
-	<ul class="round round-1">
+{% load bootstrap3 league_tags tournament_tags%}
+
+  {% for bracket in brackets %}
+
+  {% with bracket.get_rounds as rounds %}
+  <legend> {{bracket.name}}</legend>
+  <div class="row bracket">
+
+
+  {% for round in rounds %}
+	<ul class="round ">
+    <legend> {{round.name}}</legend>
+    {% for match in round.get_matchs %}
 		<li class="spacer">&nbsp;</li>
 
     <li class="panel panel-default ">
-        <div class="panel-body match">
-		<div class="game game-top winner">Lousville <span>79</span></div>
-		<div class="game game-bottom ">NC A&T <span>48</span></div>
-  </div></li>
-
-		<li class="spacer">&nbsp;</li>
-    <li class="panel panel-default ">
-        <div class="panel-body match">
-		<div class="game game-top winner">Colo St <span>84</span></li>
-		<div class="game game-bottom ">Missouri <span>72</span></li>
-  </div></li>
-		<li class="spacer">&nbsp;</li>
-
-	</ul>
-	<ul class="round round-2">
-		<li class="spacer">&nbsp;</li>
-
-      <li class="panel panel-default ">
-          <div class="panel-body match" id="match_{{match.pk}}" data-round="{{round.pk}}">
-            <ul>
-            <li class="game game-bottom ">Colo St <span>56</span></li>
-            <li class="game game-bottom ">Colo St <span>56</span></li>
-          </ul>
-        </div></li>
-
-    </li>
-
-		<li class="spacer">&nbsp;</li>
-
-	</ul>
-
-
+        <div class="panel-body match-display">
+          <div class="col-md-8">
+		<div class="game game-toper">
+      {%if match.player_1 %}
+        {{match.player_1.user | user_link}}
+      {% endif %}
+    </div><p></p>
+		<div class="game game-bottom ">
+      {%if match.player_2 %}
+        {{match.player_2.user | user_link}}
+      {% endif %}
+      </div>
+  </div>
+  <div class="col-md-4">
+    {% if match.sgf %}
+    {{match.sgf.result |slice:":5"}}
+    {%endif%}
+  </div>
 </div>
+  </li>
+  {% endfor %}
+		<li class="spacer">&nbsp;</li>
+
+	</ul>
+  {% endfor %}
+{% endwith %}
+</div>
+
+{% endfor %}

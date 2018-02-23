@@ -47,6 +47,7 @@ urlpatterns = [
     url(r'^admin/$', views.admin, name='admin'),
     url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/$', views.admin_edit_sgf, name='edit_sgf'),
     url(r'^admin/handle-upload-sgf/$', views.handle_upload_sgf, name='handle_upload_sgf'),
+    url(r'^admin/handle-upload-sgf/(?P<tournament_id>[0-9]+)/$', views.handle_upload_sgf, name='handle_upload_sgf'),
     url(r'^admin/upload-sgf/$', views.upload_sgf, name='upload_sgf'),
     url(r'^admin/create-sgf/$', views.create_sgf, name='create_sgf'),
 
@@ -86,6 +87,8 @@ urlpatterns = [
     url(r'^scrap-list/$', views.scrap_list, name='scrap_list'),
     url(r'^scrap-list/(?P<profile_id>[0-9]+)/up/$', views.scrap_list_up, name='scrap_list_up'),
     url(r'^game/json/(?P<sgf_id>[0-9]+)/$', views.game_api, name='game_api'),
+    url(r'^game/json/(?P<sgf_id>[0-9]+)/(?P<event_id>[0-9]+)/$', views.game_api, name='game_api'),
+
     url(r'^(?P<event_id>[0-9]+)/join/(?P<user_id>[0-9]+)/$', views.join_event, name='join_event'),
     url(r'^admin/create-all-profiles/$', views.create_all_profiles, name='create_all_profiles'),
     url(r'^admin/update-all-sgf-check-code/$',

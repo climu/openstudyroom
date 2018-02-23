@@ -14,4 +14,9 @@
   Brackets
 </a>
 </li>
+<li role="presentation" {% if active == 'games'%}class="active"{% endif %}>
+  <a href={%url 'tournament:manage_games' tournament.pk %}>
+  Games
+</a>
+</li>
 </ul>

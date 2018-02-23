@@ -20,13 +20,14 @@ from django.template.defaultfilters import date as _date, time as _time
 from django.utils import timezone
 from machina.core.db.models import get_model
 from postman.api import pm_write
+from tournament.models import Tournament
 import pytz
 
 from . import utils
 from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
     Profile
-from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm, LeagueEventForm, \
-    EmailForm, TimezoneForm, ProfileForm
+from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm,\
+    LeagueEventForm, EmailForm, TimezoneForm, ProfileForm
 
 ForumProfile = get_model('forum_member', 'ForumProfile')
 discord_url_file = "/etc/discord_url.txt"
@@ -378,12 +379,14 @@ def account(request, user_name=None):
             return HttpResponseRedirect('/')
     else:
         user = get_object_or_404(User, username=user_name)
-        #user = User.objects.get(username=user_name)
+        # user = User.objects.get(username=user_name)
 
     if not user.is_league_member():
         return HttpResponseRedirect('/')
 
-    open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
+    open_events = LeagueEvent.get_events(request.user)\
+        .filter(is_open=True)\
+        .exclude(event_type='tournament')
 
     players = user.leagueplayer_set.order_by('-pk')
 
@@ -412,19 +415,28 @@ def account(request, user_name=None):
     return HttpResponse(template.render(context, request))
 
 
-def game_api(request, sgf_id):
+def game_api(request, sgf_id, event_id=None):
     """Returns a json to be use in game pages. Json is formated as:
     'infos': players, date, league, group, permalink, download link.
     'sgf': sgf datas as plain text string
     """
+
     sgf = get_object_or_404(Sgf, pk=sgf_id)
-    html = loader.render_to_string("league/includes/game_info.html", {'sgf': sgf})
+    event = None
+    if event_id is not None:
+        event = get_object_or_404(LeagueEvent, pk=event_id)
+
+    html = loader.render_to_string(
+        "league/includes/game_info.html",
+        {'sgf': sgf, 'event': event}
+    )
     data = {}
     data['sgf'] = sgf.sgf_text.replace(';B[]', "").replace(';W[]', "")
     data['permalink'] = '/league/games/' + str(sgf.pk) + '/'
     data['game_infos'] = html
     data['white'] = sgf.white.kgs_username
     data['black'] = sgf.black.kgs_username
+    data['id'] = str(sgf.pk)
 
     return HttpResponse(json.dumps(data), content_type="application/json")
 
@@ -540,7 +552,7 @@ def admin_sgf_list(request):
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
-def handle_upload_sgf(request):
+def handle_upload_sgf(request, tournament_id=None):
     """Get sgf datas from an uploaded file and redctect to upload_sgf view.
         sgf datas are store in request.session. Maybe we could avoid that.
         create a form from it and loads the template should make it?
@@ -551,7 +563,11 @@ def handle_upload_sgf(request):
             file = request.FILES['file']
             sgf_data = file.read().decode('UTF-8')
             request.session['sgf_data'] = sgf_data
-            return HttpResponseRedirect(reverse('league:upload_sgf'))
+            if tournament_id is None:
+                return HttpResponseRedirect(reverse('league:upload_sgf'))
+            else:
+                tournament = get_object_or_404(Tournament, pk=tournament_id)
+                return HttpResponseRedirect(reverse('tournament:upload_sgf', args=[tournament.pk]))
         else:
             raise Http404("What are you doing here ?")
     else:
