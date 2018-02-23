@@ -60,42 +60,42 @@ urlpatterns = [
     ),
 
     url(
-        r'^(?P<tournament_id>[0-9]+)/groups/$',
+        r'^(?P<tournament_id>[0-9]+)/admin/groups/$',
         views.manage_groups,
         name='manage_groups'
     ),
     url(
-        r'^(?P<tournament_id>[0-9]+)/brackets/$',
+        r'^(?P<tournament_id>[0-9]+)/admin/brackets/$',
         views.manage_brackets,
         name='manage_brackets'
     ),
     url(
-        r'^(?P<tournament_id>[0-9]+)/manage_games/$',
+        r'^(?P<tournament_id>[0-9]+)/admin/games/$',
         views.manage_games,
         name='manage_games'
     ),
     url(
-        r'^(?P<tournament_id>[0-9]+)/upload_sgf/$',
+        r'^(?P<tournament_id>[0-9]+)/admin/upload_sgf/$',
         views.upload_sgf,
         name='upload_sgf'
     ),
     url(
-        r'^(?P<tournament_id>[0-9]+)/create-sgf/$',
+        r'^(?P<tournament_id>[0-9]+)/admin/create-sgf/$',
         views.create_sgf,
         name='create_sgf'
     ),
     url(
-        r'^(?P<tournament_id>[0-9]+)/set-stage/$',
+        r'^(?P<tournament_id>[0-9]+)/admin/set-stage/$',
         views.set_stage,
         name='set_stage'
     ),
     url(
-        r'^(?P<tournament_id>[0-9]+)/invite/$',
+        r'^(?P<tournament_id>[0-9]+)/admin/invite/$',
         views.invite_user,
         name='invite_user'
     ),
     url(
-        r'^(?P<tournament_id>[0-9]+)/quit/$',
+        r'^(?P<tournament_id>[0-9]+)/admin/quit/$',
         views.remove_players,
         name='remove_players'
     ),

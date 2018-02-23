@@ -1,3 +1,48 @@
+from django.utils.safestring import mark_safe
+from django.template import Library
+
+register = Library()
+
+
+@register.simple_tag(takes_context=True)
+def tourney_result(context):
+    # note the use of takes_context = true.
+    # this filter only works called from a context where player an opponent exists
+    player = context['player']
+    opponent = context['opponent']
+    if 'tournament' in context:
+        event = str(context['tournament'].pk) + '/'
+    else:
+        event = ''
+    opponent_pk = opponent.pk
+    html = ""
+    if not opponent_pk in player.results:
+        return ""
+    result = player.results[opponent_pk]
+    for game in result:
+        points = str(game['p']).rpartition('+')[2]
+        if points == 'Resign':
+            points = 'R'
+        # here, game['id'] would get you the id of the game to add a link
+        html += '<a href="/tournament/' + event + 'games/' + str(game['id']) + '" \
+                data-toggle="tooltip" title="' + player.user.username + ' vs ' + opponent.user.username + ': ' + points + '">'
+        if game['r'] == 1:
+            html += '<i class="fa fa-check" aria-hidden="true" style="color:green"></i></a>'
+        # will be glyphicon glyphicon-ok-circle or fontawesome thing
+        else:
+            html += '<i class="fa fa-remove"aria-hidden="true" style="color:red"></i></a>'
+
+    return mark_safe(html)
+
+
+
+
+
+
+
+
+
+
 """
 Template filters to partition lists into rows or columns.
 
@@ -15,9 +60,6 @@ A common use-case is for splitting a list into a table with columns::
     </table>
 """
 
-from django.template import Library
-
-register = Library()
 
 def rows(thelist, n):
     """

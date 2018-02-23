@@ -22,7 +22,7 @@
       {% for group in groups %}
       <div class="col-md-3">
         <h2>{{group.name}}</h2>
-        {% include 'league/includes/results_ladder.html' with results=group.results %}
+        {% include 'tournament/includes/group_table.html' with results=group.results %}
       </div>
       {% endfor %}
   </div>
