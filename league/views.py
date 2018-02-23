@@ -379,12 +379,14 @@ def account(request, user_name=None):
             return HttpResponseRedirect('/')
     else:
         user = get_object_or_404(User, username=user_name)
-        #user = User.objects.get(username=user_name)
+        # user = User.objects.get(username=user_name)
 
     if not user.is_league_member():
         return HttpResponseRedirect('/')
 
-    open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
+    open_events = LeagueEvent.get_events(request.user)\
+        .filter(is_open=True)\
+        .exclude(event_type='tournament')
 
     players = user.leagueplayer_set.order_by('-pk')
 

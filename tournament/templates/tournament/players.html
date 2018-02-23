@@ -1,12 +1,10 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 league_tags static forum_markup_tags%}
+{% load bootstrap3 league_tags tournament_tags static forum_markup_tags%}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
   <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
 
 {% endblock %}
-
-
 
 {% block heading %}
   <div class="page-header">
@@ -18,16 +16,41 @@
 {% include 'tournament/includes/tournament_menu.html' %}
 
 
-<div class="row">
 
-{%for player in players %}
+  {% for row in players|columns:6 %}
+
+  <div class="row row-flex row-flex-wrap">
+
+  {%for player in row %}
 <div class="col-md-2">
-<div class="panel-default">
+<div class="panel panel-default flex-col">
   <div class="panel-heading">
     {{player.user |user_link}}
   </div>
+  <div class="panel-body flex-grow">
+    {% if player.user.forum_profile.avatar %}
+    <div class="">
+      <img src="{{ player.user.forum_profile.avatar.url }}" class="img-responsive" alt="{{ player.user.forum_profile.user.username }}" />
+    </div>
+    {% else %}
+    <div class="profile-avatar empty">
+      <i class="fa fa-user fa-4x" ></i>
+    </div>
+    {% endif %}
+    {% if player.user.profile.bio is not None %}
+{{player.user.profile.bio|safe|rendered}}
+  {% endif %}
+
+  </div>
 </div>
+  </div>
+
+
+  {% endfor %}
+
 </div>
+
+
 {% endfor %}
 </div>
 
