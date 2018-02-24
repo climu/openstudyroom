@@ -51,15 +51,14 @@ def tournament_view(request, tournament_id):
 def brackets(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     groups = TournamentGroup.objects.filter(league_event=tournament).exists
-    admin = tournament.is_admin(request.user)
     brackets = tournament.bracket_set.all()
 
 
     context = {
         'tournament': tournament,
         'groups': groups,
-        'admin': admin,
-        'brackets':brackets
+        'admin': tournament.is_admin(request.user),
+        'brackets': brackets
     }
     template = loader.get_template('tournament/brackets.html')
     return HttpResponse(template.render(context, request))
@@ -67,7 +66,6 @@ def brackets(request, tournament_id):
 def groups(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     groups = TournamentGroup.objects.filter(league_event=tournament).order_by('order')
-    admin = tournament.is_admin(request.user)
 
     for group in groups:
         results = group.get_results()
@@ -75,7 +73,8 @@ def groups(request, tournament_id):
     context = {
         'tournament': tournament,
         'groups': groups,
-        'admin': admin
+        'admin': tournament.is_admin(request.user)
+
     }
     template = loader.get_template('tournament/groups.html')
     return HttpResponse(template.render(context, request))
@@ -96,7 +95,8 @@ def games(request, tournament_id, sgf_id=None):
     context = {
         'sgfs': sgfs,
         'tournament': tournament,
-        'groups': groups
+        'groups': groups,
+        'admin': tournament.is_admin(request.user)
     }
     if sgf_id is not None:
         sgf = get_object_or_404(Sgf, pk=sgf_id)

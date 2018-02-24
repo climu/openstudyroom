@@ -7,23 +7,19 @@
 {% endblock %}
 
 {% block heading %}
-  <div class="page-header">
+  <div class="">
     <h1>{{tournament.name}} players</h1>
+    {% include 'tournament/includes/tournament_menu.html' with active="players" %}
   </div>
 {%endblock%}
 
 {% block content %}
 
-{% include 'tournament/includes/tournament_menu.html' with active="players" %}
-
-<div class="well">{{tournament.description|safe|rendered}}</div>
-
-  {% for row in players|columns:4 %}
 
   <div class="row equal">
 
-  {%for player in row %}
-<div class="col-md-4">
+  {% for player in players %}
+<div class="col-md-3">
 <div class="panel panel-default ">
   <div class="panel-heading clearfix">
     <h4>{{player.user.username}}
@@ -58,14 +54,17 @@
   </div>
 </div>
   </div>
+    {% if forloop.counter|divisibleby:4 %}
+  </div>
+  <div class="row equal">
 
-
+    {% endif %}
   {% endfor %}
 
 </div>
 
 
-{% endfor %}
+
 </div>
 
 

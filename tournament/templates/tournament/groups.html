@@ -15,15 +15,19 @@
 
 {% block content %}
 {% include 'tournament/includes/tournament_menu.html' with active="groups" %}
-<div class="well">{{tournament.description|safe|rendered}}</div>
 
   {% if groups %}
   <div class="row">
       {% for group in groups %}
-      <div class="col-md-3">
+      <div class="col-md-6">
         <h2>{{group.name}}</h2>
         {% include 'tournament/includes/group_table.html' with results=group.results %}
       </div>
+
+      {% if forloop.counter|divisibleby:2 %}
+        </div>
+        <div class="row">
+      {% endif %}
       {% endfor %}
   </div>
   {% else %}

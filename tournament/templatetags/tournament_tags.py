@@ -16,7 +16,7 @@ def tourney_result(context):
         event = ''
     opponent_pk = opponent.pk
     html = ""
-    if not opponent_pk in player.results:
+    if opponent_pk not in player.results:
         return ""
     result = player.results[opponent_pk]
     for game in result:
@@ -35,11 +35,17 @@ def tourney_result(context):
     return mark_safe(html)
 
 
-
-
-
-
-
+@register.simple_tag(takes_context=True)
+def match_result(context):
+    match = context['match']
+    tournament = context['tournament']
+    sgf = match.sgf
+    points = str(sgf.result).rpartition('+')[2]
+    if points == 'Resign':
+        points = 'R'
+    html = '<a class="badge" href="/tournament/' + str(tournament.pk) + '/games/' + str(sgf.pk) + '">'
+    html += '+' + points + '</a>'
+    return mark_safe(html)
 
 
 

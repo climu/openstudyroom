@@ -19,7 +19,6 @@
 {% block content %}
 {% include 'tournament/includes/tournament_menu.html' with active="about"%}
 
-<div class="well">{{tournament.description|safe|rendered}}</div>
 {% if admin %}
 <div style="float:right;">
 <a href="{% url 'tournament:edit_about' tournament.pk %}" class="btn btn-warning">

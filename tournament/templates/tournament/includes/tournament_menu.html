@@ -1,3 +1,6 @@
+{% load bootstrap3 league_tags static forum_markup_tags%}
+
+<div class="">{{tournament.description|safe|rendered}}</div>
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav navbar-left">
   <li {% if active == "about" %}class="active"{% endif %}>
