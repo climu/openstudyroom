@@ -19,4 +19,14 @@
   </li>
 
 </ul>
+{% if admin %}
+<ul class="nav navbar-nav navbar-right active" style="margin-right:5px;">
+  <li>
+    <a href="{% url "tournament:manage_settings" tournament.pk%}">
+      <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+    </a>
+  </li>
+</ul>
+{% endif %}
+
 </nav>

@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import user_passes_test, login_required
 import datetime
 from community.forms import CommunytyUserForm
 from .models import Tournament, Bracket, Match, TournamentPlayer, TournamentGroup, Round
-from .forms import TournamentForm, TournamentGroupForm, RoundForm, TournamentAboutForm
+from .forms import TournamentForm, TournamentGroupForm, RoundForm, TournamentAboutForm, TournamentPlayerProfileForm
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from league.models import User, Sgf
@@ -107,12 +107,12 @@ def games(request, tournament_id, sgf_id=None):
 def players(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     groups = TournamentGroup.objects.filter(league_event=tournament).exists()
-
     players = tournament.leagueplayer_set.all()
     context = {
         'tournament': tournament,
         'players': players,
-        'groups': groups
+        'groups': groups,
+        'admin': tournament.is_admin(request.user)
     }
     template = loader.get_template('tournament/players.html')
     return HttpResponse(template.render(context, request))
@@ -139,12 +139,38 @@ class TournamentCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     def get_login_url(self):
         return '/'
 
+@login_required()
+def edit_player_profile(request, tournament_id, user_id):
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    user = get_object_or_404(User, pk=user_id)
+    admin = tournament.is_admin(request.user)
+    if not tournament.is_admin(request.user):
+        raise Http404('What are you doing here?')
+    if request.method == 'POST':
+        form = TournamentPlayerProfileForm(request.POST, instance=user.profile)
+        if form.is_valid():
+            form.save()
+            message = "Succesfully updated " + user.username + " profile."
+            messages.success(request, message)
+            return HttpResponseRedirect(reverse(
+                'tournament:players',
+                kwargs={'tournament_id': tournament.pk}
+            ))
+    form = TournamentPlayerProfileForm(instance=user.profile)
+    context = {
+        'tournament': tournament,
+        'form': form,
+        'groups': groups
+    }
+    template = loader.get_template('tournament/edit_profile.html')
+    return HttpResponse(template.render(context, request))
 
 @login_required()
 def edit_about(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     if not tournament.is_admin(request.user):
         raise Http404('What are you doing here?')
+    groups = TournamentGroup.objects.filter(league_event=tournament).exists()
 
     if request.method == "POST":
         form = TournamentAboutForm(request.POST, instance=tournament)
@@ -155,14 +181,15 @@ def edit_about(request, tournament_id):
             message = "Succesfully updated the " + tournament.name + " description."
             messages.success(request, message)
             return HttpResponseRedirect(reverse(
-                'tournament:manage_brackets',
+                'tournament:about',
                 kwargs={'tournament_id': tournament.pk}
             ))
     else:
         form = TournamentAboutForm(instance=tournament)
     context = {
         'tournament': tournament,
-        'form': form
+        'form': form,
+        'groups': groups
     }
     template = loader.get_template('tournament/edit_about.html')
     return HttpResponse(template.render(context, request))
@@ -336,26 +363,26 @@ def save_brackets(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     if request.method == 'POST':
         brackets = json.loads(request.POST.get('brackets'))
-        print(brackets)
         for bracket_id, rounds in brackets.items():
             bracket = get_object_or_404(Bracket, pk=bracket_id, tournament=tournament)
             for round_id, matches in rounds.items():
                 round = get_object_or_404(Round, pk=round_id, bracket=bracket)
                 for match_id, players in matches.items():
                     match = get_object_or_404(Match, pk=match_id, round=round)
-                    if len(players) > 0:
-                        player_1 = get_object_or_404(TournamentPlayer, pk=players[0], event=tournament)
-                        match.player_1 = player_1
-                        match.player_2 = None
-                        if len(players) == 2:
-                            player_2 = get_object_or_404(TournamentPlayer, pk=players[1], event=tournament)
-                            match.player_2 = player_2
-                        if len(players) <3:
+                    if match.sgf is None:
+                        if len(players) > 0:
+                            player_1 = get_object_or_404(TournamentPlayer, pk=players[0], event=tournament)
+                            match.player_1 = player_1
+                            match.player_2 = None
+                            if len(players) == 2:
+                                player_2 = get_object_or_404(TournamentPlayer, pk=players[1], event=tournament)
+                                match.player_2 = player_2
+                            if len(players) < 3:
+                                match.save()
+                        else:
+                            match.player_1 = None
+                            match.player_2 = None
                             match.save()
-                    else:
-                        match.player_1 = None
-                        match.player_2 = None
-                        match.save()
 
     return HttpResponse("success")
 
@@ -416,7 +443,6 @@ def set_stage(request, tournament_id):
         if form.is_valid():
             stage = form.cleaned_data['action']
             if int(stage) < 3:
-                print(stage)
                 tournament.stage = stage
                 tournament.save()
             return HttpResponseRedirect(form.cleaned_data['next'])

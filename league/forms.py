@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import  Group
 from django.forms import ModelForm
+from django_countries.widgets import CountrySelectWidget
 import pytz
 
 from .models import Division, LeagueEvent, Profile
@@ -138,7 +139,9 @@ class ProfileForm(ModelForm):
             'bio',
             'ogs_username',
             'kgs_username',
+            'country',
         ]
+        widgets = {'country': CountrySelectWidget()}
 
     def clean_kgs_username(self):
         if not self.cleaned_data['kgs_username']:

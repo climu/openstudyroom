@@ -44,6 +44,11 @@ urlpatterns = [
         name='games'
     ),
     url(
+        r'^(?P<tournament_id>[0-9]+)/profile/(?P<user_id>[0-9]+)/update/$',
+        views.edit_player_profile,
+        name='edit_player_profile'
+    ),
+    url(
         r'^create/$',
         views.TournamentCreate.as_view(success_url='/tournament/list/'),
         name='create'
