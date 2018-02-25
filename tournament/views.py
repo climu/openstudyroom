@@ -1,21 +1,20 @@
-from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.contrib.auth.decorators import user_passes_test
-from django.template import loader
-from django.shortcuts import get_object_or_404, render
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic.edit import CreateView, UpdateView
-from django.contrib.auth.decorators import user_passes_test, login_required
 import datetime
-from community.forms import CommunytyUserForm
-from .models import Tournament, Bracket, Match, TournamentPlayer, TournamentGroup, Round, TournamentEvent
-from .forms import TournamentForm, TournamentGroupForm, RoundForm, TournamentAboutForm, TournamentPlayerProfileForm
+import json
+from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.template import loader
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic.edit import CreateView
+from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from league.models import User, Sgf
 from league.forms import SgfAdminForm, ActionForm
 from fullcalendar.forms import UTCPublicEventForm
-import json
-
+from community.forms import CommunytyUserForm
+from .models import Tournament, Bracket, Match, TournamentPlayer, TournamentGroup, Round, TournamentEvent
+from .forms import TournamentForm, TournamentGroupForm, RoundForm, TournamentAboutForm, TournamentPlayerProfileForm
+from .utils import save_round
 
 def about(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
@@ -49,7 +48,7 @@ def tournament_view(request, tournament_id):
     template = loader.get_template('tournament/tournament_view.html')
     return HttpResponse(template.render(context, request))
 
-def brackets(request, tournament_id):
+def brackets_view(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     groups = TournamentGroup.objects.filter(league_event=tournament).exists
     brackets = tournament.bracket_set.all()
@@ -64,7 +63,7 @@ def brackets(request, tournament_id):
     template = loader.get_template('tournament/brackets.html')
     return HttpResponse(template.render(context, request))
 
-def groups(request, tournament_id):
+def groups_view(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     groups = TournamentGroup.objects.filter(league_event=tournament).order_by('order')
 
@@ -80,7 +79,7 @@ def groups(request, tournament_id):
     template = loader.get_template('tournament/groups.html')
     return HttpResponse(template.render(context, request))
 
-def games(request, tournament_id, sgf_id=None):
+def games_view(request, tournament_id, sgf_id=None):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     groups = TournamentGroup.objects.filter(league_event=tournament).exists()
     sgfs = tournament.sgf_set.only(
@@ -105,7 +104,7 @@ def games(request, tournament_id, sgf_id=None):
     template = loader.get_template('tournament/games.html')
     return HttpResponse(template.render(context, request))
 
-def players(request, tournament_id):
+def players_view(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     groups = TournamentGroup.objects.filter(league_event=tournament).exists()
     players = tournament.leagueplayer_set.all()
@@ -201,6 +200,8 @@ def edit_player_profile(request, tournament_id, user_id):
     user = get_object_or_404(User, pk=user_id)
     if not tournament.is_admin(request.user):
         raise Http404('What are you doing here?')
+    groups = TournamentGroup.objects.filter(league_event=tournament).exists()
+
     if request.method == 'POST':
         form = TournamentPlayerProfileForm(request.POST, instance=user.profile)
         if form.is_valid():
@@ -393,7 +394,7 @@ def rename_bracket(request, bracket_id):
 def delete_bracket(request, bracket_id):
     bracket = get_object_or_404(Bracket, pk=bracket_id)
     if request.method == 'POST':
-            bracket.delete()
+        bracket.delete()
     return HttpResponseRedirect(reverse(
         'tournament:manage_brackets',
         kwargs={'tournament_id': bracket.tournament.pk}
@@ -422,22 +423,7 @@ def save_brackets(request, tournament_id):
             bracket = get_object_or_404(Bracket, pk=bracket_id, tournament=tournament)
             for round_id, matches in rounds.items():
                 round = get_object_or_404(Round, pk=round_id, bracket=bracket)
-                for match_id, players in matches.items():
-                    match = get_object_or_404(Match, pk=match_id, round=round)
-                    if match.sgf is None:
-                        if len(players) > 0:
-                            player_1 = get_object_or_404(TournamentPlayer, pk=players[0], event=tournament)
-                            match.player_1 = player_1
-                            match.player_2 = None
-                            if len(players) == 2:
-                                player_2 = get_object_or_404(TournamentPlayer, pk=players[1], event=tournament)
-                                match.player_2 = player_2
-                            if len(players) < 3:
-                                match.save()
-                        else:
-                            match.player_1 = None
-                            match.player_2 = None
-                            match.save()
+                save_round(round, matches)
 
     return HttpResponse("success")
 
@@ -520,18 +506,17 @@ def create_sgf(request, tournament_id):
             if sgf.league_valid:
                 sgf.save()
                 sgf.update_related([tournament])
-                if tournament.stage == 2:
+                if tournament.stage == 2 and check['match'] is not None:
                     match = check['match']
-                    if match is not None:
-                        match.sgf = sgf
-                        [bplayer, wplayer] = sgf.get_players(tournament)
-                        bplayer = TournamentPlayer(pk=bplayer.pk)
-                        wplayer = TournamentPlayer(pk=wplayer.pk)
-                        if sgf.white == sgf.winner:
-                            match.winner = wplayer
-                        else:
-                            match.winner = bplayer
-                        match.save()
+                    match.sgf = sgf
+                    [bplayer, wplayer] = sgf.get_players(tournament)
+                    bplayer = TournamentPlayer(pk=bplayer.pk)
+                    wplayer = TournamentPlayer(pk=wplayer.pk)
+                    if sgf.white == sgf.winner:
+                        match.winner = wplayer
+                    else:
+                        match.winner = bplayer
+                    match.save()
                 message = " Succesfully created a SGF"
                 messages.success(request, message)
             else:
@@ -634,7 +619,7 @@ def remove_players(request, tournament_id):
     if request.method == "POST":
         tournament = get_object_or_404(Tournament, pk=tournament_id)
         players_list = json.loads(request.POST.get('players_list'))
-        players = TournamentPlayer.objects.filter( pk__in=players_list)
+        players = TournamentPlayer.objects.filter(pk__in=players_list)
         players.delete()
         return HttpResponse("success")
     else:

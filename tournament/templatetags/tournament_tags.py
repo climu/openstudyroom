@@ -25,7 +25,8 @@ def tourney_result(context):
             points = 'R'
         # here, game['id'] would get you the id of the game to add a link
         html += '<a href="/tournament/' + event + 'games/' + str(game['id']) + '" \
-                data-toggle="tooltip" title="' + player.user.username + ' vs ' + opponent.user.username + ': ' + points + '">'
+                data-toggle="tooltip" title="' + player.user.username + ' vs ' +\
+                opponent.user.username + ': ' + points + '">'
         if game['r'] == 1:
             html += '<i class="fa fa-check" aria-hidden="true" style="color:green"></i></a>'
         # will be glyphicon glyphicon-ok-circle or fontawesome thing

@@ -15,7 +15,7 @@ urlpatterns = [
     ),
     url(
         r'^(?P<tournament_id>[0-9]+)/groups/$',
-        views.groups,
+        views.groups_view,
         name='groups'
     ),
     url(
@@ -35,23 +35,23 @@ urlpatterns = [
     ),
     url(
         r'^(?P<tournament_id>[0-9]+)/games/$',
-        views.games,
+        views.games_view,
+        name='games'
+    ),
+    url(
+        r'^(?P<tournament_id>[0-9]+)/games/(?P<sgf_id>[0-9]+)$',
+        views.games_view,
         name='games'
     ),
     url(
         r'^(?P<tournament_id>[0-9]+)/brackets/$',
-        views.brackets,
+        views.brackets_view,
         name='brackets'
     ),
     url(
         r'^(?P<tournament_id>[0-9]+)/players/$',
-        views.players,
+        views.players_view,
         name='players'
-    ),
-    url(
-        r'^(?P<tournament_id>[0-9]+)/games/(?P<sgf_id>[0-9]+)$',
-        views.games,
-        name='games'
     ),
     url(
         r'^(?P<tournament_id>[0-9]+)/profile/(?P<user_id>[0-9]+)/update/$',

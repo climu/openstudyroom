@@ -1,10 +1,8 @@
 from django import forms
-from django.contrib.auth.models import Group
 from django.forms import ModelForm
-from .models import Tournament, TournamentGroup, Round
 from league.models import Profile
 from league.forms import ProfileForm
-import pytz
+from .models import Tournament, TournamentGroup, Round
 
 class TournamentForm(forms.ModelForm):
     class Meta:

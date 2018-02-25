@@ -4,8 +4,6 @@ This is heavily inspire from https://github.com/kevinharvey/django-tourney and m
 '''
 
 from django.db import models
-from collections import defaultdict
-from operator import attrgetter
 from league.models import LeagueEvent, LeaguePlayer, Sgf, Division
 from machina.models.fields import MarkupTextField
 from machina.core import validators
