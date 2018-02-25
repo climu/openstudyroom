@@ -23,7 +23,7 @@
 </ul>
 
 
-<a  href="{%url 'calendar:create_cal_event'%}">
+<a  href="{%url 'tournament:create_calendar_event' tournament.pk%}">
   <button class="btn btn-success pull-right clearfix">
     {%bootstrap_icon 'plus'%} Create a new event
   </button>
@@ -38,7 +38,7 @@
  </thead>
 
 <tbody>
-  {% for event in public_events %}
+  {% for event in events %}
   <tr>
     <td>{{event.title}}</td>
 
@@ -46,7 +46,7 @@
     <td>{{event.end |date:'M d, Y H:i'}}</td>
 
     <td>
-      <a href="{% url 'calendar:update_cal_event' event.pk%}">
+      <a href="{% url 'calendar:update_cal_event' event.pk tournament.pk %}">
         {% bootstrap_icon 'wrench' %}
       </a>
     </td>
@@ -54,6 +54,7 @@
     <form action="{% url 'calendar:admin_delete_event' event.pk %}" method="POST">
       {% csrf_token %}
         	<input type="hidden" name="action" value="delete_event" />
+            <input type="hidden" name="next" value="{{request.path}}" />
         	<button type="submit" class="btn btn-danger btn-xs "  onclick="return confirm('Are you sure you want to delete this event?')">
         	{% bootstrap_icon 'remove-circle' %} Delete
         	</button>

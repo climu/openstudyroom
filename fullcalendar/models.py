@@ -8,7 +8,6 @@ class CalEvent(models.Model):
 
     start = models.DateTimeField()
     end = models.DateTimeField()
-    league = models.ForeignKey(LeagueEvent, null=True, blank=True)
 
     class Meta:
         abstract = True

@@ -15,6 +15,7 @@ from postman.api import pm_broadcast, pm_write
 from pytz import utc
 
 from league.models import User, LeagueEvent
+from league.forms import ActionForm
 from .forms import UTCPublicEventForm
 from .models import PublicEvent, AvailableEvent, GameRequestEvent, GameAppointmentEvent
 
@@ -30,6 +31,14 @@ class PublicEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_login_url(self):
         return '/'
 
+    def get_success_url(self, **kwargs):
+        tournament_id = self.kwargs.get('tournament_id', None)
+        print(tournament_id)
+        if tournament_id is not None:
+            tournament = get_object_or_404(LeagueEvent, pk=tournament_id)
+            return '/tournament/' + str(tournament.pk) + '/calendar/manage/'
+        else:
+            return '/calendar/admin/event-list/'
 
 class PublicEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     form_class = UTCPublicEventForm
@@ -45,14 +54,6 @@ class PublicEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     def get_login_url(self):
         return '/'
 
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        tournament_id = self.kwargs.get('tournament_id', None)
-        if tournament_id is not None:
-            tournament = get_object_or_404(LeagueEvent, pk=tournament_id)
-            context['tournament'] = tournament
-        return context
 
 
 
@@ -519,11 +520,17 @@ def admin_cal_event_list(request):
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def admin_delete_event(request, pk):
     if request.method == 'POST':
-        event = get_object_or_404(PublicEvent, pk=pk)
-        event.delete()
-    else:
-        raise Http404("What are you doing here ?")
-    return HttpResponseRedirect(reverse('calendar:admin_cal_event_list'))
+        form = ActionForm(request.POST)
+        if form.is_valid():
+            event = get_object_or_404(PublicEvent, pk=pk)
+            event.delete()
+            if 'next' in form.cleaned_data:
+                url = form.cleaned_data['next']
+            else:
+                url = reverse('calendar:admin_cal_event_list')
+            return HttpResponseRedirect(url)
+    raise Http404("What are you doing here ?")
+
 
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)

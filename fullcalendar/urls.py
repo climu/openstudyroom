@@ -5,7 +5,12 @@ from . import views
 urlpatterns = [
     url(
         r'^update/(?P<pk>[0-9]+)/$',
-        views.PublicEventUpdate.as_view(success_url='/calendar/admin/event-list/'),
+        views.PublicEventUpdate.as_view(),
+        name='update_cal_event'
+    ),
+    url(
+        r'^update/(?P<pk>[0-9]+)/(?P<tournament_id>[0-9]+)$',
+        views.PublicEventUpdate.as_view(),
         name='update_cal_event'
     ),
     url(

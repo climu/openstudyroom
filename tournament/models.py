@@ -9,7 +9,7 @@ from operator import attrgetter
 from league.models import LeagueEvent, LeaguePlayer, Sgf, Division
 from machina.models.fields import MarkupTextField
 from machina.core import validators
-
+from fullcalendar.models import PublicEvent
 
 # Create your models here.
 class Tournament(LeagueEvent):
@@ -206,3 +206,7 @@ class Match(models.Model):
     player_2 = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name="player_2_match")
     winner = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name="winner_match")
     order = models.PositiveSmallIntegerField()
+
+class TournamentEvent(PublicEvent):
+    """ Public event related to a tournament."""
+    tournament = models.ForeignKey(Tournament)

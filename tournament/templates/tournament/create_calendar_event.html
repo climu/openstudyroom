@@ -1,0 +1,37 @@
+{% extends 'full_width.html' %}
+{% load bootstrap3 league_tags static tz %}
+{% block title %}OSR league admin - Create new Event{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
+{% endblock %}
+
+{% block heading %}
+<div class="page-header">
+    <h1>Create new Event</h1>
+</div>
+{%endblock%}
+{% block content %}
+{% timezone "UTC" %}
+
+
+{% include 'tournament/includes/tournament_menu.html' with active="calendar" %}
+
+<ul class="nav nav-tabs">
+  <li role="presentation"><a href="{% url 'tournament:calendar' tournament.pk %}">Calendar</a></li>
+  <li role="presentation" class="active"><a href="#">Manage events</a></li>
+</ul>
+<div class="row">
+<div class="col-md-4">
+  <legend>Create new Event </legend>
+  <div class="well">Please enter times in UTC/GMT time</div>
+
+<form action="" method="POST">{% csrf_token %}
+{%bootstrap_form form %}
+	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
+</form>
+
+</div>
+{% endtimezone %}
+{% endblock %}

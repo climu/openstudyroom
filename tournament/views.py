@@ -7,12 +7,13 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.decorators import user_passes_test, login_required
 import datetime
 from community.forms import CommunytyUserForm
-from .models import Tournament, Bracket, Match, TournamentPlayer, TournamentGroup, Round
+from .models import Tournament, Bracket, Match, TournamentPlayer, TournamentGroup, Round, TournamentEvent
 from .forms import TournamentForm, TournamentGroupForm, RoundForm, TournamentAboutForm, TournamentPlayerProfileForm
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from league.models import User, Sgf
 from league.forms import SgfAdminForm, ActionForm
+from fullcalendar.forms import UTCPublicEventForm
 import json
 
 
@@ -152,7 +153,8 @@ def manage_calendar(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     if not tournament.is_admin(request.user):
         raise Http404('What are you doing here?')
-    events = tournament.publicevent_set.all()
+    events = tournament.tournamentevent_set.all()
+    print(events)
     context = {
         'tournament': tournament,
         'events': events
@@ -165,6 +167,33 @@ def create_calendar_event(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     if not tournament.is_admin(request.user):
         raise Http404('What are you doing here?')
+    if request.method == 'POST':
+        form = UTCPublicEventForm(request.POST)
+        if form.is_valid():
+            event = TournamentEvent()
+            event.start = form.cleaned_data['start']
+            event.end = form.cleaned_data['end']
+            event.description = form.cleaned_data['description']
+            event.title = form.cleaned_data['title']
+            event.url = form.cleaned_data['url']
+            event.tournament = tournament
+            event.save()
+            message = "Succesfully created a tournament event."
+            messages.success(request, message)
+            return HttpResponseRedirect(reverse(
+                'tournament:manage_calendar',
+                kwargs={'tournament_id': tournament.pk}
+            ))
+    form = UTCPublicEventForm({
+        'start': datetime.datetime.now(),
+        'end': datetime.datetime.now()
+    })
+    context = {
+        'tournament': tournament,
+        'form': form
+    }
+    template = loader.get_template('tournament/create_calendar_event.html')
+    return HttpResponse(template.render(context, request))
 
 @login_required()
 def edit_player_profile(request, tournament_id, user_id):
