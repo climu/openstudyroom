@@ -20,7 +20,9 @@
   <li {% if active == "players" %}class="active"{% endif %}>
     <a href="{% url "tournament:players" tournament.pk%}">Players</a>
   </li>
-
+  <li {% if active == "calendar" %}class="active"{% endif %}>
+    <a href="{% url "tournament:calendar" tournament.pk%}">Calendar</a>
+  </li>
 </ul>
 {% if admin %}
 <ul class="nav navbar-nav navbar-right active" style="margin-right:5px;">

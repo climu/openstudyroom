@@ -117,7 +117,15 @@ def players(request, tournament_id):
     template = loader.get_template('tournament/players.html')
     return HttpResponse(template.render(context, request))
 
-
+def calendar(request, tournament_id):
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    context = {
+        'tournament': tournament,
+        'admin': tournament.is_admin(request.user),
+        'user': request.user
+    }
+    template = loader.get_template('tournament/calendar.html')
+    return HttpResponse(template.render(context, request))
 
 
 ############################################################################
@@ -140,10 +148,28 @@ class TournamentCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return '/'
 
 @login_required()
+def manage_calendar(request, tournament_id):
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    if not tournament.is_admin(request.user):
+        raise Http404('What are you doing here?')
+    events = tournament.publicevent_set.all()
+    context = {
+        'tournament': tournament,
+        'events': events
+    }
+    template = loader.get_template('tournament/manage_events.html')
+    return HttpResponse(template.render(context, request))
+
+@login_required()
+def create_calendar_event(request, tournament_id):
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    if not tournament.is_admin(request.user):
+        raise Http404('What are you doing here?')
+
+@login_required()
 def edit_player_profile(request, tournament_id, user_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     user = get_object_or_404(User, pk=user_id)
-    admin = tournament.is_admin(request.user)
     if not tournament.is_admin(request.user):
         raise Http404('What are you doing here?')
     if request.method == 'POST':

@@ -19,6 +19,11 @@ urlpatterns = [
         name='groups'
     ),
     url(
+        r'^(?P<tournament_id>[0-9]+)/calendar/$',
+        views.calendar,
+        name='calendar'
+    ),
+    url(
         r'^(?P<tournament_id>[0-9]+)/about/edit/$',
         views.edit_about,
         name='edit_about'
@@ -57,6 +62,11 @@ urlpatterns = [
         r'^list/$',
         views.tournament_list,
         name='list'
+    ),
+    url(
+        r'^(?P<tournament_id>[0-9]+)/calendar/manage/$',
+        views.manage_calendar,
+        name='manage_calendar'
     ),
     url(
         r'^(?P<tournament_id>[0-9]+)/settings/$',

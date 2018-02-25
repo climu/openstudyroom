@@ -1,13 +1,14 @@
 from django.db import models
 from django.utils import timezone
 
-from league.models import User
+from league.models import User, LeagueEvent
 
 
 class CalEvent(models.Model):
 
     start = models.DateTimeField()
     end = models.DateTimeField()
+    league = models.ForeignKey(LeagueEvent, null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -26,9 +27,13 @@ class PublicEvent(CalEvent):
         return public_events
 
     @staticmethod
-    def get_formated_public_event(start, end, tz):
+    def get_formated_public_event(start, end, tz, league=None):
         """ return a dict of publics events between start and end formated for json."""
-        public_events = PublicEvent.objects.filter(end__gte=start, start__lte=end)
+        if league is not None:
+            public_events = PublicEvent.objects.filter(end__gte=start, start__lte=end, league=league)
+        else:
+            public_events = PublicEvent.objects.filter(end__gte=start, start__lte=end)
+
         data = []
         for event in public_events:
             dict = {

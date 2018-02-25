@@ -1,0 +1,99 @@
+{% extends 'full_width.html' %}
+{% load bootstrap3 tz league_tags static forum_markup_tags%}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
+{% endblock %}
+
+{% block extra_head_js %}
+<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css' />
+<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.print.css' media='print' />
+<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/calendar.css'%}"/>
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/qtip2/3.0.3/basic/jquery.qtip.min.css'/>
+<script src='https://cdn.jsdelivr.net/qtip2/3.0.3/basic/jquery.qtip.min.js'></script>
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js'></script>
+
+{% endblock %}
+
+{% block title %}{{tournament.name}} - Groups{% endblock %}
+
+{% block heading %}
+  <div class="page-header">
+    <h1>{{tournament.name}} - Groups</h1>
+  </div>
+{%endblock%}
+
+{% block content %}
+{% include 'tournament/includes/tournament_menu.html' with active="calendar" %}
+{% if admin %}
+<ul class="nav nav-tabs">
+  <li role="presentation" class="active"><a href="#">Calendar</a></li>
+  <li role="presentation"><a href="{% url 'tournament:manage_calendar' tournament.pk %}">Manage events</a></li>
+</ul>
+{% endif %}
+<div id='calendar'></div>
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+	$(document).ready(function() {
+
+		$('#calendar').fullCalendar({
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,agendaWeek'
+			},
+      views: {
+        month:{
+          selectable:false,
+        }
+      },
+      weekNumbers: true,
+			navLinks: true, // can click day/week names to navigate views
+			editable: false,
+			height: 'auto',
+      allDaySlot:false,
+      timeFormat: 'H:mm',
+      events:{
+        url: '{% url "calendar:json_feed" tournament.pk %}',
+        data: function() { // a function that returns an object
+          var div_list = $('.check-div:checkbox:checked').map(function() {
+            return this.value;
+             }).get();
+          json = JSON.stringify(div_list);
+            return({
+              'divs':json
+            });
+        }
+    },
+    eventRender: function(event, element) {
+      //public
+      if (event.type === 'public'){
+        element.qtip({
+            content: {
+              text: event.description,
+              title: event.title,
+            },
+            position: {
+              my:'left bottom',  // Position my top left...
+              at:'right top',
+              target: 'mouse', // Use the mouse position as the position origin
+              adjust: { // Don't adjust continuously the mouse, just use initial position
+              x:5,
+              y:-5
+              }
+            },
+            show: {
+              solo: true
+            }
+      });//qtip
+      }// closing public
+    }//event render
+  });//fullCalendar
+});// document ready
+</script>
+{% endblock %}

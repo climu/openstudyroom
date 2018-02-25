@@ -14,7 +14,7 @@ from django.template import loader
 from postman.api import pm_broadcast, pm_write
 from pytz import utc
 
-from league.models import User
+from league.models import User, LeagueEvent
 from .forms import UTCPublicEventForm
 from .models import PublicEvent, AvailableEvent, GameRequestEvent, GameAppointmentEvent
 
@@ -35,6 +35,7 @@ class PublicEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     form_class = UTCPublicEventForm
     model = PublicEvent
     template_name_suffix = '_create_form'
+
     initial = {'start': datetime.now(),
                'end': datetime.now()}
 
@@ -43,6 +44,16 @@ class PublicEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def get_login_url(self):
         return '/'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        tournament_id = self.kwargs.get('tournament_id', None)
+        if tournament_id is not None:
+            tournament = get_object_or_404(LeagueEvent, pk=tournament_id)
+            context['tournament'] = tournament
+        return context
+
 
 
 def calendar_view(request, user_id=None):
@@ -166,7 +177,7 @@ def json_feed_other(request, user_id):
 
 
 
-def json_feed(request):
+def json_feed(request, league_id=None):
     """get all events for one user and serve a json."""
     user = request.user
     # get user timezone
@@ -180,6 +191,11 @@ def json_feed(request):
     start = make_aware(start, tz)
     end = datetime.strptime(request.GET.get('end'), '%Y-%m-%d')
     end = make_aware(end, tz)
+
+    if league_id is not None:
+        league = get_object_or_404(LeagueEvent, pk=league_id)
+        data = PublicEvent.get_formated_public_event(start, end, tz, league)
+        return HttpResponse(json.dumps(data), content_type="application/json")
 
     # get public events for everyone
     data = PublicEvent.get_formated_public_event(start, end, tz)

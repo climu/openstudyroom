@@ -13,9 +13,13 @@ urlpatterns = [
         views.admin_delete_event,
         name='admin_delete_event'
     ),
-
     url(
         r'^create/$',
+        views.PublicEventCreate.as_view(success_url='/calendar/admin/event-list/'),
+        name='create_cal_event'
+    ),
+    url(
+        r'^create/(?P<tournament_id>[0-9]+)/$',
         views.PublicEventCreate.as_view(success_url='/calendar/admin/event-list/'),
         name='create_cal_event'
     ),
@@ -32,6 +36,11 @@ urlpatterns = [
     ),
     url(r'^save/$', views.save, name='save'),
     url(r'^json-feed/$', views.json_feed, name='json_feed'),
+    url(
+        r'^json-feed/(?P<league_id>[0-9]+)/$',
+        views.json_feed,
+        name='json_feed'
+    ),
     url(
         r'^json-feed/(?P<user_id>[0-9]+)/$',
         views.json_feed_other,
