@@ -144,6 +144,9 @@
               <button title="Delete all round" type="submit" formaction="{% url 'tournament:delete_round' round.pk %}" onclick="return confirm('Really delete this round and all his matches')" class="btn btn-danger btn-sm pull-right">
                 {% bootstrap_icon "remove" %}
               </button>
+              <button id="shuffle" class="btn btn-default btn-sm pull-right">
+               shuffle
+              </button>
             </div>
           </form>
         </li>
@@ -350,7 +353,17 @@ $('#shuffle_players').click(function(){
   }
 
 
-})
+});
+
+$('#shuffle').click(function(){
+    var ok = confirm("Shuffle the selected players?");
+    if ( ok == false ) {
+      return false;
+    }
+
+    console.log("test");
+
+});
 
 </script>
 
