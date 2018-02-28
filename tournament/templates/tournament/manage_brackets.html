@@ -3,7 +3,6 @@
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
   <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
-
 {% endblock %}
 {% block title %}Manage tournament brackets{% endblock %}
 {% block heading %}
@@ -219,6 +218,7 @@
     {% endfor %}
 
 
+
 {% endblock %}
 
 {% block extra_js %}
@@ -230,6 +230,7 @@
 // ajax crfs setup
 {% include 'league/includes/ajax_setup.html' %}
 
+{% if seeded_players %}
 var seeds_sortable = Sortable.create(seeds,{
   group: {
     name: 'players_list',
@@ -250,7 +251,7 @@ var seeds_sortable = Sortable.create(seeds,{
       evt.item.outerHTML = "";
     }
 });
-
+{% endif %}
 {% for group in groups %}
   var group_{{group.pk}}_sortable = Sortable.create(group_{{group.pk}}_players,{
     group: {
@@ -346,13 +347,32 @@ $('#save_tournament').click(function(){
  });
 });
 
+function get_dict() {
+  var dict = {};
+  var bracket = {};
+  var round = {};
+  {% for bracket in brackets %}
+    {% with bracket.get_rounds as rounds %}
+    {% for round in rounds %}
+      {% for match in round.get_matchs %}
+      console.log(match_{{match.pk}}_sortable.toArray())
+        round[{{match.pk}}] = match_{{match.pk}}_sortable.toArray();
+      {% endfor %}
+      bracket[{{round.pk}}] = round
+      round = {}
+    {% endfor %}
+      dict[{{bracket.pk}}] = bracket
+      bracket = {}
+    {% endwith %}
+  {% endfor %}
+  return dict;
+}
+
 $('#shuffle_players').click(function(){
   var ok = confirm("Shuffle the selected players?");
   if ( ok == false ) {
     return false;
   }
-
-
 });
 
 $('#shuffle').click(function(){
@@ -360,9 +380,8 @@ $('#shuffle').click(function(){
     if ( ok == false ) {
       return false;
     }
-
-    console.log("test");
-
+    var dict = get_dict();
+    console.log(dict);
 });
 
 </script>
