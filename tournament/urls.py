@@ -24,6 +24,11 @@ urlpatterns = [
         name='calendar'
     ),
     url(
+        r'^(?P<tournament_id>[0-9]+)/calendar-feed/$',
+        views.calendar_feed,
+        name='calendar_feed'
+    ),
+    url(
         r'^(?P<tournament_id>[0-9]+)/calendar/new-event/$',
         views.create_calendar_event,
         name='create_calendar_event'

@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import json
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import loader
@@ -8,6 +8,7 @@ from django.views.generic.edit import CreateView
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.utils.timezone import make_aware
 from league.models import User, Sgf
 from league.forms import SgfAdminForm, ActionForm
 from fullcalendar.forms import UTCPublicEventForm
@@ -127,7 +128,25 @@ def calendar(request, tournament_id):
     template = loader.get_template('tournament/calendar.html')
     return HttpResponse(template.render(context, request))
 
+def calendar_feed(request,tournament_id):
+    """get all events for one user and serve a json."""
 
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    user = request.user
+    # get user timezone
+    if user.is_authenticated:
+        tz = user.get_timezone()
+    else:
+        tz = utc
+
+    # Get start and end from request and use user tz
+    start = datetime.strptime(request.GET.get('start'), '%Y-%m-%d')
+    start = make_aware(start, tz)
+    end = datetime.strptime(request.GET.get('end'), '%Y-%m-%d')
+    end = make_aware(end, tz)
+
+    data = tournament.get_formated_events(start, end, tz)
+    return HttpResponse(json.dumps(data), content_type="application/json")
 ############################################################################
 ###                  Admin views                                         ###
 ############################################################################
@@ -137,8 +156,8 @@ class TournamentCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     form_class = TournamentForm
     model = Tournament
     template_name_suffix = '_create_form'
-    initial = {'begin_time': datetime.datetime.now(),
-               'end_time': datetime.datetime.now()}
+    initial = {'begin_time': datetime.now(),
+               'end_time': datetime.now()}
 
     def test_func(self):
         return self.request.user.is_authenticated() and \
@@ -184,8 +203,8 @@ def create_calendar_event(request, tournament_id):
                 kwargs={'tournament_id': tournament.pk}
             ))
     form = UTCPublicEventForm({
-        'start': datetime.datetime.now(),
-        'end': datetime.datetime.now()
+        'start': datetime.now(),
+        'end': datetime.now()
     })
     context = {
         'tournament': tournament,

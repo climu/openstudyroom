@@ -59,7 +59,7 @@
       allDaySlot:false,
       timeFormat: 'H:mm',
       events:{
-        url: '{% url "calendar:json_feed" tournament.pk %}',
+        url: '{% url "tournament:calendar_feed" tournament.pk %}',
         data: function() { // a function that returns an object
           var div_list = $('.check-div:checkbox:checked').map(function() {
             return this.value;

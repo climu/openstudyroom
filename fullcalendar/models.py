@@ -26,12 +26,10 @@ class PublicEvent(CalEvent):
         return public_events
 
     @staticmethod
-    def get_formated_public_event(start, end, tz, league=None):
+    def get_formated_public_event(start, end, tz):
         """ return a dict of publics events between start and end formated for json."""
-        if league is not None:
-            public_events = PublicEvent.objects.filter(end__gte=start, start__lte=end, league=league)
-        else:
-            public_events = PublicEvent.objects.filter(end__gte=start, start__lte=end)
+
+        public_events = PublicEvent.objects.filter(end__gte=start, start__lte=end)
 
         data = []
         for event in public_events:

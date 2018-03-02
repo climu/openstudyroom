@@ -99,7 +99,27 @@ class Tournament(LeagueEvent):
         sgf.league_valid = out['valid']
         return out
 
+    def get_formated_events(self, start, end, tz):
+        """ return a dict of publics events between start and end formated for json."""
 
+        public_events = self.tournamentevent_set.filter(end__gte=start, start__lte=end)
+
+        data = []
+        for event in public_events:
+            dict = {
+                'id': 'public:' + str(event.pk),
+                'title': event.title,
+                'description': event.description,
+                'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+                'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+                'is_new': False,
+                'editable': False,
+                'type': 'public',
+            }
+            if event.url:
+                dict['url'] = event.url
+            data.append(dict)
+        return data
 
 class TournamentPlayer(LeaguePlayer):
     order = models.PositiveSmallIntegerField()

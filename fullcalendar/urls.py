@@ -42,11 +42,6 @@ urlpatterns = [
     url(r'^save/$', views.save, name='save'),
     url(r'^json-feed/$', views.json_feed, name='json_feed'),
     url(
-        r'^json-feed/(?P<league_id>[0-9]+)/$',
-        views.json_feed,
-        name='json_feed'
-    ),
-    url(
         r'^json-feed/(?P<user_id>[0-9]+)/$',
         views.json_feed_other,
         name='json_feed_other'

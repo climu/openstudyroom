@@ -178,7 +178,7 @@ def json_feed_other(request, user_id):
 
 
 
-def json_feed(request, league_id=None):
+def json_feed(request):
     """get all events for one user and serve a json."""
     user = request.user
     # get user timezone
@@ -193,10 +193,6 @@ def json_feed(request, league_id=None):
     end = datetime.strptime(request.GET.get('end'), '%Y-%m-%d')
     end = make_aware(end, tz)
 
-    if league_id is not None:
-        league = get_object_or_404(LeagueEvent, pk=league_id)
-        data = PublicEvent.get_formated_public_event(start, end, tz, league)
-        return HttpResponse(json.dumps(data), content_type="application/json")
 
     # get public events for everyone
     data = PublicEvent.get_formated_public_event(start, end, tz)
