@@ -50,24 +50,6 @@ def match_result(context):
 
 
 
-"""
-Template filters to partition lists into rows or columns.
-
-A common use-case is for splitting a list into a table with columns::
-
-    {% load partition %}
-    <table>
-    {% for row in mylist|columns:3 %}
-        <tr>
-        {% for item in row %}
-            <td>{{ item }}</td>
-        {% endfor %}
-        </tr>
-    {% endfor %}
-    </table>
-"""
-
-
 def rows(thelist, n):
     """
     Break a list into ``n`` rows, filling up each row to the maximum equal
@@ -142,17 +124,17 @@ def rows_distributed(thelist, n):
 
     remainder = list_len % n
     offset = 0
-    rows = []
+    local_rows = []
     for i in range(n):
         if remainder:
             start, end = (split+1)*i, (split+1)*(i+1)
         else:
             start, end = split*i+offset, split*(i+1)+offset
-        rows.append(thelist[start:end])
+        local_rows.append(thelist[start:end])
         if remainder:
             remainder -= 1
             offset += 1
-    return rows
+    return local_rows
 
 def columns(thelist, n):
     """
