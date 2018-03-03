@@ -14,7 +14,7 @@ from django.template import loader
 from postman.api import pm_broadcast, pm_write
 from pytz import utc
 
-from league.models import User, LeagueEvent
+from league.models import User
 from league.forms import ActionForm
 from .forms import UTCPublicEventForm
 from .models import PublicEvent, AvailableEvent, GameRequestEvent, GameAppointmentEvent

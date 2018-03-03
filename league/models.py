@@ -15,8 +15,8 @@ import pytz
 import requests
 
 from community.models import Community
-from . import utils
 from django_countries.fields import CountryField
+from . import utils
 
 # pylint: disable=no-member
 
