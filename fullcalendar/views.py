@@ -31,14 +31,6 @@ class PublicEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_login_url(self):
         return '/'
 
-    def get_success_url(self, **kwargs):
-        tournament_id = self.kwargs.get('tournament_id', None)
-        print(tournament_id)
-        if tournament_id is not None:
-            tournament = get_object_or_404(LeagueEvent, pk=tournament_id)
-            return '/tournament/' + str(tournament.pk) + '/calendar/manage/'
-        else:
-            return '/calendar/admin/event-list/'
 
 class PublicEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     form_class = UTCPublicEventForm

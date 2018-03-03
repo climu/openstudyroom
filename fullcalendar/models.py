@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
-from league.models import User, LeagueEvent
+from league.models import User
 
 
 class CalEvent(models.Model):
