@@ -15,8 +15,23 @@ urlpatterns = [
     ),
     url(
         r'^(?P<tournament_id>[0-9]+)/groups/$',
-        views.groups,
+        views.groups_view,
         name='groups'
+    ),
+    url(
+        r'^(?P<tournament_id>[0-9]+)/calendar/$',
+        views.calendar,
+        name='calendar'
+    ),
+    url(
+        r'^(?P<tournament_id>[0-9]+)/calendar-feed/$',
+        views.calendar_feed,
+        name='calendar_feed'
+    ),
+    url(
+        r'^(?P<tournament_id>[0-9]+)/calendar/new-event/$',
+        views.create_calendar_event,
+        name='create_calendar_event'
     ),
     url(
         r'^(?P<tournament_id>[0-9]+)/about/edit/$',
@@ -25,23 +40,28 @@ urlpatterns = [
     ),
     url(
         r'^(?P<tournament_id>[0-9]+)/games/$',
-        views.games,
+        views.games_view,
+        name='games'
+    ),
+    url(
+        r'^(?P<tournament_id>[0-9]+)/games/(?P<sgf_id>[0-9]+)$',
+        views.games_view,
         name='games'
     ),
     url(
         r'^(?P<tournament_id>[0-9]+)/brackets/$',
-        views.brackets,
+        views.brackets_view,
         name='brackets'
     ),
     url(
         r'^(?P<tournament_id>[0-9]+)/players/$',
-        views.players,
+        views.players_view,
         name='players'
     ),
     url(
-        r'^(?P<tournament_id>[0-9]+)/games/(?P<sgf_id>[0-9]+)$',
-        views.games,
-        name='games'
+        r'^(?P<tournament_id>[0-9]+)/profile/(?P<user_id>[0-9]+)/update/$',
+        views.edit_player_profile,
+        name='edit_player_profile'
     ),
     url(
         r'^create/$',
@@ -52,6 +72,11 @@ urlpatterns = [
         r'^list/$',
         views.tournament_list,
         name='list'
+    ),
+    url(
+        r'^(?P<tournament_id>[0-9]+)/calendar/manage/$',
+        views.manage_calendar,
+        name='manage_calendar'
     ),
     url(
         r'^(?P<tournament_id>[0-9]+)/settings/$',

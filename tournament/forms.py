@@ -1,8 +1,8 @@
 from django import forms
-from django.contrib.auth.models import Group
 from django.forms import ModelForm
+from league.models import Profile
+from league.forms import ProfileForm
 from .models import Tournament, TournamentGroup, Round
-import pytz
 
 class TournamentForm(forms.ModelForm):
     class Meta:
@@ -28,6 +28,12 @@ class TournamentAboutForm(ModelForm):
     class Meta:
         model = Tournament
         fields = ['description', 'about']
+
+class TournamentPlayerProfileForm(ProfileForm):
+    class Meta:
+        model = Profile
+        fields = ProfileForm.Meta.fields + ['picture_url']
+
 
 class TournamentGroupForm(ModelForm):
     class Meta:

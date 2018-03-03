@@ -30,14 +30,30 @@
                   class="list-group-item
                   {% if match.sgf and match.winner == match.player_1 %}list-group-item-success{% endif %}"
                   data-id="{{match.player_1.pk}}">
+                  {% if match.player_1.user.profile.country %}
+                  <img   src="{{match.player_1.user.profile.country.flag}}">
+                  {% endif %}
                   {{match.player_1.user |user_link}}
+                  {% if match.sgf and match.winner == match.player_1 %}
+                  <span class="pull-right">
+                    {{match.sgf.result}}
+                  </span>
+                  {% endif %}
                </div>
                 {% endif %}
                 {% if match.player_2 %}
                 <div
                   class="list-group-item {% if match.sgf and match.winner == match.player_2 %}list-group-item-success{% endif %}"
                   data-id="{{match.player_2.pk}}">
+                  {% if match.player_2.user.profile.country %}
+                  <img   src="{{match.player_2.user.profile.country.flag}}">
+                  {% endif %}
                   {{match.player_2.user |user_link}}
+                  {% if match.sgf and match.winner == match.player_2 %}
+                  <span class="pull-right">
+                    {% match_result %}
+                  </span>
+                  {% endif %}
                 </div>
 
                 {% endif %}

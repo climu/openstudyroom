@@ -94,11 +94,13 @@ INSTALLED_APPS = [
 
     #'django_messages',
     'postman',
+    'django_countries',
 
     'fullcalendar',
 
     'community',
-    'tournament'
+    'tournament',
+
 
 ]+ get_machina_apps()
 

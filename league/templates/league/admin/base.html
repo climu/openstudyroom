@@ -1,7 +1,9 @@
 {% extends "full_width.html" %}
 
 {% block title %}OSR league admin{% endblock %}
+
 {%block page_intro %}
+{% if request.user.is_league_admin %}
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav navbar-left">
   <li ><a href="{% url "league:admin" %}">Dashboard</a></li>
@@ -13,5 +15,5 @@
   <li ><a href="{% url "tournament:list" %}">Tournaments</a></li>
 </ul>
 </nav>
-
+{% endif %}
 {% endblock %}

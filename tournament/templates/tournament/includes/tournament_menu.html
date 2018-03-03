@@ -1,3 +1,6 @@
+{% load bootstrap3 league_tags static forum_markup_tags%}
+
+<div class="">{{tournament.description|safe|rendered}}</div>
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav navbar-left">
   <li {% if active == "about" %}class="active"{% endif %}>
@@ -17,6 +20,18 @@
   <li {% if active == "players" %}class="active"{% endif %}>
     <a href="{% url "tournament:players" tournament.pk%}">Players</a>
   </li>
-
+  <li {% if active == "calendar" %}class="active"{% endif %}>
+    <a href="{% url "tournament:calendar" tournament.pk%}">Calendar</a>
+  </li>
 </ul>
+{% if admin %}
+<ul class="nav navbar-nav navbar-right active" style="margin-right:5px;">
+  <li>
+    <a href="{% url "tournament:manage_settings" tournament.pk%}">
+      <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+    </a>
+  </li>
+</ul>
+{% endif %}
+
 </nav>

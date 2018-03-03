@@ -4,12 +4,10 @@ This is heavily inspire from https://github.com/kevinharvey/django-tourney and m
 '''
 
 from django.db import models
-from collections import defaultdict
-from operator import attrgetter
 from league.models import LeagueEvent, LeaguePlayer, Sgf, Division
 from machina.models.fields import MarkupTextField
 from machina.core import validators
-
+from fullcalendar.models import PublicEvent
 
 # Create your models here.
 class Tournament(LeagueEvent):
@@ -101,7 +99,27 @@ class Tournament(LeagueEvent):
         sgf.league_valid = out['valid']
         return out
 
+    def get_formated_events(self, start, end, tz):
+        """ return a dict of publics events between start and end formated for json."""
 
+        public_events = self.tournamentevent_set.filter(end__gte=start, start__lte=end)
+
+        data = []
+        for event in public_events:
+            dict = {
+                'id': 'public:' + str(event.pk),
+                'title': event.title,
+                'description': event.description,
+                'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+                'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+                'is_new': False,
+                'editable': False,
+                'type': 'public',
+            }
+            if event.url:
+                dict['url'] = event.url
+            data.append(dict)
+        return data
 
 class TournamentPlayer(LeaguePlayer):
     order = models.PositiveSmallIntegerField()
@@ -206,3 +224,7 @@ class Match(models.Model):
     player_2 = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name="player_2_match")
     winner = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name="winner_match")
     order = models.PositiveSmallIntegerField()
+
+class TournamentEvent(PublicEvent):
+    """ Public event related to a tournament."""
+    tournament = models.ForeignKey(Tournament)

@@ -15,7 +15,6 @@
 
 {% block content %}
 {% include 'tournament/includes/tournament_menu.html' with active="brackets" %}
-<div class="well">{{tournament.description|safe|rendered}}</div>
 
 {% include 'tournament/includes/bracket_view.html'%}
 

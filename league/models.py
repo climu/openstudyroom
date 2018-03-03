@@ -16,6 +16,7 @@ import requests
 
 from community.models import Community
 from . import utils
+from django_countries.fields import CountryField
 
 # pylint: disable=no-member
 
@@ -836,6 +837,8 @@ class Profile(models.Model):
     )
     start_cal = models.PositiveSmallIntegerField(default=0)
     end_cal = models.PositiveSmallIntegerField(default=24)
+    picture_url = models.URLField(blank=True, null=True)
+    country = CountryField(blank=True, null=True, blank_label='(select country)')
 
     def __str__(self):
         return self.user.username
