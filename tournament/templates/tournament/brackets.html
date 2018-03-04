@@ -10,6 +10,7 @@
 {% block heading %}
   <div class="page-header">
     <h1>{{tournament.name}} - Groups</h1>
+    <div class="">{{tournament.description|safe|rendered}}</div>
   </div>
 {%endblock%}
 
