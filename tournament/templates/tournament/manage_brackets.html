@@ -355,7 +355,7 @@ function get_dict() {
     {% with bracket.get_rounds as rounds %}
     {% for round in rounds %}
       {% for match in round.get_matchs %}
-      console.log(match_{{match.pk}}_sortable.toArray())
+      //console.log(match_{{match.pk}}_sortable.toArray())
         round[{{match.pk}}] = match_{{match.pk}}_sortable.toArray();
       {% endfor %}
       bracket[{{round.pk}}] = round
@@ -375,13 +375,35 @@ $('#shuffle_players').click(function(){
   }
 });
 
+// {bracket_id: { round_id :{ match_id :[ player_1_id,player_2_id]}}}}}
+function shufflebracket(dict, bracket_id) {
+
+    var rounds = dict[bracket_id];
+    var templist = [];
+    var counter = 0;
+
+    for (var round_id in rounds) {
+      var matches = rounds[round_id];
+      for (var match in matches) {
+        templist[counter] = match[0]; // player 1
+        counter++;
+        templist[counter] = match[1]; // player 2
+        counter++;
+      }
+    }
+    console.log(templist);
+
+    return dict;
+}
+
 $('#shuffle').click(function(){
     var ok = confirm("Shuffle the selected players?");
     if ( ok == false ) {
       return false;
     }
-    var dict = get_dict();
-    console.log(dict);
+    var dict = shufflebracket(get_dict(), 3);
+    console.log("test");
+
 });
 
 </script>
