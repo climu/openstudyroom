@@ -31,25 +31,6 @@ def about(request, tournament_id):
     template = loader.get_template('tournament/about.html')
     return HttpResponse(template.render(context, request))
 
-
-def tournament_view(request, tournament_id):
-    tournament = get_object_or_404(Tournament, pk=tournament_id)
-    players = TournamentPlayer.objects.filter(event=tournament).order_by('order')
-    groups = TournamentGroup.objects.filter(league_event=tournament).order_by('order')
-    brackets = tournament.bracket_set.all()
-
-    for group in groups:
-        results = group.get_results()
-        group.results = results
-    context = {
-        'tournament': tournament,
-        'players': players,
-        'groups': groups,
-        'brackets': brackets
-    }
-    template = loader.get_template('tournament/tournament_view.html')
-    return HttpResponse(template.render(context, request))
-
 def brackets_view(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     groups = TournamentGroup.objects.filter(league_event=tournament).exists

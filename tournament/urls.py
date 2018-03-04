@@ -5,7 +5,7 @@ from . import views
 urlpatterns = [
     url(
         r'^(?P<tournament_id>[0-9]+)/$',
-        views.tournament_view,
+        views.about,
         name='view'
     ),
     url(
