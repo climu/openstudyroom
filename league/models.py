@@ -39,7 +39,7 @@ class LeagueEvent(models.Model):
     begin_time = models.DateTimeField(blank=True)
     end_time = models.DateTimeField(blank=True)
     # This should have been a charfield from the start.
-    name = models.TextField(max_length=20)
+    name = models.TextField(max_length=60)
     # max number of games 2 players are allowed to play together
     nb_matchs = models.SmallIntegerField(default=2)
     # points per win
