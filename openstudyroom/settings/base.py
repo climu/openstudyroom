@@ -94,10 +94,13 @@ INSTALLED_APPS = [
 
     #'django_messages',
     'postman',
+    'django_countries',
 
     'fullcalendar',
 
     'community',
+    'tournament',
+
 
     #for sentry
     'raven.contrib.django.raven_compat',

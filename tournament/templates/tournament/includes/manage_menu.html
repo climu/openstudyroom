@@ -1,0 +1,22 @@
+<ul class="nav nav-tabs">
+<li role="presentation" {% if active == 'settings'%}class="active"{% endif %}>
+  <a href={%url 'tournament:manage_settings' tournament.pk %}>
+    Settings & players
+  </a>
+</li>
+<li role="presentation" {% if active == 'groups'%}class="active"{% endif %}>
+  <a href={%url 'tournament:manage_groups' tournament.pk %}>
+    Groups
+  </a>
+</li>
+<li role="presentation" {% if active == 'brackets'%}class="active"{% endif %}>
+  <a href={%url 'tournament:manage_brackets' tournament.pk %}>
+  Brackets
+</a>
+</li>
+<li role="presentation" {% if active == 'games'%}class="active"{% endif %}>
+  <a href={%url 'tournament:manage_games' tournament.pk %}>
+  Games
+</a>
+</li>
+</ul>

@@ -1,0 +1,190 @@
+{% extends 'league/admin/base.html' %}
+{% load bootstrap3 static league_tags%}
+{% block title %}OSR league admin - Manage a tournament{% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1>{{tournament.name}} settings & players</h1>
+</div>
+{%endblock%}
+{% block content %}
+<div class="row">
+    {% include 'tournament/includes/manage_menu.html' with active='settings' %}
+</div>
+<div class="row">
+
+  <div class="col-md-4">
+    <legend>Tournament settings </legend>
+    <form action="" method="POST">{% csrf_token %}
+       {% bootstrap_form form %}
+        {% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
+    </form>
+  </div>
+  <div class="col-md-6">
+    <legend>Players </legend>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Invite a user
+      </div>
+      <div class="panel-body">
+        <form action="{% url 'tournament:invite_user' tournament.pk %}" method="post" >
+            {% csrf_token %}
+            <div class="form-group">
+            <input type="text" name="username" placeholder="OSR Username" >
+
+            <button type="submit" class="pull-right btn btn-success btn-sm"  >
+            {% bootstrap_icon "plus" %}
+            </button>
+            </div>
+            </form>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading clearfix">
+        {{players|length}} registered players
+        <button id="save_players_order" class="btn btn-default btn-sm pull-right">
+          Save
+        </button>
+        <button id="remove_players" class="btn btn-default btn-sm pull-right">
+          remove
+        </button>
+        <button id="shuffle_players" class="btn btn-default btn-sm pull-right">
+         shuffle
+        </button>
+      </div>
+      <div class="row">
+      <div class="col-md-2">
+        <ul class="list-group">
+          {% for player in players %}
+          <li class="list-group-item clearfix player">
+              {{forloop.counter}}
+          </li>
+          {% endfor %}
+        </ul>
+
+      </div>
+      <div  class="col-md-10">
+        <div id="players_list">
+          {%for player in players %}
+            <li data-id={{player.pk}} class="list-group-item clearfix player">
+              {{player.user | user_link}}
+
+                  <div class="checkbox div-checkbox group_name pull-right">
+                    <input class ="refetch check-player" value="{{player.pk}}" type="checkbox" >
+                  </div>
+
+            </li>
+          {%endfor%}
+      </div>
+    </div>
+
+    </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_css %}
+    {{ form.media.css }}
+
+
+{% endblock extra_css %}
+
+{% block extra_js %}
+{{ form.media.js }}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.6.1/Sortable.min.js"></script>
+
+
+<script>
+// ajax crfs setup
+{% include 'league/includes/ajax_setup.html' %}
+
+function shuffle(array){
+    var currentIndex = array.length, temporaryValue, randomIndex;
+    while (0 !== currentIndex){
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+    return array;
+}
+
+var players_list_sortable = Sortable.create(players_list,{
+  group: {
+    name: 'players_list',
+    pull:true,
+    put: true,
+    revertClone: true,
+  }
+});
+
+
+$('#save_players_order').click(function(){
+  var ok = confirm("Save players order?");
+  if ( ok == false ) {
+    return false;
+  }
+  json_players_list = JSON.stringify(players_list_sortable.toArray());
+  $.ajax({
+      type:"POST",
+      url:"{% url 'tournament:save_players_order' tournament.pk%}",
+      data: {
+          'players_list': json_players_list,
+      },
+  });
+});
+
+$('#remove_players').click(function(){
+
+    var selected_players = $('.check-player:checkbox:checked').map(function() {
+        return this.value;
+    }).get();
+    var ok = confirm("Remove the "+ selected_players.length +" selected players?");
+    if ( ok == false ) {
+      return false;
+    }
+    json_players_list = JSON.stringify(selected_players);
+    $.ajax({
+      type:"POST",
+      url:"{% url 'tournament:remove_players' tournament.pk%}",
+      data: {
+          'players_list': json_players_list,
+      },
+     success: function(){
+       selected_players.forEach(function(player){
+          $('.list-group-item[data-id='+player+']')[0].outerHTML = "";
+       });
+      }
+   });
+});
+
+$('#shuffle_players').click(function(){
+    var ok = confirm("Shuffle the selected players?");
+    if ( ok == false ) {
+      return false;
+    }
+    var players = players_list_sortable.toArray();
+    var unselected_players = $('.check-player:input:checkbox:not(:checked)').map(function() {
+        return this.value;
+    }).get();
+    // we don't want to shuffle the not selected players
+    shuffle_players = shuffle(players);
+    // It seems that the previous line change players array and randomize it.
+    players = players_list_sortable.toArray();
+    // swap fixed elements back to their original position
+    unselected_players.forEach(function(player) {
+        old_index = players.indexOf(player);
+        new_index = shuffle_players.indexOf(player);
+        shuffle_players[new_index] = shuffle_players[old_index];
+        shuffle_players[old_index] = player;
+    players_list_sortable.sort(shuffle_players);
+  });
+
+});
+
+</script>
+{% endblock extra_js %}
