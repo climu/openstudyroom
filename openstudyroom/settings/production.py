@@ -4,6 +4,7 @@ from __future__ import absolute_import, unicode_literals
 
 from .base import *
 
+
 DEBUG = False
 
 with open('/etc/db_pass.txt') as f:
@@ -21,39 +22,6 @@ DATABASES = {
 
 ALLOWED_HOSTS = ['openstudyroom.org', 'dev.openstudyroom.org']
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
-            'datefmt' : "%d/%b/%Y %H:%M:%S"
-        },
-        'simple': {
-            'format': '%(levelname)s %(message)s'
-        },
-    },
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'mysite.log',
-            'formatter': 'verbose'
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers':['file'],
-            'propagate': True,
-            'level':'DEBUG',
-        },
-        'MYAPP': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-        },
-    }
-}
-
 DJANGO_CRON_DELETE_LOGS_OLDER_THAN = 7
 
 with open('/etc/secret_key.txt') as f:
@@ -68,3 +36,12 @@ EMAIL_HOST_PASSWORD = GMAIL_PASS
 EMAIL_HOST_USER = 'openstudyroom@gmail.com'
 EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+
+RAVEN_CONFIG = {
+    'dsn': 'https://4fc2585f995348249682113f91124169:0e0c5bc2df38456090293fc24e43ce76@sentry.io/240861',
+    # If you are using git, you can also automatically configure the
+    # release based on the git info.
+    #'release': raven.fetch_git_sha(os.path.abspath(os.pardir)),
+}

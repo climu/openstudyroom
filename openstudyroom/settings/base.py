@@ -102,6 +102,9 @@ INSTALLED_APPS = [
     'tournament',
 
 
+    #for sentry
+    'raven.contrib.django.raven_compat',
+
 ]+ get_machina_apps()
 
 MIDDLEWARE = [

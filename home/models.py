@@ -123,7 +123,7 @@ class HomePage(Page):
                 availables = AvailableEvent.objects.filter(
                     end__gte=now,
                     user__in=opponents
-                ).exists()
+                ).order_by('start')[:5]
                 context['availables'] = availables
                 time_online = timezone.now() - datetime.timedelta(minutes=6)
                 online_opponents = list(filter(
@@ -206,5 +206,6 @@ def send_to_discord(sender, **kwargs):
     r.raise_for_status()
 
 
-# Register a receiver
+# Register two receivers
 page_published.connect(send_to_discord, sender=EntryPage)
+page_published.connect(send_to_discord, sender=StreamFieldEntryPage)

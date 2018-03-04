@@ -4,6 +4,6 @@
 __pycache__/
 /static
 media
-[0-9]*
 /.idea
 *.sqlite3
+[0-9]*

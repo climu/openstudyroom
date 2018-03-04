@@ -22,6 +22,7 @@ from machina.core.db.models import get_model
 from postman.api import pm_write
 from tournament.models import Tournament
 import pytz
+import requests
 
 from . import utils
 from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
@@ -45,6 +46,7 @@ def scraper():
     This is not a view. belongs in utils. Don't forget  to update cronjob tho.
     """
 
+
     # 1 check time since get from kgs
     now = timezone.now()
     last_kgs = Registry.get_time_kgs()
@@ -61,10 +63,13 @@ def scraper():
             for kgs_user in m['users']:
                 profile = Profile.objects.filter(kgs_username__iexact=kgs_user['name']).first()
                 if profile is not None:
-                    profile.last_kgs_online = now
-                    profile.save()
+                    if 'rank' in kgs_user:
+                        profile.kgs_rank = kgs_user['rank'] # scraping the rank of the players
+                        profile.last_kgs_online = now
+                        profile.save()
     # 3 wait a bit
     sleep(2)
+
 
     # 4.1 look for some sgfs that we analyse and maybe record as games
     sgf = Sgf.objects.filter(p_status=2).first()
@@ -74,6 +79,7 @@ def scraper():
         # parse the sgf datas to populate the rows -> KGS archive request
         sgf = sgf.parse()
         # if the sgf doesn't have a result (unfinished game) we just delete it
+        # If the game was a OGS private game result will also be '?'. See models.sgf.parse
         if sgf.result == '?':
             sgf.delete()
         else:
@@ -348,7 +354,7 @@ def join_event(request, event_id, user_id):
                 else:
                     if user.join_event(event, division):
                         meijin_league = LeagueEvent.objects.filter(
-                            event_type='league',
+                            event_type='meijin',
                             is_open=True,
                             community__isnull=True
                         ).order_by('end_time').first()
@@ -497,7 +503,19 @@ def admin(request):
                 group = Group.objects.get(name='league_member')
                 user.groups.add(group)
                 utils.quick_send_mail(user, 'emails/welcome.txt')
-
+                if settings.DEBUG:
+                    discord_url = 'http://exemple.com' # change this for local test
+                else:
+                    with open('/etc/discord_hook_url.txt') as f:
+                        discord_url = f.read().strip()
+                message = "Please welcome our new member " + user.username + " with a violent game of baduk. \n"
+                if user.profile.kgs_username:
+                    message += "KGS : " + user.profile.kgs_username + " \n"
+                if user.profile.ogs_username:
+                    message += "OGS : [" + user.profile.ogs_username +\
+                        "](https://online-go.com/player/" + str(user.profile.ogs_id) + ")"
+                values = {"content": message}
+                requests.post(discord_url, json=values)
             elif action[0:6] == "delete":
                 if action[7:15] == "no_games":# deletion due to no played games
                     utils.quick_send_mail(user, 'emails/no_games.txt')

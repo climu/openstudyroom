@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 from django.contrib.auth.models import  Group
 from django.forms import ModelForm
@@ -115,16 +117,20 @@ class LeagueEventForm(forms.ModelForm):
             'is_public',
             'description',
         ]
+        # Customise year list to show 2 years in the past/future
+        EVENT_YEAR_CHOICES = range(datetime.date.today().year - 2, datetime.date.today().year + 3)
         widgets = {
             'name': forms.TextInput(),
-            'begin_time': forms.SelectDateWidget(),
-            'end_time': forms.SelectDateWidget(),
+            'begin_time': forms.SelectDateWidget(years=EVENT_YEAR_CHOICES),
+            'end_time': forms.SelectDateWidget(years=EVENT_YEAR_CHOICES),
         }
+
 
 class EmailForm(forms.Form):
     subject = forms.CharField(required=True)
     copy_to = forms.CharField(required=False)
     message = forms.CharField(widget=forms.Textarea())
+
 
 class TimezoneForm(forms.ModelForm):
     class Meta:

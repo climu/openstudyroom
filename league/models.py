@@ -17,6 +17,7 @@ import requests
 from community.models import Community
 from django_countries.fields import CountryField
 from . import utils
+from .ogs import get_user_rank
 
 # pylint: disable=no-member
 
@@ -255,7 +256,7 @@ class Sgf(models.Model):
     handicap = models.SmallIntegerField(default=0)
     komi = models.DecimalField(default=6.5, max_digits=5, decimal_places=2)
     byo = models.CharField(max_length=20, default='sgf')
-    time = models.SmallIntegerField(default=19)
+    time = models.PositiveIntegerField(default=19)
     game_type = models.CharField(max_length=20, default='Free')
     message = models.CharField(max_length=100, default='nothing', blank=True)
     number_moves = models.SmallIntegerField(default=100)
@@ -365,6 +366,11 @@ class Sgf(models.Model):
             return
         if self.p_status == 1:  # we only have the urlto and need a server request
             r = requests.get(self.urlto)
+            if r.status_code == 403:
+                # that's how OGS tells us a game is private.
+                # game will then be deleted in scraper since results will still be ?
+                # Starting to be a mess :(
+                return self
             self.sgf_text = r.text
         prop = utils.parse_sgf_string(self.sgf_text)
         # prop['time'] = int(prop['time'])
@@ -427,7 +433,6 @@ class Sgf(models.Model):
         else:
             tag = False
             (b, m) = (False, m + '; Tag missing')
-
         if not utils.check_byoyomi(self.byo):
             (b, m) = (False, m + '; byo-yomi')
         if int(self.time) < event.main_time:
@@ -437,7 +442,7 @@ class Sgf(models.Model):
             (b, m) = (False, m + '; no result')
         if self.number_moves < 20:
             (b, m) = (False, m + '; number moves')
-        if not self.komi.startswith('6.5'):
+        if not str(self.komi).startswith('6.5'):
             (b, m) = (False, m + '; komi')
         return {'message': m, 'valid': b, 'tag': tag, }
 
@@ -723,6 +728,7 @@ class User(AbstractUser):
         ogs_id = self.profile.ogs_id
         url = 'https://online-go.com/api/v1/players/' + str(ogs_id) + '/games/?ordering=-ended'
         opponents = [u.profile.ogs_id for u in opponents if u.profile.ogs_id > 0]
+
         # we deal with pagination with this while loop
         while url is not None:
             request = requests.get(url).json()
@@ -784,6 +790,7 @@ class User(AbstractUser):
             self.check_kgs(opponents)
         if self.profile.ogs_id > 0:
             self.check_ogs(opponents)
+            self.profile.ogs_rank = get_user_rank(self.profile.ogs_id)  # set new rank
         # Mark the user checked
         self.profile.p_status = 0
         self.profile.save()
@@ -812,24 +819,25 @@ class User(AbstractUser):
         return communitys
 
 
-
 class Profile(models.Model):
     """A user profile. Store settings and infos about a user."""
     user = models.OneToOneField(User)
     kgs_username = models.CharField(max_length=10, blank=True)
     ogs_username = models.CharField(max_length=40, blank=True)
-    #ogs_id is set in ogs.get_user_id
+    kgs_rank = models.CharField(max_length=40, blank=True)
+    ogs_rank = models.CharField(max_length=40, blank=True)
+    # ogs_id is set in ogs.get_user_id
     ogs_id = models.PositiveIntegerField(default=0, blank=True, null=True)
-    #User can write what he wants in bio
+    # User can write what he wants in bio
     bio = MarkupTextField(
             blank=True, null=True,
             validators=[validators.NullableMaxLengthValidator(2000)]
     )
     # p_status help manage the scraplist
     p_status = models.PositiveSmallIntegerField(default=0)
-    #kgs_online shoudl be updated every 5 mins in scraper
+    # kgs_online shoudl be updated every 5 mins in scraper
     last_kgs_online = models.DateTimeField(blank=True, null=True)
-    #Calendar settings
+    # Calendar settings
     timezone = models.CharField(
         max_length=100,
         choices=[(t, t) for t in pytz.common_timezones],
@@ -961,6 +969,7 @@ class LeaguePlayer(models.Model):
     user = models.ForeignKey('User')
     kgs_username = models.CharField(max_length=20, default='', null=True, blank=True)
     ogs_username = models.CharField(max_length=40, null=True, blank=True)
+    #kgs_rank = models.CharField(max_length=20, default='')
     event = models.ForeignKey('LeagueEvent')
     division = models.ForeignKey('Division', null=True, blank=True)
     # p_status is deprecated, we now store that in player profile
