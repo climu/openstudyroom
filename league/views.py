@@ -388,7 +388,7 @@ def account(request, user_name=None):
         .filter(is_open=True)\
         .exclude(event_type='tournament')
 
-    players = user.leagueplayer_set.order_by('-pk')
+    players = user.leagueplayer_set.exclude(event__event_type='tournament').order_by('-pk')
 
     sgfs = Sgf.objects.defer('sgf_text').filter(Q(white=user) | Q(black=user)).\
         prefetch_related('white', 'black', 'winner').\
