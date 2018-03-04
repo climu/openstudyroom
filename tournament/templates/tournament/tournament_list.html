@@ -1,0 +1,79 @@
+{% extends 'league/admin/base.html' %}
+{% load bootstrap3 league_tags static tz%}
+{% block title %}OSR league admin - Tournament list{% endblock %}
+{% load l10n i18n %}
+{% block heading %}
+<div class="page-header">
+    <h1>Tournament list</h1>
+</div>
+{%endblock%}
+{% localize off %}
+{% block content %}
+{% language 'en' %}
+{% timezone "UTC" %}
+<a  href="{%url 'tournament:create'%}">
+  <button class="btn btn-success pull-right clearfix">
+    {%bootstrap_icon 'plus'%} Create a new Tournament
+  </button>
+</a>
+<table class="table" id="cal-event-table">
+ <thead>
+   <th>Name</th>
+   <th>Begin Time (UTC/24h)</th>
+   <th>End Time (UTC/24h)</th>
+   <th> Manage</th>
+   <th>Delete</th>
+ </thead>
+
+<tbody>
+  {% for tournament in tournaments %}
+  <tr>
+    <td><a href="{% url "tournament:view" tournament.pk %}">{{tournament.name}}</a></td>
+
+    <td>{{tournament.begin_time |date:'M d, Y H:i'}}</td>
+    <td>{{tournament.end_time |date:'M d, Y H:i'}}</td>
+
+    <td>
+      <a href="{% url 'tournament:manage_settings' tournament.pk %}">
+        {% bootstrap_icon 'wrench' %}
+      </a>
+    </td>
+    <td>
+    <form action="#" method="POST">
+      {% csrf_token %}
+        	<input type="hidden" name="action" value="delete_event" />
+        	<button type="submit" class="btn btn-danger btn-xs "  onclick="return confirm('Are you sure you want to delete this event?')">
+        	{% bootstrap_icon 'remove-circle' %} Delete
+        	</button>
+        </form>
+    </td>
+
+  </tr>
+  {% endfor %}
+</tbody>
+
+</table>
+{% endtimezone %}
+{% endlanguage %}
+{%endblock%}
+{% endlocalize %}
+{% block extra_js %}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+$('#cal-event-table').DataTable({
+  "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
+  "columnDefs": [ {
+    targets: 1,
+    render: $.fn.dataTable.render.moment( 'MMM DD, YYYY HH:mm','MMM DD, YYYY HH:mm' )
+  } ],
+  "order": [[ 1, "desc" ]]
+});
+} );
+</script>
+{% endblock %}

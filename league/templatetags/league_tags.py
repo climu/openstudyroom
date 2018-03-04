@@ -7,6 +7,38 @@ register = template.Library()
 
 
 @register.simple_tag(takes_context=True)
+def html_points_amount(context):
+    # note the use of takes_context = true.
+    # this filter only works called from a context where player an opponent exists
+    player = context['player']
+    opponent = context['opponent']
+    if 'event' in context:
+        event = str(context['event'].pk) + '/'
+    else:
+        event = ''
+    opponent_pk = opponent.pk
+    html = ""
+    if not opponent_pk in player.results:
+        return ""
+    result = player.results[opponent_pk]
+    for game in result:
+        # here, game['id'] would get you the id of the game to add a link
+        html += '<a href="/league/' + event + 'games/' + str(game['id']) + '" \
+                data-toggle="tooltip" title="' + player.user.username + ' vs ' + \
+                opponent.user.username + '">'
+        points = str(game['p']).rpartition('+')[2]
+        if points == 'Resign':
+            points = 'R'
+        if game['r'] == 1:
+            html += '<i aria-hidden="true" style="color:green">[' + points.rstrip('0').rstrip('.') + ']</i></a>'
+        # will be glyphicon glyphicon-ok-circle or fontawesome thing
+        else:
+            html += '<i aria-hidden="true" style="color:red">[' + points.rstrip('0').rstrip('.') + ']</i></a>'
+
+    return mark_safe(html)
+
+
+@register.simple_tag(takes_context=True)
 def html_one_result(context):
     # note the use of takes_context = true.
     # this filter only works called from a context where player an opponent exists

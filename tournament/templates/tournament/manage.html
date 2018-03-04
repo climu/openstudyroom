@@ -1,0 +1,273 @@
+{% extends 'league/admin/base.html' %}
+{% load bootstrap3 static league_tags%}
+{% block title %}OSR league admin - Create new Event{% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1>Manage a tournament</h1>
+</div>
+{%endblock%}
+{% block content %}
+<div class="row">
+  <div class="col-md-3">
+    <legend>Tournament settings </legend>
+    <form action="" method="POST">{% csrf_token %}
+       {% bootstrap_form form %}
+        {% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
+    </form>
+  </div>
+  <div class="col-md-3">
+    <legend>Players </legend>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Invite a user
+      </div>
+      <div class="panel-body">
+        <form action="{% url 'tournament:tournament_invite_user' tournament.pk %}" method="post" >
+            {% csrf_token %}
+            <div class="form-group">
+            <input type="text" name="username" placeholder="OSR Username" >
+
+            <button type="submit" class="pull-right btn btn-success btn-sm"  >
+            {% bootstrap_icon "plus" %}
+            </button>
+            </div>
+            </form>
+      </div>
+    </div>
+
+    <div class="panel panel-danger ">
+      <div class="panel-heading clearfix">
+        Remove players by droping it here.
+      </div>
+      <div id="remove_players"class='panel-body'>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading clearfix">
+        {{players|length}} registered players
+        <button id="save_players_order" class="btn btn-default btn-sm pull-right">
+          Save
+        </button>
+      </div>
+      <div class="row">
+      <div class="col-md-2">
+        <ul class="list-group">
+          {% for player in players %}
+          <li class="list-group-item">
+          <big>
+              {{forloop.counter}}
+          </big>
+          </li>
+          {% endfor %}
+        </ul>
+
+      </div>
+      <div  class="col-md-10">
+        <div id="players_list">
+          {%for player in players %}
+            <li data-id={{player.pk}} class="list-group-item">
+              {{player.user | user_link}}
+              <span class="group_name pull-right">
+              </span>
+            </li>
+          {%endfor%}
+      </div>
+    </div>
+
+    </div>
+    </div>
+
+  </div>
+  <div class="col-md-3">
+    <legend>Groups stage </legend>
+    <div class="panel panel-default">
+      <div class="panel-heading"> Create a new group</div>
+      <div class="panel-body">
+        <form action="" method="POST" class="form-inline" >
+          {% csrf_token %}
+          <input id="name" class="form-control" name="name" placeholder="New group name" title=""  type="text">
+          <button type="submit" formaction="{% url 'tournament:create_group' tournament.pk %}" class="btn btn-success btn-sm  pull-right">
+            {% bootstrap_icon "plus" %}
+          </button>
+        </form>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading clearfix">
+        Save groups
+            <button id="save_groups_button" class="btn btn-success btn-sm pull-right">
+                {% bootstrap_icon "ok" %}
+            </button>
+      </div>
+    </div>
+  {% for group in groups %}
+  <div class="panel panel-default">
+    <div class="panel-heading clearfix">
+      <div class="row">
+      <form action="" method="POST" class="form-inline" >{% csrf_token %}
+        <b>{{group.name}}</b>
+        <input type="hidden" name="action" value="delete_division">
+        <input type="hidden" name="next" value="{{request.path}}">
+        <button type="submit" formaction="{% url 'league:admin_delete_division' group.pk %}" class="btn btn-danger btn-sm pull-right"
+        onclick="return confirm('Delete the {{group.name}}')">
+          {% bootstrap_icon "remove" %}
+        </button>
+      </form>
+    </div>
+    <div class="row">
+      <form action="{% url 'league:admin_rename_division' group.pk %}" method="POST" class="form-inline" >{% csrf_token %}
+      <input id="name" class="form-control" name="name" placeholder="rename" value="{{division}}" title=""  type="text">
+      <input type="hidden" name="next" value="{{request.path}}">
+      <button type="submit"  class="pull-right btn btn-primary btn-sm">
+        {%bootstrap_icon "refresh"%}
+      </button>
+      </form>
+    </div>
+  </div>
+
+    <div id="group_{{group.pk}}_players" data-group-name="{{group.name}}" class="panel-body group_players">
+        {%for player in group.get_tournament_players %}
+            <li data-id={{player.pk}} class="list-group-item">
+              {{player.user | user_link}}
+            </li>
+
+          </li>
+        {%endfor%}
+</div>
+
+</div>
+  {% endfor %}
+
+</div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+    {{ form.media.css }}
+
+
+{% endblock extra_css %}
+
+{% block extra_js %}
+{{ form.media.js }}
+<script src="//cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+<script>
+// ajax crfs setup
+{% include 'league/includes/ajax_setup.html' %}
+var players_list_sortable = Sortable.create(players_list,{
+  group: {
+    name: 'players_list',
+    pull: function (to) {
+      if (to.el.id == 'remove_players'){
+        return true;
+      }
+      else{
+        return 'clone'
+      }
+    },
+    put:function (to, from) {
+      return (from.el.id == 'remove_players');
+    },
+    revertClone: true,
+
+  }
+});
+
+var remove_players_sortable = Sortable.create(remove_players,{
+  group: {
+    name: 'players_list',
+    put:true
+  },
+  // Element is dropped into the list from another list
+  onAdd: function (evt) {
+    if (evt.from.id != 'players_list'){
+      evt.item.outerHTML = "";
+    }
+
+    id = $(evt.item).attr('data-id')
+    // remove group_name element of the item
+  //  item.children('.group_name').html('')
+    // add indicator at players list
+    $('#players_list')
+      .children(`[data-id='${id}']`)
+      .not('.sortable-ghost')
+      .children('.group_name')
+      .html('')
+
+  },
+});
+
+{% for group in groups %}
+var group_{{group.pk}}_sortable = Sortable.create(group_{{group.pk}}_players,{
+    group: {
+      name: 'players_list',
+      pull: true,
+      put: function (to, from, item){
+        // convert everything to jquery element
+        to = $(to.el)
+        from = $(from.el)
+        item = $(item)
+        id = item.attr('data-id');
+
+        //don't allow putting from remove list
+        if (from[0].id == 'remove_players'){
+          return false
+        }
+        // don't allow puting a player that is already in another group
+        if ($('.group_players').children(`[data-id='${id}']`).not('.sortable-ghost').length >0){
+          if (from[0].id == 'players_list'){
+            return false
+          }
+        }
+
+        return true
+      }
+  },
+  onAdd: function (evt) {
+    id = $(evt.item).attr('data-id')
+    // remove group_name element of the item
+    $(evt.item).children('.group_name').html('')
+    // add indicator at players list
+    $('#players_list')
+      .children(`[data-id='${id}']`)
+      .not('.sortable-ghost')
+      .children('.group_name')
+      .html($(evt.to).attr('data-group-name'));
+  }
+}
+);
+{% endfor %}
+$('#save_groups_button').click(function(){
+  var dict = {};
+  {% for group in groups %}
+    dict[{{group.pk}}] = group_{{group.pk}}_sortable.toArray();
+  {% endfor %}
+  json_groups = JSON.stringify(dict);
+  console.log(json_groups);
+  $.ajax({
+      type:"POST",
+      url:"{% url 'tournament:save_groups' tournament.pk%}",
+      data: {
+          'groups': json_groups,
+      },
+  });
+});
+
+$('#save_players_order').click(function(){
+  json_players_list = JSON.stringify(players_list_sortable.toArray());
+  json_removed_players = JSON.stringify(remove_players_sortable.toArray());
+
+  $.ajax({
+      type:"POST",
+      url:"{% url 'tournament:save_players_order' tournament.pk%}",
+      data: {
+          'players_list': json_players_list,
+          'removed_players': json_removed_players
+      },
+  });
+  $('#remove_players li').remove()
+});
+
+</script>
+{% endblock extra_js %}

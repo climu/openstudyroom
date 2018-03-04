@@ -1,0 +1,35 @@
+{% extends 'full_width.html' %}
+{% load bootstrap3 league_tags static forum_markup_tags%}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
+  {{ form.media.css }}
+
+{% endblock %}
+
+
+{% block title %}{{tournament.name}}{% endblock %}
+
+{% block heading %}
+  <div class="page-header">
+    <h1>{{tournament.name}} - Edit</h1>
+  </div>
+{%endblock%}
+
+{% block content %}
+{% include 'tournament/includes/tournament_menu.html' with active="about" %}
+
+<form action="" method="POST">{% csrf_token %}
+{%bootstrap_form form %}
+	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
+</form>
+<a class="btn btn-danger pull-right" href="{% url 'tournament:about' tournament.pk %}">
+    Cancel
+</a>
+
+
+{% endblock %}
+
+{% block extra_js %}
+{{ form.media.js }}
+{% endblock extra_js %}

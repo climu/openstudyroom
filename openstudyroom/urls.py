@@ -27,6 +27,7 @@ urlpatterns = [
 
     url(r'^accounts/', include('allauth.urls')),
     url(r'^forum/', include(board.urls)),
+    url(r'^tournament/', include('tournament.urls', namespace='tournament')),
     url(r'^messages/', include('postman.urls', namespace='postman', app_name='postman')),
     url(r'^community/', include('community.urls', namespace='community')),
     url(r'', include('puput.urls')),

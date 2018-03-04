@@ -3,6 +3,7 @@ import datetime
 from django import forms
 from django.contrib.auth.models import  Group
 from django.forms import ModelForm
+from django_countries.widgets import CountrySelectWidget
 import pytz
 
 from .models import Division, LeagueEvent, Profile
@@ -90,9 +91,10 @@ class LeaguePopulateForm(forms.Form):
             #    self.fields['player_'+str(player.pk)].inital = (division.pk,division.name)
 
 class DivisionForm(ModelForm):
+    next = forms.CharField(label='next', widget=forms.HiddenInput(), required=False)
     class Meta:
         model = Division
-        fields = ['name']
+        fields = ['name', 'next']
 
 
 class LeagueEventForm(forms.ModelForm):
@@ -142,8 +144,10 @@ class ProfileForm(ModelForm):
         fields = [
             'bio',
             'ogs_username',
-            'kgs_username'
+            'kgs_username',
+            'country',
         ]
+        widgets = {'country': CountrySelectWidget()}
 
     def clean_kgs_username(self):
         if not self.cleaned_data['kgs_username']:

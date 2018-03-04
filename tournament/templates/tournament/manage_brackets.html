@@ -1,0 +1,411 @@
+{% extends 'league/admin/base.html' %}
+{% load bootstrap3 static league_tags tournament_tags%}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
+{% endblock %}
+{% block title %}Manage tournament brackets{% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1>{{tournament.name}} brackets</h1>
+</div>
+{%endblock%}
+{% block content %}
+<div class="row">
+  {% include 'tournament/includes/manage_menu.html' with active='brackets' %}
+</div>
+<div class="row">
+  <div class = "col-md-2">
+    <div class="panel panel-default ">
+      <div class="panel-body">
+        <p>
+        <button id="save_tournament" class="btn btn-success btn-sm">
+            {% bootstrap_icon "ok" %} save
+          </button>
+        </p>
+        <p>
+          <form method="POST" class="form-inline" >{% csrf_token %}
+            <button type="submit" formaction="{% url 'tournament:create_bracket' tournament.pk %}" class="btn btn-primary btn-sm">
+                {% bootstrap_icon "plus" %} Create new bracket
+              </button>
+            </form>
+          </p>
+          <p>
+          <button id="shuffle_players" class="btn btn-default btn-sm">
+                {% bootstrap_icon "random" %} shuffle selected
+          </button>
+        </p>
+        <p>
+          {% if tournament.stage < 2 %}
+          <form method="POST" class="form-inline" >{% csrf_token %}
+            <button type="submit" formaction="{% url 'tournament:set_stage' tournament.pk %}" class="btn btn-primary btn-sm">
+              <input type="hidden" name="action" value="2">
+              <input type="hidden" name="next" value="{{request.path}}">
+                {% bootstrap_icon "triangle-right" %} Start Bracket stage
+              </button>
+            </form>
+            {% else %}
+            {% bootstrap_icon "ok" %}Bracket stage is on
+            {% endif %}
+          </p>
+      </div>
+    </div>
+
+    {% if seeded_players %}
+    <h2>Seeds</h2>
+    <div id="seeds" data-round="-1" data-bracket="-1" class="panel-body group_players">
+        {%for player in seeded_players %}
+            <div data-id={{player.pk}} class="list-group-item">
+              {{player.user | user_link}}
+            </div>
+        {%endfor%}
+
+  </div>
+    {% endif %}
+
+  {% if groups %}
+  {% for group in groups %}
+  <h2>{{group.name}}</h2>
+  <div id="group_{{group.pk}}_players" data-round="-1" data-bracket="-1" class="panel-body group_players">
+      {%for player in group.get_tournament_players %}
+          <div data-id={{player.pk}} class="list-group-item">
+            {{player.user | user_link}}
+          </div>
+      {%endfor%}
+
+</div>
+  {% endfor %}
+  {% else %}
+  {% endif %}
+</div>
+  <div class = "col-md-10">
+
+    {% for bracket in brackets %}
+<legend class="row">
+  <div class="col-md-6">
+  <form action="" method="POST" class="form-inline" >{% csrf_token %}
+  <div class="form-group clearfix">
+  <input type="hidden" name="next" value="{{request.path}}">
+  <input id="name" class="form-control" name="name" placeholder="Bracket name" value="{{bracket.name}}" title=""  type="text">
+  <button type="submit" formaction="{% url 'tournament:rename_bracket' bracket.pk %}" class="btn btn-primary btn-sm">
+    {% bootstrap_icon 'refresh' %} Rename the bracket
+  </button>
+</div>
+</form>
+</div>
+<div class = "col-md-4">
+
+  <form method="POST" class="form-inline" >{% csrf_token %}
+    <button type="submit" formaction="{% url 'tournament:create_bracket' tournament.pk %}" class="btn btn-primary btn-sm">
+        {% bootstrap_icon "plus" %} Create new bracket
+      </button>
+      </form>
+</div>
+  <div class="col-md-2">
+    <form action="" method="POST" class="form-inline" >{% csrf_token %}
+    <div class="form-group clearfix">
+      <button
+        type="submit"
+        formaction="{% url 'tournament:delete_bracket' bracket.pk %}"
+        class="btn btn-danger btn-sm pull-right"
+        onclick="return confirm('Are you sure you want to delete this bracket?')">
+        {% bootstrap_icon "remove" %} Delete the bracket
+    </button>
+</div>
+</form>
+</div>
+</legend>
+    {% with bracket.get_rounds as rounds %}
+    <div class="row bracket">
+    {% for round in rounds %}
+      <ul class="round">
+    <li class="panel panel-default match">
+      <div class="panel-heading round-control-top">
+        <form action="" method="POST" class="form-inline" >{% csrf_token %}
+          <div class="form-group">
+          <input type="hidden" name="next" value="{{request.path}}">
+          <input id="name" class="form-control" style="max-width:145px;"name="name" placeholder="round name" value="{{round.name}}" title=""  type="text">
+          <button title="rename round" type="submit" formaction="{% url 'tournament:rename_round' round.pk %}" class="btn btn-primary btn-sm">
+            {% bootstrap_icon 'refresh' %}
+          </button>
+        </div>
+        </form>
+          </div>
+
+          <div class="panel-body round-control-botom">
+            <form action="" method="POST" class="form-inline" >{% csrf_token %}
+              <button title="Add a new match" type="submit" formaction="{% url 'tournament:create_match' round.pk %}" class="btn btn-default btn-sm">
+                {% bootstrap_icon "plus" %}
+              </button>
+              <button title="Delete last match" type="submit" formaction="{% url 'tournament:delete_match' round.pk %}" class="btn btn-default btn-sm">
+                {% bootstrap_icon "minus" %}
+              </button>
+              <button title="Delete all round" type="submit" formaction="{% url 'tournament:delete_round' round.pk %}" onclick="return confirm('Really delete this round and all his matches')" class="btn btn-danger btn-sm pull-right">
+                {% bootstrap_icon "remove" %}
+              </button>
+              <button id="shuffle" class="btn btn-default btn-sm pull-right">
+               shuffle
+              </button>
+            </div>
+          </form>
+        </li>
+
+  </ul>
+    {% endfor %}
+    <ul class="round">
+    <li class="panel panel-default match">
+    <div class="panel-body match">
+      <form action="" method="POST" class="form-inline" >{% csrf_token %}
+        <div class="form-group">
+        <input type="hidden" name="next" value="{{request.path}}">
+        <input id="name" class="form-control" name="name" placeholder=" new round name"  title=""  type="text">
+      <button type="submit" formaction="{% url 'tournament:create_round' bracket.pk %}" class="btn btn-success btn-sm">
+    {% bootstrap_icon 'plus' %} create new round
+    </button>
+    </div>
+    </form>
+    </div>
+    </li>
+    </ul>
+
+  </div>
+    <div class="row bracket">
+      {% for round in rounds %}
+      <ul class="round">
+          {% for match in round.get_matchs %}
+          <li class="spacer">&nbsp;</li>
+          <li class="panel panel-default match">
+              <div class="panel-body match {% if match.sgf %} played {% endif %}"
+                    id="match_{{match.pk}}"
+                    data-match="{{match.pk}}"
+                     data-round="{{round.pk}}"
+                     data-bracket="{{bracket.pk}}">
+                  {% if match.player_1 %}
+                  <div
+                    class="list-group-item
+                    {% if match.sgf and match.winner == match.player_1 %}list-group-item-success{% endif %}"
+                    data-id="{{match.player_1.pk}}">
+                    {{match.player_1.user |user_link}}
+                    <div class="checkbox div-checkbox pull-right">
+                      <input class ="refetch check-player" value="{{player.pk}}" type="checkbox" >
+                    </div>
+                 </div>
+                  {% endif %}
+                  {% if match.player_2 %}
+                  <div
+                    class="list-group-item {% if match.sgf and match.winner == match.player_2 %}list-group-item-success{% endif %}"
+                    data-id="{{match.player_2.pk}}">
+                    {{match.player_2.user |user_link}}
+                    <div class="checkbox div-checkbox pull-right">
+                      <input class ="refetch check-player" value="{{player.pk}}" type="checkbox" >
+                    </div>
+                  </div>
+                  {% endif %}
+
+                </div>
+              </li>
+
+          {% endfor %}
+          <li class="spacer">&nbsp;</li>
+        </ul>
+
+
+      {% endfor %}
+  </div>
+
+    {% endwith %}
+
+    {% endfor %}
+
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="//cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+
+
+<script>
+// ajax crfs setup
+{% include 'league/includes/ajax_setup.html' %}
+
+{% if seeded_players %}
+var seeds_sortable = Sortable.create(seeds,{
+  group: {
+    name: 'players_list',
+    pull: 'clone',
+    put: function (to, from, item){
+      from = $(from.el)
+      if (from.attr('data-round')>0){
+        return true
+      }
+      else{
+        return false
+      }
+
+    },
+  },
+    sort: false,
+    onAdd: function (evt){
+      evt.item.outerHTML = "";
+    }
+});
+{% endif %}
+{% for group in groups %}
+  var group_{{group.pk}}_sortable = Sortable.create(group_{{group.pk}}_players,{
+    group: {
+      name: 'players_list',
+      pull: 'clone',
+      put: function (to, from, item){
+        from = $(from.el)
+        if (from.attr('data-round')>0){
+          return true
+        }
+        else{
+          return false
+        }
+
+      },
+    },
+      sort: false,
+      onAdd: function (evt){
+        evt.item.outerHTML = "";
+      }
+  });
+{% endfor %}
+
+{% for bracket in brackets %}
+{% with bracket.get_rounds as rounds %}
+  {% for round in rounds %}
+      {% for match in round.get_matchs %}
+        var match_{{match.pk}}_sortable = Sortable.create(match_{{match.pk}},{
+          group: {
+            name: 'players_list',
+            pull: function (to){
+                to = $(to.el)
+                if (to.attr('data-bracket') < 0 ) {
+                  return true
+                }
+                if ((to.attr('data-round') <= {{round.pk}}) && (to.attr('data-bracket') == {{bracket.pk}})){
+                    return true;
+                }
+                else {
+                    return 'clone';
+                }
+            },
+            put: true,
+            revertClone: true,
+          },
+            sort: true,
+            onAdd: function (evt){
+              if (($(evt.from).attr('data-round') > {{round.pk}}) && ($(evt.from).attr('data-bracket') == {{bracket.pk}})) {
+                evt.item.outerHTML = "";
+              }
+            else{
+              $(evt.item).removeClass('list-group-item-success')
+              if ($(evt.from).hasClass('group_players')){
+                // if we put a new player, we had the select box to the item
+                  $(evt.item).append('<div class="checkbox div-checkbox pull-right"><input class ="refetch check-player" value="{{player.pk}}" type="checkbox" ></div>')
+                }
+            }
+            },
+            delay: 10
+        });
+    {% endfor %}
+  {% endfor %}
+{% endwith %}
+{% endfor %}
+
+$('#save_tournament').click(function(){
+  var dict = {};
+  var bracket = {};
+  var round = {};
+  {% for bracket in brackets %}
+    {% with bracket.get_rounds as rounds %}
+    {% for round in rounds %}
+      {% for match in round.get_matchs %}
+      console.log(match_{{match.pk}}_sortable.toArray())
+        round[{{match.pk}}] = match_{{match.pk}}_sortable.toArray();
+      {% endfor %}
+      bracket[{{round.pk}}] = round
+      round = {}
+    {% endfor %}
+      dict[{{bracket.pk}}] = bracket
+      bracket = {}
+    {% endwith %}
+  {% endfor %}
+  console.log(dict)
+  json_brackets = JSON.stringify(dict);
+  $.ajax({
+    type:"POST",
+    url:"{% url 'tournament:save_brackets' tournament.pk %}",
+    data: {
+        'brackets': json_brackets,
+    },
+
+ });
+});
+
+function get_dict() {
+  var dict = {};
+  var bracket = {};
+  var round = {};
+  {% for bracket in brackets %}
+    {% with bracket.get_rounds as rounds %}
+    {% for round in rounds %}
+      {% for match in round.get_matchs %}
+      //console.log(match_{{match.pk}}_sortable.toArray())
+        round[{{match.pk}}] = match_{{match.pk}}_sortable.toArray();
+      {% endfor %}
+      bracket[{{round.pk}}] = round
+      round = {}
+    {% endfor %}
+      dict[{{bracket.pk}}] = bracket
+      bracket = {}
+    {% endwith %}
+  {% endfor %}
+  return dict;
+}
+
+$('#shuffle_players').click(function(){
+  var ok = confirm("Shuffle the selected players?");
+  if ( ok == false ) {
+    return false;
+  }
+});
+
+// {bracket_id: { round_id :{ match_id :[ player_1_id,player_2_id]}}}}}
+function shufflebracket(dict, bracket_id) {
+
+    var rounds = dict[bracket_id];
+    var templist = [];
+    var counter = 0;
+
+    for (var round_id in rounds) {
+      var matches = rounds[round_id];
+      for (var match in matches) {
+        templist[counter] = match[0]; // player 1
+        counter++;
+        templist[counter] = match[1]; // player 2
+        counter++;
+      }
+    }
+    console.log(templist);
+
+    return dict;
+}
+
+$('#shuffle').click(function(){
+    var ok = confirm("Shuffle the selected players?");
+    if ( ok == false ) {
+      return false;
+    }
+    var dict = shufflebracket(get_dict(), 3);
+    console.log("test");
+
+});
+
+</script>
+
+{% endblock %}

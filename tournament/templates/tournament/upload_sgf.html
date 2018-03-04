@@ -1,0 +1,106 @@
+{% extends 'league/admin/base.html' %}
+{% load bootstrap3 static league_tags wgo_tags tournament_tags%}
+{% block title %}Manage tournament games{% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1>Upload a game for {{tournament.name}}</h1>
+</div>
+{%endblock%}
+{% block content %}
+<div class="row">
+    {% include 'tournament/includes/manage_menu.html' with active='games' %}
+</div>
+<div class="row">
+  <div class="col-lg-4">
+    <button form="sgf-form" type="submit" class="btn btn-info " formaction="{%url 'tournament:upload_sgf' tournament.pk%}" >
+      {% bootstrap_icon "refresh" %}  Check sgf
+    </button>
+  </div>
+  <div class="col-lg-4">
+    {%if sgf.league_valid %}
+    <button form="sgf-form" type="submit" class="btn btn-success " formaction="{%url 'tournament:create_sgf' tournament.pk%}"onclick="return confirm('Save the sgf and create a league game ?')" >
+      {% bootstrap_icon "ok" %} Save sgf
+    </button>
+    {% endif %}
+  </div>
+</div>
+<div class="row">
+{%if sgf.league_valid %}
+ <h3>Your sgf is valid !</h3>
+ <p>Check details below and click save sgf to add it to the database</p>
+
+ {% else %}
+ <h3> Your sgf didn't pass the test. Check details below.</h3>
+{% endif %}
+</div>
+
+ <div class="row">
+        <div class="col-md-3">
+          <div class="panel panel-default">
+            <div class="panel-heading"> Sgf infos</div>
+          <table class="table table-condensed">
+         <tbody>
+           <tr>
+               <th>White</th>
+                 <td>{{sgf.wplayer}}</td>
+             </tr>
+             <tr>
+               <th>Black</th>
+                 <td>{{sgf.bplayer}}</td>
+             </tr>
+             <tr>
+               <th>Date</th>
+               <td> {{sgf.date |date:"M d, Y"}}</td>
+             </tr>
+             <tr>
+               <th>Result</th>
+               <td> {{sgf.result}}</td>
+             </tr>
+             <tr>
+               <th>Type</th>
+               <td> {{sgf.game_type}}</td>
+             </tr>
+           </tbody>
+         </table>
+</div>
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    {% if sgf.league_valid %}
+      {% if match %}
+         This SGF is valid for the match {{match.player_1.user|user_link}} vs {{match.player_2.user |user_link}} in the round {{match.round.name}}
+      {% elif group %}
+       This SGF is valid for the  {{group.name}}.
+      {% endif %}
+       </div>
+
+{% else %}
+This SGF is not valid :
+
+
+</div>
+<table class="table table-condensed">
+{% with sgf.get_messages as messages %}
+{% for message in messages %}
+<tr><td>{{message}}</td></tr>
+{% endfor %}
+{% endwith %}
+</table>
+{% endif %}
+
+
+</div>
+</div>
+<div class="col-md-4">
+  <form id="sgf-form" method="post" class="form">
+    {% csrf_token %}
+    {% bootstrap_field form.sgf  %}
+</form>
+</div>
+<div class="col-md-5">
+  <div data-wgo="{{ sgf.sgf_text  |prepare_sgf}}">
+</div>
+</div>
+
+
+{% endblock %}

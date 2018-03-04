@@ -1,0 +1,91 @@
+/*
+ *  Flex Layout Specifics
+*/
+.bracket{
+  display:flex;
+  flex-direction:row;
+}
+.round{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  list-style:none;
+  width: 200px;
+  min-width: 200px;
+
+  padding:5px;
+}
+  .round .spacer{ flex-grow:1; }
+  .round .spacer:first-child,
+  .round .spacer:last-child{ flex-grow:.5; }
+
+  .round .game-spacer{
+    flex-grow:1;
+  }
+
+.big_spacer{
+min-height: 45px;
+}
+.match{
+  min-height: 82px;
+  padding:0px;
+  margin:0;
+}
+
+.round-control-top{
+  padding:0px 1px 5px 1px;
+  margin:0;
+}
+
+.round-control-botom{
+  padding:5px 1px 0px 1px;
+  margin:0;
+}
+
+.match-display{
+  min-height: 60px;
+  padding:0px;
+  margin:0;
+}
+
+.player{
+  height: 20px;
+}
+
+.row-flex, .row-flex > div[class*='col-'] {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    flex-wrap: wrap;
+    flex:1 1 auto;
+}
+
+.row-flex-wrap {
+	-webkit-flex-flow: row wrap;
+    align-content: flex-start;
+    flex:0;
+}
+
+.row-flex > div[class*='col-'], .container-flex > div[class*='col-'] {
+	 margin:-.2px; /* hack adjust for wrapping */
+}
+
+.container-flex > div[class*='col-'] div,.row-flex > div[class*='col-'] div {
+	width:100%;
+}
+
+
+.flex-col {
+    display: flex;
+    display: -webkit-flex;
+    flex: 1 100%;
+	flex-flow: column nowrap;
+}
+
+.flex-grow {
+	display: flex;
+    -webkit-flex: 2;
+    flex: 2;
+}

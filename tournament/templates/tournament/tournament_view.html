@@ -1,0 +1,35 @@
+{% extends 'full_width.html' %}
+{% load bootstrap3 league_tags static forum_markup_tags%}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
+
+{% endblock %}
+
+{% block title %}{{tournament.name}}{% endblock %}
+
+{% block heading %}
+  <div class="page-header">
+    <h1>{{tournament.name}}</h1>
+  </div>
+{%endblock%}
+
+{% block content %}
+{% include 'tournament/includes/tournament_menu.html' %}
+<p>{{tournament.description|safe|rendered}}</p>
+  {% if groups %}
+  <div class="row">
+
+      {% for group in groups %}
+      <div class="col-md-3">
+      <h2>{{group.name}}</h2>
+        {% include 'league/includes/results_ladder.html' with results=group.results %}
+        </div>
+      {% endfor %}
+</div>
+  {% endif %}
+</div>
+
+{% include 'tournament/includes/bracket_view.html'%}
+
+{%endblock%}

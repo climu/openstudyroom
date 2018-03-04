@@ -12,13 +12,11 @@
                 <div class="kgs_username">{{ player.user.username }}</div>
             </th>
             {% endfor %}
-            <th>sos</th>
-            <th>sodos</th>
         </thead>
         <tbody>
         {% for player in results %}
-        <tr class="{% cycle 'even-row' 'odd-row' %}">
-            <td class='table-league-player{%if not player.is_active %} inactive{%endif%}'>
+        <tr  class="{% cycle 'even-row' 'odd-row' %}">
+            <td class='table-league-player{%if not player.is_active %} inactive{%endif%}'  data-id={{player.pk}}>
               {{forloop.counter}}. {{player.user | user_link:meijin}}
             </td>
             <td class='table-league-score-highlight'>{{ player.score }}</td>
@@ -28,12 +26,10 @@
             <td class="table-league-highlight {% cycle 'even-column' 'odd-column' %}">
                 {% else %}
             <td class="{% cycle 'even-column' 'odd-column' %}">
-              {% html_points_amount %}
+              {% html_one_result %}
             </td>
             {% endif %}
             {% endfor %}
-            <td>{{ player.sos }}</td>
-            <td>{{ player.sodos }}</td>
         </tr>
         {% endfor %}
         </tbody>

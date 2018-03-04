@@ -28,7 +28,9 @@ class PublicEvent(CalEvent):
     @staticmethod
     def get_formated_public_event(start, end, tz):
         """ return a dict of publics events between start and end formated for json."""
+
         public_events = PublicEvent.objects.filter(end__gte=start, start__lte=end)
+
         data = []
         for event in public_events:
             dict = {
