@@ -102,9 +102,12 @@ def players_view(request, tournament_id):
 
 def calendar(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
+    groups = TournamentGroup.objects.filter(league_event=tournament).exists
+
     context = {
         'tournament': tournament,
         'admin': tournament.is_admin(request.user),
+        'groups':groups,
         'user': request.user
     }
     template = loader.get_template('tournament/calendar.html')
