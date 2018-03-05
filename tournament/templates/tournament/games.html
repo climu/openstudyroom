@@ -27,17 +27,18 @@ function processData(data)
     window.history.pushState('page2', 'Title', '/tournament/{{tournament.pk}}/games/' + data.id);
     document.getElementById("game_infos").innerHTML = data.game_infos ;
     document.getElementById("game-header").innerHTML= ' - ' + data.white + ' vs ' + data.black;
-    document.title = data.white + ' vs ' + data.black + ' - Open Study Room';
+    document.title = data.white + ' vs ' + data.black + '{{tournament.name}} - Games - Open Study Room';
     $("[data-toggle=tooltip]").tooltip();
 
 };
 return false;};
 </script>
 {% endblock %}
+{% block title %}{{tournament.name}} - Games{% endblock %}
 
 {% block heading %}
   <div class="page-header">
-    <h1>{{tournament.name}} - games <span id="game-header"> {% if sgf %} - {{sgf.white}} vs {{sgf.black}}{% endif %}</span></h1>
+    <h1>{{tournament.name}} - Games <span id="game-header"> {% if sgf %} - {{sgf.white}} vs {{sgf.black}}{% endif %}</span></h1>
     <div class="">{{tournament.description|safe|rendered}}</div>
 
   </div>

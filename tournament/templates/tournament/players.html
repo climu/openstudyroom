@@ -6,9 +6,11 @@
 
 {% endblock %}
 
+{% block title %}{{tournament.name}} - Players{% endblock %}
+
 {% block heading %}
   <div class="page-header">
-    <h1>{{tournament.name}} players</h1>
+    <h1>{{tournament.name}} - Players</h1>
     <div class="">{{tournament.description|safe|rendered}}</div>
   </div>
 {%endblock%}
