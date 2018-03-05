@@ -474,9 +474,10 @@ class Sgf(models.Model):
                 'message': players['message'] + settings['message'],
                 'valid': players['valid'] and settings['valid'],
                 'tag': settings['tag'],
+                'players': players['valid']
             }
-            # if the game is taged for this event, we keep this events message
-            if check['tag']:
+            # if the players are in this event, we keep this events message
+            if check['players']:
                 message = check['message']
                 if check['valid']:
                     valid_events.append(event)
