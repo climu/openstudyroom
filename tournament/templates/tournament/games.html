@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
 
 {% endblock %}
-{% block title %}{% if sgf %} {{sgf.black.username}} vs {{sgf.white.username}} {% else %}{{event}}- Games{% endif %}{% endblock %}
+{% block title %}{% if sgf %} {{sgf.black.username}} vs {{sgf.white.username}} {% else %}{{tournament.name}} - Games{% endif %}{% endblock %}
 {% block extra_head_js %}
 <script type="text/javascript">
 function load_game(sgf_id) {
@@ -34,7 +34,6 @@ function processData(data)
 return false;};
 </script>
 {% endblock %}
-{% block title %}{{tournament.name}} - Games{% endblock %}
 
 {% block heading %}
   <div class="page-header">
