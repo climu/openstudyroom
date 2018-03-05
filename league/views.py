@@ -506,7 +506,7 @@ def admin(request):
                 if settings.DEBUG:
                     discord_url = 'http://exemple.com' # change this for local test
                 else:
-                    with open('/etc/discord_hook_url.txt') as f:
+                    with open('/etc/discord_welcome_hook_url.txt') as f:
                         discord_url = f.read().strip()
                 message = "Please welcome our new member " + user.username + " with a violent game of baduk. \n"
                 if user.profile.kgs_username:
