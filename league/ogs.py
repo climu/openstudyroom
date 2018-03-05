@@ -15,7 +15,7 @@ def get_user_rank(id_number):
     if request['count'] == 1:
         rtg = request['results'][0]['ratings']["overall"]["rating"]
         total = ceil(30 - (log(rtg / 850) / 0.032))
-        if total < 0:
+        if total <= 0:
             return str(abs(total - 1)) + "d"
         else:
             return str(total) + "k"
