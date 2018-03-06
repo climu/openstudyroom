@@ -960,7 +960,7 @@ class Division(models.Model):
 
         results = sorted(
             results,
-            key=attrgetter('score', 'n_games'),
+            key=attrgetter('score', 'n_games', 'sos', 'sodos'),
             reverse=True
         )
         return results
