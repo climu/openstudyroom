@@ -30,11 +30,6 @@
               </button>
             </form>
           </p>
-          <p>
-          <button id="shuffle_players" class="btn btn-default btn-sm">
-                {% bootstrap_icon "random" %} shuffle selected
-          </button>
-        </p>
         <p>
           {% if tournament.stage < 2 %}
           <form method="POST" class="form-inline" >{% csrf_token %}
@@ -95,11 +90,7 @@
 </div>
 <div class = "col-md-4">
 
-  <form method="POST" class="form-inline" >{% csrf_token %}
-    <button type="submit" formaction="{% url 'tournament:create_bracket' tournament.pk %}" class="btn btn-primary btn-sm">
-        {% bootstrap_icon "plus" %} Create new bracket
-      </button>
-      </form>
+
 </div>
   <div class="col-md-2">
     <form action="" method="POST" class="form-inline" >{% csrf_token %}
@@ -133,21 +124,37 @@
           </div>
 
           <div class="panel-body round-control-botom">
-            <form action="" method="POST" class="form-inline" >{% csrf_token %}
-              <button title="Add a new match" type="submit" formaction="{% url 'tournament:create_match' round.pk %}" class="btn btn-default btn-sm">
-                {% bootstrap_icon "plus" %}
-              </button>
-              <button title="Delete last match" type="submit" formaction="{% url 'tournament:delete_match' round.pk %}" class="btn btn-default btn-sm">
-                {% bootstrap_icon "minus" %}
-              </button>
-              <button title="Delete all round" type="submit" formaction="{% url 'tournament:delete_round' round.pk %}" onclick="return confirm('Really delete this round and all his matches')" class="btn btn-danger btn-sm pull-right">
-                {% bootstrap_icon "remove" %}
-              </button>
-              <button id="shuffle" class="btn btn-default btn-sm pull-right">
-               shuffle
-              </button>
+              <div class="row">
+              <div class="col-md-6">
+                <form action="" method="POST" class="form-inline" >{% csrf_token %}
+                  <button title="Add a new match" type="submit" formaction="{% url 'tournament:create_match' round.pk %}" class="btn btn-default btn-sm">
+                    {% bootstrap_icon "plus" %}
+                  </button>
+                  <button title="Delete last match" type="submit" formaction="{% url 'tournament:delete_match' round.pk %}" class="btn btn-default btn-sm">
+                    {% bootstrap_icon "minus" %}
+                  </button>
+                </form>
             </div>
-          </form>
+            <div class="col-md-4">
+                <button class="shuffle btn btn-default btn-sm"
+                data-bracket="{{bracket.pk}}"
+                data-round="{{round.pk}}"
+                title="Shuffle selected players"
+                >
+                 {% bootstrap_icon "random" %}
+                </button>
+            </div>
+            <div class="col-md-2">
+                <form action="" method="POST" class="form-inline" >{% csrf_token %}
+                    <button title="Delete this round" type="submit" formaction="{% url 'tournament:delete_round' round.pk %}" onclick="return confirm('Really delete this round and all his matches')" class="btn btn-danger btn-sm pull-right">
+                      {% bootstrap_icon "remove" %}
+                    </button>
+                </form>
+            </div>
+
+        </div>
+            </div>
+
         </li>
 
   </ul>
