@@ -62,7 +62,7 @@
   {% for group in groups %}
   <h2>{{group.name}}</h2>
   <div id="group_{{group.pk}}_players" data-round="-1" data-bracket="-1" class="panel-body group_players">
-      {%for player in group.get_tournament_players %}
+      {%for player in group.get_results %}
           <div data-id={{player.pk}} class="list-group-item">
             {{player.user | user_link}}
           </div>
@@ -324,35 +324,6 @@ var seeds_sortable = Sortable.create(seeds,{
 {% endwith %}
 {% endfor %}
 
-$('#save_tournament').click(function(){
-  var dict = {};
-  var bracket = {};
-  var round = {};
-  {% for bracket in brackets %}
-    {% with bracket.get_rounds as rounds %}
-    {% for round in rounds %}
-      {% for match in round.get_matchs %}
-      console.log(match_{{match.pk}}_sortable.toArray())
-        round[{{match.pk}}] = match_{{match.pk}}_sortable.toArray();
-      {% endfor %}
-      bracket[{{round.pk}}] = round
-      round = {}
-    {% endfor %}
-      dict[{{bracket.pk}}] = bracket
-      bracket = {}
-    {% endwith %}
-  {% endfor %}
-  console.log(dict)
-  json_brackets = JSON.stringify(dict);
-  $.ajax({
-    type:"POST",
-    url:"{% url 'tournament:save_brackets' tournament.pk %}",
-    data: {
-        'brackets': json_brackets,
-    },
-
- });
-});
 
 function get_dict() {
   var dict = {};
@@ -375,12 +346,21 @@ function get_dict() {
   return dict;
 }
 
-$('#shuffle_players').click(function(){
-  var ok = confirm("Shuffle the selected players?");
-  if ( ok == false ) {
-    return false;
-  }
+
+$('#save_tournament').click(function(){
+  var brackets = get_dict();
+  json_brackets = JSON.stringify(brackets);
+  $.ajax({
+    type:"POST",
+    url:"{% url 'tournament:save_brackets' tournament.pk %}",
+    data: {
+        'brackets': json_brackets,
+    },
+
+ });
 });
+
+
 
 // {bracket_id: { round_id :{ match_id :[ player_1_id,player_2_id]}}}}}
 function shufflebracket(dict, bracket_id) {
@@ -403,7 +383,9 @@ function shufflebracket(dict, bracket_id) {
     return dict;
 }
 
-$('#shuffle').click(function(){
+$('.shuffle').click(function(){
+
+    console.log(this.dataset)
     var ok = confirm("Shuffle the selected players?");
     if ( ok == false ) {
       return false;
