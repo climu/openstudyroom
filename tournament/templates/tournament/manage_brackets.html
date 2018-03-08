@@ -178,7 +178,7 @@
   </div>
     <div class="row bracket">
       {% for round in rounds %}
-      <ul class="round">
+      <ul class="round" id="round_{{round.pk}}">
           {% for match in round.get_matchs %}
           <li class="spacer">&nbsp;</li>
           <li class="panel panel-default match">
@@ -427,14 +427,15 @@ $('.shuffle').click(function(){
     }
     round_id = this.dataset.round
     var round = get_dict()[this.dataset.bracket][round_id]
-    console.log(JSON.stringify(round));
     round = shuffleround(round)
-    console.log(JSON.stringify(round));
-    console.log(sortables[round_id])
-    for (var i in sortables[round_id]){
-    //    console.log($('[data-id='+ i +']'))
 
-        //sortables[round_id][i].clone($('[data-id='+ i +']'))
+    for (var i in sortables[round_id]){
+      if (round[i].length > 0){
+        $("#match_" + i).append($('#round_'+ round_id).find($("[data-id='" + round[i][0] +"']")))
+      }
+      if ((round[i].length > 1)){
+        $("#match_" + i).append($('#round_'+ round_id).find($("[data-id='" + round[i][1] +"']")))
+      }
     }
 
 });
