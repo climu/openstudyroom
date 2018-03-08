@@ -194,7 +194,7 @@
                     data-id="{{match.player_1.pk}}">
                     {{match.player_1.user |user_link}}
                     <div class="checkbox div-checkbox pull-right">
-                      <input class ="refetch check-player" value="{{player.pk}}" type="checkbox" >
+                      <input class ="refetch check-player" value="{{match.player_1.pk}}" type="checkbox" data-round="{{round.pk}}" >
                     </div>
                  </div>
                   {% endif %}
@@ -204,7 +204,7 @@
                     data-id="{{match.player_2.pk}}">
                     {{match.player_2.user |user_link}}
                     <div class="checkbox div-checkbox pull-right">
-                      <input class ="refetch check-player" value="{{player.pk}}" type="checkbox" >
+                      <input class ="refetch check-player" value="{{match.player_2.pk}}" type="checkbox" data-round="{{round.pk}}" >
                     </div>
                   </div>
                   {% endif %}
@@ -282,6 +282,9 @@ var seeds_sortable = Sortable.create(seeds,{
   });
 {% endfor %}
 
+var sortables ={};
+var matches = [];
+
 {% for bracket in brackets %}
 {% with bracket.get_rounds as rounds %}
   {% for round in rounds %}
@@ -319,7 +322,10 @@ var seeds_sortable = Sortable.create(seeds,{
             },
 
         });
+        matches[{{match.pk}}] = match_{{match.pk}}_sortable;
     {% endfor %}
+    sortables[{{round.pk}}] = matches;
+    matches = {};
   {% endfor %}
 {% endwith %}
 {% endfor %}
@@ -339,6 +345,7 @@ function get_dict() {
       bracket[{{round.pk}}] = round
       round = {}
     {% endfor %}
+
       dict[{{bracket.pk}}] = bracket
       bracket = {}
     {% endwith %}
@@ -360,38 +367,70 @@ $('#save_tournament').click(function(){
  });
 });
 
-
-
-// {bracket_id: { round_id :{ match_id :[ player_1_id,player_2_id]}}}}}
-function shufflebracket(dict, bracket_id) {
-
-    var rounds = dict[bracket_id];
-    var templist = [];
-    var counter = 0;
-
-    for (var round_id in rounds) {
-      var matches = rounds[round_id];
-      for (var match in matches) {
-        templist[counter] = match[0]; // player 1
-        counter++;
-        templist[counter] = match[1]; // player 2
-        counter++;
-      }
+function shuffle(array){
+    var currentIndex = array.length, temporaryValue, randomIndex;
+    while (0 !== currentIndex){
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
     }
-    console.log(templist);
+    return array;
+}
 
-    return dict;
+// roudn = { match_id :[ player_1_id,player_2_id]}}}}}
+function shuffleround(round) {
+
+    // get list of selected players
+    var selected_players = $('.check-player:input:checkbox:checked').map(function() {
+            return this.value;
+    }).get();
+    // order this list from the round dict and keep the indexes
+    var templist = [];
+    var indexes = [];
+    var counter = 0;
+    for (var i in round) {
+          player_1 = round[i][0];
+          player_2 = round[i][1];
+        if (selected_players.indexOf(player_1) >= 0){
+            templist[counter] = player_1; // player 1
+            indexes[counter] = [i, 0];
+            counter++;
+        }
+        if (selected_players.indexOf(player_2) >= 0){
+          templist[counter] = player_2; // player
+          indexes[counter] = [i, 1];
+          counter++;
+          }
+      }
+    // shuffle this list
+    shuffle(templist)
+
+    // replace the players in round dict
+    for (var i = 0; i < templist.length; i++) {
+        index = indexes[i];
+        round[index[0]][index[1]] = templist[i]
+    }
+    return round;
 }
 
 $('.shuffle').click(function(){
-
-    console.log(this.dataset)
     var ok = confirm("Shuffle the selected players?");
     if ( ok == false ) {
       return false;
     }
-    var dict = shufflebracket(get_dict(), 3);
-    console.log("test");
+    round_id = this.dataset.round
+    var round = get_dict()[this.dataset.bracket][round_id]
+    console.log(JSON.stringify(round));
+    round = shuffleround(round)
+    console.log(JSON.stringify(round));
+    console.log(sortables[round_id])
+    for (var i in sortables[round_id]){
+    //    console.log($('[data-id='+ i +']'))
+
+        //sortables[round_id][i].clone($('[data-id='+ i +']'))
+    }
 
 });
 
