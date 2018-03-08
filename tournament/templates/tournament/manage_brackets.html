@@ -255,7 +255,9 @@ var seeds_sortable = Sortable.create(seeds,{
   },
     sort: false,
     onAdd: function (evt){
-      evt.item.outerHTML = "";
+      if (not($(evt.from).hasClass('played'))){
+        evt.item.outerHTML = "";
+      }
     }
 });
 {% endif %}
@@ -292,13 +294,16 @@ var matches = [];
         var match_{{match.pk}}_sortable = Sortable.create(match_{{match.pk}},{
           group: {
             name: 'players_list',
-            pull: function (to){
+            pull: function (to, from){
                 to = $(to.el)
-                if (to.attr('data-bracket') < 0 ) {
-                  return true
+                if ($(from.el).hasClass('played')){
+                  return 'clone';
                 }
                 if ((to.attr('data-round') <= {{round.pk}}) && (to.attr('data-bracket') == {{bracket.pk}})){
                     return true;
+                }
+                if (to.attr('data-bracket') < 0 ) {
+                  return true
                 }
                 else {
                     return 'clone';
@@ -307,7 +312,7 @@ var matches = [];
             put: true,
             revertClone: true,
           },
-            sort: true,
+            sort: {% if match.sgf %}false{% else %} true {% endif %},
             onAdd: function (evt){
               if (($(evt.from).attr('data-round') > {{round.pk}}) && ($(evt.from).attr('data-bracket') == {{bracket.pk}})) {
                 evt.item.outerHTML = "";
