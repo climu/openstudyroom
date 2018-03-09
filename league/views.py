@@ -448,7 +448,7 @@ def game_api(request, sgf_id, event_id=None):
 
 
 def scrap_list(request):
-    open_events = LeagueEvent.objects.filter(is_open=True)
+    open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
     profiles = Profile.objects.filter(user__leagueplayer__event__in=open_events)\
         .distinct().order_by('-p_status')
     context = {

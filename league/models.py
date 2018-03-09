@@ -194,6 +194,7 @@ class LeagueEvent(models.Model):
                 is_public=True,
                 community__isnull=True
             )
+        events.exclude(event_type='tournament')
         return events
 
 
