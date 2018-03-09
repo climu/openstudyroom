@@ -37,7 +37,7 @@ return false;};
         {% if user == meijin %}
             <i class="fa fa-trophy" data-toggle="tooltip" title="{{user.username}} is OSR Meijin !"></i>
         {% endif %}
-        {% if user == request.user %}My{% else %}{{user.username}}{% endif %} profile 
+        {% if user == request.user %}My{% else %}{{user.username}}{% endif %} profile
     </h1>
 
 </div>
@@ -57,6 +57,9 @@ return false;};
 <div class="panel panel-default">
 <div class="panel-heading clearfix">
   <h4>
+    {% if user.profile.country %}
+    <img   src="{{user.profile.country.flag}}">
+    {% endif %}
      {{user.username}} infos
      {% if request.user == user %}
       <a href="{% url 'league:profile_update' user.profile.pk %}"><button class="btn btn-default pull-right">{% bootstrap_icon 'wrench' %} Edit </button></a>
