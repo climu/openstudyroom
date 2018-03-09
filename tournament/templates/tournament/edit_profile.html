@@ -1,0 +1,36 @@
+{% extends 'full_width.html' %}
+{% load bootstrap3 league_tags%}
+{% block title %}Edit a user Profile{% endblock %}
+
+{% block heading %}
+<div class="page-header">
+    <h1>Edit {{user.username}} Profile</h1>
+</div>
+{%endblock%}
+{% block content %}
+
+<form action="" method="POST">{% csrf_token %}
+{% bootstrap_field form.bio %}
+{% bootstrap_field form.picture_url %}
+{%bootstrap_field form.country %}
+
+
+<div class="well">
+Please make sure all the league games you have played so far are on the results before changing your KGS or OGS usernames.
+</div>
+{%bootstrap_field form.ogs_username %}
+{%bootstrap_field form.kgs_username %}
+
+  {% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
+  <a class="btn btn-danger pull-right" href="{% url 'tournament:players' tournament.pk %}">
+cancel
+  </a>
+</form>
+{% endblock %}
+{% block extra_css %}
+    {{ form.media.css }}
+{% endblock extra_css %}
+
+{% block extra_js %}
+{{ form.media.js }}
+{% endblock extra_js %}

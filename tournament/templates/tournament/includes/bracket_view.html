@@ -1,0 +1,74 @@
+{% load bootstrap3 league_tags tournament_tags%}
+
+{% for bracket in brackets %}
+  <legend >
+  {{bracket.name}}
+  </legend>
+  {% with bracket.get_rounds as rounds %}
+  <div class=" bracket">
+    {% for round in rounds %}
+      <ul class="round">
+        <li><legend >{{round.name}}</legend></li>
+      </ul>
+    {% endfor %}
+  </div>
+    <div class="bracket">
+
+    {% for round in rounds %}
+      <ul class="round">
+
+        {% for match in round.get_matchs %}
+        <li class="spacer">&nbsp;</li>
+        <li class="panel panel-default match">
+            <div class="panel-body match {% if match.sgf %} played {% endif %}"
+                  id="match_{{match.pk}}"
+                  data-match="{{match.pk}}"
+                   data-round="{{round.pk}}"
+                   data-bracket="{{bracket.pk}}">
+                {% if match.player_1 %}
+                <div
+                  class="list-group-item
+                  {% if match.sgf and match.winner == match.player_1 %}list-group-item-success{% endif %}"
+                  data-id="{{match.player_1.pk}}">
+                  {% if match.player_1.user.profile.country %}
+                  <img   src="{{match.player_1.user.profile.country.flag}}">
+                  {% endif %}
+                  {{match.player_1.user |user_link}}
+                  {% if match.sgf and match.winner == match.player_1 %}
+                  <span class="pull-right">
+                    {{match.sgf.result}}
+                  </span>
+                  {% endif %}
+               </div>
+                {% endif %}
+                {% if match.player_2 %}
+                <div
+                  class="list-group-item {% if match.sgf and match.winner == match.player_2 %}list-group-item-success{% endif %}"
+                  data-id="{{match.player_2.pk}}">
+                  {% if match.player_2.user.profile.country %}
+                  <img   src="{{match.player_2.user.profile.country.flag}}">
+                  {% endif %}
+                  {{match.player_2.user |user_link}}
+                  {% if match.sgf and match.winner == match.player_2 %}
+                  <span class="pull-right">
+                    {% match_result %}
+                  </span>
+                  {% endif %}
+                </div>
+
+                {% endif %}
+
+              </div>
+            </li>
+
+        {% endfor %}
+        <li class="spacer">&nbsp;</li>
+      </ul>
+
+
+    {% endfor %}
+  </div>
+
+  {% endwith %}
+
+{% endfor %}

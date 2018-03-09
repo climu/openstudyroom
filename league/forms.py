@@ -1,6 +1,9 @@
+import datetime
+
 from django import forms
 from django.contrib.auth.models import  Group
 from django.forms import ModelForm
+from django_countries.widgets import CountrySelectWidget
 import pytz
 
 from .models import Division, LeagueEvent, Profile
@@ -88,9 +91,10 @@ class LeaguePopulateForm(forms.Form):
             #    self.fields['player_'+str(player.pk)].inital = (division.pk,division.name)
 
 class DivisionForm(ModelForm):
+    next = forms.CharField(label='next', widget=forms.HiddenInput(), required=False)
     class Meta:
         model = Division
-        fields = ['name']
+        fields = ['name', 'next']
 
 
 class LeagueEventForm(forms.ModelForm):
@@ -113,16 +117,20 @@ class LeagueEventForm(forms.ModelForm):
             'is_public',
             'description',
         ]
+        # Customise year list to show 2 years in the past/future
+        EVENT_YEAR_CHOICES = range(datetime.date.today().year - 2, datetime.date.today().year + 3)
         widgets = {
             'name': forms.TextInput(),
-            'begin_time': forms.SelectDateWidget(),
-            'end_time': forms.SelectDateWidget(),
+            'begin_time': forms.SelectDateWidget(years=EVENT_YEAR_CHOICES),
+            'end_time': forms.SelectDateWidget(years=EVENT_YEAR_CHOICES),
         }
+
 
 class EmailForm(forms.Form):
     subject = forms.CharField(required=True)
     copy_to = forms.CharField(required=False)
     message = forms.CharField(widget=forms.Textarea())
+
 
 class TimezoneForm(forms.ModelForm):
     class Meta:
@@ -137,7 +145,9 @@ class ProfileForm(ModelForm):
             'bio',
             'ogs_username',
             'kgs_username',
+            'country',
         ]
+        widgets = {'country': CountrySelectWidget()}
 
     def clean_kgs_username(self):
         if not self.cleaned_data['kgs_username']:

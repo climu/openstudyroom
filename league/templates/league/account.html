@@ -28,7 +28,7 @@ return false;};
 
 {% block body_class %}user{% endblock %}
 
-{% block title %}{% if user == request.user %}My{% else %}{{user.username}}{% endif %} profile - league{% endblock %}
+{% block title %}{% if user == request.user %}My{% else %}{{user.username}}{% endif %} profile{% endblock %}
 {% block heading %}
 {% get_meijin as meijin %}
 
@@ -37,7 +37,7 @@ return false;};
         {% if user == meijin %}
             <i class="fa fa-trophy" data-toggle="tooltip" title="{{user.username}} is OSR Meijin !"></i>
         {% endif %}
-        {% if user == request.user %}My{% else %}{{user.username}}{% endif %} profile - league
+        {% if user == request.user %}My{% else %}{{user.username}}{% endif %} profile
     </h1>
 
 </div>
@@ -57,6 +57,9 @@ return false;};
 <div class="panel panel-default">
 <div class="panel-heading clearfix">
   <h4>
+    {% if user.profile.country %}
+    <img   src="{{user.profile.country.flag}}">
+    {% endif %}
      {{user.username}} infos
      {% if request.user == user %}
       <a href="{% url 'league:profile_update' user.profile.pk %}"><button class="btn btn-default pull-right">{% bootstrap_icon 'wrench' %} Edit </button></a>
@@ -64,22 +67,43 @@ return false;};
   </h4>
 </div>
 <div class="panel-body">
-  {% if user.profile.bio is not None %}
-<p>{{user.profile.bio|safe|rendered}}</p>
-{% endif %}
-<p>KGS Username: <a href="http://kgs.gosquares.net/index.rhtml.en?id={{user.profile.kgs_username}}">{{user.profile.kgs_username}}</a></p>
-<p>OGS Username:{% if user.profile.ogs_id > 0 %}
-   <a href="https://online-go.com/player/{{user.profile.ogs_id}}">{{user.profile.ogs_username}}</a></p>
-     {% endif %}
-{% if discord_user %}
-<p>Discord username : {{discord_user}}</p>
-{% elif request.user == user%}
-<p> Click this button to link your discord account with your OSR account: <a class="btn btn-default" href="/discord/">{% bootstrap_icon "user"%}</a>
-{% endif %}
+
+    <div class="row">
+
+            <div class="col-md-8">
+                {% if user.profile.bio is not None %}
+                <p>{{user.profile.bio|safe|rendered}}</p>
+                {% endif %}
+                {% if user.profile.kgs_username %}
+                <p>KGS Username: <a href="http://kgs.gosquares.net/index.rhtml.en?id={{user.profile.kgs_username}}">{{user.profile.kgs_username}} {% if user.profile.kgs_rank %}({{user.profile.kgs_rank}}){% endif %}</a></p>
+                {% endif %}
+                {% if user.profile.ogs_id > 0 %}
+                <p>OGS Username:
+                   <a href="https://online-go.com/player/{{user.profile.ogs_id}}">{{user.profile.ogs_username}} {% if user.profile.ogs_rank %}({{user.profile.ogs_rank}}){% endif %}</a>
+                     </p>
+                {% endif %}
+                {% if discord_user %}
+                <p>Discord username : {{discord_user}}</p>
+                {% elif request.user == user%}
+                <p> Click this button to link your discord account with your OSR account: <a class="btn btn-default" href="/discord/">{% bootstrap_icon "user"%}</a>
+                {% endif %}
+            </div>
+
+          <div class="col-md-4">
+              {% if user.profile.picture_url %}
+                  <img src="{{user.profile.picture_url}}" style='float:left;'  class="img-responsive">
+              {% endif%}
+
+        </div>
+    </div>
+
+
 
 </div>
 </div>
 
+
+{% if players %}
 <div class="panel panel-default">
   <div class="panel-heading"><h4>{{user.username}} results of passed and open leagues</h4></div>
 
@@ -155,7 +179,7 @@ return false;};
     {%endfor%}
 </div>
 </div>
-
+{% endif %}
 
 
 <div class="panel panel-default">

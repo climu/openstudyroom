@@ -15,6 +15,7 @@ from postman.api import pm_broadcast, pm_write
 from pytz import utc
 
 from league.models import User
+from league.forms import ActionForm
 from .forms import UTCPublicEventForm
 from .models import PublicEvent, AvailableEvent, GameRequestEvent, GameAppointmentEvent
 
@@ -35,6 +36,7 @@ class PublicEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     form_class = UTCPublicEventForm
     model = PublicEvent
     template_name_suffix = '_create_form'
+
     initial = {'start': datetime.now(),
                'end': datetime.now()}
 
@@ -43,6 +45,8 @@ class PublicEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def get_login_url(self):
         return '/'
+
+
 
 
 def calendar_view(request, user_id=None):
@@ -180,6 +184,7 @@ def json_feed(request):
     start = make_aware(start, tz)
     end = datetime.strptime(request.GET.get('end'), '%Y-%m-%d')
     end = make_aware(end, tz)
+
 
     # get public events for everyone
     data = PublicEvent.get_formated_public_event(start, end, tz)
@@ -491,7 +496,7 @@ def save(request):
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def admin_cal_event_list(request):
-    public_events = PublicEvent.objects.all()
+    public_events = PublicEvent.objects.all().order_by('-end')
     return render(
         request,
         'fullcalendar/admin_cal_event_list.html',
@@ -503,11 +508,17 @@ def admin_cal_event_list(request):
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def admin_delete_event(request, pk):
     if request.method == 'POST':
-        event = get_object_or_404(PublicEvent, pk=pk)
-        event.delete()
-    else:
-        raise Http404("What are you doing here ?")
-    return HttpResponseRedirect(reverse('calendar:admin_cal_event_list'))
+        form = ActionForm(request.POST)
+        if form.is_valid():
+            event = get_object_or_404(PublicEvent, pk=pk)
+            event.delete()
+            if 'next' in form.cleaned_data:
+                url = form.cleaned_data['next']
+            else:
+                url = reverse('calendar:admin_cal_event_list')
+            return HttpResponseRedirect(url)
+    raise Http404("What are you doing here ?")
+
 
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)

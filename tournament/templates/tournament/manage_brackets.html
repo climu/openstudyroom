@@ -1,0 +1,445 @@
+{% extends 'league/admin/base.html' %}
+{% load bootstrap3 static league_tags tournament_tags%}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
+{% endblock %}
+{% block title %}Manage tournament brackets{% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1>{{tournament.name}} brackets</h1>
+</div>
+{%endblock%}
+{% block content %}
+<div class="row">
+  {% include 'tournament/includes/manage_menu.html' with active='brackets' %}
+</div>
+<div class="row">
+  <div class = "col-md-2">
+    <div class="panel panel-default ">
+      <div class="panel-body">
+        <p>
+        <button id="save_tournament" class="btn btn-success btn-sm">
+            {% bootstrap_icon "ok" %} save
+          </button>
+        </p>
+        <p>
+          <form method="POST" class="form-inline" >{% csrf_token %}
+            <button type="submit" formaction="{% url 'tournament:create_bracket' tournament.pk %}" class="btn btn-primary btn-sm">
+                {% bootstrap_icon "plus" %} Create new bracket
+              </button>
+            </form>
+          </p>
+        <p>
+          {% if tournament.stage < 2 %}
+          <form method="POST" class="form-inline" >{% csrf_token %}
+            <button type="submit" formaction="{% url 'tournament:set_stage' tournament.pk %}" class="btn btn-primary btn-sm">
+              <input type="hidden" name="action" value="2">
+              <input type="hidden" name="next" value="{{request.path}}">
+                {% bootstrap_icon "triangle-right" %} Start Bracket stage
+              </button>
+            </form>
+            {% else %}
+            {% bootstrap_icon "ok" %}Bracket stage is on
+            {% endif %}
+          </p>
+      </div>
+    </div>
+
+    {% if seeded_players %}
+    <h2>Seeds</h2>
+    <div id="seeds" data-round="-1" data-bracket="-1" class="panel-body group_players">
+        {%for player in seeded_players %}
+            <div data-id={{player.pk}} class="list-group-item">
+              {{player.user | user_link}}
+            </div>
+        {%endfor%}
+
+  </div>
+    {% endif %}
+
+  {% if groups %}
+  {% for group in groups %}
+  <h2>{{group.name}}</h2>
+  <div id="group_{{group.pk}}_players" data-round="-1" data-bracket="-1" class="panel-body group_players">
+      {%for player in group.get_results %}
+          <div data-id={{player.pk}} class="list-group-item">
+            {{player.user | user_link}}
+          </div>
+      {%endfor%}
+
+</div>
+  {% endfor %}
+  {% else %}
+  {% endif %}
+</div>
+  <div class = "col-md-10">
+
+    {% for bracket in brackets %}
+<legend class="row">
+  <div class="col-md-6">
+  <form action="" method="POST" class="form-inline" >{% csrf_token %}
+  <div class="form-group clearfix">
+  <input type="hidden" name="next" value="{{request.path}}">
+  <input id="name" class="form-control" name="name" placeholder="Bracket name" value="{{bracket.name}}" title=""  type="text">
+  <button type="submit" formaction="{% url 'tournament:rename_bracket' bracket.pk %}" class="btn btn-primary btn-sm">
+    {% bootstrap_icon 'refresh' %} Rename the bracket
+  </button>
+</div>
+</form>
+</div>
+<div class = "col-md-4">
+
+
+</div>
+  <div class="col-md-2">
+    <form action="" method="POST" class="form-inline" >{% csrf_token %}
+    <div class="form-group clearfix">
+      <button
+        type="submit"
+        formaction="{% url 'tournament:delete_bracket' bracket.pk %}"
+        class="btn btn-danger btn-sm pull-right"
+        onclick="return confirm('Are you sure you want to delete this bracket?')">
+        {% bootstrap_icon "remove" %} Delete the bracket
+    </button>
+</div>
+</form>
+</div>
+</legend>
+    {% with bracket.get_rounds as rounds %}
+    <div class="row bracket">
+    {% for round in rounds %}
+      <ul class="round">
+    <li class="panel panel-default match">
+      <div class="panel-heading round-control-top">
+        <form action="" method="POST" class="form-inline" >{% csrf_token %}
+          <div class="form-group">
+          <input type="hidden" name="next" value="{{request.path}}">
+          <input id="name" class="form-control" style="max-width:145px;"name="name" placeholder="round name" value="{{round.name}}" title=""  type="text">
+          <button title="rename round" type="submit" formaction="{% url 'tournament:rename_round' round.pk %}" class="btn btn-primary btn-sm">
+            {% bootstrap_icon 'refresh' %}
+          </button>
+        </div>
+        </form>
+          </div>
+
+          <div class="panel-body round-control-botom">
+              <div class="row">
+              <div class="col-md-6">
+                <form action="" method="POST" class="form-inline" >{% csrf_token %}
+                  <button title="Add a new match" type="submit" formaction="{% url 'tournament:create_match' round.pk %}" class="btn btn-default btn-sm">
+                    {% bootstrap_icon "plus" %}
+                  </button>
+                  <button title="Delete last match" type="submit" formaction="{% url 'tournament:delete_match' round.pk %}" class="btn btn-default btn-sm">
+                    {% bootstrap_icon "minus" %}
+                  </button>
+                </form>
+            </div>
+            <div class="col-md-4">
+                <button class="shuffle btn btn-default btn-sm"
+                data-bracket="{{bracket.pk}}"
+                data-round="{{round.pk}}"
+                title="Shuffle selected players"
+                >
+                 {% bootstrap_icon "random" %}
+                </button>
+            </div>
+            <div class="col-md-2">
+                <form action="" method="POST" class="form-inline" >{% csrf_token %}
+                    <button title="Delete this round" type="submit" formaction="{% url 'tournament:delete_round' round.pk %}" onclick="return confirm('Really delete this round and all his matches')" class="btn btn-danger btn-sm pull-right">
+                      {% bootstrap_icon "remove" %}
+                    </button>
+                </form>
+            </div>
+
+        </div>
+            </div>
+
+        </li>
+
+  </ul>
+    {% endfor %}
+    <ul class="round">
+    <li class="panel panel-default match">
+    <div class="panel-body match">
+      <form action="" method="POST" class="form-inline" >{% csrf_token %}
+        <div class="form-group">
+        <input type="hidden" name="next" value="{{request.path}}">
+        <input id="name" class="form-control" name="name" placeholder=" new round name"  title=""  type="text">
+      <button type="submit" formaction="{% url 'tournament:create_round' bracket.pk %}" class="btn btn-success btn-sm">
+    {% bootstrap_icon 'plus' %} create new round
+    </button>
+    </div>
+    </form>
+    </div>
+    </li>
+    </ul>
+
+  </div>
+    <div class="row bracket">
+      {% for round in rounds %}
+      <ul class="round" id="round_{{round.pk}}">
+          {% for match in round.get_matchs %}
+          <li class="spacer">&nbsp;</li>
+          <li class="panel panel-default match">
+              <div class="panel-body match {% if match.sgf %} played {% endif %}"
+                    id="match_{{match.pk}}"
+                    data-match="{{match.pk}}"
+                     data-round="{{round.pk}}"
+                     data-bracket="{{bracket.pk}}">
+                  {% if match.player_1 %}
+                  <div
+                    class="list-group-item
+                    {% if match.sgf and match.winner == match.player_1 %}list-group-item-success{% endif %}"
+                    data-id="{{match.player_1.pk}}">
+                    {{match.player_1.user |user_link}}
+                    <div class="checkbox div-checkbox pull-right">
+                      <input class ="refetch check-player" value="{{match.player_1.pk}}" type="checkbox" data-round="{{round.pk}}" >
+                    </div>
+                 </div>
+                  {% endif %}
+                  {% if match.player_2 %}
+                  <div
+                    class="list-group-item {% if match.sgf and match.winner == match.player_2 %}list-group-item-success{% endif %}"
+                    data-id="{{match.player_2.pk}}">
+                    {{match.player_2.user |user_link}}
+                    <div class="checkbox div-checkbox pull-right">
+                      <input class ="refetch check-player" value="{{match.player_2.pk}}" type="checkbox" data-round="{{round.pk}}" >
+                    </div>
+                  </div>
+                  {% endif %}
+
+                </div>
+              </li>
+
+          {% endfor %}
+          <li class="spacer">&nbsp;</li>
+        </ul>
+
+
+      {% endfor %}
+  </div>
+
+    {% endwith %}
+
+    {% endfor %}
+
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="//cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+
+
+<script>
+// ajax crfs setup
+{% include 'league/includes/ajax_setup.html' %}
+
+{% if seeded_players %}
+var seeds_sortable = Sortable.create(seeds,{
+  group: {
+    name: 'players_list',
+    pull: 'clone',
+    put: function (to, from, item){
+      from = $(from.el)
+      if (from.attr('data-round')>0){
+        return true
+      }
+      else{
+        return false
+      }
+
+    },
+  },
+    sort: false,
+    onAdd: function (evt){
+      if (not($(evt.from).hasClass('played'))){
+        evt.item.outerHTML = "";
+      }
+    }
+});
+{% endif %}
+{% for group in groups %}
+  var group_{{group.pk}}_sortable = Sortable.create(group_{{group.pk}}_players,{
+    group: {
+      name: 'players_list',
+      pull: 'clone',
+      put: function (to, from, item){
+        from = $(from.el)
+        if (from.attr('data-round')>0){
+          return true
+        }
+        else{
+          return false
+        }
+
+      },
+    },
+      sort: false,
+      onAdd: function (evt){
+        evt.item.outerHTML = "";
+      }
+  });
+{% endfor %}
+
+var sortables ={};
+var matches = [];
+
+{% for bracket in brackets %}
+{% with bracket.get_rounds as rounds %}
+  {% for round in rounds %}
+      {% for match in round.get_matchs %}
+        var match_{{match.pk}}_sortable = Sortable.create(match_{{match.pk}},{
+          group: {
+            name: 'players_list',
+            pull: function (to, from){
+                to = $(to.el)
+                if ($(from.el).hasClass('played')){
+                  return 'clone';
+                }
+                if ((to.attr('data-round') <= {{round.pk}}) && (to.attr('data-bracket') == {{bracket.pk}})){
+                    return true;
+                }
+                if (to.attr('data-bracket') < 0 ) {
+                  return true
+                }
+                else {
+                    return 'clone';
+                }
+            },
+            put: true,
+            revertClone: true,
+          },
+            sort: {% if match.sgf %}false{% else %} true {% endif %},
+            onAdd: function (evt){
+              if (($(evt.from).attr('data-round') > {{round.pk}}) && ($(evt.from).attr('data-bracket') == {{bracket.pk}})) {
+                evt.item.outerHTML = "";
+              }
+            else{
+              $(evt.item).removeClass('list-group-item-success')
+              if ($(evt.from).hasClass('group_players')){
+                // if we put a new player, we had the select box to the item
+                  $(evt.item).append('<div class="checkbox div-checkbox pull-right"><input class ="refetch check-player" value="{{player.pk}}" type="checkbox" ></div>')
+                }
+            }
+            },
+
+        });
+        matches[{{match.pk}}] = match_{{match.pk}}_sortable;
+    {% endfor %}
+    sortables[{{round.pk}}] = matches;
+    matches = {};
+  {% endfor %}
+{% endwith %}
+{% endfor %}
+
+
+function get_dict() {
+  var dict = {};
+  var bracket = {};
+  var round = {};
+  {% for bracket in brackets %}
+    {% with bracket.get_rounds as rounds %}
+    {% for round in rounds %}
+      {% for match in round.get_matchs %}
+      //console.log(match_{{match.pk}}_sortable.toArray())
+        round[{{match.pk}}] = match_{{match.pk}}_sortable.toArray();
+      {% endfor %}
+      bracket[{{round.pk}}] = round
+      round = {}
+    {% endfor %}
+
+      dict[{{bracket.pk}}] = bracket
+      bracket = {}
+    {% endwith %}
+  {% endfor %}
+  return dict;
+}
+
+
+$('#save_tournament').click(function(){
+  var brackets = get_dict();
+  json_brackets = JSON.stringify(brackets);
+  $.ajax({
+    type:"POST",
+    url:"{% url 'tournament:save_brackets' tournament.pk %}",
+    data: {
+        'brackets': json_brackets,
+    },
+
+ });
+});
+
+function shuffle(array){
+    var currentIndex = array.length, temporaryValue, randomIndex;
+    while (0 !== currentIndex){
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+    return array;
+}
+
+// roudn = { match_id :[ player_1_id,player_2_id]}}}}}
+function shuffleround(round) {
+
+    // get list of selected players
+    var selected_players = $('.check-player:input:checkbox:checked').map(function() {
+            return this.value;
+    }).get();
+    // order this list from the round dict and keep the indexes
+    var templist = [];
+    var indexes = [];
+    var counter = 0;
+    for (var i in round) {
+          player_1 = round[i][0];
+          player_2 = round[i][1];
+        if (selected_players.indexOf(player_1) >= 0){
+            templist[counter] = player_1; // player 1
+            indexes[counter] = [i, 0];
+            counter++;
+        }
+        if (selected_players.indexOf(player_2) >= 0){
+          templist[counter] = player_2; // player
+          indexes[counter] = [i, 1];
+          counter++;
+          }
+      }
+    // shuffle this list
+    shuffle(templist)
+
+    // replace the players in round dict
+    for (var i = 0; i < templist.length; i++) {
+        index = indexes[i];
+        round[index[0]][index[1]] = templist[i]
+    }
+    return round;
+}
+
+$('.shuffle').click(function(){
+    var ok = confirm("Shuffle the selected players?");
+    if ( ok == false ) {
+      return false;
+    }
+    round_id = this.dataset.round
+    var round = get_dict()[this.dataset.bracket][round_id]
+    round = shuffleround(round)
+
+    for (var i in sortables[round_id]){
+      if (round[i].length > 0){
+        $("#match_" + i).append($('#round_'+ round_id).find($("[data-id='" + round[i][0] +"']")))
+      }
+      if ((round[i].length > 1)){
+        $("#match_" + i).append($('#round_'+ round_id).find($("[data-id='" + round[i][1] +"']")))
+      }
+    }
+
+});
+
+</script>
+
+{% endblock %}

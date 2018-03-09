@@ -1,6 +1,5 @@
 {% load league_tags bootstrap3 %}
 {% get_meijin as meijin %}
-
 <div class="panel panel-default ">
 <div class="panel-heading">Game infos</div>
 <div class="panel-body">
@@ -13,7 +12,14 @@
 <p>Black: {{sgf.black |user_link:meijin}}</p>
 <p>{{sgf.result}}</p>
 
-<p> <a href="/league/games/{{sgf.pk}}">{% bootstrap_icon 'link' %} Permalink</a></p>
+{% if event %}
+  {% if event.event_type == "tournament" %}
+  <p> <a href="/tournament/{{event.pk}}/games/{{sgf.pk}}">{% bootstrap_icon 'link' %} Permalink</a></p>
+  {%endif%}
+  {{event.type}}
+{% else %}
+  <p> <a href="/league/games/{{sgf.pk}}">{% bootstrap_icon 'link' %} Permalink</a></p>
+{% endif %}
 </div>
 </div>
 </div>

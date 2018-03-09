@@ -89,8 +89,9 @@
     <div class="panel-body">
       <div class="col-md-6">
       <form action="" method="POST" class="form-inline" >{% csrf_token %}
-      <input id="name" class="form-control" name="name" placeholder="Division name" value="{{division}}" title=""  type="text">
-<button type="submit" formaction="{% url 'league:admin_rename_division' division.pk %}" class="btn btn-primary">
+        <input type="hidden" name="next" value="{{request.path}}">
+        <input id="name" class="form-control" name="name" placeholder="Division name" value="{{division}}" title=""  type="text">
+      <button type="submit" formaction="{% url 'league:admin_rename_division' division.pk %}" class="btn btn-primary">
   Rename
 </button>
 </form>
@@ -98,6 +99,7 @@
 <div class="col-md-4">
       <form action="" method="POST" class="form-inline" >{% csrf_token %}
         <input type="hidden" name="action" value="delete_division">
+        <input type="hidden" name="next" value="{{request.path}}">
         <button type="submit" formaction="{% url 'league:admin_delete_division' division.pk %}" class="btn btn-danger"
         onclick="return confirm('Delete the {% if division.number_players > 0 %}division {{division}} and all its players/games?'{% else %}empty division {{division}}?'{% endif %} )">
           {% bootstrap_icon "remove" %} Delete

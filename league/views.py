@@ -20,13 +20,15 @@ from django.template.defaultfilters import date as _date, time as _time
 from django.utils import timezone
 from machina.core.db.models import get_model
 from postman.api import pm_write
+from tournament.models import Tournament
 import pytz
+import requests
 
 from . import utils
 from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
     Profile
-from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm, LeagueEventForm, \
-    EmailForm, TimezoneForm, ProfileForm
+from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm,\
+    LeagueEventForm, EmailForm, TimezoneForm, ProfileForm
 
 from discord_bind.models import DiscordUser
 
@@ -46,6 +48,7 @@ def scraper():
     This is not a view. belongs in utils. Don't forget  to update cronjob tho.
     """
 
+
     # 1 check time since get from kgs
     now = timezone.now()
     last_kgs = Registry.get_time_kgs()
@@ -62,10 +65,13 @@ def scraper():
             for kgs_user in m['users']:
                 profile = Profile.objects.filter(kgs_username__iexact=kgs_user['name']).first()
                 if profile is not None:
-                    profile.last_kgs_online = now
-                    profile.save()
+                    if 'rank' in kgs_user:
+                        profile.kgs_rank = kgs_user['rank'] # scraping the rank of the players
+                        profile.last_kgs_online = now
+                        profile.save()
     # 3 wait a bit
     sleep(2)
+
 
     # 4.1 look for some sgfs that we analyse and maybe record as games
     sgf = Sgf.objects.filter(p_status=2).first()
@@ -249,7 +255,7 @@ def ddk(request):
 
 def archives(request):
     """Show a list of all leagues."""
-    events = LeagueEvent.get_events(request.user)
+    events = LeagueEvent.get_events(request.user).exclude(event_type='tournament')
     open_events = events.filter(is_open=True)
 
     context = {
@@ -381,14 +387,18 @@ def account(request, user_name=None):
             return HttpResponseRedirect('/')
     else:
         user = get_object_or_404(User, username=user_name)
-        #user = User.objects.get(username=user_name)
+        # user = User.objects.get(username=user_name)
 
     if not user.is_league_member():
         return HttpResponseRedirect('/')
-    discord_user = DiscordUser.objects.filter(user=user).first()
-    open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
 
-    players = user.leagueplayer_set.order_by('-pk')
+    open_events = LeagueEvent.get_events(request.user)\
+        .filter(is_open=True)\
+        .exclude(event_type='tournament')
+
+    discord_user = DiscordUser.objects.filter(user=user).first()
+
+    players = user.leagueplayer_set.exclude(event__event_type='tournament').order_by('-pk')
 
     sgfs = Sgf.objects.defer('sgf_text').filter(Q(white=user) | Q(black=user)).\
         prefetch_related('white', 'black', 'winner').\
@@ -416,25 +426,34 @@ def account(request, user_name=None):
     return HttpResponse(template.render(context, request))
 
 
-def game_api(request, sgf_id):
+def game_api(request, sgf_id, event_id=None):
     """Returns a json to be use in game pages. Json is formated as:
     'infos': players, date, league, group, permalink, download link.
     'sgf': sgf datas as plain text string
     """
+
     sgf = get_object_or_404(Sgf, pk=sgf_id)
-    html = loader.render_to_string("league/includes/game_info.html", {'sgf': sgf})
+    event = None
+    if event_id is not None:
+        event = get_object_or_404(LeagueEvent, pk=event_id)
+
+    html = loader.render_to_string(
+        "league/includes/game_info.html",
+        {'sgf': sgf, 'event': event}
+    )
     data = {}
     data['sgf'] = sgf.sgf_text.replace(';B[]', "").replace(';W[]', "")
     data['permalink'] = '/league/games/' + str(sgf.pk) + '/'
     data['game_infos'] = html
     data['white'] = sgf.white.kgs_username
     data['black'] = sgf.black.kgs_username
+    data['id'] = str(sgf.pk)
 
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
 def scrap_list(request):
-    open_events = LeagueEvent.objects.filter(is_open=True)
+    open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
     profiles = Profile.objects.filter(user__leagueplayer__event__in=open_events)\
         .distinct().order_by('-p_status')
     context = {
@@ -489,7 +508,19 @@ def admin(request):
                 group = Group.objects.get(name='league_member')
                 user.groups.add(group)
                 utils.quick_send_mail(user, 'emails/welcome.txt')
-
+                if settings.DEBUG:
+                    discord_url = 'http://exemple.com' # change this for local test
+                else:
+                    with open('/etc/discord_welcome_hook_url.txt') as f:
+                        discord_url = f.read().strip()
+                message = "Please welcome our new member " + user.username + " with a violent game of baduk. \n"
+                if user.profile.kgs_username:
+                    message += "KGS : " + user.profile.kgs_username + " \n"
+                if user.profile.ogs_username:
+                    message += "OGS : [" + user.profile.ogs_username +\
+                        "](https://online-go.com/player/" + str(user.profile.ogs_id) + ")"
+                values = {"content": message}
+                requests.post(discord_url, json=values)
             elif action[0:6] == "delete":
                 if action[7:15] == "no_games":# deletion due to no played games
                     utils.quick_send_mail(user, 'emails/no_games.txt')
@@ -544,7 +575,7 @@ def admin_sgf_list(request):
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
-def handle_upload_sgf(request):
+def handle_upload_sgf(request, tournament_id=None):
     """Get sgf datas from an uploaded file and redctect to upload_sgf view.
         sgf datas are store in request.session. Maybe we could avoid that.
         create a form from it and loads the template should make it?
@@ -555,7 +586,11 @@ def handle_upload_sgf(request):
             file = request.FILES['file']
             sgf_data = file.read().decode('UTF-8')
             request.session['sgf_data'] = sgf_data
-            return HttpResponseRedirect(reverse('league:upload_sgf'))
+            if tournament_id is None:
+                return HttpResponseRedirect(reverse('league:upload_sgf'))
+            else:
+                tournament = get_object_or_404(Tournament, pk=tournament_id)
+                return HttpResponseRedirect(reverse('tournament:upload_sgf', args=[tournament.pk]))
         else:
             raise Http404("What are you doing here ?")
     else:
@@ -802,9 +837,7 @@ def admin_delete_division(request, division_id):
                     message = "You just deleted the empty division" + str(division) + "."
                 division.delete()
                 messages.success(request, message)
-                return HttpResponseRedirect(
-                    reverse('league:admin_events_update', kwargs={'pk': event.pk}))
-
+                return HttpResponseRedirect(form.cleaned_data['next'])
     raise Http404("What are you doing here ?")
 
 
@@ -861,8 +894,7 @@ def admin_rename_division(request, division_id):
             division.name = form.cleaned_data['name']
             division.save()
             messages.success(request, message)
-            return HttpResponseRedirect(
-                reverse('league:admin_events_update', kwargs={'pk': event.pk}))
+            return HttpResponseRedirect(form.cleaned_data['next'])
     raise Http404("What are you doing here ?")
 
 

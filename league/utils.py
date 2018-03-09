@@ -15,16 +15,16 @@ def kgs_connect():
     # If you are running this locally and want to run scraper, you should use your own
     # KGS credential
     if settings.DEBUG:
-        kgs_password = 'yourpassword' # change this for local test
+        kgs_password = 'password' # change this for local test
     else:
         with open('/etc/kgs_password.txt') as f:
             kgs_password = f.read().strip()
 
     message = {
         "type": "LOGIN",
-        "name": "OSR", # change this if you are testing locally
+        "name": "OSR",  # change this if you are testing locally
         "password": kgs_password,
-        "locale": "en_US",
+        "locale": "de_DE",
     }
     formatted_message = json.dumps(message)
     for _ in range(10):
@@ -146,6 +146,7 @@ def parse_sgf_string(sgf_string):
             q = sgf_string.find(']', p)  # find the end of the tag
             out[prop[key]] = sgf_string[p + 3:q]
     # convert string date to date object
+
     if 'date' in out:
         out['date'] = datetime.datetime.strptime(out['date'], "%Y-%m-%d")
     else:
@@ -154,7 +155,10 @@ def parse_sgf_string(sgf_string):
     out['number_moves'] = 2 * sgf_string.count(';B[')
     # We create a unique string based on exact time (ms) 5 first black moves where played.
     # check code is: yyymmddwplayerbplayernsome black moves
-    code = datetime.datetime.strftime(out['date'], '%Y%m%d') + out['wplayer'] + out['bplayer']
+    code = ''
+    if out['date'] is not None:
+        code += datetime.datetime.strftime(out['date'], '%Y%m%d')
+    code += out['wplayer'] + out['bplayer']
 
     for n in range(1, 7):
         p = findnth(sgf_string, 'B[', 8 * n)

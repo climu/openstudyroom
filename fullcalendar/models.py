@@ -28,7 +28,9 @@ class PublicEvent(CalEvent):
     @staticmethod
     def get_formated_public_event(start, end, tz):
         """ return a dict of publics events between start and end formated for json."""
+
         public_events = PublicEvent.objects.filter(end__gte=start, start__lte=end)
+
         data = []
         for event in public_events:
             dict = {
@@ -169,6 +171,9 @@ class GameAppointmentEvent(CalEvent):
         related_query_name="%(app_label)s_%(class)ss",
     )
 
+    def __str__(self):
+        return self.start.strftime("%x") + self.title()
+
     def title(self):
         users = self.users.all()
         return 'Game ' + users[0].username + ' vs ' + users[1].username
@@ -189,7 +194,7 @@ class GameAppointmentEvent(CalEvent):
     def get_formated_game_appointments(user, now, tz):
         data = []
         game_appointments = user.fullcalendar_gameappointmentevent_related.filter(
-            start__gte=now
+            end__gte=now
         )
         for event in game_appointments:
             opponent = event.opponent(user)

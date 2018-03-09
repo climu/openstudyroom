@@ -15,8 +15,9 @@ import pytz
 import requests
 
 from community.models import Community
-
+from django_countries.fields import CountryField
 from . import utils
+from .ogs import get_user_rank
 
 # pylint: disable=no-member
 
@@ -38,7 +39,7 @@ class LeagueEvent(models.Model):
     begin_time = models.DateTimeField(blank=True)
     end_time = models.DateTimeField(blank=True)
     # This should have been a charfield from the start.
-    name = models.TextField(max_length=20)
+    name = models.TextField(max_length=60)
     # max number of games 2 players are allowed to play together
     nb_matchs = models.SmallIntegerField(default=2)
     # points per win
@@ -193,6 +194,7 @@ class LeagueEvent(models.Model):
                 is_public=True,
                 community__isnull=True
             )
+        events.exclude(event_type='tournament')
         return events
 
 
@@ -280,35 +282,28 @@ class Sgf(models.Model):
 
     def get_players(self, event):
         """return the players of this sgf for this event."""
-        if self.ogs_id:
+        if self.place.startswith('OGS'):
             black_player = LeaguePlayer.objects.filter(
                 event=event,
                 ogs_username__iexact=self.bplayer
-            )
+            ).first()
 
             white_player = LeaguePlayer.objects.filter(
                 event=event,
                 ogs_username__iexact=self.wplayer
-            )
+            ).first()
         else:
             black_player = LeaguePlayer.objects.filter(
                 event=event,
                 kgs_username__iexact=self.bplayer
-            )
+            ).first()
 
             white_player = LeaguePlayer.objects.filter(
                 event=event,
                 kgs_username__iexact=self.wplayer
-            )
-        if len(black_player) == 1:  # That shouldn't happen, but who knows
-            black_player = black_player.first()
-        else:
-            return False
-        if len(white_player) == 1:
-            white_player = white_player.first()
-        else:
-            return False
-        return {'black': black_player, 'white': white_player}
+            ).first()
+
+        return [black_player, white_player]
 
     def update_related(self, events):
         """Update league_valid, events, divisions and users fields.
@@ -335,19 +330,21 @@ class Sgf(models.Model):
         else:
             for event in events:
                 # Then we get the proper players
-                players = self.get_players(event)
-                if players is False:
+                [bplayer, wplayer] = self.get_players(event)
+                if wplayer is None or bplayer is None:
                     return False
                 # We add event and division to the sgf
                 self.events.add(event)
-                self.divisions.add(players['black'].division)
+                if not hasattr(event, 'stage') or event.stage == 1:
+                    self.divisions.add(bplayer.division)
+
             # Now we set the fields on the sgf
             if winner == 'black':
-                self.winner = players['black'].user
+                self.winner = bplayer.user
             else:
-                self.winner = players['white'].user
-            self.white = players['white'].user
-            self.black = players['black'].user
+                self.winner = wplayer.user
+            self.white = wplayer.user
+            self.black = bplayer.user
             self.league_valid = True
             self.save()
             return True
@@ -355,7 +352,6 @@ class Sgf(models.Model):
     def get_messages(self):
         """Return a list of erros pasring message field."""
         return self.message.split(';')[1:]
-
 
     def parse(self):
         """Parse one sgf.
@@ -384,14 +380,49 @@ class Sgf(models.Model):
         self.p_status = 0
         return self
 
-    def check_validity_event(self, event):
-        """Check sgf validity for a given event.
+    def is_duplicate(self):
+        """Check if a sgf is already in the db comparing check_code.
 
-        oponents in same Division, tag , timesetting,not a review
-        We will reperform check on players division because a user could have upload a sgf by hand
-        hence such a sgf wouldn't have been check during check_player
+        Return the sgf pk is duplicate and -1 if not.
+        """
+        sgfs = Sgf.objects.filter(check_code=self.check_code)
+        if self.pk is None:  # self is not in the db already (admin uploading)
+            if len(sgfs) > 0:
+                return sgfs.first().pk
+        else:  # If self is already in db, we need to check only with others sgfs
+            sgfs = sgfs.exclude(pk=self.pk)
+            if len(sgfs) > 0:
+                return sgfs.first().pk
+        return -1
+
+
+    def check_players(self, event):
+        m = ''
+        b = True
+        division = None
+        [bplayer, wplayer] = self.get_players(event)
+        if wplayer is not None and bplayer is not None:
+            if wplayer.division != bplayer.division:
+                (b, m) = (False, m + '; players not in same division')
+            else:
+                w_results = wplayer.get_results()
+                if self.bplayer in w_results:
+                    if len(w_results[self.bplayer]) >= event.nb_matchs:
+                        (b, m) = (False, '; max number of games')
+                    else:
+                        division = bplayer.division
+                else:
+                    division = bplayer.division
+        else:
+            (b, m) = (False, '; One of the players is not a league player')
+        return {'message': m, 'valid': b, 'division': division}
+
+    def check_event_settings(self, event):
+        """Check sgf settings for a given event.
+
+        tag , timesetting,not a review
+        We don't preform check on players. This will be done at check_players
         we don't touch the sgf but return a dict {'message': string , 'valid' : boolean, 'tag',boolean}
-        This is meant to be called by check_validity(self) only.
         Note that this method does not check if a sgf is already in db.
         """
         b = True
@@ -403,36 +434,6 @@ class Sgf(models.Model):
         else:
             tag = False
             (b, m) = (False, m + '; Tag missing')
-        if self.ogs_id is not None:
-            wplayer = LeaguePlayer.objects.filter(
-                ogs_username__iexact=self.wplayer,
-                event=event
-            ).first()
-            bplayer = LeaguePlayer.objects.filter(
-                ogs_username__iexact=self.bplayer,
-                event=event
-            ).first()
-
-        else:
-            wplayer = LeaguePlayer.objects.filter(
-                kgs_username__iexact=self.wplayer,
-                event=event
-            ).first()
-            bplayer = LeaguePlayer.objects.filter(
-                kgs_username__iexact=self.bplayer,
-                event=event
-            ).first()
-        if wplayer is not None and bplayer is not None:
-            if wplayer.division != bplayer.division:
-                (b, m) = (False, m + '; players not in same division')
-            else:
-                w_results = wplayer.get_results()
-                if self.bplayer in w_results:
-                    if len(w_results[self.bplayer]) >= event.nb_matchs:
-                        (b, m) = (False, m + '; max number of games')
-        else:
-            (b, m) = (False, m + '; One of the players is not a league player')
-
         if not utils.check_byoyomi(self.byo):
             (b, m) = (False, m + '; byo-yomi')
         if int(self.time) < event.main_time:
@@ -455,19 +456,11 @@ class Sgf(models.Model):
         maybe a dict with {'event1':'message', 'event2'...}
         """
         # First we check if we have same sgf in db comparing check_code
-        sgfs = Sgf.objects.filter(check_code=self.check_code)
-        if self.pk is None:  # self is not in the db already (admin uploading)
-            if len(sgfs) > 0:
-                self.league_valid = False
-                self.message = 'same sgf already in db : ' + str(sgfs.first().pk)
-                return []
-        else:  # If self is already in db, we need to check only with others sgfs
-            sgfs = sgfs.exclude(pk=self.pk)
-            if len(sgfs) > 0:
-                self.league_valid = False
-                self.message = ';same sgf already in db : ' + str(sgfs.first().pk)
-                # if sgf already in db, no need to perform further.
-                return []
+        duplicate = self.is_duplicate()
+        if duplicate > 0:
+            self.league_valid = False
+            self.message = 'same sgf already in db : ' + duplicate
+            return []
 
         events = LeagueEvent.objects.filter(is_open=True)  # get all open events
         message = ''
@@ -476,9 +469,16 @@ class Sgf(models.Model):
             return []
         valid_events = []
         for event in events:
-            check = self.check_validity_event(event)
-            # if the game is taged for this event, we keep this events message
-            if check['tag']:
+            settings = self.check_event_settings(event)
+            players = self.check_players(event)
+            check = {
+                'message': players['message'] + settings['message'],
+                'valid': players['valid'] and settings['valid'],
+                'tag': settings['tag'],
+                'players': players['valid']
+            }
+            # if the players are in this event, we keep this events message
+            if check['players']:
                 message = check['message']
                 if check['valid']:
                     valid_events.append(event)
@@ -730,6 +730,7 @@ class User(AbstractUser):
         ogs_id = self.profile.ogs_id
         url = 'https://online-go.com/api/v1/players/' + str(ogs_id) + '/games/?ordering=-ended'
         opponents = [u.profile.ogs_id for u in opponents if u.profile.ogs_id > 0]
+
         # we deal with pagination with this while loop
         while url is not None:
             request = requests.get(url).json()
@@ -791,6 +792,7 @@ class User(AbstractUser):
             self.check_kgs(opponents)
         if self.profile.ogs_id > 0:
             self.check_ogs(opponents)
+            self.profile.ogs_rank = get_user_rank(self.profile.ogs_id)  # set new rank
         # Mark the user checked
         self.profile.p_status = 0
         self.profile.save()
@@ -819,24 +821,25 @@ class User(AbstractUser):
         return communitys
 
 
-
 class Profile(models.Model):
     """A user profile. Store settings and infos about a user."""
     user = models.OneToOneField(User)
     kgs_username = models.CharField(max_length=10, blank=True)
     ogs_username = models.CharField(max_length=40, blank=True)
-    #ogs_id is set in ogs.get_user_id
+    kgs_rank = models.CharField(max_length=40, blank=True)
+    ogs_rank = models.CharField(max_length=40, blank=True)
+    # ogs_id is set in ogs.get_user_id
     ogs_id = models.PositiveIntegerField(default=0, blank=True, null=True)
-    #User can write what he wants in bio
+    # User can write what he wants in bio
     bio = MarkupTextField(
             blank=True, null=True,
             validators=[validators.NullableMaxLengthValidator(2000)]
     )
     # p_status help manage the scraplist
     p_status = models.PositiveSmallIntegerField(default=0)
-    #kgs_online shoudl be updated every 5 mins in scraper
+    # kgs_online shoudl be updated every 5 mins in scraper
     last_kgs_online = models.DateTimeField(blank=True, null=True)
-    #Calendar settings
+    # Calendar settings
     timezone = models.CharField(
         max_length=100,
         choices=[(t, t) for t in pytz.common_timezones],
@@ -844,6 +847,8 @@ class Profile(models.Model):
     )
     start_cal = models.PositiveSmallIntegerField(default=0)
     end_cal = models.PositiveSmallIntegerField(default=24)
+    picture_url = models.URLField(blank=True, null=True)
+    country = CountryField(blank=True, null=True, blank_label='(select country)')
 
     def __str__(self):
         return self.user.username
@@ -866,7 +871,7 @@ class Division(models.Model):
         return self.sgf_set.distinct().count()
 
     def get_players(self):
-        return self.leagueplayer_set.all().order_by('-score')
+        return self.leagueplayer_set.all()
 
     def number_players(self):
         return self.leagueplayer_set.count()
@@ -912,6 +917,8 @@ class Division(models.Model):
             player.n_games = 0
             player.score = 0
             player.results = {}
+            player.sos = 0
+            player.sodos = 0
             results.append(player)
         for sgf in sgfs:
             if sgf.winner == sgf.white:
@@ -927,22 +934,34 @@ class Division(models.Model):
             loser.n_games += 1
             loser.score += self.league_event.pploss
             if loser.pk in winner.results:
-                winner.results[loser.pk].append({'id': sgf.pk, 'r': 1})
+                winner.results[loser.pk].append({'id': sgf.pk, 'r': 1, 'p': sgf.result})
             else:
-                winner.results[loser.pk] = [{'id': sgf.pk, 'r': 1}]
+                winner.results[loser.pk] = [{'id': sgf.pk, 'r': 1, 'p': sgf.result}]
             if winner.pk in loser.results:
-                loser.results[winner.pk].append({'id': sgf.pk, 'r': 0})
+                loser.results[winner.pk].append({'id': sgf.pk, 'r': 0, 'p': sgf.result})
             else:
-                loser.results[winner.pk] = [{'id': sgf.pk, 'r': 0}]
+                loser.results[winner.pk] = [{'id': sgf.pk, 'r': 0, 'p': sgf.result}]
 
         # now let's set the active flag
         min_matchs = self.league_event.min_matchs
         for player in players:
             player.is_active = player.n_games >= min_matchs
 
+        real_opponent = {}
+        # calulcate the sos for each player
+        for player in players:
+            for opponent, info in player.results.items():
+                for opponent_player in players:
+                    if opponent is opponent_player.pk:
+                        real_opponent = opponent_player
+                for list_item in info:
+                    if list_item.get('r') is 1:
+                        player.sodos += real_opponent.n_win
+                    player.sos += real_opponent.n_win
+
         results = sorted(
             results,
-            key=attrgetter('score', 'n_games'),
+            key=attrgetter('score', 'n_games', 'sos', 'sodos'),
             reverse=True
         )
         return results
@@ -950,10 +969,11 @@ class Division(models.Model):
 
 class LeaguePlayer(models.Model):
     user = models.ForeignKey('User')
-    kgs_username = models.CharField(max_length=20, default='')
+    kgs_username = models.CharField(max_length=20, default='', null=True, blank=True)
     ogs_username = models.CharField(max_length=40, null=True, blank=True)
+    #kgs_rank = models.CharField(max_length=20, default='')
     event = models.ForeignKey('LeagueEvent')
-    division = models.ForeignKey('Division', null=True)
+    division = models.ForeignKey('Division', null=True, blank=True)
     # p_status is deprecated, we now store that in player profile
     p_status = models.SmallIntegerField(default=0)
 
