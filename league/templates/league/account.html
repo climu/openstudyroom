@@ -67,6 +67,7 @@ return false;};
   </h4>
 </div>
 <div class="panel-body">
+
     <div class="row">
 
             <div class="col-md-8">
@@ -81,6 +82,11 @@ return false;};
                    <a href="https://online-go.com/player/{{user.profile.ogs_id}}">{{user.profile.ogs_username}} {% if user.profile.ogs_rank %}({{user.profile.ogs_rank}}){% endif %}</a>
                      </p>
                 {% endif %}
+                {% if discord_user %}
+                <p>Discord username : {{discord_user}}</p>
+                {% elif request.user == user%}
+                <p> Click this button to link your discord account with your OSR account: <a class="btn btn-default" href="/discord/">{% bootstrap_icon "user"%}</a>
+                {% endif %}
             </div>
 
           <div class="col-md-4">
@@ -90,6 +96,7 @@ return false;};
 
         </div>
     </div>
+
 
 
 </div>

@@ -30,6 +30,8 @@ from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
 from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm,\
     LeagueEventForm, EmailForm, TimezoneForm, ProfileForm
 
+from discord_bind.models import DiscordUser
+
 ForumProfile = get_model('forum_member', 'ForumProfile')
 discord_url_file = "/etc/discord_url.txt"
 
@@ -394,6 +396,8 @@ def account(request, user_name=None):
         .filter(is_open=True)\
         .exclude(event_type='tournament')
 
+    discord_user = DiscordUser.objects.filter(user=user).first()
+
     players = user.leagueplayer_set.exclude(event__event_type='tournament').order_by('-pk')
 
     sgfs = Sgf.objects.defer('sgf_text').filter(Q(white=user) | Q(black=user)).\
@@ -416,6 +420,7 @@ def account(request, user_name=None):
         'open_events': open_events,
         'sgfs': sgfs,
         'user': user,
+        'discord_user': discord_user
     }
     template = loader.get_template('league/account.html')
     return HttpResponse(template.render(context, request))

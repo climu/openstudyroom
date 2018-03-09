@@ -1,8 +1,12 @@
 # pylint: disable=wildcard-import,unused-wildcard-import
 
 from .base import *
+import os
 
 DEBUG = True
+
+# for discord testing api without https
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 INSTALLED_APPS += [
     'debug_toolbar',
