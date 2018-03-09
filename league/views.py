@@ -253,7 +253,7 @@ def ddk(request):
 
 def archives(request):
     """Show a list of all leagues."""
-    events = LeagueEvent.get_events(request.user)
+    events = LeagueEvent.get_events(request.user).exclude(event_type='tournament')
     open_events = events.filter(is_open=True)
 
     context = {
