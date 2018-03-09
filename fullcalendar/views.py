@@ -496,7 +496,7 @@ def save(request):
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def admin_cal_event_list(request):
-    public_events = PublicEvent.objects.all()
+    public_events = PublicEvent.objects.all().order_by('-end')
     return render(
         request,
         'fullcalendar/admin_cal_event_list.html',
