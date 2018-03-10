@@ -755,7 +755,7 @@ class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         else:
             return reverse(
                 'community:community_page',
-                kwargs={'name': self.get_object().community.name}
+                kwargs={'slug': self.get_object().community.slug}
             )
 
     def get_context_data(self, **kwargs):
