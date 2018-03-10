@@ -30,7 +30,7 @@ urlpatterns = [
 
     url(r'^tournament/', include('tournament.urls', namespace='tournament')),
 
-    url(r'^discord/', include('discord_bind.urls')),
+#    url(r'^discord/', include('discord_bind.urls')),
 
     url(r'^messages/', include('postman.urls', namespace='postman', app_name='postman')),
     url(r'^community/', include('community.urls', namespace='community')),

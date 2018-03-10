@@ -84,7 +84,6 @@ return false;};
                 {% endif %}
                 {% if discord_user %}
                 <p>Discord username : {{discord_user}}</p>
-                {% elif request.user == user%}
                 <p> Click this button to link your discord account with your OSR account: <a class="btn btn-default" href="/discord/">{% bootstrap_icon "user"%}</a>
                 {% endif %}
             </div>
