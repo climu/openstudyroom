@@ -459,7 +459,7 @@ class Sgf(models.Model):
         duplicate = self.is_duplicate()
         if duplicate > 0:
             self.league_valid = False
-            self.message = 'same sgf already in db : ' + duplicate
+            self.message = 'same sgf already in db : ' + str(duplicate)
             return []
 
         events = LeagueEvent.objects.filter(is_open=True)  # get all open events
