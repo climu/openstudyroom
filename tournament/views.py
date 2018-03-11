@@ -3,6 +3,7 @@ import json
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import loader
 from django.shortcuts import get_object_or_404
+from django.db.models.functions import Lower
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import CreateView
 from django.contrib.auth.decorators import user_passes_test, login_required
@@ -90,7 +91,7 @@ def games_view(request, tournament_id, sgf_id=None):
 def players_view(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     groups = TournamentGroup.objects.filter(league_event=tournament).exists()
-    players = tournament.leagueplayer_set.order_by('user__username')
+    players = tournament.leagueplayer_set.order_by(Lower('user__username'))
     context = {
         'tournament': tournament,
         'players': players,
