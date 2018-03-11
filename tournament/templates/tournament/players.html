@@ -3,7 +3,7 @@
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
   <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
-
+  <link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
 {% endblock %}
 
 {% block title %}{{tournament.name}} - Players{% endblock %}
@@ -34,14 +34,14 @@
       </a>
     {% endif %}
     {% if player.user.profile.country %}
-    <img  class="pull-right" style="margin: 6px 4px 0" src="{{player.user.profile.country.flag}}">
+    <i class="flag2x {{ player.user.profile.country.flag_css }} pull-right"></i>
     {% endif %}
   </h4>
   </div>
   <div class="panel-body">
     {% if player.user.profile.picture_url %}
     <div class="">
-        <img src="{{player.user.profile.picture_url}}" style='float:left;'  class="img-responsive">
+        <img src="{{player.user.profile.picture_url}}" style='float:left;margin:5px;'  class="img-responsive">
     </div>
     {% else %}
     <div class="profile-avatar empty">
@@ -50,7 +50,7 @@
     {% endif %}
 
     {% if player.user.profile.bio is not None %}
-    <p>{{player.user.profile.bio|safe|rendered}}<p>
+    <p>{{player.user.profile.bio|safe|rendered|truncatewords_html:100}}<p>
   {% endif %}
 
   </div>
