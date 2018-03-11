@@ -39,11 +39,7 @@
   </h4>
   </div>
   <div class="panel-body">
-    {% if player.user.forum_profile.avatar %}
-    <div class="">
-      <img src="{{ player.user.forum_profile.avatar.url }}" style='float:left;'  class="img-responsive" alt="{{ player.user.forum_profile.user.username }}" />
-    </div>
-    {% elif player.user.profile.picture_url %}
+    {% if player.user.profile.picture_url %}
     <div class="">
         <img src="{{player.user.profile.picture_url}}" style='float:left;'  class="img-responsive">
     </div>

@@ -221,7 +221,8 @@ def edit_player_profile(request, tournament_id, user_id):
     context = {
         'tournament': tournament,
         'form': form,
-        'groups': groups
+        'groups': groups,
+        'user': user
     }
     template = loader.get_template('tournament/edit_profile.html')
     return HttpResponse(template.render(context, request))
