@@ -9,7 +9,7 @@ from django.views.generic.edit import CreateView
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.utils.timezone import make_aware
+from django.utils import timezone
 from league.models import User, Sgf
 from league.forms import SgfAdminForm, ActionForm
 from fullcalendar.forms import UTCPublicEventForm
@@ -23,11 +23,14 @@ def about(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     admin = tournament.is_admin(request.user)
     groups = TournamentGroup.objects.filter(league_event=tournament).exists()
+    now = timezone.now()
+    events = tournament.tournamentevent_set.filter(end__gte=now)
 
     context = {
         'tournament': tournament,
         'admin': admin,
-        'groups': groups
+        'groups': groups,
+        'events': events
     }
     template = loader.get_template('tournament/about.html')
     return HttpResponse(template.render(context, request))
@@ -108,7 +111,7 @@ def calendar(request, tournament_id):
     context = {
         'tournament': tournament,
         'admin': tournament.is_admin(request.user),
-        'groups':groups,
+        'groups': groups,
         'user': request.user
     }
     template = loader.get_template('tournament/calendar.html')
@@ -127,9 +130,9 @@ def calendar_feed(request, tournament_id):
 
     # Get start and end from request and use user tz
     start = datetime.strptime(request.GET.get('start'), '%Y-%m-%d')
-    start = make_aware(start, tz)
+    start = timezone.make_aware(start, tz)
     end = datetime.strptime(request.GET.get('end'), '%Y-%m-%d')
-    end = make_aware(end, tz)
+    end = timezone.make_aware(end, tz)
 
     data = tournament.get_formated_events(start, end, tz)
     return HttpResponse(json.dumps(data), content_type="application/json")

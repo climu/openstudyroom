@@ -1,0 +1,47 @@
+{%load tz calendar_tags%}
+{% get_current_timezone as TIME_ZONE %}
+
+<ul class="sidebar">
+  <h4>
+  <a href="{% url 'calendar:calendar_view' %}">  <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+  Upcoming events ({{TIME_ZONE}})
+</a>
+  </h4>
+{% get_now as now %}
+
+{% for cal_event in events %}
+  {% if cal_event.url %}  <a href="{{cal_event.url}}">    {% endif %}
+<div class="panel cal-event-sidebar">
+
+  <div class="panel-body">
+    <div class="col-md-4">
+      <p>
+        {% if cal_event.start.date == now.date %}
+        Today !
+        {% else %}
+        {{cal_event.start|date:"d, M"}}
+        {% endif %}
+      </p>
+
+      <p>{{cal_event.start|time:"TIME_FORMAT"}}</p>
+
+    </div>
+    <div class="col-md-8" style="text-align: center;">
+<div class=" label label-default cal-event-title">
+      {{cal_event.title}}
+
+    </div>
+    <div class="text-center cal-event-description">
+      {{cal_event.description}}
+
+    </div>
+
+    </div>
+    {% if cal_event.url %}  </a>  {% endif %}
+</div>
+</div>
+
+{% endfor %}
+
+
+</ul>
