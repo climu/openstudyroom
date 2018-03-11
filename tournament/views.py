@@ -90,7 +90,7 @@ def games_view(request, tournament_id, sgf_id=None):
 def players_view(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     groups = TournamentGroup.objects.filter(league_event=tournament).exists()
-    players = tournament.leagueplayer_set.all()
+    players = tournament.leagueplayer_set.order_by('user__username')
     context = {
         'tournament': tournament,
         'players': players,

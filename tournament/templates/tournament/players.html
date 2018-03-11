@@ -24,7 +24,7 @@
 <div class="col-md-3">
 <div class="panel panel-default ">
   <div class="panel-heading clearfix">
-    <h4>{{player.user.username}}
+    <h4><a href="/league/account/{{player.user.username}}">{{player.user.username}}</a>
 
     {% if admin or request.user == player.user %}
       <a href = "{% url 'tournament:edit_player_profile' tournament.pk player.user.pk %}">
