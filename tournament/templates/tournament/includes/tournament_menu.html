@@ -21,6 +21,11 @@
   <li {% if active == "calendar" %}class="active"{% endif %}>
     <a href="{% url "tournament:calendar" tournament.pk%}">Calendar</a>
   </li>
+  {% if tournament.rules %}
+  <li {% if active == "rules" %}class="active"{% endif %}>
+    <a href="{% url "tournament:rules" tournament.pk%}">Rules</a>
+  </li>
+  {% endif %}
 </ul>
 {% if admin %}
 <ul class="nav navbar-nav navbar-right active" style="margin-right:5px;">

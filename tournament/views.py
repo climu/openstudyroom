@@ -19,6 +19,22 @@ from .models import Tournament, Bracket, Match, TournamentPlayer, TournamentGrou
 from .forms import TournamentForm, TournamentGroupForm, RoundForm, TournamentAboutForm, TournamentPlayerProfileForm
 from .utils import save_round
 
+
+def rules(request, tournament_id):
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    admin = tournament.is_admin(request.user)
+    groups = TournamentGroup.objects.filter(league_event=tournament).exists()
+    now = timezone.now()
+
+    context = {
+        'tournament': tournament,
+        'admin': admin,
+        'groups': groups,
+    }
+    template = loader.get_template('tournament/rules.html')
+    return HttpResponse(template.render(context, request))
+
+
 def about(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     admin = tournament.is_admin(request.user)
@@ -160,11 +176,12 @@ def manage_calendar(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     if not tournament.is_admin(request.user):
         raise Http404('What are you doing here?')
+    groups = TournamentGroup.objects.filter(league_event=tournament).exists
     events = tournament.tournamentevent_set.all()
-    print(events)
     context = {
         'tournament': tournament,
-        'events': events
+        'events': events,
+        'groups': groups
     }
     template = loader.get_template('tournament/manage_events.html')
     return HttpResponse(template.render(context, request))

@@ -22,6 +22,10 @@ class Tournament(LeagueEvent):
             blank=True, null=True,
             validators=[validators.NullableMaxLengthValidator(5000)]
     )
+    rules = MarkupTextField(
+            blank=True, null=True,
+            validators=[validators.NullableMaxLengthValidator(5000)]
+    )
 
     def __init__(self, *args, **kwargs):
         LeagueEvent.__init__(self, *args, **kwargs)

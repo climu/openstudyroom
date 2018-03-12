@@ -9,6 +9,11 @@ urlpatterns = [
         name='view'
     ),
     url(
+        r'^(?P<tournament_id>[0-9]+)/rules/$',
+        views.rules,
+        name='rules'
+    ),
+    url(
         r'^(?P<tournament_id>[0-9]+)/about/$',
         views.about,
         name='about'
