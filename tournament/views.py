@@ -40,7 +40,7 @@ def about(request, tournament_id):
     admin = tournament.is_admin(request.user)
     groups = TournamentGroup.objects.filter(league_event=tournament).exists()
     now = timezone.now()
-    events = tournament.tournamentevent_set.filter(end__gte=now)
+    events = tournament.tournamentevent_set.filter(end__gte=now).order_by('start')
 
     context = {
         'tournament': tournament,
