@@ -18,6 +18,10 @@ class PublicEvent(CalEvent):
     description = models.TextField(blank=True)
     url = models.URLField(blank=True)
 
+    def can_edit(self, user):
+        return user.is_authenticated() and user.is_league_admin()
+
+
     @staticmethod
     def get_future_public_events():
         """return a query of all future public events to a user."""

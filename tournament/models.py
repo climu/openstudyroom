@@ -166,7 +166,6 @@ class Bracket(models.Model):
     def create_round(self):
         order = self.round_set.all().order_by('order').last().order + 1
         round = Round.objects.create(bracket=self, order=order)
-        print(round)
         Match.objects.create(bracket=self, round=round, order=0)
         return round
 
@@ -230,3 +229,6 @@ class Match(models.Model):
 class TournamentEvent(PublicEvent):
     """ Public event related to a tournament."""
     tournament = models.ForeignKey(Tournament)
+
+    def can_edit(self, user):
+        return self.tournament.is_admin(user)
