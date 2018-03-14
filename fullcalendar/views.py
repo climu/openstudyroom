@@ -41,7 +41,7 @@ class PublicEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                'end': datetime.now()}
 
     def test_func(self):
-        return self.get_object().can_edit(self.request.user)
+        return self.request.user.is_authenticated() and self.request.user.is_league_admin()
 
     def get_login_url(self):
         return '/'
