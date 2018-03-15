@@ -1,5 +1,7 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 tz league_tags static forum_markup_tags%}
+{% load calendar_tags bootstrap3 tz league_tags static forum_markup_tags%}
+
+
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
   <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
@@ -17,16 +19,19 @@
 
 {% endblock %}
 
+
 {% block title %}{{tournament.name}} - Calendar{% endblock %}
 
 {% block heading %}
+{% get_current_timezone as TIME_ZONE %}
   <div class="page-header">
-    <h1>{{tournament.name}} - Calendar</h1>
+    <h1>{{tournament.name}} - Calendar ({{TIME_ZONE}})</h1>
     <div class="">{{tournament.description|safe|rendered}}</div>
   </div>
 {%endblock%}
 
 {% block content %}
+
 {% include 'tournament/includes/tournament_menu.html' with active="calendar" %}
 {% if admin %}
 <ul class="nav nav-tabs">
