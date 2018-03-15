@@ -27,7 +27,7 @@ class TournamentForm(forms.ModelForm):
 class TournamentAboutForm(ModelForm):
     class Meta:
         model = Tournament
-        fields = ['description', 'about', 'rules']
+        fields = ['description', 'about', 'rules', 'prizes']
 
 class TournamentPlayerProfileForm(ProfileForm):
     class Meta:

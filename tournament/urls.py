@@ -14,6 +14,11 @@ urlpatterns = [
         name='rules'
     ),
     url(
+        r'^(?P<tournament_id>[0-9]+)/prizes/$',
+        views.prizes,
+        name='prizes'
+    ),
+    url(
         r'^(?P<tournament_id>[0-9]+)/about/$',
         views.about,
         name='about'
