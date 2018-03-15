@@ -5,7 +5,7 @@ from django.template import loader
 from django.shortcuts import get_object_or_404
 from django.db.models.functions import Lower
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -170,6 +170,22 @@ class TournamentCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def get_login_url(self):
         return '/'
+
+class TournamentEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    form_class = UTCPublicEventForm
+    model = TournamentEvent
+    template_name_suffix = '_update_form'
+
+    def test_func(self):
+        return self.get_object().can_edit(self.request.user)
+
+    def get_login_url(self):
+        return '/'
+    def get_success_url(self):
+        return reverse(
+            'tournament:manage_calendar',
+            kwargs={'tournament_id': self.get_object().tournament.pk}
+            )
 
 @login_required()
 def manage_calendar(request, tournament_id):

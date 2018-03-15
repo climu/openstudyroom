@@ -47,7 +47,7 @@
     <td>{{event.end |date:'M d, Y H:i'}}</td>
 
     <td>
-      <a href="{% url 'calendar:update_cal_event' event.pk tournament.pk %}">
+      <a href="{% url 'tournament:update_event' event.pk %}">
         {% bootstrap_icon 'wrench' %}
       </a>
     </td>

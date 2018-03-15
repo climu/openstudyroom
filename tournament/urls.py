@@ -189,5 +189,10 @@ urlpatterns = [
         views.delete_bracket,
         name='delete_bracket'
     ),
+    url(
+        r'^update-event/(?P<pk>[0-9]+)/$',
+        views.TournamentEventUpdate.as_view(),
+        name='update_event'
+    ),
 
 ]
