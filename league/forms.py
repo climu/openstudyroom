@@ -116,6 +116,7 @@ class LeagueEventForm(forms.ModelForm):
             'is_open',
             'is_public',
             'description',
+            'prizes'
         ]
         # Customise year list to show 2 years in the past/future
         EVENT_YEAR_CHOICES = range(datetime.date.today().year - 2, datetime.date.today().year + 3)
