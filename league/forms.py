@@ -70,7 +70,8 @@ class LeagueSignupForm(forms.Form):
             profile.kgs_username = self.cleaned_data['kgs_username']
         if self.cleaned_data['ogs_username']:
             profile.ogs_username = self.cleaned_data['ogs_username']
-            profile.ogs_id = get_user_id(self.cleaned_data['ogs_username'])
+            id = get_user_id(self.cleaned_data['ogs_username'])
+            profile.ogs_id = id
             id = get_user_id(self.cleaned_data['ogs_username'])
             if id > 0:
                 profile.ogs_rank = get_user_rank(id)
