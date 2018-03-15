@@ -7,7 +7,7 @@ from django_countries.widgets import CountrySelectWidget
 import pytz
 
 from .models import Division, LeagueEvent, Profile
-from .ogs import get_user_id
+from .ogs import get_user_id, get_user_rank
 
 class SgfAdminForm(forms.Form):
     sgf = forms.CharField(label='sgf data', widget=forms.Textarea(attrs={'cols': 60, 'rows': 20}))
@@ -62,14 +62,18 @@ class LeagueSignupForm(forms.Form):
         group = Group.objects.get(name='new_user')
         user.groups.add(group)
         user.save()
-        id = get_user_id(self.cleaned_data['ogs_username'])
         profile = Profile(
             user=user,
-            kgs_username=user.kgs_username,
-            ogs_username=self.cleaned_data['ogs_username'],
-            ogs_id=id,
             timezone=self.cleaned_data['timezone']
         )
+        if self.cleaned_data['kgs_username']:
+            profile.kgs_username = self.cleaned_data['kgs_username']
+        if self.cleaned_data['ogs_username']:
+            profile.ogs_username = self.cleaned_data['ogs_username']
+            profile.ogs_id = get_user_id(self.cleaned_data['ogs_username'])
+            id = get_user_id(self.cleaned_data['ogs_username'])
+            if id > 0:
+                profile.ogs_rank = get_user_rank(id)
         profile.save()
 
 
