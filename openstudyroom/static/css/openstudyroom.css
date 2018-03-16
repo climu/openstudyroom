@@ -118,3 +118,9 @@ blockquote{
 .affix{
 	max-width: 15.3%!important;
 }
+.richtext-image.right{
+  float:right;
+}
+.richtext-image.left{
+  float:left;
+}
