@@ -57,7 +57,9 @@
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fh-3.1.2/r-2.1.0/sc-1.4.2/datatables.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-$('#league-table').DataTable();
+$('#league-table').DataTable({
+  "iDisplayLength": 50
+});
 
 } );
 </script>
