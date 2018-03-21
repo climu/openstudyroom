@@ -519,6 +519,8 @@ def admin(request):
                 if user.profile.ogs_username:
                     message += "OGS : [" + user.profile.ogs_username +\
                         "](https://online-go.com/player/" + str(user.profile.ogs_id) + ")"
+                    if user.profile.ogs_rank:
+                        message += " (" + user.profile.ogs_rank + ")"
                 values = {"content": message}
                 requests.post(discord_url, json=values)
             elif action[0:6] == "delete":
