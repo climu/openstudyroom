@@ -216,10 +216,9 @@ $(document).ready(function() {
             }//other gr
             //game appointments
             if (event.type === 'game'){
-                element.addClass('click-me');
                 element.qtip({
                     content: {
-                        text: 'Click to cancel this game appointment.',
+                        text: 'You can cancel it in your own calendar please.',
                         title: event.title,
                     },
                     position: {
@@ -292,20 +291,6 @@ $(document).ready(function() {
                 });
             }// Other game requests
 
-            // Game
-            if (calEvent.type == 'game'){
-                $("#modal-message").hide();
-                $(".modal-button").hide();
-                $("#modal-title").text(calEvent.title + ' on ' + calEvent.start.format('lll') + ' ({{TIME_ZONE}})');
-                $("#modal-body").empty();
-                $("#modal-body").append('<p>Are you sure you want to cancel this game appointment?</p>');
-                $("#modal-body").attr('data-pk', calEvent.pk);
-                $("#cancel-game").show();
-                $("#game-request-modal").modal();
-                $("#game-request-modal").draggable({
-                    handle : ".modal-header"
-                });
-            }//Game
         },// event click
 
         // Day click
