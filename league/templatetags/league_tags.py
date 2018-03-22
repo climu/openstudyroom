@@ -103,7 +103,7 @@ def user_link(user, meijin=None):
             tooltip += " class='online'"
         else:
             tooltip += " class='offline'"
-            tooltip += '>KGS: ' + k_info + '</p>'
+        tooltip += '>KGS: ' + k_info + '</p>'
     if user.profile.ogs_username:
         ogs_online = user.is_online_ogs()
         o_info = user.profile.ogs_username + " " + user.profile.ogs_rank
