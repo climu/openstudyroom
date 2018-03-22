@@ -38,10 +38,14 @@ EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
-
 RAVEN_CONFIG = {
     'dsn': 'https://4fc2585f995348249682113f91124169:0e0c5bc2df38456090293fc24e43ce76@sentry.io/240861',
     # If you are using git, you can also automatically configure the
     # release based on the git info.
     #'release': raven.fetch_git_sha(os.path.abspath(os.pardir)),
 }
+
+with open('/etc/discord_secret.txt') as f:
+    discord_secret = f.read().strip()
+DISCORD_CLIENT_ID = "404373699287056385"
+DISCORD_CLIENT_SECRET = discord_secret

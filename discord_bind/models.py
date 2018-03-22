@@ -25,15 +25,15 @@ SOFTWARE.
 """
 from __future__ import unicode_literals
 
+import logging
 import requests
+
 from django.db import models
 from django.conf import settings as django_settings
 from django.contrib.auth.models import Group
 from django.utils.encoding import python_2_unicode_compatible
 from discord_bind.conf import settings
 
-
-import logging
 logger = logging.getLogger(__name__)
 
 
@@ -50,7 +50,7 @@ class DiscordUser(models.Model):
     refresh_token = models.CharField(max_length=32, blank=True)
     scope = models.CharField(max_length=256, blank=True)
     expiry = models.DateTimeField(null=True)
-
+    status = models.CharField(max_length=256, blank=True)
     def __str__(self):
         return self.username + '.' + self.discriminator
 
@@ -84,8 +84,7 @@ class DiscordInvite(models.Model):
     def update_context(self):
         result = False
         r = requests.get(settings.DISCORD_BASE_URI + '/invites/' + self.code)
-        if r.status_code == requests.codes.ok:
-            logger.info('fetched data for Discord invite %s' % self.code)
+        if r.status_code == 200:
             invite = r.json()
             try:
                 self.guild_name = invite['guild']['name']
@@ -98,9 +97,5 @@ class DiscordInvite(models.Model):
                 result = True
             except KeyError:
                 pass
-        else:
-            logger.error(('failed to fetch data for '
-                          'Discord invite %s: %d %s') % (self.code,
-                                                         r.status_code,
-                                                         r.reason))
+
         return result

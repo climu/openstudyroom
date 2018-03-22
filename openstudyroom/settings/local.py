@@ -33,3 +33,6 @@ DEBUG_TOOLBAR_PANELS = [
 SECRET_KEY = 'yourlocalsecretkey'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+DISCORD_CLIENT_ID = "xxxxxxxxxxxxxxxxx"
+DISCORD_CLIENT_SECRET = "xxxxxxxxxxxxxxxxxx"

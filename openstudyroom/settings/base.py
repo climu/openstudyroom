@@ -105,7 +105,7 @@ INSTALLED_APPS = [
     #for sentry
     'raven.contrib.django.raven_compat',
 
-    #'discord_bind',
+    'discord_bind',
 
 ]+ get_machina_apps()
 
@@ -281,6 +281,3 @@ INTERNAL_IPS = ['127.0.0.1']
 POSTMAN_AUTO_MODERATE_AS = True
 
 WAGTAILIMAGES_MAX_UPLOAD_SIZE = 20 * 1024 * 1024
-
-#DISCORD_CLIENT_ID = "xxxxxxxxxxxxxxxxx"
-#DISCORD_CLIENT_SECRET = "xxxxxxxxxxxxxxxxxxx"

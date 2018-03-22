@@ -26,6 +26,7 @@ SOFTWARE.
 from __future__ import unicode_literals
 
 from datetime import datetime
+import logging
 
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 try:
@@ -36,14 +37,11 @@ from django.contrib.auth.decorators import login_required
 from django.utils.timezone import make_aware
 from django.db.models import Q
 from django.contrib import messages
-
-import requests
 from requests_oauthlib import OAuth2Session
 
 from discord_bind.models import DiscordUser, DiscordInvite
 from discord_bind.conf import settings
 
-import logging
 logger = logging.getLogger(__name__)
 
 
@@ -144,17 +142,9 @@ def callback(request):
     count = 0
     for invite in invites:
         r = oauth.post(settings.DISCORD_BASE_URI + '/invites/' + invite.code)
-        if r.status_code == requests.codes.ok:
+        if r.status_code == 200:
             count += 1
-            logger.info(('accepted Discord '
-                         'invite for %s/%s') % (invite.guild_name,
-                                                invite.channel_name))
-        else:
-            logger.error(('failed to accept Discord '
-                          'invite for %s/%s: %d %s') % (invite.guild_name,
-                                                        invite.channel_name,
-                                                        r.status_code,
-                                                        r.reason))
+
 
     # Select return target
     if count > 0:

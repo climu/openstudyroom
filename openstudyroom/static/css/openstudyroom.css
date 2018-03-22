@@ -101,6 +101,24 @@ blockquote{
     padding-bottom: 0.5rem;
     vertical-align: middle;
 }
+.idle::before {
+    color: #faa61a;
+    content: "";
+    display: inline-block;
+    font-family: FontAwesome;
+    font-size: 0.5rem;
+    padding-bottom: 0.5rem;
+    vertical-align: middle;
+}
+.dnd::before {
+    color: #f04747;
+    content: "";
+    display: inline-block;
+    font-family: FontAwesome;
+    font-size: 0.5rem;
+    padding-bottom: 0.5rem;
+    vertical-align: middle;
+}
 .equal {
     display: -webkit-box;
     display: -moz-box;
@@ -123,4 +141,10 @@ blockquote{
 }
 .richtext-image.left{
   float:left;
+}
+
+ .widget-member-avatar {
+ border-radius:8px;
+ height:16px;
+ width:16px
 }

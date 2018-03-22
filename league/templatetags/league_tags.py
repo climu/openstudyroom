@@ -1,5 +1,6 @@
 from django import template
 from django.utils.safestring import mark_safe
+from discord_bind.models import DiscordUser
 
 from league.models import Registry
 
@@ -113,6 +114,10 @@ def user_link(user, meijin=None):
         else:
             tooltip += " class='offline'"
         tooltip += '>OGS: ' + o_info + '</p>'
+    discord_user = DiscordUser.objects.filter(user=user).first()
+    if discord_user is not None:
+        tooltip += "<p class='" + discord_user.status + "'>Discord: "
+        tooltip += discord_user.username + ' (' + discord_user.discriminator +')</p>'
 
     link = '<a href="/league/account/' + user.username + '"'
     if kgs_online or ogs_online:

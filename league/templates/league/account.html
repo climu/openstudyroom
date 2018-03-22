@@ -75,16 +75,31 @@ return false;};
                 <p>{{user.profile.bio|safe|rendered}}</p>
                 {% endif %}
                 {% if user.profile.kgs_username %}
-                <p>KGS Username: <a href="http://kgs.gosquares.net/index.rhtml.en?id={{user.profile.kgs_username}}">{{user.profile.kgs_username}} {% if user.profile.kgs_rank %}({{user.profile.kgs_rank}}){% endif %}</a></p>
+                <p>KGS Username:
+                  <a href="http://kgs.gosquares.net/index.rhtml.en?id={{user.profile.kgs_username}}" class="{% if user.is_online_kgs %} online{% else %} offline{%endif%}">
+                  {{user.profile.kgs_username}} {% if user.profile.kgs_rank %}({{user.profile.kgs_rank}}){% endif %}
+                </a></p>
                 {% endif %}
                 {% if user.profile.ogs_id > 0 %}
                 <p>OGS Username:
-                   <a href="https://online-go.com/player/{{user.profile.ogs_id}}">{{user.profile.ogs_username}} {% if user.profile.ogs_rank %}({{user.profile.ogs_rank}}){% endif %}</a>
-                     </p>
+                   <a href="https://online-go.com/player/{{user.profile.ogs_id}}" class="{% if user.is_online_kgs %} online{% else %} offline{%endif%}">
+                     {{user.profile.ogs_username}} {% if user.profile.ogs_rank %}({{user.profile.ogs_rank}}){% endif %}
+                   </a>
+                 </p>
                 {% endif %}
                 {% if discord_user %}
-                <p>Discord username : {{discord_user}}</p>
-                <p> Click this button to link your discord account with your OSR account: <a class="btn btn-default" href="/discord/">{% bootstrap_icon "user"%}</a>
+
+                <p>Discord username :
+                  {% if discord_user.avatar %}
+                  <img class="widget-member-avatar" src="https://cdn.discordapp.com/avatars/{{discord_user.uid}}/{{discord_user.avatar}}">
+                  {% endif %}
+                   <span class="{{discord_user.status}}">{{discord_user.username}} ({{discord_user.discriminator}})</span>
+                   {% if user == request.user %}
+                   <a class="btn btn-default btn-xs" href="/discord/">{% bootstrap_icon "refresh"%} Update</a>
+                  {% endif %}
+                 </p>
+                {% elif request.user == user %}
+                <p> Click this button to link your discord account with your OSR account: <a class="btn btn-default btn-xs" href="/discord/">{% bootstrap_icon "user"%}</a>
                 {% endif %}
             </div>
 
