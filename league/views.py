@@ -25,6 +25,7 @@ import pytz
 import requests
 
 from . import utils
+from . import ogs
 from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
     Profile
 from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm,\
@@ -59,19 +60,28 @@ def scraper():
         out = 'too soon'
         return out
     # 2 Check which players are online and update db
+    # First KGS
     r = utils.kgs_connect()
     for m in json.loads(r.text)['messages']:
         if m['type'] == 'ROOM_JOIN' and m['channelId'] == 3627409:
             for kgs_user in m['users']:
                 profile = Profile.objects.filter(kgs_username__iexact=kgs_user['name']).first()
                 if profile is not None:
+                    profile.last_kgs_online = now
                     if 'rank' in kgs_user:
                         profile.kgs_rank = kgs_user['rank'] # scraping the rank of the players
-                        profile.last_kgs_online = now
-                        profile.save()
+                    profile.save()
+    # now OGS
+    ogs_users = ogs.get_online_users()
+    for ogs_user in ogs_users:
+        profile = Profile.objects.filter(ogs_id=ogs_user['id']).first()
+        if profile is not None:
+            profile.ogs_rank = ogs.rating2rank(ogs_user['ratings']["overall"]["rating"])
+            profile.last_ogs_online = now
+            profile.save()
+
     # 3 wait a bit
     sleep(2)
-
 
     # 4.1 look for some sgfs that we analyse and maybe record as games
     sgf = Sgf.objects.filter(p_status=2).first()

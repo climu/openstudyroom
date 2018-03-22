@@ -842,6 +842,8 @@ class Profile(models.Model):
     p_status = models.PositiveSmallIntegerField(default=0)
     # kgs_online shoudl be updated every 5 mins in scraper
     last_kgs_online = models.DateTimeField(blank=True, null=True)
+    last_ogs_online = models.DateTimeField(blank=True, null=True)
+
     # Calendar settings
     timezone = models.CharField(
         max_length=100,
