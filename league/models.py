@@ -528,14 +528,20 @@ class User(AbstractUser):
             return True
 
 
-
-
     def is_online_kgs(self):
         """return a boolean saying if a user is online on KGS."""
         if self.profile.last_kgs_online is None:
             return False
         now = timezone.now()
         delta = now - self.profile.last_kgs_online
+        return delta.total_seconds() < 500
+
+    def is_online_ogs(self):
+        """return a boolean saying if a user is online on OGS."""
+        if self.profile.last_ogs_online is None:
+            return False
+        now = timezone.now()
+        delta = now - self.profile.last_ogs_online
         return delta.total_seconds() < 500
 
     def is_in_primary_event(self):

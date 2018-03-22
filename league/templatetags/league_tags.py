@@ -92,19 +92,33 @@ def html_one_player_result(context):
 def user_link(user, meijin=None):
     if user is None:
         return ''
-    link = '<a href="/league/account/' + user.username + '"'
-    if user.is_online_kgs():
-        link += 'class="online"'
-    else:
-        link += 'class="offline"'
     tooltip = ''
+    kgs_online = False
+    ogs_online = False
     if user.profile.kgs_username:
+        kgs_online = user.is_online_kgs()
         k_info = user.profile.kgs_username + " " + user.profile.kgs_rank
-        tooltip += '<p>KGS: ' + k_info + '</p>'
+        tooltip += '<p'
+        if kgs_online:
+            tooltip += " class='online'"
+        else:
+            tooltip += " class='offline'"
+            tooltip += '>KGS: ' + k_info + '</p>'
     if user.profile.ogs_username:
+        ogs_online = user.is_online_ogs()
         o_info = user.profile.ogs_username + " " + user.profile.ogs_rank
-        tooltip += '<p>OGS: ' + o_info + '</p>'
+        tooltip += '<p'
+        if ogs_online:
+            tooltip += " class='online'"
+        else:
+            tooltip += " class='offline'"
+        tooltip += '>OGS: ' + o_info + '</p>'
 
+    link = '<a href="/league/account/' + user.username + '"'
+    if kgs_online or ogs_online:
+        link += " class='online'"
+    else:
+        link += " class='offline'"
     link += 'data-toggle="tooltip" data-html="true" rel="tooltip" title="' + tooltip
     link += '" >' + user.username
     if user == meijin:
