@@ -22,11 +22,10 @@
           <div class="col-md-4">
         {% for user in online_opponents %}
             <p>{{user|user_link}}</p>
-            {% if forloop.counter|divisibleby:8 %}
+            {% if forloop.counter|divisibleby:5 %}
           </div>
           <div class="col-md-3">
-
-            {% endif %}
+            {% endif %}            
         {% endfor %}
       </div>
     </div>

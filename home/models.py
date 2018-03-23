@@ -125,7 +125,6 @@ class HomePage(Page):
                     user__in=opponents
                 ).order_by('start')[:5]
                 context['availables'] = availables
-                time_online = timezone.now() - datetime.timedelta(minutes=6)
                 online_opponents = list(filter(
                     lambda user: user.is_online(),
                     opponents
