@@ -1,7 +1,5 @@
 from __future__ import absolute_import, unicode_literals
 
-import datetime
-
 from django.conf import settings
 from django.db import models
 from django.template.loader import render_to_string
