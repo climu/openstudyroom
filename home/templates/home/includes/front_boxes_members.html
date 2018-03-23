@@ -21,12 +21,7 @@
         <div class="row">
           <div class="col-md-3">
         {% for user in online_opponents %}
-
-            <p>
-                <a href="/league/account/{{user.username}}/">
-                    {{user|user_link}}
-                </a>
-            </p>
+            <p>{{user|user_link}}</p>
             {% if forloop.counter|divisibleby:8 %}
           </div>
           <div class="col-md-3">
