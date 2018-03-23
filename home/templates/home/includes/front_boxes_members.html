@@ -19,7 +19,7 @@
       </p>
         <p>Your opponents online now:</p>
         <div class="row">
-          <div class="col-md-3">
+          <div class="col-md-4">
         {% for user in online_opponents %}
             <p>{{user|user_link}}</p>
             {% if forloop.counter|divisibleby:8 %}
