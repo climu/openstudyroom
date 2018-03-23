@@ -127,7 +127,7 @@ class HomePage(Page):
                 context['availables'] = availables
                 time_online = timezone.now() - datetime.timedelta(minutes=6)
                 online_opponents = list(filter(
-                    lambda x: x.profile.last_kgs_online is not None and x.profile.last_kgs_online > time_online,
+                    lambda user: user.is_online(),
                     opponents
                 ))
                 context['online_opponents'] = online_opponents

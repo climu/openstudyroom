@@ -40,7 +40,11 @@ logger = logging.getLogger(__name__)
 @python_2_unicode_compatible
 class DiscordUser(models.Model):
     """ Discord User mapping. """
-    user = models.ForeignKey(django_settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        django_settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='discord_user'
+    )
     uid = models.CharField(max_length=20, blank=False, unique=True)
     username = models.CharField(max_length=254)
     discriminator = models.CharField(max_length=4)

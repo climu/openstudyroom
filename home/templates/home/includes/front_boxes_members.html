@@ -5,7 +5,7 @@
           {% if should_join %}
           <h4>Join a league</h4>
           {% else %}
-          <h4>Play Now</h4>
+          <h4>Play, chat and study now in our <a href="https://discordapp.com/invite/37ExfDP"> discord</a>!</h4>
           {% endif %}
       </div>
     <div class="panel-body">
@@ -14,18 +14,30 @@
         <p> See how our leagues works <a href="/league/league-rules/">here.</a> </p>
         {% else %}
       {% if online_opponents %}
-        Your opponents online now on KGS:
-        <ul>
+      <p>
+        Join the motivated OSR-community in our <a href="https://discordapp.com/invite/37ExfDP"> discord channel</a>. Chat, arrange games and get your games reviewed.
+      </p>
+        <p>Your opponents online now:</p>
+        <div class="row">
+          <div class="col-md-3">
         {% for user in online_opponents %}
-            <li>
+
+            <p>
                 <a href="/league/account/{{user.username}}/">
                     {{user|user_link}}
                 </a>
-            </li>
+            </p>
+            {% if forloop.counter|divisibleby:8 %}
+          </div>
+          <div class="col-md-3">
+
+            {% endif %}
         {% endfor %}
-        </ul>
+      </div>
+    </div>
+
       {% else %}
-      <p>No opponents are online now on KGS.</p><p> Try planning your games.</p>
+      <p>No opponents are online now on KGS, OGS nor Discord.</p><p> Try planning your games.</p>
       {% endif %}
       {% endif %}
 

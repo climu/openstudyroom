@@ -527,6 +527,13 @@ class User(AbstractUser):
             player.save()
             return True
 
+    def is_online(self):
+        """return a boolean saying if a user is online in either KGS, OGS or discord"""
+        if self.discord_user.first() is not None:
+            discord_online = self.discord_user.first().status != 'offline'
+        else:
+            discord_online = False
+        return self.is_online_kgs() or self.is_online_ogs() or discord_online
 
     def is_online_kgs(self):
         """return a boolean saying if a user is online on KGS."""
@@ -657,10 +664,13 @@ class User(AbstractUser):
         """Return a list of all user in open leagues online on KGS."""
         time_online = timezone.now() - datetime.timedelta(minutes=6)
         # First we get all self players in open divisions
-        players = LeaguePlayer.objects.filter(
-            division__league_event__is_open=True,
-            user__profile__last_kgs_online__gt=time_online
-        ).values_list('user', flat=True)
+        players = LeaguePlayer.objects\
+            .filter(division__league_event__is_open=True)\
+            .filter(
+                Q(user__profile__last_kgs_online__gt=time_online) |
+                Q(user__profile__last_ogs_online__gt=time_online) |
+                Q(user__discord_user__status='online')
+            ).values_list('user', flat=True)
         return players
 
     def check_kgs(self, opponents):
