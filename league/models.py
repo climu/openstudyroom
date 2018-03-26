@@ -410,7 +410,7 @@ class Sgf(models.Model):
             else:
                 w_results = wplayer.get_results()
                 if bplayer.user.pk in w_results:
-                    if len(w_results[self.bplayer]) >= event.nb_matchs:
+                    if len(w_results[bplayer.user.pk]) >= event.nb_matchs:
                         (b, m) = (False, '; max number of games')
                     else:
                         division = bplayer.division
