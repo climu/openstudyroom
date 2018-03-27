@@ -32,7 +32,7 @@
                     {% image child.value.image width-1280 as theimage %}
                 {% endif %}
 
-                <img src="{{ theimage.url }}" width="{{ theimage.width }}" height="{{ theimage.height }}" alt="{{ theimage.alt }}" />
+                <img class="img-responsive" src="{{ theimage.url }}" width="{{ theimage.width }}" height="{{ theimage.height }}" alt="{{ theimage.alt }}" />
 
                 {% if child.value.caption %}
                     <div class="caption">
