@@ -402,7 +402,7 @@ def join_event(request, event_id, user_id):
 
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
-def quit_league(request,event_id, user_id=None):
+def quit_league(request, event_id, user_id=None):
     """Allow a user to quit a league if he didn't play a game in it yet."""
     if request.method == 'POST':
         form = ActionForm(request.POST)
