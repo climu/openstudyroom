@@ -29,14 +29,14 @@
   </button>
   </div>
   </form>
- {% elif user.is_league_member %}
+ {% elif can_quit %}
  <form class="navbar-form navbar-right" style="margin-right:5px;" action=" {% url 'league:quit_league' event.pk user.pk %}" method="post" >
    {% csrf_token %}
    <div class="form-group">
    <input type="hidden" name="action" value="quit">
    <input type="hidden" name="next" value="{{request.path}}">
-   <button type="submit" class="btn btn-danger"  onclick="return confirm('You are about to quit the {{event}}. Allright?')">
-   {% bootstrap_icon "ok" %} Quit {{event.name}} !
+   <button type="submit" class="btn btn-default"  onclick="return confirm('You are about to quit the {{event}}. Allright?')">
+   {% bootstrap_icon "remove" %} Quit {{event.name}} !
    </button>
    </div>
    </form>

@@ -144,7 +144,7 @@ def timezone_update(request):
     if request.method == 'POST':
         tz = request.POST.get('tz')
         if tz == '---------':
-            tz = 'UTC' 
+            tz = 'UTC'
         user.profile.timezone = tz
         user.profile.save()
         now = timezone.now().astimezone(pytz.timezone(tz))
@@ -197,10 +197,12 @@ def list_games(request, event_id=None, sgf_id=None):
             order_by('-date')
         template = loader.get_template('league/games.html')
         can_join = event.can_join(request.user)
+        can_quit = event.can_quit(request.user)
         context.update({
             'sgfs': sgfs,
             'event': event,
             'can_join': can_join,
+            'can_quit': can_quit
         })
     return HttpResponse(template.render(context, request))
 
@@ -217,6 +219,7 @@ def division_results(request, event_id=None, division_id=None):
     else:
         division = get_object_or_404(Division, pk=division_id)
     can_join = event.can_join(request.user)
+    can_quit = event.can_quit(request.user)
     if division is None:
         results = None
     else:
@@ -232,7 +235,8 @@ def division_results(request, event_id=None, division_id=None):
         'results': results,
         'open_events': open_events,
         'can_join': can_join,
-        'number_players': number_players
+        'number_players': number_players,
+        'can_quit': can_quit
     }
     return HttpResponse(template.render(context, request))
 
@@ -294,10 +298,12 @@ def infos(request, event_id=None, division_id=None, ):
     else:
         event = get_object_or_404(LeagueEvent, pk=event_id)
     can_join = event.can_join(request.user)
+    can_quit = event.can_quit(request.user)
     context = {
         'event': event,
         'open_events': open_events,
         'can_join': can_join,
+        'can_quit': can_quit
     }
     template = loader.get_template('league/event.html')
     return HttpResponse(template.render(context, request))
@@ -334,6 +340,7 @@ def list_players(request, event_id=None, division_id=None):
     else:
         event = get_object_or_404(LeagueEvent, pk=event_id)
         can_join = event.can_join(request.user)
+        can_quit = event.can_quit(request.user)
         # if no division is provided, we show all players from this event
         if division_id is None:
             divisions = event.division_set.all()
@@ -347,6 +354,7 @@ def list_players(request, event_id=None, division_id=None):
             'event': event,
             'divisions': divisions,
             'can_join': can_join,
+            'can_quit': can_quit
         }
         template = loader.get_template('league/players.html')
     return HttpResponse(template.render(context, request))
@@ -407,22 +415,16 @@ def quit_league(request,event_id, user_id=None):
                 user = get_object_or_404(User, pk=user_id)
             else:
                 raise Http404('What are you doing here?1')
-            player = LeaguePlayer.objects.filter(user=user, event=league).first()
-            print(player)
-            # no one should be able to quit a league if he have played games inside it.
-            # we could think about a quite status for a player that would keep his games
-            # but mark him quit.
-            black_sgfs = user.black_sgf.get_queryset().filter(events=league).exists()
-            white_sgfs = user.white_sgf.get_queryset().filter(events=league).exists()
-            if black_sgfs or white_sgfs:
-                message = "A player canot quit a league once he have played games in it."
-                messages.success(request, message)
-                return HttpResponseRedirect(form.cleaned_data['next'])
-            else:
-                message = "Succesfully deleted the player " + player.user.username +\
-                    "from " + league.name
+            if league.can_quit(user):
+                player = LeaguePlayer.objects.filter(user=user, event=league).first()
+                message = "Succesfully deleted the player " + user.username +\
+                    " from " + league.name
                 messages.success(request, message)
                 player.delete()
+                return HttpResponseRedirect(form.cleaned_data['next'])
+            else:
+                message = "A player canot quit a league once he have played games in it."
+                messages.success(request, message)
                 return HttpResponseRedirect(form.cleaned_data['next'])
     else:
         raise Http404('What are you doing here?')

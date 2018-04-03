@@ -177,6 +177,21 @@ class LeagueEvent(models.Model):
         else:
             return False
 
+    def can_quit(self, user):
+        """return a boolean being true if a user can quit a league"""
+        player = LeaguePlayer.objects.filter(user=user, event=self).first()
+        # no one should be able to quit a league if he have played games inside it.
+        # we could think about a quite status for a player that would keep his games
+        # but mark him quit.
+        if player is None:
+            return False
+        black_sgfs = user.black_sgf.get_queryset().filter(events=self).exists()
+        white_sgfs = user.white_sgf.get_queryset().filter(events=self).exists()
+        if black_sgfs or white_sgfs:
+            return False
+        else:
+            return True
+
     def remaining_sec(self):
         """return the number of milliseconds before the league ends."""
         delta = self.end_time - timezone.now()
