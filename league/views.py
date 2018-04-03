@@ -390,6 +390,41 @@ def join_event(request, event_id, user_id):
         messages.success(request, message)
     return HttpResponseRedirect('/')
 
+@login_required()
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+def quit_league(request,event_id, user_id=None):
+    """Allow a user to quit a league if he didn't play a game in it yet."""
+    if request.method == 'POST':
+        form = ActionForm(request.POST)
+        if form.is_valid():
+            league = get_object_or_404(LeagueEvent, pk=event_id)
+            # member can quit for them but admins can quit anyone
+            if user_id is None:
+                user = request.user
+            elif request.user.is_league_admin():
+                user = get_object_or_404(User, pk=user_id)
+            else:
+                raise Http404('What are you doing here?1')
+            player = LeaguePlayer.objects.filter(user=user, event=league).first()
+            print(player)
+            # no one should be able to quit a league if he have played games inside it.
+            # we could think about a quite status for a player that would keep his games
+            # but mark him quit.
+            black_sgfs = user.black_sgf.get_queryset().filter(events=league).exists()
+            white_sgfs = user.white_sgf.get_queryset().filter(events=league).exists()
+            if black_sgfs or white_sgfs:
+                message = "A player canot quit a league once he have played games in it."
+                messages.success(request, message)
+                return HttpResponseRedirect(form.cleaned_data['next'])
+            else:
+                message = "Succesfully deleted the player " + player.user.username +\
+                    "from " + league.name
+                messages.success(request, message)
+                player.delete()
+                return HttpResponseRedirect(form.cleaned_data['next'])
+    else:
+        raise Http404('What are you doing here?')
+
 
 def account(request, user_name=None):
     """Show a user account.

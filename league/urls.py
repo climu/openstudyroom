@@ -90,6 +90,9 @@ urlpatterns = [
     url(r'^game/json/(?P<sgf_id>[0-9]+)/(?P<event_id>[0-9]+)/$', views.game_api, name='game_api'),
 
     url(r'^(?P<event_id>[0-9]+)/join/(?P<user_id>[0-9]+)/$', views.join_event, name='join_event'),
+    url(r'^(?P<event_id>[0-9]+)/quit/$', views.quit_league, name='quit_league'),
+    url(r'^(?P<event_id>[0-9]+)/quit/(?P<user_id>[0-9]+)/$', views.quit_league, name='quit_league'),
+
     url(r'^admin/create-all-profiles/$', views.create_all_profiles, name='create_all_profiles'),
     url(r'^admin/update-all-sgf-check-code/$',
         views.update_all_sgf_check_code, name='update_all_sgf_check_code'),
