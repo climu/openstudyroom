@@ -143,6 +143,8 @@ def timezone_update(request):
     user = request.user
     if request.method == 'POST':
         tz = request.POST.get('tz')
+        if tz == '---------':
+            tz = 'UTC' 
         user.profile.timezone = tz
         user.profile.save()
         now = timezone.now().astimezone(pytz.timezone(tz))
