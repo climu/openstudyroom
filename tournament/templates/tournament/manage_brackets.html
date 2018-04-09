@@ -314,6 +314,7 @@ var matches = [];
           },
             sort: {% if match.sgf %}false{% else %} true {% endif %},
             onAdd: function (evt){
+              console.log($(evt.item).attr('data-id'))
               if (($(evt.from).attr('data-round') > {{round.pk}}) && ($(evt.from).attr('data-bracket') == {{bracket.pk}})) {
                 evt.item.outerHTML = "";
               }
@@ -321,8 +322,9 @@ var matches = [];
               $(evt.item).removeClass('list-group-item-success')
               if ($(evt.from).hasClass('group_players')){
                 // if we put a new player, we had the select box to the item
-                  $(evt.item).append('<div class="checkbox div-checkbox pull-right"><input class ="refetch check-player" value="{{player.pk}}" type="checkbox" ></div>')
-                }
+                text = '<div class="checkbox div-checkbox pull-right"><input class ="refetch check-player" value="' + $(evt.item).attr('data-id') + '" type="checkbox" ></div>'
+                $(evt.item).append(text)
+              }
             }
             },
 
