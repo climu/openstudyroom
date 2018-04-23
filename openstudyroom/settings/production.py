@@ -27,15 +27,15 @@ DJANGO_CRON_DELETE_LOGS_OLDER_THAN = 7
 with open('/etc/secret_key.txt') as f:
     SECRET_KEY = f.read().strip()
 
-with open('/etc/gmail_pass.txt') as f:
-    GMAIL_PASS = f.read().strip()
-EMAIL_USE_TLS = True
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_PASSWORD = GMAIL_PASS
-EMAIL_HOST_USER = 'openstudyroom@gmail.com'
-EMAIL_PORT = 587
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+#with open('/etc/gmail_pass.txt') as f:
+#    GMAIL_PASS = f.read().strip()
+#EMAIL_USE_TLS = True
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_HOST_PASSWORD = GMAIL_PASS
+#EMAIL_HOST_USER = 'openstudyroom@gmail.com'
+#EMAIL_PORT = 587
+#DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 RAVEN_CONFIG = {
@@ -49,3 +49,15 @@ with open('/etc/discord_secret.txt') as f:
     discord_secret = f.read().strip()
 DISCORD_CLIENT_ID = "404373699287056385"
 DISCORD_CLIENT_SECRET = discord_secret
+
+
+with open('/etc/mailgun_api_key.txt') as f:
+    mailgun_api_key = f.read().strip()
+ANYMAIL = {
+    "MAILGUN_API_KEY": mailgun_api_key,
+    "MAILGUN_SENDER_DOMAIN": "openstudyroom.org"
+}
+EMAIL_HOST_USER = 'contact@openstudyroom.org'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"

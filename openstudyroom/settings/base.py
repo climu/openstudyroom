@@ -106,11 +106,13 @@ INSTALLED_APPS = [
     'raven.contrib.django.raven_compat',
 
     'discord_bind',
+    "anymail",
 
 ]+ get_machina_apps()
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
+    #'openstudyroom.middleware.OSRLocaleMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

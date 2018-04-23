@@ -323,7 +323,7 @@ def cancel_game_ajax(request):
                 recipient=opponent,
                 subject=subject,
                 body=message,
-                skip_notification=True
+                skip_notification=False
             )
             return HttpResponse('success')
 
@@ -356,7 +356,7 @@ def accept_game_request_ajax(request):
             recipient=sender,
             subject=subject,
             body=message,
-            skip_notification=True
+            skip_notification=False
         )
         return HttpResponse('success')
 
@@ -426,7 +426,7 @@ def create_game_request(request):
             recipients=list(receivers),
             subject=subject,
             body=message,
-            skip_notification=True
+            skip_notification=False
         )
 
         return HttpResponse('success')

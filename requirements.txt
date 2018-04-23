@@ -62,3 +62,4 @@ webencodings==0.5.1
 Willow==0.4
 wrapt==1.10.11
 django-countries
+django-anymail

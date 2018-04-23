@@ -1123,7 +1123,7 @@ def admin_user_send_mail(request, user_id):
             send_mail(
                 form.cleaned_data['subject'],
                 form.cleaned_data['message'],
-                'openstudyroom@gmail.com',
+                'postmaster@openstudyroom.org',
                 recipients,
                 fail_silently=False,
             )
