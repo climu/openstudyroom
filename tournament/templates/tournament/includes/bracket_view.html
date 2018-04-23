@@ -36,7 +36,7 @@
                   {{match.player_1.user |user_link}}
                   {% if match.sgf and match.winner == match.player_1 %}
                   <span class="pull-right">
-                    {{match.sgf.result}}
+                    {% match_result %}
                   </span>
                   {% endif %}
                </div>
