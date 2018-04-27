@@ -2,6 +2,11 @@
 
 {% load bootstrap3 static calendar_tags %}
 {% block title %} My profile - Timezone{% endblock %}
+{% block extra_css %}
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+{% endblock %}
+
 {% block heading %}
 <div class="page-header">
     <h1>My profile - Timezone</h1>
@@ -37,9 +42,12 @@ According to your setting your local time should be <span id='now'>{{now}}</span
 {% endblock %}
 
 {% block extra_js %}
+
 <script>
 {% include 'league/includes/ajax_setup.html' %}
 $(document).ready(function() {
+  $('#id_timezone').select2();
+
   $('#send').click(function(){
     var tz = $( "#id_timezone option:selected" ).text();
     $.ajax({
@@ -53,6 +61,7 @@ $(document).ready(function() {
     }
     });
   });
+
 
 } );
 

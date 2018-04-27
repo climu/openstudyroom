@@ -4,7 +4,10 @@
 
 {% load bootstrap3 %}
 {%block title%}Sign up{%endblock%}
-
+{% block extra_css %}
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+{% endblock %}
 
 {% block page_content %}
     <div class="row">
@@ -67,6 +70,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('#id_username').focus();
+            $('#id_timezone').select2();
         });
     </script>
 {% endblock %}
