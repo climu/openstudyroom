@@ -764,7 +764,10 @@ class User(AbstractUser):
         # Set day, time to 0
         time_limit = now.replace(day=1, hour=0, minute=0)
         ogs_id = self.profile.ogs_id
-        url = 'https://online-go.com/api/v1/players/' + str(ogs_id) + '/games/?ordering=-ended&ended__gt=' + datetime.datetime.strftime(time_limit, '%Y-%m-%d %H:%M')
+        url = 'https://online-go.com/api/v1/players/' +\
+            str(ogs_id) +\
+            '/games/?ordering=-ended&ended__gt=' +\
+            datetime.datetime.strftime(time_limit, '%Y-%m-%d %H:%M')
         opponents = [u.profile.ogs_id for u in opponents if u.profile.ogs_id > 0]
 
         # we deal with pagination with this while loop
