@@ -764,7 +764,7 @@ class User(AbstractUser):
         # Set day, time to 0
         time_limit = now.replace(day=1, hour=0, minute=0)
         ogs_id = self.profile.ogs_id
-        url = 'https://online-go.com/api/v1/players/' + str(ogs_id) + '/games/?ordering=-ended'
+        url = 'https://online-go.com/api/v1/players/' + str(ogs_id) + '/games/?ordering=-ended&ended__gt=' + datetime.datetime.strftime(time_limit, '%Y-%m-%d %H:%M')
         opponents = [u.profile.ogs_id for u in opponents if u.profile.ogs_id > 0]
 
         # we deal with pagination with this while loop
@@ -772,11 +772,7 @@ class User(AbstractUser):
             request = requests.get(url).json()
             url = request['next']
             for game in request['results']:
-                # first we check if we have the same  id in db.
-                # Since it's ordered by time, no need to keep going.
-                if Sgf.objects.filter(ogs_id=game['id']).exists():
-                    continue
-                # Then we check if end date og game is too old
+                # first we check if end date og game is too old
                 # 2013-08-31T12:47:34.887Z
                 if game['ended']:
                     game_ended = datetime.datetime.strptime(
@@ -786,6 +782,11 @@ class User(AbstractUser):
                     continue
                 if game_ended < time_limit:
                     break
+                # then we check if we have the same  id in db.
+                # Since it's ordered by time, no need to keep going.
+                if Sgf.objects.filter(ogs_id=game['id']).exists():
+                    continue
+
                 # we get opponent ogs id
                 if game['white'] == ogs_id:
                     opponent_ogs_id = game['black']
