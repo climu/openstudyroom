@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^meijin/$', views.meijin, name='meijin'),
     url(r'^ladder/$', views.ladder, name='ladder'),
     url(r'^ddk/$', views.ddk, name='ddk'),
+    url(r'^dan/$', views.dan, name='dan'),
     url(r'^admin/event/(?P<to_event_id>[0-9]+)/populate/$',
         views.populate, name='admin_event_populate'),
     url(r'^admin/event/(?P<to_event_id>[0-9]+)/populate/(?P<from_event_id>[0-9]+)/$',

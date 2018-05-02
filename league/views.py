@@ -277,6 +277,18 @@ def ddk(request):
         kwargs={'event_id': league.pk})
     )
 
+def dan(request):
+    """A simple view that redirects to the last open dan league."""
+    league = LeagueEvent.objects.filter(
+        event_type='dan',
+        is_open=True,
+        community__isnull=True
+    ).order_by('end_time').first()
+    return HttpResponseRedirect(reverse(
+        'league:results',
+        kwargs={'event_id': league.pk})
+    )
+
 def archives(request):
     """Show a list of all leagues."""
     events = LeagueEvent.get_events(request.user).exclude(event_type='tournament')
