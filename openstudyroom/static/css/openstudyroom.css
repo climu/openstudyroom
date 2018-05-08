@@ -17,7 +17,21 @@ body {
   left: 0;
   background-color: #efefef;
 }
+.template-homepage > .navbar-static-top{
+  margin-bottom:0px;
+}
+.template-homepage > header{
+  width:100%;
+  height: auto;
+  background-image: url('https://openstudyroom.org/media/images/bar.original.original.jpg');
+  background-repeat: no-repeat;
+  background-size: 100%;
+  height:400px;
+}
 
+.image-center{
+  margin:auto;
+}
 .post-info{width:50px}
 .ancestor > a {
 background-color: #080808;

@@ -3,21 +3,17 @@
 {% block body_class %}template-homepage{% endblock %}
 
 
-{% block extra_css %}
-{% compress css %}
-    <link rel="stylesheet" href="{% static 'puput/css/font-awesome.min.css' %}">
-{% endcompress %}
-{% endblock %}
 {% block heading %}{%endblock%}
 {% block page_intro %}
-<div class= "row equal">
+
 {% if request.user.is_authenticated and request.user.is_league_member %}
-    {% include "home/includes/front_boxes_members.html"%}
+  {% include "home/includes/front_boxes_members.html"%}
 {% else %}
-    {% include "home/includes/front_boxes.html"%}
+  {% include "home/includes/homepage_intro.html"%}
 {% endif %}
-</div>
 {% endblock %}
+
+
 {% block content %}
 <h2> Latest News</h2>
   {% with per_page=blog_page.num_entries_page %}

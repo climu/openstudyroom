@@ -56,58 +56,10 @@
 <body class="{% block body_class %}{% endblock %}">
   {% wagtailuserbar %}
   {% block navbar %}
-    <div class="navbar navbar-inverse navbar-static-top" role="navigation">
-      <a class="navbar-brand" href="/">Open Study Room</a>
-      {% main_menu  %}
-      <ul class="nav navbar-nav navbar-right" style= "margin-right:5px;">
-
-      {% if request.user.is_authenticated %}
-	      {% if request.user.is_league_admin %}
-	        <li>
-	           <a href="{%url "league:admin" %}"> League admin </a>
-          </li>
-	      {% endif %}
-      <li class="dropdown">
-	       <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-          Hello {{ request.user.username }}
-          {% if postman_unread_count > 0 %}
-            <span class="badge"> {{ postman_unread_count }}</span>
-          {% endif %}
-          <span class="caret"></span>
-	       </a>
-         <ul class="dropdown-menu">
-	    {% if request.user.is_league_member %}
-          <li>
-            <a href="{% url "league:league_account" %}" >{% bootstrap_icon "user" %} Profile</a>
-          </li>
-      <li>
-        <a href="{% url "postman:inbox" %}" >
-          <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
-            Messages
-          <span class="badge"> {{ postman_unread_count }}</span>
-        </a>
-      </li>
-      {% else %}
-        <div>Your account will be activated soon. Thanks for waiting !</div>
-      {% endif %}
-      <li>
-        <a href="{% url "account_logout"%}"><i class="fa fa-sign-out" aria-hidden="true"></i>
-          Logout
-        </a>
-      </li>
-	   </ul>
-    {% else %}
-      <li>
-        <a href="{% url "account_login"%}">Login</a>
-      </li>
-      <li>
-        <a href="{% url "account_signup"%}">Register</a>
-      </li>
-    {% endif %}
-    </ul>
-  </div>
+  {% include 'menu.html' %}
   {% endblock %}
 
+<header>
   {% if request.user.is_authenticated and not request.user.is_league_member%}
     <li class="alert alert-info alert-dismissable fade in" style="list-style-type: none;">
       <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -115,18 +67,10 @@
     </li>
   {% endif %}
 
-  {% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-    <li class="alert alert-info alert-dismissable fade in" style="list-style-type: none;">
-      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-      {{ message }}
-    </li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+{% bootstrap_messages %}
 
-
+</header>
+{% block page_intro %} {% endblock %}
   <div class="container">
     <div class="row">
       {% block postman_menu %}
@@ -138,7 +82,7 @@
         </div>
       {% endblock %}
 
-    {% block page_intro %} {% endblock %}
+
     </div>
 
   <div class="row-fluid">
