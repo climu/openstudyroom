@@ -106,7 +106,7 @@ class MyStreamBlock(StreamBlock):
 
 class HomePage(Page):
     def get_context(self, request, *args, **kwargs):
-        entries = EntryPage.objects.live().order_by('-date')
+        entries = EntryPage.objects.live().order_by('-date')[0:3]
         blog_page = BlogPage.objects.all().first()
         context = super(HomePage, self).get_context(request, *args, **kwargs)
         context['entries'] = entries

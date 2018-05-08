@@ -1,9 +1,15 @@
-{% extends "right_sidebar.html" %}
-{% load static i18n wagtailcore_tags wagtailimages_tags puput_tags compress wagtailroutablepage_tags %}
+{% extends "full_width.html" %}
+{% load static i18n wagtailcore_tags wagtailimages_tags puput_tags compress wagtailroutablepage_tags league_tags osr_tags%}
 {% block body_class %}template-homepage{% endblock %}
 
 
 {% block heading %}{%endblock%}
+{% block extra-header %}
+<div class="socials">
+{% include 'home/includes/socials.html' %}
+</div>
+{% endblock %}
+
 {% block page_intro %}
 
 {% if request.user.is_authenticated and request.user.is_league_member %}
@@ -15,11 +21,16 @@
 
 
 {% block content %}
+<div class="row">
+<div class="col-md-9">
+
 <h2> Latest News</h2>
-  {% with per_page=blog_page.num_entries_page %}
-        {# 'paginate' tag cannot render dotted variables, so we need to create a context var #}
-{% paginate per_page entries %}
-    {% for entry in entries %}
+<div class="row">
+{% for entry in entries %}
+
+<div class="col-md-4">
+  <div class="panel panel-defautl">
+  <div class="panel-body">
       <article class="box page-content blog_grid">
           {% include 'puput/entry_page_header.html' %}
           {% if entry.header_image %}
@@ -38,15 +49,45 @@
               {% endif %}
               <a class="blog_btn continue" href="{% entry_url entry blog_page %}">{% trans 'Continue reading' %} &raquo;</a></h5>
           </section>
-      </article>
-  {% empty %}
-      <span>{% trans 'No results founds.' %}</span>
+        </div>
+        </div>
+      </div>
 {% endfor %}
+</div>
+</div>
+<div class="col-md-3">
+  <h2> In our forums</h2>
+  {% last_topics request as topics %}
 
-<div class="pagination">
-           {% show_paginator %}
-       </div>
-{% endwith %}
+  {% for topic in topics %}
+<div class="panel panel-defautl">
+<div class="panel-body">
+<div class="row">
+  <div class="col-md-6">
+<h4 class="text-center">
+           <a  href="{% url 'forum_conversation:topic' topic.forum.slug topic.forum.pk topic.slug topic.pk %}">{{topic.subject}}</a>
+         </h4>
+</div>
+
+<div class="col-md-6">
+             <i class="fa fa-user"></i> {{ topic.poster |user_link }} <br/>
+  <i class="fa fa-comments" aria-hidden="true"></i> <a href="{% url 'forum:forum' topic.forum.slug topic.forum.pk %}">{{topic.forum}}</a> <br/>
+
+         <i class="fa fa-calendar"></i> {{ topic.last_post_on|date:"SHORT_DATE_FORMAT" }} <br/>
+</div>
+</div>
+</div>
+</div>
+
+
+   {% endfor %}
+</div>
+</div>
+<hr/>
+<div class="row">
+
+</div>
+
   {% endblock %}
 
 {% block sidebar%}

@@ -283,3 +283,30 @@ INTERNAL_IPS = ['127.0.0.1']
 POSTMAN_AUTO_MODERATE_AS = True
 
 WAGTAILIMAGES_MAX_UPLOAD_SIZE = 20 * 1024 * 1024
+
+
+
+# Default settings
+BOOTSTRAP3 = {
+
+    # The URL to the jQuery JavaScript file
+    'jquery_url': '//code.jquery.com/jquery.min.js',
+
+    # The Bootstrap base URL
+    'base_url': '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/',
+
+    # The complete URL to the Bootstrap CSS file (None means derive it from base_url)
+    'css_url': '/static/css/bootstrap.min.css',
+
+    # The complete URL to the Bootstrap CSS file (None means no theme)
+    'theme_url': None,
+
+    # The complete URL to the Bootstrap JavaScript file (None means derive it from base_url)
+    'javascript_url': None,
+
+    # Put JavaScript in the HEAD section of the HTML document (only relevant if you use bootstrap3.html)
+    'javascript_in_head': False,
+
+    # Include jQuery with Bootstrap JavaScript (affects django-bootstrap3 template tags)
+    'include_jquery': False,
+}
