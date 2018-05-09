@@ -20,7 +20,7 @@ def adverts(context):
 @register.simple_tag()
 def last_topics(request):
     allowed_forums = request.forum_permission_handler._get_forums_for_user(request.user,[ 'can_read_forum',])
-    last_topics = Topic.objects.filter(forum__in = allowed_forums).order_by('-last_post_on')[:5]
+    last_topics = Topic.objects.filter(forum__in=allowed_forums).order_by('-last_post_on')[:4]
     return last_topics
 
 
