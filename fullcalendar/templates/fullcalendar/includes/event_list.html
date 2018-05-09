@@ -1,0 +1,37 @@
+{%load tz calendar_tags%}
+{% get_current_timezone as TIME_ZONE %}
+<h3 class="text-center">
+  <a href="{% url 'calendar:calendar_view' %}">  <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+  OSR Events ({{TIME_ZONE}})
+</a>
+  </h3>
+{% get_now as now %}
+  {% public_events as public_events%}
+
+{% for cal_event in public_events %}
+  {% if cal_event.url %}  <a href="{{cal_event.url}}">    {% endif %}
+<div class="panel cal-event-sidebar">
+  <div class="panel-body">
+    <div class="col-md-4">
+      <p>
+        {% if cal_event.start.date == now.date %}
+        Today !
+        {% else %}
+        {{cal_event.start|date:"d, M"}}
+        {% endif %}
+      </p>
+
+      <p>{{cal_event.start|time:"TIME_FORMAT"}}</p>
+    </div>
+    <div class="col-md-8 text-center" >
+<h4>
+      {{cal_event.title}}
+</h4>
+    <div class="text-center cal-event-description">
+      {{cal_event.description}}
+    </div>
+    </div>
+    {% if cal_event.url %}  </a>  {% endif %}
+</div>
+</div>
+{% endfor %}
