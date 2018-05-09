@@ -1,4 +1,4 @@
-{% extends "full_width.html" %}
+{% extends "base.html" %}
 {% load static i18n wagtailcore_tags wagtailimages_tags puput_tags compress wagtailroutablepage_tags league_tags osr_tags%}
 {% block body_class %}template-homepage{% endblock %}
 
@@ -17,10 +17,27 @@
 {% else %}
   {% include "home/includes/homepage_intro.html"%}
 {% endif %}
+
+<div class="container">
+  <div class="row">
+
+    <div class="col-md-4">
+      {% include 'fullcalendar/includes/event_list.html'  %}
+    </div>
+
+    <div class="col-md-8">
+      {% include 'home/includes/we_provide.html'  %}
+    </div>
+  </div>
+
+</div>
+
+<hr/>
 {% endblock %}
 
 
-{% block content %}
+{% block page_content %}
+<div class="container">
 <div class="row">
 <div class="col-md-9">
 
@@ -65,7 +82,7 @@
 <div class="row">
   <div class="col-md-6">
 <h4 class="text-center">
-           <a  href="{% url 'forum_conversation:topic' topic.forum.slug topic.forum.pk topic.slug topic.pk %}?post={{ topic.last_post.pk }}#{{ topic.last_post.pk }}">{{topic.last_post.subject}}</a>
+           <a  href="{% url 'forum_conversation:topic' topic.forum.slug topic.forum.pk topic.slug topic.pk %}?post={{ topic.last_post.pk }}#{{ topic.last_post.pk }}">{{topic.last_post.subject|truncatewords:6}}</a>
          </h4>
 </div>
 
@@ -78,36 +95,38 @@
 </div>
 </div>
 </div>
-
-
    {% endfor %}
 </div>
 </div>
+</div>
+
 <hr/>
+<div class="container">
+
 <div class="row">
 <div class='col-md-8 text-center'>
   <h3>OSR is made possible thanks to the support from friends and partners</h3>
   <div class="row">
-    <div class="col-md-4">
-    <a href="https://internetgoschool.com"><img class="img-responsive" src="https://openstudyroom.org/media/images/logo.width-500.png" alt="Guo Juan's Internet Go School" ></a>
+    <div class="col-md-4 sponsors">
+    <a href="https://internetgoschool.com"><img class="img-responsive center-block" src="https://openstudyroom.org/media/images/logo.width-500.png" alt="Guo Juan's Internet Go School" ></a>
   </div>
-  <div class="col-md-4">
-    <a href="https://online-go.com/"><img class="img-responsive" src="https://a00ce0086bda2213e89f-570db0116da8eb5fdc3ce95006e46d28.ssl.cf1.rackcdn.com/4.2/img/ogslogo-light.png"></a>
+  <div class="col-md-4 sponsors">
+    <a href="https://online-go.com/"><img class="img-responsive center-block" src="https://openstudyroom.org/media/images/ogs.original.png"></a>
   </div>
-  <div class="col-md-4">
-    <a href="https://www.gokgs.com/"><img class="img-responsive" src="http://files.gokgs.com/images/kgsLogo.png"></a>
+  <div class="col-md-4 sponsors">
+    <a href="https://www.gokgs.com/"><img class="img-responsive center-block" src="http://files.gokgs.com/images/kgsLogo.png"></a>
   </div>
 
 </div>
 <div class="row">
   <div class="col-md-4">
-      <a  href="http://www.shawnsgogroup.com/index.php"><img class="img-responsive" src="https://openstudyroom.org/media/images/halcy0n-clossiuspatreonbanner01white.width-500.png" alt="Clossius"></a>
+      <a  href="http://www.shawnsgogroup.com/index.php"><img class="img-responsive center-block" src="https://openstudyroom.org/media/images/halcy0n-clossiuspatreonbanner01white.width-500.png" alt="Clossius"></a>
     </div>
     <div class="col-md-4">
   <div class="panel panel-default">
   <a href="http://breakfast.go4go.net/">
   <div class="panel-body">
-    Alexandre Dinerchtein's go school
+    Alexandre Dinerchtein
     </div>
     </a>
     </div>
@@ -144,13 +163,10 @@
 </div>
           </div>
       </div>
+    </div>
+
   {% endblock %}
 
-{% block sidebar%}
-<div class="blog_sidebar">
-{% include 'sidebar.html'%}
-</div>
-{% endblock %}
 
 {% block extra_js %}
 <script>

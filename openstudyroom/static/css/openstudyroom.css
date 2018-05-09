@@ -22,11 +22,10 @@ body {
 }
 .template-homepage > header{
   width:100%;
-  height: auto;
   background-image: url('https://imgur.com/download/q2HkiU5');
   background-repeat: no-repeat;
   background-size: 100%;
-  height:600px;
+  height:400px;
 }
 .join-us{
   background-image: url('https://openstudyroom.org/media/images/bar.original.original.jpg');
@@ -45,6 +44,10 @@ body {
    padding-bottom:30px;
  }
 
+.sponsors{
+ margin-top: 15px;
+ margin-bottom: 15px;
+}
 
 .socials>a{
   font-size:30px;
