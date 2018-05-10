@@ -26,6 +26,8 @@
     <article class="box page-content"
              {%if self.id %}data-entry-page-update-comments-url="{% url 'entry_page_update_comments' self.id %}{% endif %}">
         {% include 'puput/entry_page_header.html' with entry=self %}
+
+
         {% if self.header_image %}
             <section>
                 <span class="image featured">

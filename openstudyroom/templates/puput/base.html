@@ -40,18 +40,7 @@
                         {% recent_entries blog_page.num_last_entries %}
                     </ul>
                 {% endif %}
-                {% if blog_page.display_popular_entries %}
-                    <ul class="sidebar">
-                        <h4>{% trans 'Popular Entries' %}</h4>
-                        {% popular_entries blog_page.num_popular_entries %}
-                    </ul>
-                {% endif %}
-                {% if blog_page.display_archive %}
-                    <ul class="sidebar widget menu">
-                        <h4>{% trans 'Archive' %}</h4>
-                        {% archives_list %}
-                    </ul>
-                {% endif %}
+
             </div>
 
   {% endblock  %}
