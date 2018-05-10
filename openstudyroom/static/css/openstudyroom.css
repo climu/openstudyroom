@@ -58,6 +58,12 @@ body {
  margin-bottom: 15px;
 }
 
+.we-provide > i{
+  color: rgb(88,88,88);
+  position: relative;
+  transform: translateY(50%);
+}
+
 .socials>a{
   font-size:30px;
   color:rgb(88,88,88);

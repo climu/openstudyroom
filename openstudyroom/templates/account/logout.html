@@ -1,11 +1,16 @@
 {% extends "full_width.html" %}
 
 {% load bootstrap3 %}
+
+{% block heading %}
+<div class="page-header">
+    <h1>Log out</h1>
+</div>
+{% endblock %}
 {% block content %}
     <div class="row">
         <div class="col-md-5">
             <form method="POST" action="{% url "account_logout" %}">
-                <legend>Log out</legend>
                 <fieldset>
                     {% csrf_token %}
                     <p>Are you sure you want to log out?</p>

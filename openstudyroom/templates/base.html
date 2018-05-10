@@ -49,6 +49,7 @@
 
   <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,100italic,100,400italic,500,500italic,700,900,700italic,900italic' rel='stylesheet' type='text/css'>
 	<script src="https://use.fontawesome.com/1602589062.js"></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="  crossorigin="anonymous"></script>
 
 
   {% block extra_css %}
@@ -96,28 +97,14 @@
       {% block breadcrumb %} {% endblock %}
   </div>
 </div>
-  
+
   {% block page_content%}
   {% endblock %}
 
   {% block main %}{% endblock %}
 
 
-  {# Global javascript #}
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="  crossorigin="anonymous"></script>
-    {% bootstrap_javascript %}
-    <script type="text/javascript" src="{% static 'js/openstudyroom.js' %}"></script>
-	  <script type="text/javascript" src="{%static 'wgo/wgo.min.js'%}"></script>
-    <script type="text/javascript" src="{%static 'wgo/wgo.player.min.js'%}"></script>
-    <script type="text/javascript">$("[data-toggle=tooltip]").tooltip();</script>
 
-    {% block extra_js %}
-      {# Override this in templates to add extra javascript #}
-    {% endblock %}
-
-    {# for machina templates we needs a js block #}
-    {% block js %}
-    {% endblock %}
     <footer class="footer">
       <div class="container-fluid">
         <div class="row">
@@ -141,5 +128,19 @@
         </div>
       </div>
       </footer>
+  {# Global javascript #}
+    {% bootstrap_javascript %}
+    <script type="text/javascript" src="{% static 'js/openstudyroom.js' %}"></script>
+    <script type="text/javascript" src="{%static 'wgo/wgo.min.js'%}"></script>
+    <script type="text/javascript" src="{%static 'wgo/wgo.player.min.js'%}"></script>
+    <script type="text/javascript">$("[data-toggle=tooltip]").tooltip();</script>
+
+    {% block extra_js %}
+      {# Override this in templates to add extra javascript #}
+    {% endblock %}
+
+    {# for machina templates we needs a js block #}
+    {% block js %}
+    {% endblock %}
 </body>
 </html>
