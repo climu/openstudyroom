@@ -1,8 +1,9 @@
 {% extends "full_width.html" %}
-{% load static community_tags%}
+{% load static community_tags forum_markup_tags%}
 {% block heading%}
   <div class="page-header">
       <h1>{% if event.community %}{{event.community|community_link}}{%else%}OSR{%endif%} League - {%if event %}{{event}}{% else%}Archives{% endif %}<span id='game-header'>{%if game %} - {{game.black.kgs_username}} vs {{game.white.kgs_username}} {%endif%} </span></h1>
+      {% if event.description %}{{event.description|safe|rendered}}{% endif %}
   </div>
   {%endblock%}
   {% block extra_css %}

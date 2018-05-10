@@ -42,9 +42,3 @@
    </form>
 {% endif %}
 </nav>
-
-{% if event.description is not None%}
-<div class="alert alert-info" role="alert">
-{{event.description|safe|rendered}}
-</div>
-{%endif%}
