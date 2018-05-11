@@ -47,8 +47,9 @@ return false;};
   <li class="active"><a href="{% url 'league:games'  %}">Games</a></li>
 </ul>
 </nav>
+<div class="well"> This table shows all games that have been played in the Open Study Room</div>
+
 <div class ="row">
-  <div class="well"> This table shows all games that have been played in the Open Study Room</div>
 <div class="col-md-4">
   <div id ="game_infos">
     {% if sgf %}
@@ -72,10 +73,12 @@ return false;};
     </div>
     </div>
   {% endif %}
-  {%endlanguage%}
-
-{% endblock %}
 </div>
+</div>
+  {%endlanguage%}
+{% endblock %}
+
+
 {% block extra_js %}
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>

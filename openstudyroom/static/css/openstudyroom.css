@@ -6,51 +6,67 @@ html {
 body {
   position: relative;
   margin: 0;
-  padding-bottom: 6rem;
   min-height: 100%;
+  height: 100%;
+  padding-top: 40px;
+
 }
 
-img {
+img.img-magic {
 transition: 1s ease;
 }
 
-img:hover{
--webkit-transform: scale(0.95);
--ms-transform: scale(0.95);
-transform: scale(0.95);
-transition: 1s ease;
+#wrap{
+  min-height: 100%;
+  /* Negative indent footer by its height */
+  margin: 0 auto -62px 0;
+  /* Pad bottom by footer height */
+  padding: 0 0 60px 0;
+}
+
+img.img-magic:hover{
+  -webkit-transform: scale(0.95);
+  -ms-transform: scale(0.95);
+  transform: scale(0.95);
+  transition: 1s ease;
 }
 
 .footer {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background-color: #efefef;
+  background-color: #f8f8f8;
+  height:60px;
+  margin-top: 30px;
 }
 
-.template-homepage > .navbar-static-top{
+.navbar-static-top{
+  padding-top: 10px;
+  border: 1px;
+
+}
+
+.template-homepage  .navbar-fixed-top{
   margin-bottom:0px;
   transition: 1s ease;
 }
 
-.template-homepage > header{
+.template-homepage #wrap > header{
   width:100%;
   background-position: center top;
-  background-image: url('https://imgur.com/download/crPDxKx');
+  background-image: url('https://imgur.com/download/2QHJiRU');
   background-repeat: no-repeat;
-  background-size: 100%;
-  height:400px;
-  transition: 3s ease;
+  background-size: cover;
+  height:450px;
 }
 
-.template-homepage > header:hover{
-background-size: 103%;
-transition: 3s ease;
+.quote-header{
+  color:#efefef;
+  opacity: 0.8;
+  position: relative;
+  width: 400px;
+  top: -30px;
+ text-shadow: 0 0 7px rgba(0,0,0, 0.7);
 }
-
 .news{
-  background-color: #efefef;
+  background-color: #f8f8f8;
 
   width:100%;
   background-repeat: no-repeat;
@@ -72,6 +88,7 @@ transition: 3s ease;
    color:white;
    padding-top:30px;
    padding-bottom:30px;
+  text-shadow: 0 0 7px rgba(0,0,0, 0.7);
  }
 
 .sponsors{
@@ -86,23 +103,37 @@ transition: 3s ease;
 }
 
 .socials{
-  position: relative;
-  top: -5px;
-  margin: 0 auto;
-  width: 200px;
-  text-align: center;
-  background: white;
-  border-radius: 0px 0px 10px 10px;
+  margin-top: 10px;
 }
 
 .socials>a{
   font-size:30px;
+  text-decoration: none;
+}
+
+.socials-header{
+    position: relative;
+    width: 200px;
+    top: 410px;
+    left:10px;
+}
+
+.socials-header > a{
+  color:#efefef;
+  opacity: 0.7;
+}
+
+.socials-header>a:hover{
+  opacity: 0.9;
+}
+.socials-footer>a{
   color:rgb(88,88,88);
 }
 
 .image-center{
   margin:auto;
 }
+
 .post-info{width:50px}
 
 .ancestor > a {

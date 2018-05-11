@@ -51,8 +51,9 @@ return false;};
   <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
   </ul>
 {% include 'league/includes/league_nav.html' with active='games' %}
+<div class="well"> This table shows all games that have been played in the {{event.name}}</div>
+
 <div class ="row">
-  <div class="well"> This table shows all games that have been played in the {{event.name}}</div>
 <div  class="col-md-4">
   <div id ="game_infos">
     {% if sgf %}
@@ -81,6 +82,8 @@ return false;};
   {% endif %}
 
   </div>
+</div>
+
   {%endlanguage%}
 {% endblock %}
 
