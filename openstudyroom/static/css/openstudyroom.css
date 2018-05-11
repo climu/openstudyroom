@@ -10,6 +10,17 @@ body {
   min-height: 100%;
 }
 
+img {
+transition: 1s ease;
+}
+
+img:hover{
+-webkit-transform: scale(0.95);
+-ms-transform: scale(0.95);
+transform: scale(0.95);
+transition: 1s ease;
+}
+
 .footer {
   position: absolute;
   right: 0;
@@ -17,15 +28,25 @@ body {
   left: 0;
   background-color: #efefef;
 }
+
 .template-homepage > .navbar-static-top{
   margin-bottom:0px;
+  transition: 1s ease;
 }
+
 .template-homepage > header{
   width:100%;
-  background-image: url('https://imgur.com/download/q2HkiU5');
+  background-position: center top;
+  background-image: url('https://imgur.com/download/crPDxKx');
   background-repeat: no-repeat;
   background-size: 100%;
   height:400px;
+  transition: 3s ease;
+}
+
+.template-homepage > header:hover{
+background-size: 103%;
+transition: 3s ease;
 }
 
 .news{
@@ -37,7 +58,7 @@ body {
 
 }
 .join-us{
-  background-image: url('https://openstudyroom.org/media/images/bar.original.original.jpg');
+ background-image: url('https://openstudyroom.org/media/images/bar.original.original.jpg');
  background-position:100% center;
  background-size: 100%;
 
@@ -62,6 +83,16 @@ body {
   color: rgb(88,88,88);
   position: relative;
   transform: translateY(50%);
+}
+
+.socials{
+  position: relative;
+  top: -5px;
+  margin: 0 auto;
+  width: 200px;
+  text-align: center;
+  background: white;
+  border-radius: 0px 0px 10px 10px;
 }
 
 .socials>a{

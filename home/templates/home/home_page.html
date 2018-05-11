@@ -4,12 +4,6 @@
 
 
 {% block heading %}{%endblock%}
-{% block extra-header %}
-<div class="socials">
-{% include 'home/includes/socials.html' %}
-</div>
-{% endblock %}
-
 {% block page_intro %}
 
 {% if request.user.is_authenticated and request.user.is_league_member %}

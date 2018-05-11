@@ -11,7 +11,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <link href="https://fonts.googleapis.com/css?family=Raleway:400,500" rel="stylesheet"> 
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
   <!-- Google Analytics -->
@@ -66,8 +66,11 @@
   {% block navbar %}
   {% include 'menu.html' %}
   {% endblock %}
-
 <header>
+  <div class="socials">
+    {% include 'home/includes/socials.html' %}
+  </div>
+ 
   {% if request.user.is_authenticated and not request.user.is_league_member%}
     <li class="alert alert-info alert-dismissable fade in" style="list-style-type: none;">
       <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -103,8 +106,6 @@
 
   {% block main %}{% endblock %}
 
-
-
     <footer class="footer">
       <div class="container-fluid">
         <div class="row">
@@ -116,14 +117,10 @@
           </div>
           <div class="col-md-4 text-center ">
             <h3>
-              Open Study Room
+             © Open Study Room 2018
             </h3>
           </div>
-          <div class="col-md-4 ">
-          <div class=" socials pull-right">
-            {%include 'home/includes/socials.html' %}
-          </div>
-        </div>
+
 
         </div>
       </div>
