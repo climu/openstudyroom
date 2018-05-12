@@ -17,8 +17,14 @@ body {
   width:100%;
   z-index: 999;
 }
+
 img.img-magic {
-transition: 1s ease;
+  transition: 1s ease;
+}
+
+.forumlist .panel-row{
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 #wrap{
