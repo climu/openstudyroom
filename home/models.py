@@ -18,7 +18,7 @@ from wagtail.wagtailcore.signals import page_published
 from wagtailmenus.models import MenuPage
 from puput.models import EntryPage, BlogPage
 import requests
-
+import random
 from fullcalendar.models import AvailableEvent, GameRequestEvent
 
 
@@ -39,7 +39,18 @@ class Advert(models.Model):
         return self.title
 
 
+@register_snippet
+@python_2_unicode_compatible  # provide equivalent __unicode__ and __str__ methods on Python 2
+class Quote(models.Model):
+    text = models.TextField(blank=True, null=True, max_length=100)
+    source= models.TextField(blank=True, null=True, max_length=20)
+    panels = [
+        FieldPanel('text'),
+        FieldPanel('source'),
+    ]
 
+    def __str__(self):
+        return self.text[0:30]
 
 # Global Streamfield definition
 
@@ -111,6 +122,9 @@ class HomePage(Page):
         context = super(HomePage, self).get_context(request, *args, **kwargs)
         context['entries'] = entries
         context['blog_page'] = blog_page
+        quote = random.choice(Quote.objects.all())
+        context['quote'] = quote
+        '''
         user = request.user
         if user.is_authenticated and user.is_league_member:
             now = timezone.now()
@@ -138,7 +152,7 @@ class HomePage(Page):
                 end__gte=now
             ).exists()
             context['me_available'] = me_available
-
+            '''
         return context
 
 

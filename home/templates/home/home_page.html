@@ -4,6 +4,14 @@
 
 
 {% block heading %}{%endblock%}
+
+{% block extra-header %}
+  {% include 'home/includes/socials_header.html' %}
+  <div class="quote-header lead pull-right">
+    "{{quote.text}}"
+  </div>
+{% endblock %}
+
 {% block page_intro %}
 
 {% if request.user.is_authenticated and request.user.is_league_member %}
@@ -29,12 +37,7 @@
 
 {% endblock %}
 
-{% block extra-header %}
-  {% include 'home/includes/socials_header.html' %}
-  <div class="quote-header lead pull-right">
-    "There is death in the hane"
-  </div>
-{% endblock %}
+
 
 {% block page_content %}
 <div class="news">
@@ -42,7 +45,7 @@
 <div class="row">
 
 <div class="col-md-3">
-  <h2> In our forums</h2>
+  <h2> In our <a href="/forum/">forums</a></h2>
   {% last_topics request as topics %}
 
   {% for topic in topics %}
@@ -68,7 +71,7 @@
 </div>
 <div class="col-md-9">
 
-<h2> Latest News</h2>
+<h2> Latest news in our <a href="/forum/">blog</a></h2>
 <div class="row equal">
 {% for entry in entries %}
 

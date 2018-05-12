@@ -504,7 +504,7 @@ h3 {
 	height: auto;
 }
 
-.box.page-content > .links{
+ .links.no-border{
     border-top:none;
     margin-top:-20px;
 }

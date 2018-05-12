@@ -22,7 +22,6 @@
 {% endblock social_share %}
 
 {% block content %}
-<div class="col-sm-8 col-md-8">
     {% with per_page=blog_page.num_entries_page %}
         {# 'paginate' tag cannot render dotted variables, so we need to create a context var #}
         {% paginate per_page entries %}
@@ -31,6 +30,11 @@
         {% endif %}
         {% for entry in entries %}
             <article class="box page-content blog_grid">
+                <header>
+                    <h2 class="post_title">
+                        <a href="{% entry_url entry blog_page %}">{{ entry.title }}</a>
+                    </h2>
+                </header>
                 {% include 'puput/entry_page_header.html' %}
                 {% if entry.header_image %}
                     <section>
@@ -56,5 +60,4 @@
             {% show_paginator %}
         </div>
     {% endwith %}
-    </div>
 {% endblock content %}
