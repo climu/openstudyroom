@@ -44,31 +44,7 @@
 <div class="container ">
 <div class="row">
 
-<div class="col-md-3">
-  <h2> In our <a href="/forum/">forums</a></h2>
-  {% last_topics request as topics %}
 
-  {% for topic in topics %}
-<div class="panel panel-defautl">
-<div class="panel-body">
-<div class="row">
-  <div class="col-md-6">
-<h5 class="text-center">
-           <a  href="{% url 'forum_conversation:topic' topic.forum.slug topic.forum.pk topic.slug topic.pk %}?post={{ topic.last_post.pk }}#{{ topic.last_post.pk }}">{{topic.last_post.subject|truncatewords:6}}</a>
-         </h5>
-</div>
-
-<div class="col-md-6">
-             <i class="fa fa-user"></i> {{ topic.poster |user_link }} <br/>
-  <i class="fa fa-comments" aria-hidden="true"></i> <a href="{% url 'forum:forum' topic.forum.slug topic.forum.pk %}">{{topic.forum}}</a> <br/>
-
-         <i class="fa fa-calendar"></i> {{ topic.last_post_on|date:"SHORT_DATE_FORMAT" }} <br/>
-</div>
-</div>
-</div>
-</div>
-   {% endfor %}
-</div>
 <div class="col-md-9">
 
 <h2> Latest news in our <a href="/forum/">blog</a></h2>
@@ -117,6 +93,31 @@
       </div>
 {% endfor %}
 </div>
+</div>
+<div class="col-md-3">
+  <h2> In our <a href="/forum/">forums</a></h2>
+  {% last_topics request as topics %}
+
+  {% for topic in topics %}
+<div class="panel panel-defautl">
+<div class="panel-body">
+<div class="row">
+  <div class="col-md-6">
+<h5 class="text-center">
+           <a  href="{% url 'forum_conversation:topic' topic.forum.slug topic.forum.pk topic.slug topic.pk %}?post={{ topic.last_post.pk }}#{{ topic.last_post.pk }}">{{topic.last_post.subject|truncatewords:6}}</a>
+         </h5>
+</div>
+
+<div class="col-md-6">
+             <i class="fa fa-user"></i> {{ topic.poster |user_link }} <br/>
+  <i class="fa fa-comments" aria-hidden="true"></i> <a href="{% url 'forum:forum' topic.forum.slug topic.forum.pk %}">{{topic.forum}}</a> <br/>
+
+         <i class="fa fa-calendar"></i> {{ topic.last_post_on|date:"SHORT_DATE_FORMAT" }} <br/>
+</div>
+</div>
+</div>
+</div>
+   {% endfor %}
 </div>
 </div>
 </div>

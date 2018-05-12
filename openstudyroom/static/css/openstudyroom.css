@@ -8,10 +8,15 @@ body {
   margin: 0;
   min-height: 100%;
   height: 100%;
-  padding-top: 40px;
+  padding-top: 44px;
 
 }
 
+.alerts{
+  position:fixed;
+  width:100%;
+  z-index: 999;
+}
 img.img-magic {
 transition: 1s ease;
 }
@@ -19,7 +24,7 @@ transition: 1s ease;
 #wrap{
   min-height: 100%;
   /* Negative indent footer by its height */
-  margin: 0 auto -62px 0;
+  margin: 0 auto -90px 0;
   /* Pad bottom by footer height */
   padding: 0 0 60px 0;
 }
