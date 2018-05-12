@@ -52,7 +52,7 @@
 <div class="row equal">
 {% for entry in entries %}
 
-<div class="col-md-4">
+<div class="col-md-4 ">
   <div class="panel panel-defautl">
   <div class="panel-body">
       <article class="box blog_grid">
@@ -74,21 +74,22 @@
             </li>
           </ul>
           {% if entry.header_image %}
-              <section><h3>
+              <section>
                   <span class="img-responsive">
                       {% image entry.header_image fill-800x240 as header_image %}
                       <img alt="{{ entry.header_image.title }}" src="{{ header_image.url }}">
-                  </span></h3>
+                  </span>
               </section>
           {% endif %}
-          <section class="article"><h5>
+          <section class="article">
               {% if entry.excerpt %}
                   {{ entry.excerpt|richtext }}
               {% else %}
                   {{ entry.body|richtext|truncatewords_html:50 }}
               {% endif %}
-              <a class="blog_btn continue" href="{% entry_url entry blog_page %}">{% trans 'Continue reading' %} &raquo;</a></h5>
+              <a class="blog_btn continue" href="{% entry_url entry blog_page %}">{% trans 'Continue reading' %} &raquo;</a>
           </section>
+        </article>
         </div>
         </div>
       </div>
@@ -135,10 +136,10 @@
     <a href="https://internetgoschool.com"><img class="img-responsive center-block" src="https://openstudyroom.org/media/images/logo.width-500.png" alt="Guo Juan's Internet Go School" ></a>
   </div>
   <div class="col-md-4 sponsors">
-    <a href="https://online-go.com/"><img class="img-responsive center-block" src="https://openstudyroom.org/media/images/ogs.original.png"></a>
+    <a href="https://online-go.com/"><img class="img-responsive center-block" src="https://openstudyroom.org/media/images/ogs.original.png" alt="Online Go Server"></a>
   </div>
   <div class="col-md-4 sponsors">
-    <a href="https://www.gokgs.com/"><img class="img-responsive center-block" src="https://openstudyroom.org/media/images/kgsLogo.original.png"></a>
+    <a href="https://www.gokgs.com/"><img class="img-responsive center-block" src="https://openstudyroom.org/media/images/kgsLogo.original.png" alt="KGS Go Server"></a>
   </div>
 
 </div>
@@ -182,7 +183,7 @@
 </form>
 </div>
 <div class="row"  >
-  <a href="https://www.patreon.com/OpenStudyRoom"><img src="https://openstudyroom.org/media/images/become_a_patron_button.original.png" height="46px"></a>
+  <a href="https://www.patreon.com/OpenStudyRoom"><img src="https://openstudyroom.org/media/images/become_a_patron_button.original.png" height="46px" alt="Patreon"></a>
 </div>
           </div>
       </div>
