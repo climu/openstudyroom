@@ -85,6 +85,17 @@ img.img-magic:hover{
   background-size: 100%;
 
 }
+
+.panel .continue{
+position:absolute;
+bottom:30px;
+right:30px;
+}
+
+.col-equal .box.blog_grid{
+  padding-bottom: 15px;
+}
+
 .join-us{
  background-image: url('https://openstudyroom.org/media/images/bar.original.original.jpg');
  background-position:100% center;
