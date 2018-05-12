@@ -8,7 +8,8 @@
 {% block extra-header %}
   {% include 'home/includes/socials_header.html' %}
   <div class="quote-header lead pull-right">
-    "{{quote.text}}"
+    <p>"{{quote.text}}"</p>
+    <p class="pull-right"> {% if quote.source %}- {{quote.source}} {% endif %}</p>
   </div>
 {% endblock %}
 
