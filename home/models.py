@@ -122,8 +122,10 @@ class HomePage(Page):
         context = super(HomePage, self).get_context(request, *args, **kwargs)
         context['entries'] = entries
         context['blog_page'] = blog_page
-        quote = random.choice(Quote.objects.all())
-        context['quote'] = quote
+        quotes = Quote.objects.all()
+        if quotes:
+            quote = random.choice(Quote.objects.all())
+            context['quote'] = quote
         '''
         user = request.user
         if user.is_authenticated and user.is_league_member:
