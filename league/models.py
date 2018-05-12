@@ -33,7 +33,7 @@ class LeagueEvent(models.Model):
         ('tournament', 'tournament'),
         ('meijin', 'meijin'),
         ('ddk', 'ddk'),
-        ('dan','dan')
+        ('dan', 'dan')
     )
     #start and end of the league
     begin_time = models.DateTimeField(blank=True)

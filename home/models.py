@@ -1,25 +1,26 @@
 from __future__ import absolute_import, unicode_literals
 
+import random
 from django.conf import settings
 from django.db import models
 from django.template.loader import render_to_string
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils import timezone
+#from django.utils import timezone
 from django import forms
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore.fields import RichTextField, StreamField
 from wagtail.wagtailsnippets.models import register_snippet
 from wagtail.wagtailadmin.edit_handlers import FieldPanel, StreamFieldPanel
 from wagtail.wagtailcore.blocks import TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, \
-        RichTextBlock, RawHTMLBlock, IntegerBlock
+    RichTextBlock, RawHTMLBlock, IntegerBlock
 from wagtail.wagtailimages.blocks import ImageChooserBlock
 from wagtail.wagtaildocs.blocks import DocumentChooserBlock
 from wagtail.wagtailcore.signals import page_published
 from wagtailmenus.models import MenuPage
 from puput.models import EntryPage, BlogPage
 import requests
-import random
-from fullcalendar.models import AvailableEvent, GameRequestEvent
+
+#from fullcalendar.models import AvailableEvent, GameRequestEvent
 
 
 @register_snippet
@@ -43,7 +44,7 @@ class Advert(models.Model):
 @python_2_unicode_compatible  # provide equivalent __unicode__ and __str__ methods on Python 2
 class Quote(models.Model):
     text = models.TextField(blank=True, null=True, max_length=100)
-    source= models.TextField(blank=True, null=True, max_length=20)
+    source = models.TextField(blank=True, null=True, max_length=20)
     panels = [
         FieldPanel('text'),
         FieldPanel('source'),
@@ -126,35 +127,33 @@ class HomePage(Page):
         if quotes:
             quote = random.choice(Quote.objects.all())
             context['quote'] = quote
-        '''
-        user = request.user
-        if user.is_authenticated and user.is_league_member:
-            now = timezone.now()
-            opponents = user.get_opponents()
-            if opponents is False:
-                context['should_join'] = True
-            else:
-                availables = AvailableEvent.objects.filter(
-                    end__gte=now,
-                    user__in=opponents
-                ).order_by('start')[:5]
-                context['availables'] = availables
-                online_opponents = list(filter(
-                    lambda user: user.is_online(),
-                    opponents
-                ))
-                context['online_opponents'] = online_opponents
-                game_requests = GameRequestEvent.objects.filter(
-                    receivers=user,
-                    end__gte=now
-                ).count()
-                context['game_requests'] = game_requests
-            me_available = AvailableEvent.objects.filter(
-                user=user,
-                end__gte=now
-            ).exists()
-            context['me_available'] = me_available
-            '''
+#        user = request.user
+#        if user.is_authenticated and user.is_league_member:
+#            now = timezone.now()
+#            opponents = user.get_opponents()
+#            if opponents is False:
+#                context['should_join'] = True
+#            else:
+#                availables = AvailableEvent.objects.filter(
+#                    end__gte=now,
+#                    user__in=opponents
+#                ).order_by('start')[:5]
+#                context['availables'] = availables
+#                online_opponents = list(filter(
+#                    lambda user: user.is_online(),
+#                    opponents
+#                ))
+#                context['online_opponents'] = online_opponents
+#                game_requests = GameRequestEvent.objects.filter(
+#                    receivers=user,
+#                    end__gte=now
+#                ).count()
+#                context['game_requests'] = game_requests
+#            me_available = AvailableEvent.objects.filter(
+#                user=user,
+#                end__gte=now
+#            ).exists()
+#            context['me_available'] = me_available
         return context
 
 
