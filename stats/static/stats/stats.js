@@ -4,7 +4,7 @@ var labels = json.map(function(e) {
   return moment(e.month).format('YYYY MM')
 });
 
-var values = games.map(function(e) {
+var values = json.map(function(e) {
   return e.total
 });
 
