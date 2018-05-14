@@ -70,14 +70,13 @@ img.img-magic:hover{
 
 .quote-header{
   color:#efefef;
-
+  max-width: 80%;
   opacity: 0.85;
   font-weight: 400;
   position: relative;
-
   top: -20px;
   right:10px;
- text-shadow: 0 0 7px rgba(0,0,0, 1), 0 0 3px black;
+  text-shadow: 0 0 7px rgba(0,0,0, 1), 0 0 3px black;
 }
 .news{
   background-color: #f8f8f8;
