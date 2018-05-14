@@ -19,6 +19,8 @@ urlpatterns = [
     url(r'^search/$', search_views.search, name='search'),
 
     url(r'^league/', include('league.urls', namespace="league")),
+    url(r'^stats/', include('stats.urls', namespace="stats")),
+
 #    url(r'^wgo/', include('wgo.urls', namespace="wgo")),
 #    url(r'^accounts/login/$',LoginView.as_view(), name="auth_login"),
 #    url(r'^accounts/signup/$',SignupView.as_view(), name="registration_register"),
