@@ -37,15 +37,15 @@
 <script>
 var games = {{games|safe}};
 config = config_from_json(games, 'number of games');
-var chart = new Chart($('#gameChart'), config);
+var games_chart = new Chart($('#gameChart'), config);
 
 var registrations = {{registrations|safe}};
 config = config_from_json(registrations, 'registrations');
-var chart = new Chart($('#registrationsChart'), config);
+var registrations_chart = new Chart($('#registrationsChart'), config);
 
 var users = {{users|safe}};
 config = config_from_json(users, 'users');
-var chart = new Chart($('#usersChart'), config);
+var users_chart = new Chart($('#usersChart'), config);
 
 </script>
 {% endblock %}
