@@ -14,7 +14,8 @@ def overview(request):
         .annotate(month=TruncMonth('date'))\
         .values('month')\
         .annotate(total=Count('id'))\
-        .values('month', 'total')
+        .values('month', 'total')\
+        .order_by('month')
     games = list(games)
     games = json.dumps(games, cls=DjangoJSONEncoder)
 
@@ -22,7 +23,9 @@ def overview(request):
         .annotate(month=TruncMonth('date_joined'))\
         .values('month')\
         .annotate(total=Count('id'))\
-        .values('month', 'total')
+        .values('month', 'total')\
+        .order_by('month')
+
     registrations = list(registrations)
     users = []
     total = 0
