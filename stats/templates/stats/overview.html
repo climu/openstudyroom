@@ -1,0 +1,54 @@
+{% extends 'full_width.html' %}
+{% load  static %}
+{% block title %}Statistics{% endblock %}
+
+{% block heading %}
+
+<div class="page-header">
+    <h1>OSR statistics</h1>
+</div>
+{%endblock%}
+
+{% block content %}
+<div class="row">
+  <h2 class="text-center"> OSR users </h2>
+  <div class="col-md-6">
+    <canvas id="registrationsChart" width="400" height="400"></canvas>
+  </div>
+  <div class="col-md-6">
+    <canvas id="usersChart" width="400" height="400"></canvas>
+  </div>
+</div>
+<hr />
+<div class="row">
+  <h2 class="text-center"> Games </h2>
+
+<div class="col-md-6">
+  <canvas id="gameChart" width="400" height="400"></canvas>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js'></script>
+<script src="{% static 'stats/stats.js' %}"></script>
+
+<script>
+window.onload = function(){
+var games = {{games|safe}};
+config = config_from_json(games, 'number of games');
+
+var games_chart = new Chart($('#gameChart'), config);
+
+var registrations = {{registrations|safe}};
+
+config = config_from_json(registrations, 'registrations');
+var registrations_chart = new Chart($('#registrationsChart'), config);
+
+var users = {{users|safe}};
+config = config_from_json(users, 'users');
+var users_chart = new Chart($('#usersChart'), config);
+}
+</script>
+{% endblock %}
