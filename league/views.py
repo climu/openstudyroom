@@ -164,7 +164,7 @@ def download_sgf(request, sgf_id):
     response['Content-Disposition'] = 'attachment; filename="' +  \
         sgf.wplayer + '-' + sgf.bplayer + '-' + sgf.date.strftime('%m/%d/%Y') + '.sgf"'
     return response
-
+    
 
 def list_games(request, event_id=None, sgf_id=None):
     """List all games and allow to show one with wgo."""
