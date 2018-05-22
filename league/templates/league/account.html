@@ -197,7 +197,12 @@ return false;};
 
 
 <div class="panel panel-default">
-<div class="panel-heading"><h3>{{user}} Games </h4> <button class="btn btn-default pull-right">Download all games</button> </div>
+<div class="panel-heading"><h3>{{user}} Games </h4>
+
+  <a href= "\league\all_sgf\{{user.pk}}">
+    <button class="btn btn-default pull-right">Download all games</button>
+  </a>
+</div>
   {% if sgfs is None %}
   <div class="panel-body">
     {{user}} didn't play any league game yet.

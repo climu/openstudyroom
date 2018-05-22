@@ -38,8 +38,8 @@ urlpatterns = [
     url(r'^discord/$', views.discord_redirect, name='discord_redirect'),
 
     url(r'^sgf/(?P<sgf_id>[0-9]+)/$', views.download_sgf, name='sgf'),
-    url(r'^all_sgf/$', views.download_all_sgf, name='sgf'),
-    
+    url(r'^all_sgf/(?P<user_id>[0-9]+)/$', views.download_all_sgf, name='all_sgf'),
+
     url(r'^account/timezone/$', views.timezone_update, name='timezone_update'),
 
 

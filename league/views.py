@@ -175,11 +175,11 @@ def download_all_sgf(request, user_id):
     black_sgfs = user.black_sgf.get_queryset()
     white_sgfs = user.white_sgf.get_queryset()
 
-    '''dictonary of all sgfs'''
+    '''dictonary of all sgfs of a specific user'''
 
     all_sgf = {}
-    all_sgf.append(black_sgfs)
-    all_sgf.append(white_sgfs)
+    all_sgf.update(black_sgfs)
+    all_sgf.update(white_sgfs)
 
     return response
 
