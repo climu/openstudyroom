@@ -164,7 +164,25 @@ def download_sgf(request, sgf_id):
     response['Content-Disposition'] = 'attachment; filename="' +  \
         sgf.wplayer + '-' + sgf.bplayer + '-' + sgf.date.strftime('%m/%d/%Y') + '.sgf"'
     return response
-    
+
+
+def download_all_sgf(request, user_id):
+
+    user = get_object_or_404(User, pk=user_id)
+
+    '''dictonaries of sgfs'''
+
+    black_sgfs = user.black_sgf.get_queryset()
+    white_sgfs = user.white_sgf.get_queryset()
+
+    '''dictonary of all sgfs'''
+
+    all_sgf = {}
+    all_sgf.append(black_sgfs)
+    all_sgf.append(white_sgfs)
+
+    return response
+
 
 def list_games(request, event_id=None, sgf_id=None):
     """List all games and allow to show one with wgo."""
