@@ -177,10 +177,10 @@ def download_all_sgf(request, user_id):
 
     '''dictonary of all sgfs of a specific user'''
 
-    all_sgf = {}
-    all_sgf.update(black_sgfs)
-    all_sgf.update(white_sgfs)
 
+
+
+    response = HttpResponse(black_sgfs.all().values('sgf_text'), content_type='application/octet-stream')
     return response
 
 
