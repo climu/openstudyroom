@@ -15,9 +15,12 @@ from .models import Sgf, User, LeagueEvent, Division, LeaguePlayer,\
 #if not Group.objects.filter(name='league_member').exists():
  #      group = Group.objects.create(name='league_member')
 
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    search_fields = ['username']
+
 mymodels = [
     Sgf,
-    User,
     LeagueEvent,
     Division,
     LeaguePlayer,
