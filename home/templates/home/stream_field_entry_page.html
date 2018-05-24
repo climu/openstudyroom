@@ -1,6 +1,6 @@
 
 {% extends "puput/base.html" %}
-{% load wagtailcore_tags wagtailimages_tags puput_tags %}
+{% load wagtailcore_tags wagtailroutablepage_tags wagtailimages_tags puput_tags %}
 
 {% block title %}{{ self.title }} | {{ blog_page.title }}{% endblock title %}
 {% block meta_title %}{% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}{% endblock meta_title %}
@@ -25,7 +25,18 @@
 {% block content %}
     <article class="box page-content"
              {%if self.id %}data-entry-page-update-comments-url="{% url 'entry_page_update_comments' self.id %}{% endif %}">
-        {% include 'puput/entry_page_header.html' with entry=self %}
+             <ul class="links no-border">
+                 <li>
+                     <i class="fa fa-user"></i>
+                     <a href="{% routablepageurl blog_page 'entries_by_author' self.owner.username %}">
+                         {{ self.owner.username }}
+                     </a>
+                 </li>
+                 <li>
+                     <i class="fa fa-calendar"></i>
+                     {{ self.date|date:"DATE_FORMAT" }}
+                 </li>
+               </ul>
         {% if self.header_image %}
             <section>
                 <span class="image featured">
@@ -47,4 +58,3 @@
         {% include 'puput/related_entries.html' with entry=self %}
     {% endif %}
 {% endblock extra_content %}
-
