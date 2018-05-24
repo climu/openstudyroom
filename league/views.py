@@ -32,6 +32,9 @@ from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
 from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm,\
     LeagueEventForm, EmailForm, TimezoneForm, ProfileForm
 
+from io import StringIO, BytesIO
+import io
+from zipfile import ZipFile
 
 ForumProfile = get_model('forum_member', 'ForumProfile')
 discord_url_file = "/etc/discord_url.txt"
@@ -170,6 +173,9 @@ def download_all_sgf(request, user_id):
 
     user = get_object_or_404(User, pk=user_id)
 
+    in_memory = io.BytesIO()
+    zip = ZipFile(in_memory, "a")
+
     '''dictonaries of sgfs'''
 
     black_sgfs = user.black_sgf.get_queryset()
@@ -177,10 +183,18 @@ def download_all_sgf(request, user_id):
 
     '''dictonary of all sgfs of a specific user'''
 
+    for sgf in black_sgfs.all():
+        single_sgf = HttpResponse(sgf.sgf_text, content_type='application/octet-stream')
+        single_sgf['Content-Disposition'] = 'attachment; filename="' +  \
+            sgf.wplayer + '-' + sgf.bplayer + '-' + sgf.date.strftime('%m/%d/%Y') + '.sgf"'
+        zip.writestr("test1.sgf", single_sgf.content)
 
+    response = HttpResponse(content_type="application/zip")
+    response["Content-Disposition"] = "attachment; filename=sgfs.zip"
 
+    in_memory.seek(0)
+    response.write(in_memory.read())
 
-    response = HttpResponse(black_sgfs.all().values('sgf_text'), content_type='application/octet-stream')
     return response
 
 
