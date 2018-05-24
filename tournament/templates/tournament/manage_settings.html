@@ -67,8 +67,7 @@
         <div id="players_list">
           {%for player in players %}
             <li data-id={{player.pk}} class="list-group-item clearfix player">
-              {{player.user | user_link}}
-
+              <a href="/league/account/{{player.user.username}}">{{player.user.username}}</a>
                   <div class="checkbox div-checkbox group_name pull-right">
                     <input class ="refetch check-player" value="{{player.pk}}" type="checkbox" >
                   </div>
