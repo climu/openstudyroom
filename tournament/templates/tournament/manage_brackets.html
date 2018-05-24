@@ -51,7 +51,7 @@
     <div id="seeds" data-round="-1" data-bracket="-1" class="panel-body group_players">
         {%for player in seeded_players %}
             <div data-id={{player.pk}} class="list-group-item">
-              {{player.user | user_link}}
+              <a href="/league/account/{{player.user.username}}">{{player.user.username}}</a>
             </div>
         {%endfor%}
 
@@ -64,7 +64,7 @@
   <div id="group_{{group.pk}}_players" data-round="-1" data-bracket="-1" class="panel-body group_players">
       {%for player in group.get_results %}
           <div data-id={{player.pk}} class="list-group-item">
-            {{player.user | user_link}}
+            <a href="/league/account/{{player.user.username}}">{{player.user.username}}</a>
           </div>
       {%endfor%}
 
@@ -192,7 +192,7 @@
                     class="list-group-item
                     {% if match.sgf and match.winner == match.player_1 %}list-group-item-success{% endif %}"
                     data-id="{{match.player_1.pk}}">
-                    {{match.player_1.user |user_link}}
+                    <a href="/league/account/{{match.player_1.user.username}}">{{match.player_1.user.username}}</a>
                     <div class="checkbox div-checkbox pull-right">
                       <input class ="refetch check-player" value="{{match.player_1.pk}}" type="checkbox" data-round="{{round.pk}}" >
                     </div>
@@ -202,7 +202,7 @@
                   <div
                     class="list-group-item {% if match.sgf and match.winner == match.player_2 %}list-group-item-success{% endif %}"
                     data-id="{{match.player_2.pk}}">
-                    {{match.player_2.user |user_link}}
+                    <a href="/league/account/{{match.player_2.user.username}}">{{match.player_2.user.username}}</a>
                     <div class="checkbox div-checkbox pull-right">
                       <input class ="refetch check-player" value="{{match.player_2.pk}}" type="checkbox" data-round="{{round.pk}}" >
                     </div>
@@ -224,6 +224,8 @@
 
     {% endfor %}
 
+</div>
+</div>
 
 
 {% endblock %}
