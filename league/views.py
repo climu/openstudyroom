@@ -184,11 +184,11 @@ def download_all_sgf(request, user_id):
     '''dictonary of all sgfs of a specific user'''
     '''TODO: two sfgs can have same name, union would take just one file'''
 
-    for sgf in white_sgfs.union(black_sgfs).all():
-        single_sgf = HttpResponse(sgf.sgf_text, content_type='application/octet-stream')
-        single_sgf['Content-Disposition'] = 'attachment; filename="' +  \
-            sgf.wplayer + '-' + sgf.bplayer + '-' + sgf.date.strftime('%m/%d/%Y') + '.sgf"'
-        zip.writestr(sgf.wplayer + '-' + sgf.bplayer + ".sgf", single_sgf.content)
+    for sgf in white_sgfs.union(black_sgfs):
+        zip.writestr(sgf.wplayer + '-' + sgf.bplayer + '-' + sgf.date.strftime('%m-%d-%Y') + ".sgf", sgf.sgf_text)
+
+    for file in zip.filelist:
+        file.create_system = 0
 
     zip.close()
 
