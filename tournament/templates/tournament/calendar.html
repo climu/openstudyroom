@@ -26,8 +26,8 @@
 {% get_current_timezone as TIME_ZONE %}
   <div class="page-header">
     <h1>{{tournament.name}} - Calendar ({{TIME_ZONE}})</h1>
-    <div class="">{{tournament.description|safe|rendered}}</div>
   </div>
+  <div class="">{{tournament.description|safe|rendered}}</div>
 {%endblock%}
 
 {% block content %}
