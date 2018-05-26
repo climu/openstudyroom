@@ -560,7 +560,7 @@ def scrap_list_up(request, profile_id):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def admin(request):
     """Main admin view. Template will show:
         - admin board: embebed google doc.
@@ -618,7 +618,7 @@ def admin(request):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def admin_set_meijin(request):
     """Set one user to be meijin. Calls user.set_meijin methods."""
     if request.method == 'POST':
@@ -1117,7 +1117,7 @@ def proceed_populate(request, from_event_id, to_event_id):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def admin_user_send_mail(request, user_id):
     """Send an email to a user."""
     user = get_object_or_404(User, pk=user_id)
@@ -1170,7 +1170,7 @@ def discord_redirect(request):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def update_all_sgf_check_code(request):
     """
     Reparse all sgf from db. This can be usefull after adding a new field to sgf models.
@@ -1199,7 +1199,7 @@ def update_all_sgf_check_code(request):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def admin_users_list(request, event_id=None, division_id=None):
     """Show all users for admins."""
     event = None
@@ -1225,7 +1225,7 @@ def admin_users_list(request, event_id=None, division_id=None):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def create_all_profiles(request):
     """Create all profiles for users. Should be removed now"""
     if request.method == 'POST':
@@ -1272,7 +1272,7 @@ class ProfileUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def update_all_profile_ogs(request):
     """Update all profiles OGS ids. Should be removed now"""
     if request.method == 'POST':

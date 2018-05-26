@@ -19,7 +19,7 @@ class PublicEvent(CalEvent):
     url = models.URLField(blank=True)
 
     def can_edit(self, user):
-        return user.is_authenticated() and user.is_league_admin()
+        return user.is_authenticated() and user.is_osr_admin()
 
 
     @staticmethod

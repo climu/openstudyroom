@@ -586,16 +586,21 @@ class User(AbstractUser):
         Else we test if the event is a community league and if so,
          we test if user is in this community admin group
         """
-        if event is None:
-            return self.groups.filter(name='league_admin').exists()
-        if event.event_type == 'tournament':
-            return self.groups.filter(name='tournament_master').exists()
-        if event.community is not None:
-            return event.community.is_admin(self)
+        if self.groups.filter(name='league_admin').exists():
+            return True
+        if event is not None:
+            if event.community is not None:
+                return event.community.is_admin(self)
+            if event.event_type == 'tournament':
+                return self.groups.filter(name='tournament_master').exists()
         return False
 
     def is_league_member(self):
         return self.groups.filter(name='league_member').exists()
+
+    def is_osr_admin(self):
+        return self.groups.filter(name='OSR_admin').exists()
+
 
     def nb_games(self):
         players = self.leagueplayer_set.all()

@@ -14,13 +14,13 @@ from .models import Community
 from .forms import CommunityForm, AdminCommunityForm, CommunytyUserForm
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def admin_community_list(request):
     communitys = Community.objects.all()
     return render(request, 'community/admin/community_list.html', {'communitys': communitys})
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def admin_community_create(request):
     if request.method == 'POST':
         form = AdminCommunityForm(request.POST)
@@ -43,7 +43,7 @@ class AdminCommunityUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         user = self.request.user
-        return user.is_authenticated() and user.is_league_admin()
+        return user.is_authenticated() and user.is_osr_admin()
 
     def get_login_url(self):
         return '/'
@@ -69,7 +69,7 @@ class CommunityUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def admin_community_delete(request, pk):
     community = get_object_or_404(Community, pk=pk)
     if request.method == 'POST':
