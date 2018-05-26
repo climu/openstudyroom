@@ -176,16 +176,20 @@ def download_all_sgf(request, user_id):
     in_memory = io.BytesIO()
     zip = ZipFile(in_memory, "a")
 
-    '''dictonaries of sgfs'''
-
     black_sgfs = user.black_sgf.get_queryset()
     white_sgfs = user.white_sgf.get_queryset()
 
-    '''dictonary of all sgfs of a specific user'''
-    '''TODO: two sfgs can have same name, union would take just one file'''
-
     for sgf in white_sgfs.union(black_sgfs):
-        zip.writestr(sgf.wplayer + '-' + sgf.bplayer + '-' + sgf.date.strftime('%m-%d-%Y') + ".sgf", sgf.sgf_text)
+
+        current_name = sgf.wplayer + '-' + sgf.bplayer + '-' + sgf.date.strftime('%m-%d-%Y')
+        counter = 1
+
+        for name_in_zip in zip.namelist():
+            if current_name in name_in_zip:
+                counter += 1
+
+        current_name += "-" + str(counter) + ".sgf"
+        zip.writestr(current_name, sgf.sgf_text)
 
     for file in zip.filelist:
         file.create_system = 0
