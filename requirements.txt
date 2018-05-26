@@ -14,8 +14,8 @@ django-common-helpers==0.9.0
 django-compressor==2.1.1
 django-cron==0.5.0
 django-debug-toolbar==1.8
-django-el-pagination==3.1.0
-django-haystack==2.6.0
+django-el-pagination
+django-haystack
 django-machina==0.5.1
 django-modelcluster==3.1
 django-mptt==0.8.7
@@ -36,7 +36,7 @@ olefile==0.44
 packaging==16.8
 Pillow==4.2.1
 psycopg2>=2.7
-puput==0.8
+puput==0.9
 pybbm==0.18.4
 pylint==1.7.4
 pylint-django==0.7.2
