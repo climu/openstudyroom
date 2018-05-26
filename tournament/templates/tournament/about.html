@@ -31,13 +31,16 @@
 {% endif %}
 
 <div class="row">
-<div class="col-md-9">
+{% if  events %}
+  <div class="col-md-9">
+  <p>{{tournament.about|safe|rendered}}</p>
+  </div>
+  <div class="col-md-3">
+  {% include 'tournament/includes/event_list.html'%}
+  </div>
+{% else %}
 <p>{{tournament.about|safe|rendered}}</p>
-</div>
-<div class="col-md-3">
-{% include 'tournament/includes/event_list.html'%}
-</div>
-
+{% endif %}
 </div>
 
 

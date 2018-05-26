@@ -16,6 +16,7 @@ class TournamentForm(forms.ModelForm):
             'byo_time',
             'is_open',
             'is_public',
+            'use_calendar',
             'description',
         ]
         widgets = {

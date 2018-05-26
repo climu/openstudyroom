@@ -26,6 +26,7 @@ class Tournament(LeagueEvent):
             blank=True, null=True,
             validators=[validators.NullableMaxLengthValidator(5000)]
     )
+    use_calendar = models.BooleanField(default=True)
 
     def __init__(self, *args, **kwargs):
         LeagueEvent.__init__(self, *args, **kwargs)

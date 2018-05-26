@@ -19,9 +19,11 @@
   <li {% if active == "players" %}class="active"{% endif %}>
     <a href="{% url "tournament:players" tournament.pk%}">Players</a>
   </li>
+  {% if tournament.use_calendar %}
   <li {% if active == "calendar" %}class="active"{% endif %}>
     <a href="{% url "tournament:calendar" tournament.pk%}">Calendar</a>
   </li>
+  {% endif %}
   {% if tournament.rules %}
   <li {% if active == "rules" %}class="active"{% endif %}>
     <a href="{% url "tournament:rules" tournament.pk%}">Rules</a>
