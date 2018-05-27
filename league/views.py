@@ -24,6 +24,8 @@ from tournament.models import Tournament
 import pytz
 import requests
 from discord_bind.models import DiscordUser
+from django.template.defaultfilters import slugify
+
 
 from . import utils
 from . import ogs
@@ -164,8 +166,9 @@ def download_sgf(request, sgf_id):
     """Download one sgf file."""
     sgf = get_object_or_404(Sgf, pk=sgf_id)
     response = HttpResponse(sgf.sgf_text, content_type='application/octet-stream')
-    response['Content-Disposition'] = 'attachment; filename="' +  \
-        sgf.wplayer + '-' + sgf.bplayer + '-' + sgf.date.strftime('%m/%d/%Y') + '.sgf"'
+    # for testing special characters slugify("Andre🍃")
+    str = slugify(sgf.wplayer) + '-' + slugify(sgf.bplayer) + '-' + sgf.date.strftime('%m/%d/%Y') + ".sgf"
+    response['Content-Disposition'] = 'attachment; filename=%s' % str
     return response
 
 
