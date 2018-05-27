@@ -1,10 +1,13 @@
 from collections import OrderedDict
 import json
 import datetime
+import io
 from time import sleep
+from zipfile import ZipFile
 
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
+from django.template.defaultfilters import slugify
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
@@ -24,7 +27,7 @@ from tournament.models import Tournament
 import pytz
 import requests
 from discord_bind.models import DiscordUser
-from django.template.defaultfilters import slugify
+
 
 
 from . import utils
@@ -34,9 +37,6 @@ from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
 from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm,\
     LeagueEventForm, EmailForm, TimezoneForm, ProfileForm
 
-from io import StringIO, BytesIO
-import io
-from zipfile import ZipFile
 
 ForumProfile = get_model('forum_member', 'ForumProfile')
 discord_url_file = "/etc/discord_url.txt"
