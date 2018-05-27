@@ -194,7 +194,7 @@ class Round(models.Model):
         return self.bracket.tournament.name + " " + str(self.bracket.order) + "/" + str(self.order)
 
     def get_matchs(self):
-        return self.match_set.all()
+        return self.match_set.all().order_by('order')
 
     def create_match(self):
         last_match = self.match_set.all().order_by('order').last()
