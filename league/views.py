@@ -24,6 +24,8 @@ from tournament.models import Tournament
 import pytz
 import requests
 from discord_bind.models import DiscordUser
+from django.template.defaultfilters import slugify
+
 
 from . import utils
 from . import ogs
@@ -32,6 +34,9 @@ from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
 from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm,\
     LeagueEventForm, EmailForm, TimezoneForm, ProfileForm
 
+from io import StringIO, BytesIO
+import io
+from zipfile import ZipFile
 
 ForumProfile = get_model('forum_member', 'ForumProfile')
 discord_url_file = "/etc/discord_url.txt"
@@ -161,8 +166,45 @@ def download_sgf(request, sgf_id):
     """Download one sgf file."""
     sgf = get_object_or_404(Sgf, pk=sgf_id)
     response = HttpResponse(sgf.sgf_text, content_type='application/octet-stream')
-    response['Content-Disposition'] = 'attachment; filename="' +  \
-        sgf.wplayer + '-' + sgf.bplayer + '-' + sgf.date.strftime('%m/%d/%Y') + '.sgf"'
+    # for testing special characters slugify("Andre🍃")
+    str = slugify(sgf.wplayer) + '-' + slugify(sgf.bplayer) + '-' + sgf.date.strftime('%m/%d/%Y') + ".sgf"
+    response['Content-Disposition'] = 'attachment; filename=%s' % str
+    return response
+
+
+def download_all_sgf(request, user_id):
+
+    user = get_object_or_404(User, pk=user_id)
+
+    in_memory = io.BytesIO()
+    zip = ZipFile(in_memory, "a")
+
+    black_sgfs = user.black_sgf.get_queryset()
+    white_sgfs = user.white_sgf.get_queryset()
+
+    for sgf in white_sgfs.union(black_sgfs):
+
+        current_name = slugify(sgf.wplayer) + '-' + slugify(sgf.bplayer) + '-' + sgf.date.strftime('%m-%d-%Y')
+        counter = 1
+
+        for name_in_zip in zip.namelist():
+            if current_name in name_in_zip:
+                counter += 1
+
+        current_name += "-" + str(counter) + ".sgf"
+        zip.writestr(current_name, sgf.sgf_text)
+
+    for file in zip.filelist:
+        file.create_system = 0
+
+    zip.close()
+
+    response = HttpResponse(content_type="application/x-zip-compressed")
+    response["Content-Disposition"] = "attachment; filename=" + user.username + ".zip"
+
+    in_memory.seek(0)
+    response.write(in_memory.read())
+
     return response
 
 
