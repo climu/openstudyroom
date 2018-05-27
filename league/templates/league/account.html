@@ -197,11 +197,13 @@ return false;};
 
 
 <div class="panel panel-default">
-<div class="panel-heading"><h3>{{user}} Games </h4>
+<div class="panel-heading clearfix"><h3>{{user}} Games
 
   <a href= "\league\all_sgf\{{user.pk}}">
-    <button class="btn btn-default pull-right">Download all games</button>
+    <button class="btn btn-default btn-sm pull-right">Download all games</button>
   </a>
+
+</h3>
 </div>
   {% if sgfs is None %}
   <div class="panel-body">
