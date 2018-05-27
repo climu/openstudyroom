@@ -165,8 +165,7 @@ class Bracket(models.Model):
         return self.tournament.name + " " + str(self.order)
 
     def get_rounds(self):
-        self.round_set.all()
-        return self.round_set.all()
+        return self.round_set.all().order_by('order')
 
     def create_round(self):
         order = self.round_set.all().order_by('order').last().order + 1
