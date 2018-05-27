@@ -184,7 +184,7 @@ def download_all_sgf(request, user_id):
 
     for sgf in white_sgfs.union(black_sgfs):
 
-        current_name = sgf.wplayer + '-' + sgf.bplayer + '-' + sgf.date.strftime('%m-%d-%Y')
+        current_name = slugify(sgf.wplayer) + '-' + slugify(sgf.bplayer) + '-' + sgf.date.strftime('%m-%d-%Y')
         counter = 1
 
         for name_in_zip in zip.namelist():
