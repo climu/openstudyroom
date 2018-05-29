@@ -527,8 +527,8 @@ def account(request, user_name=None):
         else:
             event.is_in = False
 
-    won_divisions = user.won_division.get_queryset()
-    won_tournaments = user.won_tournament.get_queryset()
+    won_divisions = user.won_division.get_queryset().order_by('-league_event__end_time')
+    won_tournaments = user.won_tournament.get_queryset().order_by('-end_time')
 
     context = {
         'players': players,
