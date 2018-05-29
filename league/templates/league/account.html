@@ -116,6 +116,33 @@ return false;};
 </div>
 </div>
 
+{% if won_divisions or won_tournaments %}
+<div class="panel panel-default">
+<div class="panel-heading">
+  <h4> Trophys</h4>
+</div>
+<div class="panel-body">
+  {% if won_divisions %}
+  <div class="col-md-6">
+    <h4>Leagues</h4>
+  {% for division in won_divisions %}
+  <p>  {{division.league_event.end_time|date}}: Winner of {{division|division_link}}</p>
+  {% endfor %}
+</div>
+{% endif %}
+{% if won_tournaments %}
+
+<div class="col-md-6">
+  <h4>Tournaments</h4>
+{% for tournament in won_tournaments %}
+  <p>{{tournament.end_time|date}}: Winner of <a href="{% url "tournament:view" tournament.pk %}">{{tournament.name}}</a></p>
+{% endfor %}
+</div>
+{% endif %}
+
+</div>
+</div>
+{% endif %}
 
 {% if players %}
 <div class="panel panel-default">

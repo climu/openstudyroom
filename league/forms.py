@@ -14,7 +14,7 @@ class SgfAdminForm(forms.Form):
     url = forms.CharField(label="KGS archive link", required=False)
 
 class ActionForm(forms.Form):
-    action = forms.CharField(label='action', widget=forms.HiddenInput())
+    action = forms.CharField(label='action', widget=forms.HiddenInput(), required=False)
     user_id = forms.IntegerField(label='user_id', widget=forms.HiddenInput(), required=False)
     next = forms.CharField(label='next', widget=forms.HiddenInput(), required=False)
 
@@ -142,7 +142,6 @@ class TimezoneForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['timezone']
-
 
 class ProfileForm(ModelForm):
     class Meta:

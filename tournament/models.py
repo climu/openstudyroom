@@ -27,6 +27,12 @@ class Tournament(LeagueEvent):
             validators=[validators.NullableMaxLengthValidator(5000)]
     )
     use_calendar = models.BooleanField(default=True)
+    winner = models.ForeignKey(
+        'league.User',
+        null=True,
+        blank=True,
+        related_name="won_tournament"
+    )
 
     def __init__(self, *args, **kwargs):
         LeagueEvent.__init__(self, *args, **kwargs)

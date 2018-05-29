@@ -526,12 +526,18 @@ def account(request, user_name=None):
             event.results = results
         else:
             event.is_in = False
+
+    won_divisions = user.won_division.get_queryset()
+    won_tournaments = user.won_tournament.get_queryset()
+
     context = {
         'players': players,
         'open_events': open_events,
         'sgfs': sgfs,
         'user': user,
-        'discord_user': discord_user
+        'discord_user': discord_user,
+        'won_divisions': won_divisions,
+        'won_tournaments': won_tournaments
     }
     template = loader.get_template('league/account.html')
     return HttpResponse(template.render(context, request))
@@ -1049,6 +1055,25 @@ def admin_division_up_down(request, division_id):
                 division_2.save()
             return HttpResponseRedirect(
                 reverse('league:admin_events_update', kwargs={'pk': event.pk}))
+    raise Http404("What are you doing here ?")
+
+@login_required
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
+def division_set_winner(request, division_id):
+    '''set the winner for a division'''
+    division = get_object_or_404(Division, pk=division_id)
+    if request.method == 'POST':
+        form = ActionForm(request.POST)
+        print(request.POST)
+        if form.is_valid():
+            user_id = form.cleaned_data['user_id']
+            if user_id < 0:
+                division.winner = None
+            else:
+                user = get_object_or_404(User, pk=user_id)
+                division.winner = user
+            division.save()
+            return HttpResponseRedirect(form.cleaned_data['next'])
     raise Http404("What are you doing here ?")
 
 

@@ -78,6 +78,8 @@ urlpatterns = [
         views.admin_delete_division, name='admin_delete_division'),
     url(r'^admin/division/(?P<division_id>[0-9]+)/rename/$',
         views.admin_rename_division, name='admin_rename_division'),
+    url(r'^admin/division/(?P<division_id>[0-9]+)/winner/$',
+        views.division_set_winner, name='division_set_winner'),
     url(r'^admin/division/(?P<division_id>[0-9]+)/up-down/$',
         views.admin_division_up_down, name='admin_division_up_down'),
     url(r'^admin/users/$', views.admin_users_list, name='admin_users_list'),

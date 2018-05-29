@@ -87,6 +87,7 @@
           <a href="{% url 'league:admin_users_list' object.pk division.pk %}">{{division.number_players}} players </a>| {{division.number_games}} games</div>
      </div>
     <div class="panel-body">
+      <div class="row">
       <div class="col-md-6">
       <form action="" method="POST" class="form-inline" >{% csrf_token %}
         <input type="hidden" name="next" value="{{request.path}}">
@@ -126,8 +127,31 @@
       </form>
       {% endif %}
     </div>
+
+  </div>
+</div>
+
+    <div class="panel-footer">
+
+    <form action="" method="POST" class="form-inline" >{% csrf_token %}
+        <label for="user_id">Winner
+          <select class="form-control" id="user_id" name="user_id">
+            <option value="-1">-------------</option>
+            {% for player in division.get_players %}
+            <option value="{{player.user.pk}}" {%if division.winner == player.user%}selected {%endif%}>
+              {{player.user.username}}
+            </option>
+            {% endfor %}
+          </select>
+        </label>
+        <input type="hidden" name="next" value="{{request.path}}">
+        <button type="submit" formaction="{% url 'league:division_set_winner' division.pk %}" class="btn btn-primary">
+          <i class="fa fa-trophy"></i>
+        </button>
+    </form>
     </div>
   </div>
+
   {% endfor %}
 </div>
 </div>

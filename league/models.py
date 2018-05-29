@@ -909,6 +909,12 @@ class Division(models.Model):
     league_event = models.ForeignKey('LeagueEvent')
     name = models.TextField(max_length=20)
     order = models.SmallIntegerField(default=0)
+    winner = models.ForeignKey(
+        'User',
+        null=True,
+        blank=True,
+        related_name="won_division"
+    )
 
     class Meta:
         unique_together = ('league_event', 'order',)

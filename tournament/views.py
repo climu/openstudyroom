@@ -754,3 +754,21 @@ def save_groups(request, tournament_id):
         return HttpResponse("success")
     else:
         raise Http404("What are you doing here ?")
+
+@login_required
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
+def set_winner(request, tournament_id):
+    '''set the winner for a division'''
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    if request.method == 'POST':
+        form = ActionForm(request.POST)
+        if form.is_valid():
+            user_id = form.cleaned_data['user_id']
+            if user_id < 0:
+                tournament.winner = None
+            else:
+                user = get_object_or_404(User, pk=user_id)
+                tournament.winner = user
+            tournament.save()
+            return HttpResponseRedirect(form.cleaned_data['next'])
+    raise Http404("What are you doing here ?")
