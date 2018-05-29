@@ -91,10 +91,10 @@ class Tournament(LeagueEvent):
 
         elif self.stage == 2:
             [bplayer, wplayer] = sgf.get_players(self)
-            bplayer = TournamentPlayer(pk=bplayer.pk)
-            wplayer = TournamentPlayer(pk=wplayer.pk)
 
             if wplayer is not None and bplayer is not None:
+                bplayer = TournamentPlayer(pk=bplayer.pk)
+                wplayer = TournamentPlayer(pk=wplayer.pk)
                 match = wplayer.can_play_in_brackets(bplayer)
                 if match is not None:
                     out.update({
