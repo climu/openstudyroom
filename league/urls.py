@@ -65,6 +65,11 @@ urlpatterns = [
         views.LeagueEventCreate.as_view(success_url='/league/admin/events/'),
         name='admin_events_create'
     ),
+    url(
+        r'^admin/events/create/(?P<copy_from_pk>[0-9]+)/$',
+        views.LeagueEventCreate.as_view(success_url='/league/admin/events/'),
+        name='admin_events_create'
+    ),
     url(r'^admin/events/(?P<event_id>[0-9]+)/set_primary/$',
         views.admin_events_set_primary, name='set_primary'),
     url(r'^admin/events/(?P<event_id>[0-9]+)/delete/$',
@@ -101,8 +106,11 @@ urlpatterns = [
     url(r'^admin/create-all-profiles/$', views.create_all_profiles, name='create_all_profiles'),
     url(r'^admin/update-all-sgf-check-code/$',
         views.update_all_sgf_check_code, name='update_all_sgf_check_code'),
-    url(r'^admin/update_all_profile_ogs/$',
-    views.update_all_profile_ogs, name='update_all_profile_ogs'),
+    url(
+        r'^admin/update_all_profile_ogs/$',
+        views.update_all_profile_ogs,
+        name='update_all_profile_ogs'
+    ),
     url(r'^admin/set-meijin/$', views.admin_set_meijin, name='set_meijin'),
     url(
         r'^profile/(?P<pk>[0-9]+)/update$',

@@ -901,6 +901,41 @@ class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     def get_login_url(self):
         return '/'
 
+    def get_initial(self):
+        copy_from_pk = self.kwargs.get('copy_from_pk', None)
+        initials = {}
+        if copy_from_pk is not None:
+            copy_from = get_object_or_404(LeagueEvent, pk=copy_from_pk)
+            initials = {
+                'event_type': copy_from.event_type,
+                'nb_matchs': copy_from.nb_matchs,
+                'ppwin': copy_from.ppwin,
+                'pploss': copy_from.pploss,
+                'description': copy_from.description,
+                'prizes': copy_from.prizes
+            }
+        return initials
+
+    def form_valid(self, form):
+        response = super(LeagueEventCreate, self).form_valid(form)
+        copy_from_pk = self.kwargs.get('copy_from_pk', None)
+        if copy_from_pk is not None:
+            copy_from = get_object_or_404(LeagueEvent, pk=copy_from_pk)
+            divisions = copy_from.get_divisions()
+            for division in divisions:
+                division.league_event = self.object
+                division.pk = None
+                division.save()
+        return response
+
+    def get_context_data(self, **kwargs):
+        context = super(LeagueEventCreate, self).get_context_data(**kwargs)
+        copy_from_pk = self.kwargs.get('copy_from_pk', None)
+        if copy_from_pk is not None:
+            copy_from = get_object_or_404(LeagueEvent, pk=copy_from_pk)
+            context['copy_from'] = copy_from
+        return context
+
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
