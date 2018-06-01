@@ -503,6 +503,19 @@ def account(request, user_name=None):
     if not user.is_league_member():
         return HttpResponseRedirect('/')
 
+    ################################## jthat code ##########################################
+
+    # count = user.white_sgf.filter(black=opponent_id).count()
+    # context.update({'count': count})
+    # template = loader.get_template('league/account.html')
+
+    print("\n" + str(user.username) + "\n") # admin
+    print("\n" + str(request.user.username) + "\n") # potato
+    count = user.white_sgf.filter(black=request.user).count() + user.black_sgf.filter(white=request.user).count()
+    print("\n" + str(count) + "\n") 
+
+    ########################################################################################
+
     open_events = LeagueEvent.get_events(request.user)\
         .filter(is_open=True)\
         .exclude(event_type='tournament')
@@ -1117,6 +1130,8 @@ def populate(request, to_event_id, from_event_id=None):
     }
     template = loader.get_template('league/admin/populate.html')
     return HttpResponse(template.render(context, request))
+
+
 
 
 @login_required()
