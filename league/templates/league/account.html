@@ -111,17 +111,23 @@ return false;};
         </div>
 
         <div class="col-md-4"  >
+
           {% if user != request.user %}
               <h4>Your results against {{user.username}}</h4>
+<div class="progress">
 
+                <div class="progress-bar progress-bar-success" style="width:{{won_perc}}%">
+                    {{user_won_games}}
+                </div>
 
-              <div class="progress-bar games-won"  style="width: 58%;background-color: green;">{{count}}</div>
-              <div class="progress-bar games-lost" style="width: 42%;background-color: red;">3</div>
+                <div class="progress-bar progress-bar-danger" style="width:{{lost_perc}}%">
+                   {{user_lost_games}}
+                  </div>
 
-
+</div>
           {% endif %}
+        </div>
 
-      </div>
     </div>
 
 

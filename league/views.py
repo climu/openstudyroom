@@ -511,8 +511,18 @@ def account(request, user_name=None):
 
     print("\n" + str(user.username) + "\n") # admin
     print("\n" + str(request.user.username) + "\n") # potato
-    count = user.white_sgf.filter(black=request.user).count() + user.black_sgf.filter(white=request.user).count()
-    print("\n" + str(count) + "\n") 
+    num_total_games = user.white_sgf.filter(black=request.user).count() + user.black_sgf.filter(white=request.user).count()
+    user_lost_games = user.white_sgf.filter(winner=request.user).count() + user.black_sgf.filter(winner=request.user).count()
+    user_won_games = num_total_games - user_lost_games
+
+    won_perc = user_lost_games / num_total_games * 100
+    lost_perc = user_won_games / num_total_games * 100
+
+    print("\n" + str(user_lost_games) + "\n")
+    print("\n" + str(user_won_games) + "\n")
+    print("\n" + str(num_total_games) + "\n")
+    print("\n" + str(won_perc) + "\n")
+    print("\n" + str(lost_perc) + "\n")
 
     ########################################################################################
 
@@ -544,7 +554,11 @@ def account(request, user_name=None):
         'open_events': open_events,
         'sgfs': sgfs,
         'user': user,
-        'discord_user': discord_user
+        'discord_user': discord_user,
+        'won_perc': won_perc,
+        'lost_perc': lost_perc,
+        'user_won_games': user_won_games,
+        'user_lost_games': user_lost_games
     }
     template = loader.get_template('league/account.html')
     return HttpResponse(template.render(context, request))
