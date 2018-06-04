@@ -110,44 +110,41 @@ return false;};
 
         </div>
 
-        <div class="col-md-4"  >
+        <div class="col-md-4">
 
           {% if user != request.user %}
-              <h4>Your results against {{user.username}}</h4>
+
+              <h4>Your results against {{user.username}}.</h4>
+
+              {% if sgfs_links %}
+
               <div class="progress">
 
-                <div class="progress-bar progress-bar-success" role="progressbar" style="width:{{won_perc}}%;box-shadow:none;position: relative">
-                    <span style="font-weight: bold">{{user_won_games}}</span>
+                <div class="progress-bar progress-bar-success" role="progressbar" style="width:{{won_perc}}%;box-shadow:none">
+                    <span style="font-weight: bold">{{user_lost_games}}</span>
                 </div>
 
                 <div class="progress-bar progress-bar-danger" role="progressbar" style="width:{{lost_perc}}%;box-shadow:none">
-                   <span style="font-weight: bold">{{user_lost_games}}</span>
+                   <span style="font-weight: bold">{{user_won_games}}</span>
                 </div>
+
               </div>
 
               <div class="list">
-
-                {% for link in sgfs_links %}
-                  <tr>
-                    {% if link.urlto == "http://" %}
-                    {% if link.winner is user.username %}
-                      <td>OGS - <span style="color:green">{{link.result}}</span> - <a href= "http://online-go.com/game/{{link.ogs_id}}">{{link.date}}</a></td><p>
-                    {% else  %}
-                      <td>OGS - <span style="color:red">{{link.result}}</span> - <a href= "http://online-go.com/game/{{link.ogs_id}}">{{link.date}}</a></td><p>
-                    {% endif %}
-                    {% else %}
-                    {% if link.winner is user.username %}
-                      <td>KGS - <span style="color:green">{{link.result}}</span> - <a href= "{{link.urlto}}">{{link.date}}</a></td><p>
-                    {% else %}
-                      <td>KGS - <span style="color:green">{{link.result}}</span> - <a href= "{{link.urlto}}">{{link.date}}</a></td><p>
-                    {% endif %}
-                    {% endif %}
-                  </tr>
-                {% endfor %}
+                <tr>
+                {% result_panel %}
+                </tr>
               </div>
-          {% endif %}
+
+              {% else %}
+              <h5>You didn't play any games against each other yet.</h5>
+
+            {% endif %}
+            {% endif %}
+            </div>
+
+
         </div>
-    </div>
 
 
 

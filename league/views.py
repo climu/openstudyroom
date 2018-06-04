@@ -503,33 +503,23 @@ def account(request, user_name=None):
     if not user.is_league_member():
         return HttpResponseRedirect('/')
 
-    ################################## jthat code ##########################################
+    ########################################################################################
 
-    # count = user.white_sgf.filter(black=opponent_id).count()
-    # context.update({'count': count})
-    # template = loader.get_template('league/account.html')
-
-    print("\n" + str(user.username) + "\n") # admin
-    print("\n" + str(request.user.username) + "\n") # potato
     num_total_games = user.white_sgf.filter(black=request.user).count() + user.black_sgf.filter(white=request.user).count()
     user_lost_games = user.white_sgf.filter(winner=request.user).count() + user.black_sgf.filter(winner=request.user).count()
     user_won_games = num_total_games - user_lost_games
 
-    won_perc = user_lost_games / num_total_games * 100
-    lost_perc = user_won_games / num_total_games * 100
+    if num_total_games is not 0:
+        won_perc = user_lost_games / num_total_games * 100
+        lost_perc = user_won_games / num_total_games * 100
+    else:
+        won_perc = -1
+        lost_perc = -1
 
     sgfs_links_w = Sgf.objects.filter(wplayer=user.username).filter(bplayer=request.user.username)
     sgfs_links_b = Sgf.objects.filter(bplayer=user.username).filter(wplayer=request.user.username)
 
     sgfs_links = sgfs_links_b.union(sgfs_links_w)
-
-
-    print("\n" + str(user_lost_games) + "\n")
-    print("\n" + str(user_won_games) + "\n")
-    print("\n" + str(num_total_games) + "\n")
-    print("\n" + str(won_perc) + "\n")
-    print("\n" + str(lost_perc) + "\n")
-    print("\n" + str(sgfs_links) + "\n")
 
     ########################################################################################
 

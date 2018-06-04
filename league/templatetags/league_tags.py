@@ -38,6 +38,30 @@ def html_points_amount(context):
 
     return mark_safe(html)
 
+@register.simple_tag(takes_context=True)
+def result_panel(context):
+
+    user = context['user']
+    sgfs_links = context['sgfs_links']
+    html = ''
+    result = ''
+
+    # if not sgfs_links:
+    #    return mark_safe(html)
+
+    for link in sgfs_links:
+        points = list(str(link.result).rpartition('+'))
+        if points[2] == 'Resign':
+            points[2] = 'R'
+        print(link.winner)
+        print(user)
+        if link.winner != user:
+            result  = '<span style="color:green">' + points[0] + '+' + points[2].rstrip('0').rstrip('.') + '</span>'
+        else:
+            result  = '<span style="color:red">' + points[0] + '+' + points[2].rstrip('0').rstrip('.') + '</span>'
+        html += '<td>' + result + ' <a href="/league/games/' + str(link.id) + '/">' + str(link.date.day) + '.' + str(link.date.month) + '.' + str(link.date.year) + '</a></td><p>'
+
+    return mark_safe(html)
 
 @register.simple_tag(takes_context=True)
 def html_one_result(context):
