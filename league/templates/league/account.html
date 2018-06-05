@@ -70,7 +70,7 @@ return false;};
 
     <div class="row">
 
-            <div class="col-md-8">
+            <div class="col-md-4">
                 {% if user.profile.bio is not None %}
                 <p>{{user.profile.bio|safe|rendered}}</p>
                 {% endif %}
@@ -109,7 +109,42 @@ return false;};
               {% endif%}
 
         </div>
-    </div>
+
+        <div class="col-md-4">
+
+          {% if user != request.user %}
+
+              <h4>Your results against {{user.username}}.</h4>
+
+              {% if sgfs_links %}
+
+              <div class="progress">
+
+                <div class="progress-bar progress-bar-success" role="progressbar" style="width:{{won_perc}}%;box-shadow:none">
+                    <span style="font-weight: bold">{{user_lost_games}}</span>
+                </div>
+
+                <div class="progress-bar progress-bar-danger" role="progressbar" style="width:{{lost_perc}}%;box-shadow:none">
+                   <span style="font-weight: bold">{{user_won_games}}</span>
+                </div>
+
+              </div>
+
+              <div class="list">
+                <tr>
+                {% result_panel %}
+                </tr>
+              </div>
+
+              {% else %}
+              <h5>You didn't play any games against each other yet.</h5>
+
+            {% endif %}
+            {% endif %}
+            </div>
+
+
+        </div>
 
 
 

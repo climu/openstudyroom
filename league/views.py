@@ -3,6 +3,7 @@ import json
 import datetime
 import io
 from time import sleep
+import io
 from zipfile import ZipFile
 
 from django.shortcuts import get_object_or_404, render
@@ -21,6 +22,7 @@ from django.core.mail import send_mail
 from django.views.generic.edit import CreateView, UpdateView
 from django.template.defaultfilters import date as _date, time as _time
 from django.utils import timezone
+from django.template.defaultfilters import slugify
 from machina.core.db.models import get_model
 from postman.api import pm_write
 from tournament.models import Tournament
@@ -503,6 +505,26 @@ def account(request, user_name=None):
     if not user.is_league_member():
         return HttpResponseRedirect('/')
 
+    ########################################################################################
+
+    num_total_games = user.white_sgf.filter(black=request.user).count() + user.black_sgf.filter(white=request.user).count()
+    user_lost_games = user.white_sgf.filter(winner=request.user).count() + user.black_sgf.filter(winner=request.user).count()
+    user_won_games = num_total_games - user_lost_games
+
+    if num_total_games is not 0:
+        won_perc = user_lost_games / num_total_games * 100
+        lost_perc = user_won_games / num_total_games * 100
+    else:
+        won_perc = -1
+        lost_perc = -1
+
+    sgfs_links_w = Sgf.objects.filter(wplayer=user.username).filter(bplayer=request.user.username)
+    sgfs_links_b = Sgf.objects.filter(bplayer=user.username).filter(wplayer=request.user.username)
+
+    sgfs_links = sgfs_links_b.union(sgfs_links_w)
+
+    ########################################################################################
+
     open_events = LeagueEvent.get_events(request.user)\
         .filter(is_open=True)\
         .exclude(event_type='tournament')
@@ -536,6 +558,11 @@ def account(request, user_name=None):
         'sgfs': sgfs,
         'user': user,
         'discord_user': discord_user,
+        'won_perc': won_perc,
+        'lost_perc': lost_perc,
+        'user_won_games': user_won_games,
+        'user_lost_games': user_lost_games,
+        'sgfs_links': sgfs_links
         'won_divisions': won_divisions,
         'won_tournaments': won_tournaments
     }
@@ -1177,6 +1204,8 @@ def populate(request, to_event_id, from_event_id=None):
     }
     template = loader.get_template('league/admin/populate.html')
     return HttpResponse(template.render(context, request))
+
+
 
 
 @login_required()
