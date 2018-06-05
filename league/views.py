@@ -501,29 +501,35 @@ def account(request, user_name=None):
     else:
         user = get_object_or_404(User, username=user_name)
         # user = User.objects.get(username=user_name)
+    context = {}
 
     if not user.is_league_member():
         return HttpResponseRedirect('/')
 
-    ########################################################################################
+    if request.user.is_authenticated:
+        num_total_games = user.white_sgf.filter(black=request.user).count() + user.black_sgf.filter(white=request.user).count()
+        user_lost_games = user.white_sgf.filter(winner=request.user).count() + user.black_sgf.filter(winner=request.user).count()
+        user_won_games = num_total_games - user_lost_games
 
-    num_total_games = user.white_sgf.filter(black=request.user).count() + user.black_sgf.filter(white=request.user).count()
-    user_lost_games = user.white_sgf.filter(winner=request.user).count() + user.black_sgf.filter(winner=request.user).count()
-    user_won_games = num_total_games - user_lost_games
+        if num_total_games is not 0:
+            won_perc = user_lost_games / num_total_games * 100
+            lost_perc = user_won_games / num_total_games * 100
+        else:
+            won_perc = -1
+            lost_perc = -1
 
-    if num_total_games is not 0:
-        won_perc = user_lost_games / num_total_games * 100
-        lost_perc = user_won_games / num_total_games * 100
-    else:
-        won_perc = -1
-        lost_perc = -1
+        sgfs_links_w = Sgf.objects.filter(wplayer=user.username).filter(bplayer=request.user.username)
+        sgfs_links_b = Sgf.objects.filter(bplayer=user.username).filter(wplayer=request.user.username)
+        sgfs_links = sgfs_links_b.union(sgfs_links_w)
 
-    sgfs_links_w = Sgf.objects.filter(wplayer=user.username).filter(bplayer=request.user.username)
-    sgfs_links_b = Sgf.objects.filter(bplayer=user.username).filter(wplayer=request.user.username)
+        context.update({
+            'user_won_games': user_won_games,
+            'user_lost_games': user_lost_games,
+            'sgfs_links': sgfs_links,
+            'won_perc': won_perc,
+            'lost_perc': lost_perc,
 
-    sgfs_links = sgfs_links_b.union(sgfs_links_w)
-
-    ########################################################################################
+        })
 
     open_events = LeagueEvent.get_events(request.user)\
         .filter(is_open=True)\
@@ -552,20 +558,15 @@ def account(request, user_name=None):
     won_divisions = user.won_division.get_queryset().order_by('-league_event__end_time')
     won_tournaments = user.won_tournament.get_queryset().order_by('-end_time')
 
-    context = {
+    context.update({
         'players': players,
         'open_events': open_events,
         'sgfs': sgfs,
         'user': user,
         'discord_user': discord_user,
-        'won_perc': won_perc,
-        'lost_perc': lost_perc,
-        'user_won_games': user_won_games,
-        'user_lost_games': user_lost_games,
-        'sgfs_links': sgfs_links,
         'won_divisions': won_divisions,
         'won_tournaments': won_tournaments
-    }
+    })
     template = loader.get_template('league/account.html')
     return HttpResponse(template.render(context, request))
 
