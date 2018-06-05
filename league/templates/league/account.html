@@ -69,82 +69,12 @@ return false;};
 <div class="panel-body">
 
     <div class="row">
-
-            <div class="col-md-4">
-                {% if user.profile.bio is not None %}
-                <p>{{user.profile.bio|safe|rendered}}</p>
-                {% endif %}
-                {% if user.profile.kgs_username %}
-                <p>KGS Username:
-                  <a href="http://kgs.gosquares.net/index.rhtml.en?id={{user.profile.kgs_username}}" class="{% if user.is_online_kgs %} online{% else %} offline{%endif%}">
-                  {{user.profile.kgs_username}} {% if user.profile.kgs_rank %}({{user.profile.kgs_rank}}){% endif %}
-                </a></p>
-                {% endif %}
-                {% if user.profile.ogs_id > 0 %}
-                <p>OGS Username:
-                   <a href="https://online-go.com/player/{{user.profile.ogs_id}}" class="{% if user.is_online_kgs %} online{% else %} offline{%endif%}">
-                     {{user.profile.ogs_username}} {% if user.profile.ogs_rank %}({{user.profile.ogs_rank}}){% endif %}
-                   </a>
-                 </p>
-                {% endif %}
-                {% if discord_user %}
-
-                <p>Discord username :
-                  {% if discord_user.avatar %}
-                  <img class="widget-member-avatar" src="https://cdn.discordapp.com/avatars/{{discord_user.uid}}/{{discord_user.avatar}}">
-                  {% endif %}
-                   <span class="{{discord_user.status}}">{{discord_user.username}} ({{discord_user.discriminator}})</span>
-                   {% if user == request.user %}
-                   <a class="btn btn-default btn-xs" href="/discord/">{% bootstrap_icon "refresh"%} Update</a>
-                  {% endif %}
-                 </p>
-                {% elif request.user == user %}
-                <p> Click this button to link your discord account with your OSR account: <a class="btn btn-default btn-xs" href="/discord/">{% bootstrap_icon "user"%}</a>
-                {% endif %}
-            </div>
-
-          <div class="col-md-4">
-              {% if user.profile.picture_url %}
-                  <img src="{{user.profile.picture_url}}" style='float:left;'  class="img-responsive">
-              {% endif%}
-
-        </div>
-
-        <div class="col-md-4">
-
-          {% if user != request.user %}
-
-              <h4>Your results against {{user.username}}.</h4>
-
-              {% if sgfs_links %}
-
-              <div class="progress">
-
-                <div class="progress-bar progress-bar-success" role="progressbar" style="width:{{won_perc}}%;box-shadow:none">
-                    <span style="font-weight: bold">{{user_lost_games}}</span>
-                </div>
-
-                <div class="progress-bar progress-bar-danger" role="progressbar" style="width:{{lost_perc}}%;box-shadow:none">
-                   <span style="font-weight: bold">{{user_won_games}}</span>
-                </div>
-
-              </div>
-
-              <div class="list">
-                <tr>
-                {% result_panel %}
-                </tr>
-              </div>
-
-              {% else %}
-              <h5>You didn't play any games against each other yet.</h5>
-
-            {% endif %}
-            {% endif %}
-            </div>
-
-
-        </div>
+      {% if request.user.is_authenticated and request.user.is_league_member %}
+        {% include 'league/includes/user_infos_member.html' %}
+      {% else %}
+        {% include 'league/includes/user_infos.html' %}
+      {% endif %}
+    </div>
 
 
 
