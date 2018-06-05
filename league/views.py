@@ -562,7 +562,7 @@ def account(request, user_name=None):
         'lost_perc': lost_perc,
         'user_won_games': user_won_games,
         'user_lost_games': user_lost_games,
-        'sgfs_links': sgfs_links
+        'sgfs_links': sgfs_links,
         'won_divisions': won_divisions,
         'won_tournaments': won_tournaments
     }
