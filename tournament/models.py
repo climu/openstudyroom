@@ -26,6 +26,13 @@ class Tournament(LeagueEvent):
             blank=True, null=True,
             validators=[validators.NullableMaxLengthValidator(5000)]
     )
+    use_calendar = models.BooleanField(default=True)
+    winner = models.ForeignKey(
+        'league.User',
+        null=True,
+        blank=True,
+        related_name="won_tournament"
+    )
 
     def __init__(self, *args, **kwargs):
         LeagueEvent.__init__(self, *args, **kwargs)
@@ -84,10 +91,10 @@ class Tournament(LeagueEvent):
 
         elif self.stage == 2:
             [bplayer, wplayer] = sgf.get_players(self)
-            bplayer = TournamentPlayer(pk=bplayer.pk)
-            wplayer = TournamentPlayer(pk=wplayer.pk)
 
             if wplayer is not None and bplayer is not None:
+                bplayer = TournamentPlayer(pk=bplayer.pk)
+                wplayer = TournamentPlayer(pk=wplayer.pk)
                 match = wplayer.can_play_in_brackets(bplayer)
                 if match is not None:
                     out.update({
@@ -164,8 +171,7 @@ class Bracket(models.Model):
         return self.tournament.name + " " + str(self.order)
 
     def get_rounds(self):
-        self.round_set.all()
-        return self.round_set.all()
+        return self.round_set.all().order_by('order')
 
     def create_round(self):
         order = self.round_set.all().order_by('order').last().order + 1
@@ -193,7 +199,7 @@ class Round(models.Model):
         return self.bracket.tournament.name + " " + str(self.bracket.order) + "/" + str(self.order)
 
     def get_matchs(self):
-        return self.match_set.all()
+        return self.match_set.all().order_by('order')
 
     def create_match(self):
         last_match = self.match_set.all().order_by('order').last()

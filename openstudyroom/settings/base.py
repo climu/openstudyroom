@@ -106,7 +106,7 @@ INSTALLED_APPS = [
     'raven.contrib.django.raven_compat',
 
     'discord_bind',
-    "anymail",
+    #"anymail",
     'stats'
 
 ]+ get_machina_apps()

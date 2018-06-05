@@ -14,6 +14,8 @@
 		<th>ppw</th>
 		<th>ppl</th>
 		<th>min match</th>
+    <th>copy</th>
+
 	</thead>
 	<tbody>
 	{% for event in events %}
@@ -30,6 +32,8 @@
 		<td> {{ event.ppwin }} </td>
 		<td> {{ event.pploss }} </td>
 		<td> {{ event.min_matchs }} </td>
+    <td> <a href= "{% url 'league:admin_events_create' event.pk %}"> <i class="fa fa-copy"></i> </a> </td
+
 	</tr>
 	{% endfor %}
 	</tbody>

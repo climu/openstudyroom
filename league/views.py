@@ -1,12 +1,14 @@
 from collections import OrderedDict
 import json
 import datetime
+import io
 from time import sleep
 import io
 from zipfile import ZipFile
 
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
+from django.template.defaultfilters import slugify
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
@@ -36,6 +38,7 @@ from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
     Profile
 from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm,\
     LeagueEventForm, EmailForm, TimezoneForm, ProfileForm
+
 
 ForumProfile = get_model('forum_member', 'ForumProfile')
 discord_url_file = "/etc/discord_url.txt"
@@ -545,6 +548,10 @@ def account(request, user_name=None):
             event.results = results
         else:
             event.is_in = False
+
+    won_divisions = user.won_division.get_queryset().order_by('-league_event__end_time')
+    won_tournaments = user.won_tournament.get_queryset().order_by('-end_time')
+
     context = {
         'players': players,
         'open_events': open_events,
@@ -556,6 +563,8 @@ def account(request, user_name=None):
         'user_won_games': user_won_games,
         'user_lost_games': user_lost_games,
         'sgfs_links': sgfs_links
+        'won_divisions': won_divisions,
+        'won_tournaments': won_tournaments
     }
     template = loader.get_template('league/account.html')
     return HttpResponse(template.render(context, request))
@@ -626,7 +635,7 @@ def scrap_list_up(request, profile_id):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def admin(request):
     """Main admin view. Template will show:
         - admin board: embebed google doc.
@@ -684,7 +693,7 @@ def admin(request):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def admin_set_meijin(request):
     """Set one user to be meijin. Calls user.set_meijin methods."""
     if request.method == 'POST':
@@ -919,6 +928,41 @@ class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     def get_login_url(self):
         return '/'
 
+    def get_initial(self):
+        copy_from_pk = self.kwargs.get('copy_from_pk', None)
+        initials = {}
+        if copy_from_pk is not None:
+            copy_from = get_object_or_404(LeagueEvent, pk=copy_from_pk)
+            initials = {
+                'event_type': copy_from.event_type,
+                'nb_matchs': copy_from.nb_matchs,
+                'ppwin': copy_from.ppwin,
+                'pploss': copy_from.pploss,
+                'description': copy_from.description,
+                'prizes': copy_from.prizes
+            }
+        return initials
+
+    def form_valid(self, form):
+        response = super(LeagueEventCreate, self).form_valid(form)
+        copy_from_pk = self.kwargs.get('copy_from_pk', None)
+        if copy_from_pk is not None:
+            copy_from = get_object_or_404(LeagueEvent, pk=copy_from_pk)
+            divisions = copy_from.get_divisions()
+            for division in divisions:
+                division.league_event = self.object
+                division.pk = None
+                division.save()
+        return response
+
+    def get_context_data(self, **kwargs):
+        context = super(LeagueEventCreate, self).get_context_data(**kwargs)
+        copy_from_pk = self.kwargs.get('copy_from_pk', None)
+        if copy_from_pk is not None:
+            copy_from = get_object_or_404(LeagueEvent, pk=copy_from_pk)
+            context['copy_from'] = copy_from
+        return context
+
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
@@ -1075,6 +1119,25 @@ def admin_division_up_down(request, division_id):
                 reverse('league:admin_events_update', kwargs={'pk': event.pk}))
     raise Http404("What are you doing here ?")
 
+@login_required
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
+def division_set_winner(request, division_id):
+    '''set the winner for a division'''
+    division = get_object_or_404(Division, pk=division_id)
+    if request.method == 'POST':
+        form = ActionForm(request.POST)
+        print(request.POST)
+        if form.is_valid():
+            user_id = form.cleaned_data['user_id']
+            if user_id < 0:
+                division.winner = None
+            else:
+                user = get_object_or_404(User, pk=user_id)
+                division.winner = user
+            division.save()
+            return HttpResponseRedirect(form.cleaned_data['next'])
+    raise Http404("What are you doing here ?")
+
 
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
@@ -1185,7 +1248,7 @@ def proceed_populate(request, from_event_id, to_event_id):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def admin_user_send_mail(request, user_id):
     """Send an email to a user."""
     user = get_object_or_404(User, pk=user_id)
@@ -1203,7 +1266,7 @@ def admin_user_send_mail(request, user_id):
             send_mail(
                 form.cleaned_data['subject'],
                 form.cleaned_data['message'],
-                'postmaster@openstudyroom.org',
+                'openstudyroom@gmail.com',
                 recipients,
                 fail_silently=False,
             )
@@ -1238,7 +1301,7 @@ def discord_redirect(request):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def update_all_sgf_check_code(request):
     """
     Reparse all sgf from db. This can be usefull after adding a new field to sgf models.
@@ -1267,7 +1330,7 @@ def update_all_sgf_check_code(request):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def admin_users_list(request, event_id=None, division_id=None):
     """Show all users for admins."""
     event = None
@@ -1293,7 +1356,7 @@ def admin_users_list(request, event_id=None, division_id=None):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def create_all_profiles(request):
     """Create all profiles for users. Should be removed now"""
     if request.method == 'POST':
@@ -1340,7 +1403,7 @@ class ProfileUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def update_all_profile_ogs(request):
     """Update all profiles OGS ids. Should be removed now"""
     if request.method == 'POST':

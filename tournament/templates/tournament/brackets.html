@@ -10,13 +10,13 @@
 {% block heading %}
   <div class="page-header">
     <h1>{{tournament.name}} - Brackets</h1>
-    <div class="">{{tournament.description|safe|rendered}}</div>
   </div>
-{%endblock%}
+  <div>{{tournament.description|safe|rendered}}</div>
+  {%endblock%}
 
 {% block content %}
-{% include 'tournament/includes/tournament_menu.html' with active="brackets" %}
 
+{% include 'tournament/includes/tournament_menu.html' with active="brackets" %}
 {% include 'tournament/includes/bracket_view.html'%}
 
 {%endblock%}

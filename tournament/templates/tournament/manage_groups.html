@@ -49,7 +49,7 @@
           {% endif %}
            clearfix player
           ">
-            {{player.user | user_link}}
+          <a href="/league/account/{{player.user.username}}">{{player.user.username}}</a>
             <span class="group_name pull-right">
               {{player.division.name}}
             </span>
@@ -132,7 +132,7 @@
   <div id="group_{{group.pk}}_players" data-group-name="{{group.name}}" class="panel-body group_players">
       {%for player in group.get_tournament_players %}
           <li data-id={{player.pk}} class="list-group-item clearfix">
-            {{player.user | user_link}}
+            <a href="/league/account/{{player.user.username}}">{{player.user.username}}</a>
             <div class="checkbox div-checkbox pull-right">
               <input class ="refetch check-player" value="{{player.pk}}" type="checkbox" >
             </div>
@@ -150,7 +150,6 @@
 <div class="row">
 {% endif %}
 {% endfor %}
-</div>
 </div>
 </div>
 </div>

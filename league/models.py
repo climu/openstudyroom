@@ -586,13 +586,21 @@ class User(AbstractUser):
         Else we test if the event is a community league and if so,
          we test if user is in this community admin group
         """
-        if event is None or event.community is None:
-            return self.groups.filter(name='league_admin').exists()
-        else:
-            return event.community.is_admin(self)
+        if self.groups.filter(name='league_admin').exists():
+            return True
+        if event is not None:
+            if event.community is not None:
+                return event.community.is_admin(self)
+            if event.event_type == 'tournament':
+                return self.groups.filter(name='tournament_master').exists()
+        return False
 
     def is_league_member(self):
         return self.groups.filter(name='league_member').exists()
+
+    def is_osr_admin(self):
+        return self.groups.filter(name='OSR_admin').exists()
+
 
     def nb_games(self):
         players = self.leagueplayer_set.all()
@@ -901,6 +909,12 @@ class Division(models.Model):
     league_event = models.ForeignKey('LeagueEvent')
     name = models.TextField(max_length=20)
     order = models.SmallIntegerField(default=0)
+    winner = models.ForeignKey(
+        'User',
+        null=True,
+        blank=True,
+        related_name="won_division"
+    )
 
     class Meta:
         unique_together = ('league_event', 'order',)

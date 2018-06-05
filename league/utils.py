@@ -180,7 +180,7 @@ def quick_send_mail(user, mail):
         send_mail(
            'Welcome in the Open Study Room',
            message,
-           'postmaster@openstudyroom.org',
+           'openstudyroom@gmail.com',
            [address.email],
            fail_silently=False,
         )

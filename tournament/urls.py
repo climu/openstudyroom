@@ -199,5 +199,10 @@ urlpatterns = [
         views.TournamentEventUpdate.as_view(),
         name='update_event'
     ),
+    url(
+        r'^(?P<tournament_id>[0-9]+)/set-winner/$',
+        views.set_winner,
+        name='set_winner'
+    ),
 
 ]

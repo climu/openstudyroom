@@ -26,7 +26,7 @@ class PublicEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name_suffix = '_update_form'
 
     def test_func(self):
-        return self.request.user.is_authenticated() and self.request.user.is_league_admin()
+        return self.request.user.is_authenticated() and self.request.user.is_osr_admin()
 
     def get_login_url(self):
         return '/'
@@ -41,7 +41,7 @@ class PublicEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                'end': datetime.now()}
 
     def test_func(self):
-        return self.request.user.is_authenticated() and self.request.user.is_league_admin()
+        return self.request.user.is_authenticated() and self.request.user.is_osr_admin()
 
     def get_login_url(self):
         return '/'
@@ -494,7 +494,7 @@ def save(request):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def admin_cal_event_list(request):
     public_events = PublicEvent.objects.all().order_by('-end')
     return render(
@@ -505,7 +505,7 @@ def admin_cal_event_list(request):
 
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def admin_delete_event(request, pk):
     if request.method == 'POST':
         form = ActionForm(request.POST)

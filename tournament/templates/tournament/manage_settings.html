@@ -67,8 +67,7 @@
         <div id="players_list">
           {%for player in players %}
             <li data-id={{player.pk}} class="list-group-item clearfix player">
-              {{player.user | user_link}}
-
+              <a href="/league/account/{{player.user.username}}">{{player.user.username}}</a>
                   <div class="checkbox div-checkbox group_name pull-right">
                     <input class ="refetch check-player" value="{{player.pk}}" type="checkbox" >
                   </div>
@@ -80,7 +79,28 @@
 
     </div>
     </div>
-
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Set a winner
+      </div>
+      <div class="panel-body">
+        <form action="" method="POST" class="form-inline" >{% csrf_token %}
+            <label for="user_id">Winner
+              <select class="form-control" id="user_id" name="user_id">
+                <option value="-1">-------------</option>
+                {% for player in tournament.get_players %}
+                <option value="{{player.user.pk}}" {%if tournament.winner == player.user%}selected {%endif%}>
+                  {{player.user.username}}
+                </option>
+                {% endfor %}
+              </select>
+            </label>
+            <input type="hidden" name="next" value="{{request.path}}">
+            <button type="submit" formaction="{% url 'tournament:set_winner' tournament.pk %}" class="btn btn-primary">
+              <i class="fa fa-trophy"></i>
+            </button>
+        </form>
+    </div>
   </div>
 
 </div>

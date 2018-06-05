@@ -38,9 +38,9 @@ return false;};
 {% block heading %}
   <div class="page-header">
     <h1>{{tournament.name}} - Games <span id="game-header"> {% if sgf %} - {{sgf.white}} vs {{sgf.black}}{% endif %}</span></h1>
-    <div class="">{{tournament.description|safe|rendered}}</div>
-
   </div>
+  <div class="">{{tournament.description|safe|rendered}}</div>
+
 {%endblock%}
 
 
@@ -78,7 +78,7 @@ return false;};
 
   </div>
 </div>
-  
+
   {%endlanguage%}
 {% endblock %}
 
