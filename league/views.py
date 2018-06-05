@@ -20,13 +20,14 @@ from django.core.mail import send_mail
 from django.views.generic.edit import CreateView, UpdateView
 from django.template.defaultfilters import date as _date, time as _time
 from django.utils import timezone
+from django.template.defaultfilters import slugify
 from machina.core.db.models import get_model
 from postman.api import pm_write
 from tournament.models import Tournament
 import pytz
 import requests
 from discord_bind.models import DiscordUser
-from django.template.defaultfilters import slugify
+
 
 
 from . import utils
