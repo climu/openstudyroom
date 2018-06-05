@@ -1025,14 +1025,6 @@ class LeaguePlayer(models.Model):
     def __str__(self):
         return str(self.pk) + self.kgs_username
 
-    def get_wins_specific_opponent(self, opponent):
-        
-        black_sgfs = self.user.black_sgf.get_queryset().filter(divisions=self.division)
-        white_sgfs = self.user.white_sgf.get_queryset().filter(divisions=self.division)
-        resultsDict = defaultdict(list)
-
-        return resultDict
-
     def get_results(self):
         """Return a player results.
 

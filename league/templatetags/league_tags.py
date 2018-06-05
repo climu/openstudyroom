@@ -46,9 +46,6 @@ def result_panel(context):
     html = ''
     result = ''
 
-    # if not sgfs_links:
-    #    return mark_safe(html)
-
     for link in sgfs_links:
         points = list(str(link.result).rpartition('+'))
         if points[2] == 'Resign':
@@ -56,11 +53,11 @@ def result_panel(context):
         print(link.winner)
         print(user)
         if link.winner != user:
-            result  = '<span style="color:green">' + points[0] + '+' + points[2].rstrip('0').rstrip('.') + '</span>'
+            result = '<span style="color:green">' + points[0] + '+' + points[2].rstrip('0').rstrip('.') + '</span>'
         else:
-            result  = '<span style="color:red">' + points[0] + '+' + points[2].rstrip('0').rstrip('.') + '</span>'
-        html += '<td>' + result + ' <a href="/league/games/' + str(link.id) + '/">' + str(link.date.day) + '.' + str(link.date.month) + '.' + str(link.date.year) + '</a></td><p>'
-
+            result = '<span style="color:red">' + points[0] + '+' + points[2].rstrip('0').rstrip('.') + '</span>'
+        date = str(link.date.day) + '.' + str(link.date.month) + '.' + str(link.date.year)
+        html += '<td>' + result + ' <a href="/league/games/' + str(link.id) + '/">' + date + '</a></td><p>'
     return mark_safe(html)
 
 @register.simple_tag(takes_context=True)

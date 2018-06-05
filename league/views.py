@@ -2,6 +2,8 @@ from collections import OrderedDict
 import json
 import datetime
 from time import sleep
+import io
+from zipfile import ZipFile
 
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
@@ -33,10 +35,6 @@ from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
     Profile
 from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm,\
     LeagueEventForm, EmailForm, TimezoneForm, ProfileForm
-
-from io import StringIO, BytesIO
-import io
-from zipfile import ZipFile
 
 ForumProfile = get_model('forum_member', 'ForumProfile')
 discord_url_file = "/etc/discord_url.txt"
