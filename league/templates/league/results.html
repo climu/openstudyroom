@@ -58,7 +58,10 @@
 <script type="text/javascript">
 $(document).ready(function() {
 $('#league-table').DataTable({
-  "iDisplayLength": 50
+  "iDisplayLength": 50,
+  "columnDefs": [
+    { "width": "60%", "targets": 6 }
+  ]
 });
 
 } );
