@@ -58,10 +58,19 @@
 
   </div>
 
-  <div class="list">
-    <tr>
-    {% result_panel %}
-    </tr>
+  <div class="list" style="max-heigh:160px;overflow-y:auto;">
+    {% for sgf in sgfs_links %}
+      <p><span class="{% if sgf.winner != user %} text-success {% else %} text-danger {% endif %}">
+        {{sgf|sgf_result}}
+      </span>
+      <a href="/league/games/{{sgf.id}}/">{{sgf.date|date:"SHORT_DATE_FORMAT"}}</a></p>
+    {% endfor %}
+    {% for sgf in sgfs_links %}
+      <span class="{% if sgf.winner != user %} text-success {% else %} text-danger {% endif %}">
+        {{sgf|sgf_result}}
+      </span>
+      <a href="/league/games/{{sgf.id}}/">{{sgf.date|date:"SHORT_DATE_FORMAT"}}</a>
+    {% endfor %}
   </div>
 
   {% else %}
