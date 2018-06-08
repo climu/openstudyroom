@@ -1,5 +1,5 @@
 {% extends "full_width.html" %}
-{% load wagtailcore_tags forum_markup_tags l10n i18n %}
+{% load wagtailcore_tags forum_markup_tags l10n i18n static%}
 {% load league_tags %}
 {% load bootstrap3 %}
 {% block extra_head_js %}
@@ -112,7 +112,8 @@ return false;};
 {% if players %}
 <div class="panel panel-default">
   <div class="panel-heading"><h4>{{user.username}} results of passed and open leagues</h4></div>
-
+<div class="panel-body">
+<div class="col-md-6">
 <ul class="nav nav-tabs">
   <li class ="active"><a data-toggle="tab" href="#archives">Archives</a></li>
   {% for event in open_events %}
@@ -128,9 +129,9 @@ return false;};
        <tr>
          <th>Event</th>
          <th>Division</th>
-         <th># win</th>
-         <th># loss</th>
-         <th># games </th>
+         <th>win</th>
+         <th>loss</th>
+         <th>games </th>
       </thead>
       <tbody>
   {% for player in players %}
@@ -185,6 +186,13 @@ return false;};
     {%endfor%}
 </div>
 </div>
+<div class="col-md-6">
+  <canvas id="gamesChart" width="400" ></canvas>
+
+</div>
+</div>
+</div>
+
 {% endif %}
 
 
@@ -222,6 +230,7 @@ return false;};
 </div>
 </div>
 
+
 {%endlanguage%}
 {% endblock %}
 
@@ -230,7 +239,8 @@ return false;};
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
-
+<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js'></script>
+<script src="{% static 'stats/stats.js' %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
   $('#game-table').DataTable({"bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
@@ -245,6 +255,54 @@ $(document).ready(function() {
 $('#{{event.pk}}-opponents-table').DataTable({});
 {% endfor %}
 } );
+
+var wins = {{wins_stats|safe}};
+var games = {{games_stats|safe}}
+var labels = games.map(function(e) {
+  return moment(e.month).format('YYYY MM')
+});
+
+var wins_values = wins.map(function(e) {
+  return e.total
+});
+var games_values = wins.map(function(e) {
+  return e.total
+});
+
+var config = {
+   type: 'line',
+   data: {
+      labels: labels,
+      datasets: [{
+         label: "wins",
+         data: wins_values,
+         backgroundColor: 'green',
+         fill:origin
+      },
+      {
+         label: "games",
+         data: games_values,
+         backgroundColor: 'red',
+         fill:1
+      },
+
+    ]
+   },
+   options: {
+        scales: {
+            xAxes: [{
+                time: {
+                  displayFormats: {
+                          month: 'MMM YYYY'
+                        }
+                }
+            }]
+        }
+    }
+  }
+
+var games_chart = new Chart($('#gamesChart'), config);
+
 
 </script>
 {% endblock %}

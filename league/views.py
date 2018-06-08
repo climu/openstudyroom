@@ -22,15 +22,15 @@ from django.core.mail import send_mail
 from django.views.generic.edit import CreateView, UpdateView
 from django.template.defaultfilters import date as _date, time as _time
 from django.utils import timezone
-from django.template.defaultfilters import slugify
+from django.db.models import Count
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models.functions import TruncMonth
 from machina.core.db.models import get_model
 from postman.api import pm_write
 from tournament.models import Tournament
 import pytz
 import requests
 from discord_bind.models import DiscordUser
-
-
 
 from . import utils
 from . import ogs
@@ -544,6 +544,7 @@ def account(request, user_name=None):
         select_related('white__profile', 'black__profile')
     if len(sgfs) == 0:
         sgfs = None
+
     for event in open_events:
         event_players = LeaguePlayer.objects.filter(user=user, event=event)
         if len(event_players) > 0:
@@ -558,6 +559,33 @@ def account(request, user_name=None):
     won_divisions = user.won_division.get_queryset().order_by('-league_event__end_time')
     won_tournaments = user.won_tournament.get_queryset().order_by('-end_time')
 
+    wins_stats = sgfs\
+        .filter(winner=user)\
+        .annotate(month=TruncMonth('date'))\
+        .values('month')\
+        .annotate(total=Count('id'))\
+        .values('month', 'total')\
+        .order_by('month')
+    loose_stats = sgfs\
+        .exclude(winner=user)\
+        .annotate(month=TruncMonth('date'))\
+        .values('month')\
+        .annotate(total=Count('id'))\
+        .values('month', 'total')\
+        .order_by('month')
+    games_stats = sgfs\
+        .annotate(month=TruncMonth('date'))\
+        .values('month')\
+        .annotate(total=Count('id'))\
+        .values('month', 'total')\
+        .order_by('month')
+
+    wins_stats = list(wins_stats)
+    wins_stats = json.dumps(wins_stats, cls=DjangoJSONEncoder)
+    loose_stats = list(wins_stats)
+    loose_stats = json.dumps(wins_stats, cls=DjangoJSONEncoder)
+    games_stats = list(wins_stats)
+    games_stats = json.dumps(games_stats, cls=DjangoJSONEncoder)
     context.update({
         'players': players,
         'open_events': open_events,
@@ -565,7 +593,10 @@ def account(request, user_name=None):
         'user': user,
         'discord_user': discord_user,
         'won_divisions': won_divisions,
-        'won_tournaments': won_tournaments
+        'won_tournaments': won_tournaments,
+        'wins_stats': wins_stats,
+        'loose_stats': loose_stats,
+        'games_stats': games_stats
     })
     template = loader.get_template('league/account.html')
     return HttpResponse(template.render(context, request))
