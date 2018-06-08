@@ -3,7 +3,6 @@ import json
 import datetime
 import io
 from time import sleep
-import io
 from zipfile import ZipFile
 
 from django.shortcuts import get_object_or_404, render
@@ -22,7 +21,7 @@ from django.core.mail import send_mail
 from django.views.generic.edit import CreateView, UpdateView
 from django.template.defaultfilters import date as _date, time as _time
 from django.utils import timezone
-from django.db.models import Count, Case, IntegerField, Sum, When
+from django.db.models import Count, Case, IntegerField, When
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.functions import TruncMonth
 from machina.core.db.models import get_model
@@ -507,8 +506,10 @@ def account(request, user_name=None):
         return HttpResponseRedirect('/')
 
     if request.user.is_authenticated:
-        num_total_games = user.white_sgf.filter(black=request.user).count() + user.black_sgf.filter(white=request.user).count()
-        user_lost_games = user.white_sgf.filter(winner=request.user).count() + user.black_sgf.filter(winner=request.user).count()
+        num_total_games = user.white_sgf.filter(black=request.user).count()\
+            + user.black_sgf.filter(white=request.user).count()
+        user_lost_games = user.white_sgf.filter(winner=request.user).count()\
+            + user.black_sgf.filter(winner=request.user).count()
         user_won_games = num_total_games - user_lost_games
 
         if num_total_games is not 0:
