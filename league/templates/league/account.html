@@ -256,34 +256,34 @@ $('#{{event.pk}}-opponents-table').DataTable({});
 {% endfor %}
 } );
 
-var wins = {{wins_stats|safe}};
 var games = {{games_stats|safe}}
+
 var labels = games.map(function(e) {
   return moment(e.month).format('YYYY MM')
 });
 
-var wins_values = wins.map(function(e) {
-  return e.total
+var wins_values = games.map(function(e) {
+  return e.wins
 });
-var games_values = wins.map(function(e) {
-  return e.total
+var losses_values = games.map(function(e) {
+  return e.losses
 });
 
 var config = {
    type: 'line',
    data: {
       labels: labels,
-      datasets: [{
+      datasets: [
+        {
+           label: "losses",
+           data: losses_values,
+           backgroundColor: 'rgb(255, 41, 28,0.3)',
+        },
+        {
          label: "wins",
          data: wins_values,
-         backgroundColor: 'green',
-         fill:origin
-      },
-      {
-         label: "games",
-         data: games_values,
-         backgroundColor: 'red',
-         fill:1
+         backgroundColor: 'rgb(40, 182, 44,0.3)',
+        fill:0
       },
 
     ]
@@ -296,6 +296,9 @@ var config = {
                           month: 'MMM YYYY'
                         }
                 }
+            }],
+            yAxes: [{
+                stacked: true
             }]
         }
     }
