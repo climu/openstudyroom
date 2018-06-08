@@ -543,8 +543,7 @@ def account(request, user_name=None):
     sgfs = Sgf.objects.defer('sgf_text').filter(Q(white=user) | Q(black=user)).\
         prefetch_related('white', 'black', 'winner').\
         select_related('white__profile', 'black__profile')
-    if len(sgfs) == 0:
-        sgfs = None
+
 
     for event in open_events:
         event_players = LeaguePlayer.objects.filter(user=user, event=event)
@@ -580,7 +579,8 @@ def account(request, user_name=None):
         .order_by('month')
     games_stats = list(games_stats)
     games_stats = json.dumps(games_stats, cls=DjangoJSONEncoder)
-
+    if len(sgfs) == 0:
+        sgfs = None
     context.update({
         'players': players,
         'open_events': open_events,
