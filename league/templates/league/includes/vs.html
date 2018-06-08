@@ -1,0 +1,34 @@
+{% load forum_markup_tags l10n i18n bootstrap3 league_tags%}
+
+{% if user != request.user %}
+
+  <h4>Your results against {{user.username}}.</h4>
+
+  {% if sgfs_links %}
+
+  <div class="progress">
+
+    <div class="progress-bar progress-bar-success" role="progressbar" style="width:{{won_perc}}%;box-shadow:none">
+        <span style="font-weight: bold">{{user_lost_games}}</span>
+    </div>
+
+    <div class="progress-bar progress-bar-danger" role="progressbar" style="width:{{lost_perc}}%;box-shadow:none">
+       <span style="font-weight: bold">{{user_won_games}}</span>
+    </div>
+
+  </div>
+
+  <div class="list" style="max-height:160px;overflow-y:auto;">
+    {% for sgf in sgfs_links %}
+      <p><span class="{% if sgf.winner != user %} text-success {% else %} text-danger {% endif %}">
+        {{sgf|sgf_result}}
+      </span>
+      <a href="/league/games/{{sgf.id}}/">{{sgf.date|date:"SHORT_DATE_FORMAT"}}</a></p>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <h5>You didn't play any games against each other yet.</h5>
+
+{% endif %}
+{% endif %}

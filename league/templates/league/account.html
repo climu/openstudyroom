@@ -69,11 +69,8 @@ return false;};
 <div class="panel-body">
 
     <div class="row">
-      {% if request.user.is_authenticated and request.user.is_league_member %}
-        {% include 'league/includes/user_infos_member.html' %}
-      {% else %}
         {% include 'league/includes/user_infos.html' %}
-      {% endif %}
+
     </div>
 
 
@@ -187,7 +184,14 @@ return false;};
 </div>
 </div>
 <div class="col-md-6">
-  <canvas id="gamesChart" width="400" ></canvas>
+  <div style="max-height:50%;">
+  <canvas id="gamesChart" height="100%" ></canvas>
+</div>
+<div style="max-height:50%;">
+{% if request.user.is_authenticated %}
+  {% include 'league/includes/vs.html' %}
+  {% endif %}
+</div>
 
 </div>
 </div>
