@@ -305,8 +305,21 @@ var config = {
             yAxes: [{
                 stacked: true
             }]
-        }
+        },
+        tooltips: {
+            mode: 'index',
+            callbacks: {
+              // Use the footer callback to display the sum of the items showing in the tooltip
+              footer: function(tooltipItems, data) {
+                var sum = 0;
+                tooltipItems.forEach(function(tooltipItem) {
+                  sum += data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                });
+                return 'Games: ' + sum;
+              },
+            },
     }
+  }
   }
 
 var games_chart = new Chart($('#gamesChart'), config);
