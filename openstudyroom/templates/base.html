@@ -1,6 +1,8 @@
 {% load static wagtailuserbar compress puput_tags %}
-{% load menu_tags osr_tags%}
+{% load menu_tags osr_tags tz calendar_tags%}
 {% load bootstrap3 %}
+{% load i18n %}
+
 
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -126,13 +128,21 @@
     </div>
 
       </footer>
+      {% get_current_timezone as TIME_ZONE %}
+      {% get_current_language as LANGUAGE_CODE %}
+
+
   {# Global javascript #}
     {% bootstrap_javascript %}
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
     <script type="text/javascript" src="{% static 'js/openstudyroom.js' %}"></script>
     <script type="text/javascript" src="{%static 'wgo/wgo.min.js'%}"></script>
     <script type="text/javascript" src="{%static 'wgo/wgo.player.min.js'%}"></script>
     <script type="text/javascript">$("[data-toggle=tooltip]").tooltip();</script>
-
+    <script>
+    moment.locale('{{LANGUAGE_CODE}}');
+    gmt($('.rich-text'),'{{TIME_ZONE}}','{% tz_offset %}')
+    </script>
     {% block extra_js %}
       {# Override this in templates to add extra javascript #}
     {% endblock %}

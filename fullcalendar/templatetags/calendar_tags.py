@@ -1,7 +1,7 @@
 from django import template
 from fullcalendar.models import PublicEvent, GameAppointmentEvent, AvailableEvent
 from django.utils import timezone
-
+import pytz
 register = template.Library()
 
 
@@ -23,3 +23,9 @@ def public_events(context):
 @register.simple_tag()
 def get_now():
     return timezone.now()
+
+
+@register.simple_tag()
+def tz_offset():
+    tz = timezone.get_current_timezone()
+    return timezone.localtime(timezone.now(), tz).utcoffset().total_seconds()
