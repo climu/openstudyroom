@@ -454,7 +454,9 @@ class Sgf(models.Model):
         else:
             tag = False
             (b, m) = (False, m + '; Tag missing')
-        if not utils.check_byoyomi(self.byo):
+        # check the byoyomi
+        byo = utils.get_byoyomi(self.byo)
+        if byo['n'] < 3 or byo['t'] < event.byo_time:
             (b, m) = (False, m + '; byo-yomi')
         if int(self.time) < event.main_time:
             (b, m) = (False, m + '; main time')
