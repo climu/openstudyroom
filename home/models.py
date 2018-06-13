@@ -257,7 +257,7 @@ def forum_post_to_discord(sender, instance, **kwargs):
             'forum_slug': instance.topic.forum.slug,
             'forum_pk': instance.topic.forum.pk,
             'slug': instance.topic.slug,
-            'pk': instance.pk,
+            'pk': instance.topic.pk,
         }) + '?post=' + str(instance.pk) + '#' + str(instance.pk)
 
     values = {
