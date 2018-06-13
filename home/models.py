@@ -233,34 +233,40 @@ page_published.connect(send_to_discord, sender=StreamFieldEntryPage)
 @receiver(post_save, sender=ForumPost)
 def forum_post_to_discord(sender, instance, **kwargs):
     # don't announce edits
-    if instance.updates_count == 0:
-        if settings.DEBUG:
-            discord_url = 'http://exemple.com' # change this for local test
-        else:
-            with open('/etc/discord_forum_hook_url.txt') as f:
-                discord_url = f.read().strip()
+    if instance.updates_count > 0:
+        return
+    # don't announce private admins forums forum.
+    # This should be properly handled with a test if anonymous user can read forum.
+    parent_id = instance.topic.forum.parent
+    if parent_id is not None and parent_id.pk == 12:
+        return
+    if settings.DEBUG:
+        discord_url = 'http://exemple.com' # change this for local test
+    else:
+        with open('/etc/discord_forum_hook_url.txt') as f:
+            discord_url = f.read().strip()
 
-        excerpt = render_to_string(
-            'home/includes/forum_post_excerpt.html',
-            {'content': instance.content}
-        )
-        # I tryed to convert excerpt to markdown using tomd without success
-        url = reverse(
-            'forum_conversation:topic',
-            kwargs={
-                'forum_slug': instance.topic.forum.slug,
-                'forum_pk': instance.topic.forum.pk,
-                'slug': instance.topic.slug,
-                'pk': instance.pk,
-            }) + '?post=' + str(instance.pk) + '#' + str(instance.pk)
+    excerpt = render_to_string(
+        'home/includes/forum_post_excerpt.html',
+        {'content': instance.content}
+    )
+    # I tryed to convert excerpt to markdown using tomd without success
+    url = reverse(
+        'forum_conversation:topic',
+        kwargs={
+            'forum_slug': instance.topic.forum.slug,
+            'forum_pk': instance.topic.forum.pk,
+            'slug': instance.topic.slug,
+            'pk': instance.pk,
+        }) + '?post=' + str(instance.pk) + '#' + str(instance.pk)
 
-        values = {
-            "content": 'from ' + instance.poster.username + ' in ' + instance.topic.forum.name,
-            "embeds": [{
-                "title": instance.subject,
-                "url": 'https://openstudyroom.org' + url,
-                "description": excerpt,
-            }]
-        }
-        r = requests.post(discord_url, json=values)
-        r.raise_for_status()
+    values = {
+        "content": 'from ' + instance.poster.username + ' in ' + instance.topic.forum.name,
+        "embeds": [{
+            "title": instance.subject,
+            "url": 'https://openstudyroom.org' + url,
+            "description": excerpt,
+        }]
+    }
+    r = requests.post(discord_url, json=values)
+    r.raise_for_status()
