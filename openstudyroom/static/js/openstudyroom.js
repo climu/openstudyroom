@@ -1,9 +1,9 @@
 
 /*
-replaces the first [goban][/goban] in str by a html goban
+replaces the first [gmt][/gmt] in str by a formated datetime
 */
 function gmt_html_single(str, tz, offset){
-    //check if there is a goban tag
+    //check if there is a gmt tag
     regex_main = /\[ *?gmt.*?\](.|\n)*?\[ *?\/ *?gmt *?\]/
     if(!regex_main.test(str))
         return false
@@ -23,7 +23,7 @@ function gmt_html_single(str, tz, offset){
 }
 
 /*
-replaces every [goban][/goban] in str by a html goban
+replaces every [gmt][/gmt] in str by a html gmt
 */
 function gmt_preprocessor(str, tz, offset){
     while(x = gmt_html_single(str, tz, offset)){str = x}
