@@ -7,6 +7,8 @@ from django.template.loader import render_to_string
 from django.utils.encoding import python_2_unicode_compatible
 #from django.utils import timezone
 from django import forms
+from django.core.urlresolvers import reverse
+
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore.fields import RichTextField, StreamField
 from wagtail.wagtailsnippets.models import register_snippet
@@ -19,6 +21,11 @@ from wagtail.wagtailcore.signals import page_published
 from wagtailmenus.models import MenuPage
 from puput.models import EntryPage, BlogPage
 import requests
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from machina.core.db.models import get_model
+ForumPost = get_model('forum_conversation', 'Post')
 
 #from fullcalendar.models import AvailableEvent, GameRequestEvent
 
@@ -221,3 +228,39 @@ def send_to_discord(sender, **kwargs):
 # Register two receivers
 page_published.connect(send_to_discord, sender=EntryPage)
 page_published.connect(send_to_discord, sender=StreamFieldEntryPage)
+
+
+@receiver(post_save, sender=ForumPost)
+def forum_post_to_discord(sender, instance, **kwargs):
+    # don't announce edits
+    if instance.updates_count == 0:
+        if settings.DEBUG:
+            discord_url = 'http://exemple.com' # change this for local test
+        else:
+            with open('/etc/discord_forum_hook_url.txt') as f:
+                discord_url = f.read().strip()
+
+        excerpt = render_to_string(
+            'home/includes/forum_post_excerpt.html',
+            {'content': instance.content}
+        )
+        # I tryed to convert excerpt to markdown using tomd without success
+        url = reverse(
+            'forum_conversation:topic',
+            kwargs={
+                'forum_slug': instance.topic.forum.slug,
+                'forum_pk': instance.topic.forum.pk,
+                'slug': instance.topic.slug,
+                'pk': instance.pk,
+            }) + '?post=' + str(instance.pk) + '#' + str(instance.pk)
+
+        values = {
+            "content": 'from ' + instance.poster.username + ' in ' + instance.topic.forum.name,
+            "embeds": [{
+                "title": instance.subject,
+                "url": 'https://openstudyroom.org' + url,
+                "description": excerpt,
+            }]
+        }
+        r = requests.post(discord_url, json=values)
+        r.raise_for_status()
