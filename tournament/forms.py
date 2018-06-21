@@ -18,11 +18,17 @@ class TournamentForm(forms.ModelForm):
             'is_public',
             'use_calendar',
             'description',
+            'ppwin',
+            'pploss',
+            'event_type',
         ]
         widgets = {
             'name': forms.TextInput(),
             'begin_time': forms.SelectDateWidget(),
             'end_time': forms.SelectDateWidget(),
+            'ppwin': forms.HiddenInput(),
+            'pploss': forms.HiddenInput(),
+            'event_type': forms.HiddenInput(),
         }
 
 class TournamentAboutForm(ModelForm):

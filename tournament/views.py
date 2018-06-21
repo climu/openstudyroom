@@ -172,8 +172,13 @@ class TournamentCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     form_class = TournamentForm
     model = Tournament
     template_name_suffix = '_create_form'
-    initial = {'begin_time': datetime.now(),
-               'end_time': datetime.now()}
+    initial = {
+        'begin_time': datetime.now(),
+        'end_time': datetime.now(),
+        'ppwin': 1,
+        'pploss': 0,
+        'event_type': 'tournament',
+        }
 
     def test_func(self):
         return self.request.user.is_authenticated() and \
