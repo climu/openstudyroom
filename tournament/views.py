@@ -807,3 +807,20 @@ def forfeit_group(request, tournament_id, group_id):
             sgf.divisions.add(group)
 
             return HttpResponseRedirect(form.cleaned_data['next'])
+
+@login_required
+def forfeit_bracket(request, tournament_id, match_id):
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    match = get_object_or_404(Match, pk=match_id)
+    if not tournament.is_admin(request.user):
+        raise Http404('What are you doing here?')
+    if match.bracket.tournament != tournament:
+        raise Http404('What are you doing here?')
+
+    if request.method == 'POST':
+        form = ForfeitForm(request.POST)
+        if form.is_valid():
+            winner = get_object_or_404(TournamentPlayer, pk=form.cleaned_data['winner'])
+            match.winner = winner
+            match.save()
+            return HttpResponseRedirect(form.cleaned_data['next'])

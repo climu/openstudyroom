@@ -40,12 +40,16 @@ def tourney_result(context):
 def match_result(context):
     match = context['match']
     tournament = context['tournament']
-    sgf = match.sgf
-    points = str(sgf.result).rpartition('+')[2]
-    if points == 'Resign':
-        points = 'R'
-    html = '<a class="badge" href="/tournament/' + str(tournament.pk) + '/games/' + str(sgf.pk) + '">'
-    html += '+' + points + '</a>'
+    if match.sgf is not None:
+        sgf = match.sgf
+        points = str(sgf.result).rpartition('+')[2]
+        if points == 'Resign':
+            points = 'R'
+        html = '<a class="badge" href="/tournament/' + str(tournament.pk) + '/games/' + str(sgf.pk) + '">'
+        html += '+' + points + '</a>'
+    else:
+        html = '<span class="badge" data-toggle="tooltip" title="'
+        html += match.winner.user.username + ' won by forfeit">+F</span> '
     return mark_safe(html)
 
 

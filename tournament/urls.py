@@ -205,9 +205,13 @@ urlpatterns = [
         name='set_winner'
     ),
     url(
-        r'^(?P<tournament_id>[0-9]+)/forfeit_groups/(?P<group_id>[0-9]+)/$',
+        r'^(?P<tournament_id>[0-9]+)/forfeit_group/(?P<group_id>[0-9]+)/$',
         views.forfeit_group,
         name='forfeit_group'
     ),
-
+    url(
+        r'^(?P<tournament_id>[0-9]+)/forfeit_bracket/(?P<match_id>[0-9]+)/$',
+        views.forfeit_bracket,
+        name='forfeit_bracket'
+    ),
 ]
