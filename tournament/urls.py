@@ -204,5 +204,10 @@ urlpatterns = [
         views.set_winner,
         name='set_winner'
     ),
+    url(
+        r'^(?P<tournament_id>[0-9]+)/forfeit_groups/(?P<group_id>[0-9]+)/$',
+        views.forfeit_group,
+        name='forfeit_group'
+    ),
 
 ]

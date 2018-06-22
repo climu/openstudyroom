@@ -51,3 +51,8 @@ class RoundForm(ModelForm):
     class Meta:
         model = Round
         fields = ['name']
+
+class ForfeitForm(forms.Form):
+    winner = forms.IntegerField(label='user_id')
+    looser = forms.IntegerField(label='user_id')
+    next = forms.CharField(label='next', widget=forms.HiddenInput(), required=False)

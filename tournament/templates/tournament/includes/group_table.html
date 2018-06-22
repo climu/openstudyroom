@@ -1,4 +1,4 @@
-{% load tournament_tags league_tags %}
+{% load tournament_tags league_tags bootstrap3%}
 {% get_meijin as meijin %}
 
 <div class='table-responsive'>
@@ -15,6 +15,9 @@
             <th>score</th>
             <th>sos</th>
             <th>sodos</th>
+            {% if admin %}
+            <th>forfeit against</th>
+            {% endif %}
         </thead>
         <tbody>
         {% for player in results %}
@@ -36,6 +39,29 @@
 
             <td>{{ player.sos }}</td>
             <td>{{ player.sodos }}</td>
+            {% if admin %}
+            <td>
+              <form action="{% url 'tournament:forfeit_group' tournament.pk group.pk %}"  method="post" class="form">
+                {% csrf_token %}
+                <select name="winner">
+                  {% for opponent in results %}
+                  {% if forloop.counter != forloop.parentloop.counter %}
+                  <option value="{{opponent.pk}}">{{opponent.user.username}}</option>
+                  {% endif %}
+                  {% endfor %}
+                </select>
+                <input id="looser" name="looser" type="hidden" value="{{player.pk}}">
+                <input id="next" name="next" type="hidden" value="{{request.path}}">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-xs"
+                  onclick="return confirm('{{player.user.username}} declare forfeit ?')" >
+                  {% bootstrap_icon "ok" %}
+                </button>
+              </form>
+
+            </td>
+            {% endif %}
         </tr>
         {% endfor %}
         </tbody>

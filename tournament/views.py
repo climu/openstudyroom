@@ -16,7 +16,8 @@ from fullcalendar.forms import UTCPublicEventForm
 from community.forms import CommunytyUserForm
 from pytz import utc
 from .models import Tournament, Bracket, Match, TournamentPlayer, TournamentGroup, Round, TournamentEvent
-from .forms import TournamentForm, TournamentGroupForm, RoundForm, TournamentAboutForm, TournamentPlayerProfileForm
+from .forms import TournamentForm, TournamentGroupForm, RoundForm, TournamentAboutForm,\
+    TournamentPlayerProfileForm, ForfeitForm
 from .utils import save_round
 
 
@@ -777,3 +778,32 @@ def set_winner(request, tournament_id):
             tournament.save()
             return HttpResponseRedirect(form.cleaned_data['next'])
     raise Http404("What are you doing here ?")
+
+@login_required
+def forfeit_group(request, tournament_id, group_id):
+    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    group = get_object_or_404(TournamentGroup, pk=group_id)
+    if not tournament.is_admin(request.user):
+        raise Http404('What are you doing here?')
+    if group.league_event.pk != tournament.pk:
+        raise Http404('What are you doing here?')
+
+    if request.method == 'POST':
+        form = ForfeitForm(request.POST)
+        if form.is_valid():
+            winner = get_object_or_404(TournamentPlayer, pk=form.cleaned_data['winner'])
+            looser = get_object_or_404(TournamentPlayer, pk=form.cleaned_data['looser'])
+            sgf = Sgf()
+            sgf.winner = winner.user
+            sgf.black = winner.user
+            sgf.white = looser.user
+            sgf.result = "Forfeit"
+            sgf.p_status = 0
+            sgf.wplayer = looser.user.username
+            sgf.bplayer = winner.user.username
+            sgf.league_valid = True
+            sgf.save()
+            sgf.events.add(tournament)
+            sgf.divisions.add(group)
+
+            return HttpResponseRedirect(form.cleaned_data['next'])
