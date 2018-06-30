@@ -656,7 +656,6 @@ def scrap_list_up(request, profile_id):
 def discord_api(request):
     """ API to feed the discord bot"""
     uids = json.loads(request.GET.get('uids', '{}'))
-    uids = [265530025045000192]
     discord_users = DiscordUser.objects.filter(uid__in=uids).select_related('user__profile')
     out = {}
     for u in discord_users:
