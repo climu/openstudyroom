@@ -117,4 +117,5 @@ urlpatterns = [
         views.ProfileUpdate.as_view(),
         name='profile_update'
     ),
+    url(r'discord-api/$', views.discord_api, name='discord_api')
 ]
