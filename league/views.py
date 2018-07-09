@@ -659,7 +659,12 @@ def discord_api(request):
     discord_users = DiscordUser.objects.filter(uid__in=uids).select_related('user__profile')
     out = {}
     for u in discord_users:
-        out[u.uid] = {}
+        out[u.uid] = {
+            'osr_username': u.user.username,
+            'timezone': u.user.profile.timezone,
+            'bio': u.user.profile.bio._get_raw(),
+            'country': u.user.profile.country.name,
+        }
         if u.user.profile.kgs_username:
             out[u.uid].update({
                 'kgs_username': u.user.profile.kgs_username,
@@ -670,8 +675,8 @@ def discord_api(request):
                 'ogs_username': u.user.profile.ogs_username,
                 'ogs_rank': u.user.profile.ogs_rank,
                 'ogs_id': u.user.profile.ogs_id,
-
             })
+
     return HttpResponse(json.dumps(out), content_type="application/json")
 
 #################################################################
