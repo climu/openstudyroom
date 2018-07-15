@@ -665,7 +665,7 @@ def discord_api(request):
             'country': u.user.profile.country.name,
         }
         if u.user.profile.bio is not None:
-            out[u.uid].update({}'bio': u.user.profile.bio._get_raw()}
+            out[u.uid].update({'bio': u.user.profile.bio._get_raw()})
         if u.user.profile.kgs_username:
             out[u.uid].update({
                 'kgs_username': u.user.profile.kgs_username,
