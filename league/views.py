@@ -662,9 +662,10 @@ def discord_api(request):
         out[u.uid] = {
             'osr_username': u.user.username,
             'timezone': u.user.profile.timezone,
-            'bio': u.user.profile.bio._get_raw(),
             'country': u.user.profile.country.name,
         }
+        if u.user.profile.bio is not None:
+            out[u.uid].update({}'bio': u.user.profile.bio._get_raw()}
         if u.user.profile.kgs_username:
             out[u.uid].update({
                 'kgs_username': u.user.profile.kgs_username,
