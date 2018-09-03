@@ -93,9 +93,13 @@ bottom:30px;
 right:30px;
 }
 
+.col-equal{
+overflow: hidden;
+}
+
 .col-equal .box.blog_grid{
   padding-bottom: 15px;
-  overflow: hidden;
+
 }
 
 .join-us{
