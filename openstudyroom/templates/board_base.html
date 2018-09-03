@@ -1,6 +1,6 @@
 {% extends MACHINA_BASE_TEMPLATE_NAME %}
 {% load static %}
-{% load i18n %}
+{% load i18n tz calendar_tags%}
 {% load forum_permission_tags %}
 
 {% block title %}{{ MACHINA_FORUM_NAME|default:"Forum" }} &mdash; {% block sub_title %}{% endblock sub_title %}{% endblock title %}
@@ -89,6 +89,9 @@
 </div>
 {% endblock body %}
 
+{% get_current_timezone as TIME_ZONE %}
+{% get_current_language as LANGUAGE_CODE %}
+
 {% block js %}
 {{ block.super }}
 <script src="{% static 'js/machina.min.js' %}" type="text/javascript" charset="utf-8"></script>
@@ -150,5 +153,7 @@ $('.move').click(function(){
     player = $('#'+ id)[0]._wgo_player;
     player.goTo(n);
 });
+moment.locale('{{LANGUAGE_CODE}}');
+gmt($('.post'),'{{TIME_ZONE}}','{% tz_offset %}')
 </script>
 {% endblock js %}
