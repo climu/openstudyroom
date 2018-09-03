@@ -142,6 +142,7 @@
     <script>
     moment.locale('{{LANGUAGE_CODE}}');
     gmt($('.rich-text'),'{{TIME_ZONE}}','{% tz_offset %}')
+    $('.richtext-image').css(['image-responsive'])
     </script>
     {% block extra_js %}
       {# Override this in templates to add extra javascript #}
