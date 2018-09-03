@@ -233,6 +233,7 @@ page_published.connect(send_to_discord, sender=StreamFieldEntryPage)
 @receiver(post_save, sender=ForumPost)
 def forum_post_to_discord(sender, instance, **kwargs):
     # don't announce edits
+    instance.refresh_from_db()
     if instance.updates_count > 0:
         return
     # don't announce private admins forums forum.
