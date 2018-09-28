@@ -203,6 +203,7 @@ def send_to_discord(sender, **kwargs):
         return
 
     if settings.DEBUG:
+        return
         discord_url = 'http://example.com/' # change this for local test
     else:
         with open('/etc/discord_hook_url.txt') as f:
@@ -242,6 +243,7 @@ def forum_post_to_discord(sender, instance, **kwargs):
     if parent_id is not None and parent_id.pk == 12:
         return
     if settings.DEBUG:
+        return
         discord_url = 'http://exemple.com' # change this for local test
     else:
         with open('/etc/discord_forum_hook_url.txt') as f:
