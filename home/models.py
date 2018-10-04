@@ -3,6 +3,8 @@ from __future__ import absolute_import, unicode_literals
 import random
 from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.utils.encoding import python_2_unicode_compatible
 #from django.utils import timezone
@@ -22,8 +24,6 @@ from wagtailmenus.models import MenuPage
 from puput.models import EntryPage, BlogPage
 import requests
 
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from machina.core.db.models import get_model
 ForumPost = get_model('forum_conversation', 'Post')
 
@@ -204,7 +204,6 @@ def send_to_discord(sender, **kwargs):
 
     if settings.DEBUG:
         return
-        discord_url = 'http://example.com/' # change this for local test
     else:
         with open('/etc/discord_hook_url.txt') as f:
             discord_url = f.read().strip()
@@ -244,7 +243,6 @@ def forum_post_to_discord(sender, instance, **kwargs):
         return
     if settings.DEBUG:
         return
-        discord_url = 'http://exemple.com' # change this for local test
     else:
         with open('/etc/discord_forum_hook_url.txt') as f:
             discord_url = f.read().strip()
