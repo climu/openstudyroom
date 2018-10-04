@@ -419,7 +419,10 @@ def list_players(request, event_id=None, division_id=None):
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def join_event(request, event_id, user_id):
     """Add a user to a league. After some check we calls the models.LeagueEvent.join_event method."""
-    #If not the right user, do not even consider continuing
+    # We already know that request.user is a league member.
+    # So he can join an open event by himself.
+    # If he is a league admin, he can make another user
+    #If he isn't any of this just don't consider the request
     user = get_object_or_404(User, pk=user_id)
     if request.user.is_league_admin or request.user == user:
         message = "What are you doing here?"
@@ -432,9 +435,8 @@ def join_event(request, event_id, user_id):
         message = "You can't join a close event !"
         messages.success(request, message)
         return HttpResponseRedirect(reverse('league:league_account'))
-    # We already know that request.user is a league member.
-    # So he can join an open event by himself.
-    # If he is a league admin, he can make another user
+
+    #Process request
     if request.method == 'POST':
         form = ActionForm(request.POST)
         if form.is_valid() and form.cleaned_data['action'] == 'join':
