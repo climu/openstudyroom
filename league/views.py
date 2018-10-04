@@ -450,7 +450,7 @@ def join_event(request, event_id, user_id):
                         is_open=True,
                         community__isnull=True
                     ).order_by('end_time').first()
-                    if meijin_division is not None:
+                    if meijin_league is not None:
                         meijin_division = meijin_league.division_set.first()
                         user.join_event(meijin_league, meijin_division)
                     message = "Welcome in " + event.name + " ! You can start playing right now."
@@ -458,7 +458,7 @@ def join_event(request, event_id, user_id):
                     message = "Oops ! Something went wrong. You didn't join."
             messages.success(request, message)
             return HttpResponseRedirect(form.cleaned_data['next'])
-    
+
     #Default return
     return HttpResponseRedirect('/')
 
