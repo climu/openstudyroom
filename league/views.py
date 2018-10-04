@@ -445,7 +445,7 @@ def join_event(request, event_id, user_id):
                         ).order_by('end_time').first()
                         meijin_division = meijin_league.division_set.first()
                         user.join_event(meijin_league, meijin_division)
-                        message = "Welcome in " + division.name + " ! You can start playing right now."
+                        message = "Welcome in " + event.name + " ! You can start playing right now."
                     else:
                         message = "Oops ! Something went wrong. You didn't join."
                 messages.success(request, message)
