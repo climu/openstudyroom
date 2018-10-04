@@ -424,7 +424,7 @@ def join_event(request, event_id, user_id):
     # If he is a league admin, he can make another user
     #If he isn't any of this just don't consider the request
     user = get_object_or_404(User, pk=user_id)
-    if request.user.is_league_admin or request.user == user:
+    if not request.user.is_league_admin and not request.user == user:
         message = "What are you doing here?"
         messages.success(request, message)
         return HttpResponseRedirect('/')
