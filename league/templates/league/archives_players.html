@@ -32,13 +32,15 @@
     </thead>
     <tbody>
       {% for u in users %}
+      {% with info=u.get_packed_info %}
       <tr>
         <td>{{u | user_link}}</td>
-        <td>{{u.nb_players}}</td>
-        <td>{{u.n_win}}</td>
-        <td>{{u.n_loss}}</td>
-        <td>{{u.n_games}}</td>
+        <td>{{info.nb_players}}</td>
+        <td>{{info.nb_win}}</td>
+        <td>{{info.nb_loss}}</td>
+        <td>{{info.nb_games}}</td>
     </tr>
+     {% endwith %}
      {% endfor %}
    </tbody>
  </table>
