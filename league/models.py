@@ -605,7 +605,7 @@ class User(AbstractUser):
 
     def get_packed_info(self):
         players = self.leagueplayer_set.all()
-        info={}
+        info = {}
         info["nb_players"] = players.count()
         info["nb_games"] = 0
         info["nb_win"] = 0
@@ -1087,7 +1087,7 @@ class LeaguePlayer(models.Model):
 
     def nb_games_win_loss(self):
         user = self.user
-        event= self.event
+        event = self.event
         games = event.sgf_set.filter(Q(black=user) | Q(white=user))
         return (games.count(),
             games.filter(winner=user).count(),
