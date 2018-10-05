@@ -603,6 +603,20 @@ class User(AbstractUser):
     def is_osr_admin(self):
         return self.groups.filter(name='OSR_admin').exists()
 
+    def get_packed_info(self):
+        players = self.leagueplayer_set.all()
+        info = {}
+        info["nb_players"] = players.count()
+        info["nb_games"] = 0
+        info["nb_win"] = 0
+        info["nb_loss"] = 0
+        for player in players:
+            (nb_games, nb_win, nb_loss) = player.nb_games_win_loss()
+            info["nb_games"] += nb_games
+            info["nb_win"] += nb_win
+            info["nb_loss"] += nb_loss
+        return info
+
 
     def nb_games(self):
         players = self.leagueplayer_set.all()
@@ -1070,6 +1084,14 @@ class LeaguePlayer(models.Model):
             }
             resultsDict[opponent.pk].append(record)
         return resultsDict
+
+    def nb_games_win_loss(self):
+        user = self.user
+        event = self.event
+        games = event.sgf_set.filter(Q(black=user) | Q(white=user))
+        return (games.count(),
+            games.filter(winner=user).count(),
+            games.exclude(winner=user).count())
 
     def nb_win(self):
         user = self.user
