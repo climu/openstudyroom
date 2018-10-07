@@ -71,6 +71,7 @@ INSTALLED_APPS = [
 
     #
     'bootstrap3',
+    'mathfilters',
 
     #for puput
     'puput',

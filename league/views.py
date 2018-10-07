@@ -11,7 +11,7 @@ from django.template.defaultfilters import slugify
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
-from django.db.models import Q, Prefetch
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -371,22 +371,9 @@ def list_players(request, event_id=None, division_id=None):
     # if no event is provided, we show all the league members in archive template
     if event_id is None:
         users = User.objects.filter(groups__name='league_member').\
-            prefetch_related(
-                'leagueplayer_set',
-                Prefetch(
-                    'winner_sgf',
-                    queryset=Sgf.objects.defer('sgf_text').all()
-                ),
-                Prefetch(
-                    'black_sgf',
-                    queryset=Sgf.objects.defer('sgf_text').all()
-                ),
-                Prefetch(
-                    'white_sgf',
-                    queryset=Sgf.objects.defer('sgf_text').all()
-                ),
-                'profile')
-        users = [user.get_stats for user in users]
+            annotate(games=Count('black_sgf', distinct=True)+Count('white_sgf', distinct=True)).\
+            annotate(wins=Count('winner_sgf', distinct=True)).\
+            annotate(leagues=Count('leagueplayer', distinct=True))
         context = {
             'users': users,
             'open_events': open_events,
