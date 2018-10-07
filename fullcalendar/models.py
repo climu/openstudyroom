@@ -53,7 +53,7 @@ class PublicEvent(CalEvent):
         return data
 
 class AvailableEvent(CalEvent):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     @staticmethod
     def get_formated_other_available(user, division_list, server_list):
@@ -160,6 +160,7 @@ class GameRequestEvent(CalEvent):
         User,
         related_name="%(app_label)s_%(class)s_related_sender",
         related_query_name="%(app_label)s_%(class)ss_sender",
+        on_delete=models.CASCADE
     )
     receivers = models.ManyToManyField(
         User,
