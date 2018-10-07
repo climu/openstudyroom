@@ -419,40 +419,47 @@ def list_players(request, event_id=None, division_id=None):
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def join_event(request, event_id, user_id):
     """Add a user to a league. After some check we calls the models.LeagueEvent.join_event method."""
+    # We already know that request.user is a league member.
+    # So he can join an open event by himself.
+    # If he is a league admin, he can make another user
+    #If he isn't any of this just don't consider the request
+    user = get_object_or_404(User, pk=user_id)
+    if not request.user.is_league_admin and not request.user == user:
+        message = "What are you doing here?"
+        messages.success(request, message)
+        return HttpResponseRedirect('/')
+
     event = get_object_or_404(LeagueEvent, pk=event_id)
     # No one should join a close event
     if not event.is_open:
         message = "You can't join a close event !"
         messages.success(request, message)
         return HttpResponseRedirect(reverse('league:league_account'))
-    user = get_object_or_404(User, pk=user_id)
-    # We already know that request.user is a league member.
-    # So he can join an open event by himself.
-    # If he is a league admin, he can make another user
-    if request.user.is_league_admin or request.user == user:
-        if request.method == 'POST':
-            form = ActionForm(request.POST)
-            if form.is_valid() and form.cleaned_data['action'] == 'join':
-                division = event.last_division()
-                if not division:  # the event have no division
-                    message = "The Event you tryed to join have no division. That's strange."
-                else:
-                    if user.join_event(event, division):
-                        meijin_league = LeagueEvent.objects.filter(
-                            event_type='meijin',
-                            is_open=True,
-                            community__isnull=True
-                        ).order_by('end_time').first()
+
+    #Process request
+    if request.method == 'POST':
+        form = ActionForm(request.POST)
+        if form.is_valid() and form.cleaned_data['action'] == 'join':
+            division = event.last_division()
+            if not division:  # the event have no division
+                message = "The Event you tryed to join have no division. That's strange."
+            else:
+                if user.join_event(event, division):
+                    meijin_league = LeagueEvent.objects.filter(
+                        event_type='meijin',
+                        is_open=True,
+                        community__isnull=True
+                    ).order_by('end_time').first()
+                    if meijin_league is not None:
                         meijin_division = meijin_league.division_set.first()
                         user.join_event(meijin_league, meijin_division)
-                        message = "Welcome in " + division.name + " ! You can start playing right now."
-                    else:
-                        message = "Oops ! Something went wrong. You didn't join."
-                messages.success(request, message)
-                return HttpResponseRedirect(form.cleaned_data['next'])
-    else:
-        message = "What are you doing here?"
-        messages.success(request, message)
+                    message = "Welcome in " + event.name + " ! You can start playing right now."
+                else:
+                    message = "Oops ! Something went wrong. You didn't join."
+            messages.success(request, message)
+            return HttpResponseRedirect(form.cleaned_data['next'])
+
+    #Default return
     return HttpResponseRedirect('/')
 
 @login_required()
