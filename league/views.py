@@ -10,7 +10,7 @@ from django.template import loader
 from django.template.defaultfilters import slugify
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group

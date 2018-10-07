@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic.edit import UpdateView, CreateView
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.http import Http404, HttpResponseRedirect, HttpResponse
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.utils.timezone import make_aware
 from django.utils import timezone
