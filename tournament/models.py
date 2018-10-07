@@ -31,7 +31,8 @@ class Tournament(LeagueEvent):
         'league.User',
         null=True,
         blank=True,
-        related_name="won_tournament"
+        related_name="won_tournament",
+        on_delete=models.CASCADE
     )
 
     def is_admin(self, user):
@@ -157,7 +158,7 @@ class TournamentGroup(Division):
 
 class Bracket(models.Model):
     name = models.TextField(max_length=20, blank=True, null=True, default="")
-    tournament = models.ForeignKey(Tournament, null=True)
+    tournament = models.ForeignKey(Tournament, null=True, on_delete=models.CASCADE)
     order = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
@@ -185,7 +186,7 @@ class Bracket(models.Model):
 class Round(models.Model):
     """A tournament round."""
     name = models.TextField(max_length=20, blank=True, null=True, default="")
-    bracket = models.ForeignKey(Bracket, blank=True, null=True)
+    bracket = models.ForeignKey(Bracket, blank=True, null=True, on_delete=models.CASCADE)
     order = models.PositiveSmallIntegerField()
 
     def __str__(self):
@@ -222,11 +223,11 @@ class Match(models.Model):
         blank=True,
         null=True,
         on_delete=models.SET_NULL)
-    bracket = models.ForeignKey(Bracket, blank=True, null=True)
-    round = models.ForeignKey(Round, blank=True, null=True)
-    player_1 = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name="player_1_match")
-    player_2 = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name="player_2_match")
-    winner = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name="winner_match")
+    bracket = models.ForeignKey(Bracket, blank=True, null=True, on_delete=models.CASCADE)
+    round = models.ForeignKey(Round, blank=True, null=True, on_delete=models.CASCADE)
+    player_1 = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name="player_1_match", on_delete=models.CASCADE)
+    player_2 = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name="player_2_match", on_delete=models.CASCADE)
+    winner = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name="winner_match", on_delete=models.CASCADE)
     order = models.PositiveSmallIntegerField()
 
 class TournamentEvent(PublicEvent):

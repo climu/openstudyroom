@@ -63,7 +63,7 @@ class LeagueEvent(models.Model):
     # byo yomi time in sec
     byo_time = models.PositiveSmallIntegerField(default=30)
     #if the league is a community league
-    community = models.ForeignKey(Community, blank=True, null=True)
+    community = models.ForeignKey(Community, blank=True, null=True, on_delete=models.CASCADE)
     #small text to show on league pages
     description = MarkupTextField(
             blank=True, null=True,
@@ -225,7 +225,7 @@ class Registry(models.Model):
     """
 
     # We higlight one specific event
-    primary_event = models.ForeignKey(LeagueEvent)
+    primary_event = models.ForeignKey(LeagueEvent, on_delete=models.CASCADE)
     # number of byo yomi periods
     x_byo = models.PositiveSmallIntegerField(default=5)
     # last time we request kgs
@@ -233,7 +233,7 @@ class Registry(models.Model):
     # time between 2 kgs get
     kgs_delay = models.SmallIntegerField(default=19)
     # actual meijin
-    meijin = models.ForeignKey('User', null=True, blank=True)
+    meijin = models.ForeignKey('User', null=True, blank=True, on_delete=models.CASCADE)
 
     @staticmethod
     def get_primary_event():
@@ -285,9 +285,9 @@ class Sgf(models.Model):
     check_code = models.CharField(max_length=100, default='nothing', blank=True)
     events = models.ManyToManyField(LeagueEvent, blank=True)
     divisions = models.ManyToManyField('Division', blank=True)
-    black = models.ForeignKey('User', blank=True, related_name='black_sgf', null=True)
-    white = models.ForeignKey('User', blank=True, related_name='white_sgf', null=True)
-    winner = models.ForeignKey('User', blank=True, related_name='winner_sgf', null=True)
+    black = models.ForeignKey('User', blank=True, related_name='black_sgf', null=True, on_delete=models.CASCADE)
+    white = models.ForeignKey('User', blank=True, related_name='white_sgf', null=True, on_delete=models.CASCADE)
+    winner = models.ForeignKey('User', blank=True, related_name='winner_sgf', null=True, on_delete=models.CASCADE)
     ogs_id = models.PositiveIntegerField(blank=True, null=True)
     # black, white, winner and events fields will only be populated for valid sgfs
     # status of the sgf:0 already checked
@@ -873,7 +873,7 @@ class User(AbstractUser):
 
 class Profile(models.Model):
     """A user profile. Store settings and infos about a user."""
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     kgs_username = models.CharField(max_length=10, blank=True)
     ogs_username = models.CharField(max_length=40, blank=True)
     kgs_rank = models.CharField(max_length=40, blank=True)
@@ -908,14 +908,15 @@ class Profile(models.Model):
 
 class Division(models.Model):
     """A group of players in a league"""
-    league_event = models.ForeignKey('LeagueEvent')
+    league_event = models.ForeignKey('LeagueEvent', on_delete=models.CASCADE,)
     name = models.TextField(max_length=20)
     order = models.SmallIntegerField(default=0)
     winner = models.ForeignKey(
         'User',
         null=True,
         blank=True,
-        related_name="won_division"
+        related_name="won_division",
+        on_delete=models.CASCADE,
     )
 
     class Meta:
@@ -1030,8 +1031,8 @@ class LeaguePlayer(models.Model):
     kgs_username = models.CharField(max_length=20, default='', null=True, blank=True)
     ogs_username = models.CharField(max_length=40, null=True, blank=True)
     #kgs_rank = models.CharField(max_length=20, default='')
-    event = models.ForeignKey('LeagueEvent')
-    division = models.ForeignKey('Division', null=True, blank=True)
+    event = models.ForeignKey('LeagueEvent', on_delete=models.CASCADE)
+    division = models.ForeignKey('Division', null=True, blank=True, on_delete=models.CASCADE)
     # p_status is deprecated, we now store that in player profile
     p_status = models.SmallIntegerField(default=0)
 
