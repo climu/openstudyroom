@@ -1,7 +1,6 @@
 {% extends "league/base.html" %}
 {% block title %}Archives- Players{% endblock %}
 {% load league_tags %}
-{% load mathfilters %}
 {% block content %}
   <ul class="nav nav-tabs">
     <li class="active"><a href="{% url 'league:archives' %}">Archives</a></li>
@@ -35,10 +34,10 @@
       {% for u in users %}
       <tr>
         <td>{{u | user_link}}</td>
-        <td>{{u.leagues}}</td>
-        <td>{{u.wins}}</td>
-        <td>{{u.games|sub:u.wins}}</td>
-        <td>{{u.games}}</td>
+        <td>{{u.nb_players}}</td>
+        <td>{{u.n_win}}</td>
+        <td>{{u.n_loss}}</td>
+        <td>{{u.n_games}}</td>
     </tr>
      {% endfor %}
    </tbody>
