@@ -232,7 +232,7 @@ class Match(models.Model):
 
 class TournamentEvent(PublicEvent):
     """ Public event related to a tournament."""
-    tournament = models.ForeignKey(Tournament)
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE )
 
     def can_edit(self, user):
         return self.tournament.is_admin(user)

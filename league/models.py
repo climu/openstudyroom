@@ -1027,7 +1027,7 @@ class Division(models.Model):
 
 
 class LeaguePlayer(models.Model):
-    user = models.ForeignKey('User')
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
     kgs_username = models.CharField(max_length=20, default='', null=True, blank=True)
     ogs_username = models.CharField(max_length=40, null=True, blank=True)
     #kgs_rank = models.CharField(max_length=20, default='')

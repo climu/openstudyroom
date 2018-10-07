@@ -9,7 +9,7 @@ from django.template.loader import render_to_string
 from django.utils.encoding import python_2_unicode_compatible
 #from django.utils import timezone
 from django import forms
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore.fields import RichTextField, StreamField

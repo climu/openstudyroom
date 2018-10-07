@@ -8,8 +8,8 @@ class Community(models.Model):
 
     name = models.CharField(max_length=20, blank=True, unique=True)
     slug = models.CharField(max_length=5, blank=True, unique=True)
-    admin_group = models.ForeignKey(Group, related_name='admin_community')
-    user_group = models.ForeignKey(Group, null=True, blank=True, related_name='user_community')
+    admin_group = models.ForeignKey(Group, related_name='admin_community', on_delete=models.CASCADE)
+    user_group = models.ForeignKey(Group, null=True, blank=True, related_name='user_community', on_delete=models.CASCADE)
     close = models.BooleanField(default=False)
     private = models.BooleanField(default=False)
     promote = models.BooleanField(default=False)
