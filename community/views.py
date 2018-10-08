@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import UpdateView
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
 from django.db.models import Q

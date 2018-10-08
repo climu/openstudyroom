@@ -2,6 +2,7 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = 'league'
 urlpatterns = [
     url(r'^$', views.division_results, name='results'),
     # Sad, but for historical reason, info page is named event.

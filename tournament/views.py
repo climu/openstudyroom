@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils import timezone
 from league.models import User, Sgf
 from league.forms import SgfAdminForm, ActionForm

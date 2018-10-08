@@ -5,7 +5,7 @@ from operator import attrgetter
 import time
 
 from django.contrib.auth.models import AbstractUser
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
@@ -849,7 +849,7 @@ class User(AbstractUser):
 
     def get_timezone(self):
         """Return the timezone of a user"""
-        if (self.is_authenticated() and
+        if (self.is_authenticated and
                 hasattr(self, 'profile') and
                 self.profile.timezone is not None):
             tz = pytz.timezone(self.profile.timezone)
