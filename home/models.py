@@ -11,15 +11,15 @@ from django.utils.encoding import python_2_unicode_compatible
 from django import forms
 from django.urls import reverse
 
-from wagtail.wagtailcore.models import Page
-from wagtail.wagtailcore.fields import RichTextField, StreamField
-from wagtail.wagtailsnippets.models import register_snippet
-from wagtail.wagtailadmin.edit_handlers import FieldPanel, StreamFieldPanel
-from wagtail.wagtailcore.blocks import TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, \
+from wagtail.core.models import Page
+from wagtail.core.fields import RichTextField, StreamField
+from wagtail.snippets.models import register_snippet
+from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel
+from wagtail.core.blocks import TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, \
     RichTextBlock, RawHTMLBlock, IntegerBlock
-from wagtail.wagtailimages.blocks import ImageChooserBlock
-from wagtail.wagtaildocs.blocks import DocumentChooserBlock
-from wagtail.wagtailcore.signals import page_published
+from wagtail.images.blocks import ImageChooserBlock
+from wagtail.documents.blocks import DocumentChooserBlock
+from wagtail.core.signals import page_published
 from wagtailmenus.models import MenuPage
 from puput.models import EntryPage, BlogPage
 import requests

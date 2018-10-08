@@ -2,6 +2,8 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = 'tournament'
+
 urlpatterns = [
     url(
         r'^(?P<tournament_id>[0-9]+)/$',

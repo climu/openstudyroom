@@ -5,13 +5,13 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 from search import views as search_views
-from wagtail.wagtailadmin import urls as wagtailadmin_urls
-from wagtail.wagtailcore import urls as wagtail_urls
-from wagtail.wagtaildocs import urls as wagtaildocs_urls
+from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.core import urls as wagtail_urls
+from wagtail.documents import urls as wagtaildocs_urls
 from machina.app import board
 
 urlpatterns = [
-    url(r'^django-admin/', include(admin.site.urls)),
+    url(r'^django-admin/', admin.site.urls),
 
     url(r'^admin/', include(wagtailadmin_urls)),
     url(r'^documents/', include(wagtaildocs_urls)),
@@ -34,7 +34,7 @@ urlpatterns = [
 
     url(r'^discord/', include('discord_bind.urls')),
 
-    url(r'^messages/', include('postman.urls', namespace='postman', app_name='postman')),
+    url(r'^messages/', include('postman.urls', namespace='postman')),
     url(r'^community/', include('community.urls', namespace='community')),
     url(r'', include('puput.urls')),
     # For anything not caught by a more specific rule above, hand over to
