@@ -44,6 +44,7 @@ oauthlib==2.0.1
 olefile==0.44
 packaging==16.8
 Pillow==4.2.1
+pkg-resources
 psycopg2==2.7.5
 puput==1.0.2
 pybbm==0.18.4
