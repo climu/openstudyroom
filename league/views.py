@@ -980,7 +980,7 @@ class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                'end_time': datetime.datetime.now()}
 
     def test_func(self):
-        return self.request.user.is_authenticated() and \
+        return self.request.user.is_authenticated and \
             self.request.user.is_league_admin()
 
     def get_login_url(self):
@@ -1443,7 +1443,7 @@ class ProfileUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         user = self.request.user
-        return user.is_authenticated() and \
+        return user.is_authenticated and \
             user.is_league_member() and \
             self.get_object().user == user
 

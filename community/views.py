@@ -43,7 +43,7 @@ class AdminCommunityUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         user = self.request.user
-        return user.is_authenticated() and user.is_osr_admin()
+        return user.is_authenticated and user.is_osr_admin()
 
     def get_login_url(self):
         return '/'
@@ -95,7 +95,7 @@ def community_page(request, slug):
         leagues = leagues.filter(is_public=True)
     sgfs = Sgf.objects.filter(league_valid=True, events__in=leagues).order_by('-date')
 
-    can_join = request.user.is_authenticated() and \
+    can_join = request.user.is_authenticated and \
         request.user.is_league_member() and \
         not community.is_member(request.user) and \
         not community.close

@@ -182,7 +182,7 @@ class TournamentCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         }
 
     def test_func(self):
-        return self.request.user.is_authenticated() and \
+        return self.request.user.is_authenticated and \
             self.request.user.is_league_admin()
 
     def get_login_url(self):

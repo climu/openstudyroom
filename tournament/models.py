@@ -36,7 +36,7 @@ class Tournament(LeagueEvent):
     )
 
     def is_admin(self, user):
-        return user.is_authenticated() and\
+        return user.is_authenticated and\
             user.is_league_admin() or\
             user.groups.filter(name='tournament_master').exists()
 

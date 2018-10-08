@@ -179,7 +179,7 @@ class LeagueEvent(models.Model):
 
     def can_quit(self, user):
         """return a boolean being true if a user can quit a league"""
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
         player = LeaguePlayer.objects.filter(user=user, event=self).first()
         # no one should be able to quit a league if he have played games inside it.

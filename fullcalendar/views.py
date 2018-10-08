@@ -26,7 +26,7 @@ class PublicEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name_suffix = '_update_form'
 
     def test_func(self):
-        return self.request.user.is_authenticated() and self.request.user.is_osr_admin()
+        return self.request.user.is_authenticated and self.request.user.is_osr_admin()
 
     def get_login_url(self):
         return '/'
@@ -41,7 +41,7 @@ class PublicEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                'end': datetime.now()}
 
     def test_func(self):
-        return self.request.user.is_authenticated() and self.request.user.is_osr_admin()
+        return self.request.user.is_authenticated and self.request.user.is_osr_admin()
 
     def get_login_url(self):
         return '/'
@@ -190,7 +190,7 @@ def json_feed(request):
     data = PublicEvent.get_formated_public_event(start, end, tz)
 
     # get user related available events and game requests
-    if user.is_authenticated() and user.is_league_member():
+    if user.is_authenticated and user.is_league_member():
         now = timezone.now()
         # Games appointments
         data += GameAppointmentEvent.get_formated_game_appointments(user, now, tz)
