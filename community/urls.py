@@ -1,7 +1,8 @@
 from django.conf.urls import url
 
 from . import views
-app_name='community'
+
+app_name = 'community'
 
 urlpatterns = [
     url(

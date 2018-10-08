@@ -849,7 +849,7 @@ class User(AbstractUser):
 
     def get_timezone(self):
         """Return the timezone of a user"""
-        if (self.is_authenticated() and
+        if (self.is_authenticated and
                 hasattr(self, 'profile') and
                 self.profile.timezone is not None):
             tz = pytz.timezone(self.profile.timezone)
