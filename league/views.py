@@ -673,9 +673,10 @@ def discord_api(request):
         }
         players = u.user.leagueplayer_set.all()
         leagues = LeagueEvent.objects.filter(leagueplayer__in=players, is_open=True)
-        out[u.uid] = {
-            'leagues': leagues
-        }
+        if leagues:
+            out[u.uid] = {
+                'leagues': leagues
+            }
 
         if u.user.profile.bio is not None:
             out[u.uid].update({'bio': u.user.profile.bio._get_raw()})
