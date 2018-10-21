@@ -671,6 +671,12 @@ def discord_api(request):
             'timezone': u.user.profile.timezone,
             'country': u.user.profile.country.name,
         }
+        players = u.user.leagueplayer_set.filter(event__is_open=True)
+        leagues = League.objects.filter(leagueplayer__in=players)
+        out[u.uid] = {
+            'leagues': leagues
+        }
+
         if u.user.profile.bio is not None:
             out[u.uid].update({'bio': u.user.profile.bio._get_raw()})
         if u.user.profile.kgs_username:
