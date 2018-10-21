@@ -672,7 +672,7 @@ def discord_api(request):
             'country': u.user.profile.country.name,
         }
         players = u.user.leagueplayer_set.filter(event__is_open=True)
-        leagues = League.objects.filter(leagueplayer__in=players)
+        leagues = LeagueEvent.objects.filter(leagueplayer__in=players, event__is_open=True)
         out[u.uid] = {
             'leagues': leagues
         }
