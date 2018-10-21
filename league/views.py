@@ -671,8 +671,8 @@ def discord_api(request):
             'timezone': u.user.profile.timezone,
             'country': u.user.profile.country.name,
         }
-        players = u.user.leagueplayer_set.filter(event__is_open=True)
-        leagues = LeagueEvent.objects.filter(leagueplayer__in=players, event__is_open=True)
+        players = u.user.leagueplayer_set.all()
+        leagues = LeagueEvent.objects.filter(leagueplayer__in=players, is_open=True)
         out[u.uid] = {
             'leagues': leagues
         }
