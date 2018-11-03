@@ -407,10 +407,10 @@ def create_game_request(request):
         # a game request should last 1h30
         end = date + timedelta(hours=1, minutes=30)
         # create the instance
-        request = GameRequestEvent(start=date, end=end, sender=sender)
-        request.save()
-        request.receivers = receivers
-        request.save()
+        game_request = GameRequestEvent(start=date, end=end, sender=sender)
+        game_request.save()
+        game_request.receivers.add(*receivers)
+        game_request.save()
 
         # send a message to all receivers
         subject = 'Game request from ' + sender.username \
