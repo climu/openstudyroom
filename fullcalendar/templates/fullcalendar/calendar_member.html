@@ -523,12 +523,13 @@ $(document).ready(function() {
             type:"POST",
             url:"{% url 'calendar:cancel_game_ajax'%}",
             data: {'pk': pk},
-            success: function(){
-                $('#game-request-modal').modal('hide');
-                $('#calendar').fullCalendar( 'removeEvents');
-                $('#calendar').fullCalendar( 'refetchEvents' );
-            }
+						error:function(){
+							alert("something went wrong. Please report to climu this code: cm4")
+						}
         });
+				$('#game-request-modal').modal('hide');
+				$('#calendar').fullCalendar( 'removeEvents');
+				$('#calendar').fullCalendar( 'refetchEvents' );
         return false;
     });//Cancel Game
 
@@ -539,12 +540,13 @@ $(document).ready(function() {
             type:"POST",
             url:"{% url 'calendar:accept_game_request_ajax'%}",
             data: {'pk': pk},
-            success: function(){
-                $('#game-request-modal').modal('hide');
-                $('#calendar').fullCalendar( 'removeEvents');
-                $('#calendar').fullCalendar( 'refetchEvents' );
-           }
+						error:function(){
+							alert("something went wrong. Please report to climu this code: cm5")
+						}
        });
+			 $('#game-request-modal').modal('hide');
+			 $('#calendar').fullCalendar( 'removeEvents');
+			 $('#calendar').fullCalendar( 'refetchEvents' );
        return false;
     });//accept Game request
 
@@ -555,12 +557,13 @@ $(document).ready(function() {
             type:"POST",
             url:"{% url 'calendar:reject_game_request_ajax'%}",
             data: {'pk': pk},
-            success: function(){
-                $('#game-request-modal').modal('hide');
-                $('#calendar').fullCalendar( 'removeEvents');
-                $('#calendar').fullCalendar( 'refetchEvents' );
-            }
+						error:function(){
+							alert("something went wrong. Please report to climu this code: cm6")
+						}
         });
+				$('#game-request-modal').modal('hide');
+				$('#calendar').fullCalendar( 'removeEvents');
+				$('#calendar').fullCalendar( 'refetchEvents' );
         return false;
     });//reject Game request
 
@@ -571,12 +574,13 @@ $(document).ready(function() {
             type:"POST",
             url:"{% url 'calendar:cancel_game_request_ajax'%}",
             data: {'pk': pk},
-            success: function(){
-                $('#game-request-modal').modal('hide');
-                $('#calendar').fullCalendar( 'removeEvents');
-                $('#calendar').fullCalendar( 'refetchEvents' );
-            }
+						error:function(){
+							alert("something went wrong. Please report to climu this code: cm6")
+						}
         });
+				$('#game-request-modal').modal('hide');
+				$('#calendar').fullCalendar( 'removeEvents');
+				$('#calendar').fullCalendar( 'refetchEvents' );
         return false;
     });//cancel-game-request
 
@@ -602,12 +606,13 @@ $(document).ready(function() {
                 'date': date,
                 'users': json
             },
-            success: function(){
-                $('#game-request-modal').modal('hide');
-                $('#calendar').fullCalendar( 'removeEvents');
-                $('#calendar').fullCalendar( 'refetchEvents' );
-            }
+						error:function(){
+							alert("something went wrong. Please report to climu this code: cm0")
+						}
         });
+				$('#game-request-modal').modal('hide');
+				$('#calendar').fullCalendar( 'removeEvents');
+				$('#calendar').fullCalendar( 'refetchEvents' );
         return false;
     });// Closing the send game request click
 
@@ -645,11 +650,12 @@ $(document).ready(function() {
             data: {
                'events': json
             },
-            success: function(){
-                $('#calendar').fullCalendar( 'removeEvents');
-                $('#calendar').fullCalendar( 'refetchEvents' );
-            }
+						error:function(){
+							alert("something went wrong. Please report to climu this code: cm1")
+						}
        });
+			 $('#calendar').fullCalendar( 'removeEvents');
+			 $('#calendar').fullCalendar( 'refetchEvents' );
        $('#save').attr('class','btn btn-default')
        return false;
     });// closing $("#save").click
@@ -691,7 +697,10 @@ $(document).ready(function() {
             data: {
                 'start': start.format(),
                 'end': end.format()
-            }
+            },
+						error:function(){
+							alert("something went wrong. Please report to climu this code: cm2")
+						}
         });
     $('#calendar').fullCalendar( 'refetchEvents' );
     });
@@ -712,7 +721,10 @@ $(document).ready(function() {
             data: {
                 'start': range[0],
                 'end': range[1]
-            }
+            },
+						error:function(){
+							alert("something went wrong. Please report to climu this code: cm3")
+						}
         });
     });
 
