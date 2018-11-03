@@ -23,7 +23,7 @@
     <th>OGS username</th>
 		<th>Send email</th>
     <th>Set meijin</th>
-    <th>Division</th>
+    <th>Date joined</th>
 	</thead>
 	<tbody>
 	{% for user in users %}
@@ -41,7 +41,7 @@
           <button type="submit" class="btn btn-primary btn-xs"> <i class="fa fa-trophy"></i></button>
         </form>
     </td>
-    <td>{% if user.is_in_primary_event %} {{user.get_primary_event_player.division}}{%endif%}</td>
+    <td>{{user.date_joined | date:'M d, Y'}}</td>
   </tr>
   {%endfor %}
 </tbody>
@@ -50,11 +50,23 @@
 {% endblock %}
 
 {% block extra_js %}
+
+
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
+
 <script type="text/javascript">
 $(document).ready(function() {
-$('#users-table').DataTable();
+$('#users-table').DataTable({
+  "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
+  "columnDefs": [ {
+    targets: 1,
+    render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','MMM DD, YYYY' )
+  } ],
+  "order": [[ 1, "desc" ]]
+});
 } );
 </script>
 {% endblock %}
