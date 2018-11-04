@@ -1014,10 +1014,16 @@ class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         if copy_from_pk is not None:
             copy_from = get_object_or_404(LeagueEvent, pk=copy_from_pk)
             divisions = copy_from.get_divisions()
-            for division in divisions:
-                division.league_event = self.object
-                division.pk = None
-                division.save()
+            if len(divisions) == 1:
+                division = Division.objects.create(
+                    league_event=self.object,
+                    name=self.object.name
+                )
+            else:
+                for division in divisions:
+                    division.league_event = self.object
+                    division.pk = None
+                    division.save()
         return response
 
     def get_context_data(self, **kwargs):
