@@ -1,5 +1,6 @@
 {% extends 'league/admin/base.html' %}
 {% load bootstrap3 league_tags%}
+{% load l10n i18n tz %}
 {% block title %}OSR league admin - Users{% endblock %}
 {% block heading %}
 <div class="page-header">
@@ -12,7 +13,12 @@
     {% endif %}
 </div>
 {%endblock%}
+
+{% localize off %}
 {% block content %}
+{% language 'en' %}
+{% timezone "UTC" %}
+
 {% get_meijin as meijin %}
 
 <table id='users-table' class='display table table-hover' cellspacing='0' width='100%' >
@@ -46,9 +52,10 @@
   {%endfor %}
 </tbody>
 </table>
-
-{% endblock %}
-
+{% endtimezone %}
+{% endlanguage %}
+{%endblock%}
+{% endlocalize %}
 {% block extra_js %}
 
 
@@ -60,12 +67,11 @@
 <script type="text/javascript">
 $(document).ready(function() {
 $('#users-table').DataTable({
-  "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
   "columnDefs": [ {
-    targets: 1,
+    targets: 5,
     render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','MMM DD, YYYY' )
   } ],
-  "order": [[ 1, "desc" ]]
+  "order": []
 });
 } );
 </script>
