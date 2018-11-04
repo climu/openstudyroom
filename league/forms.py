@@ -116,6 +116,7 @@ class LeagueEventForm(forms.ModelForm):
             'min_matchs',
             'tag',
             'server',
+            'board_size',
             'main_time',
             'byo_time',
             'is_open',
