@@ -1,11 +1,7 @@
-{% extends 'full_width.html' %}
+{% extends 'league/admin/base.html' %}
+
 {% load bootstrap3 league_tags%}
 
-{%block page_intro %}
-{% if request.user.is_league_admin %}
-{% include 'league/includes/admin_nav.html' %}
-{% endif %}
-{% endblock %}
 {% block title %}OSR league admin - Leagues{% endblock %}
 
 
