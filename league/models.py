@@ -62,6 +62,9 @@ class LeagueEvent(models.Model):
     main_time = models.PositiveSmallIntegerField(default=1800)
     # byo yomi time in sec
     byo_time = models.PositiveSmallIntegerField(default=30)
+
+    board_size = models.PositiveSmallIntegerField(default=19)
+
     #if the league is a community league
     community = models.ForeignKey(Community, blank=True, null=True, on_delete=models.CASCADE)
     #small text to show on league pages
@@ -467,6 +470,11 @@ class Sgf(models.Model):
             (b, m) = (False, m + '; number moves')
         if not str(self.komi).startswith('6.5'):
             (b, m) = (False, m + '; komi')
+        # self.board_size is added at parse. So it's a string. THat's a bug I fear.
+        # dirty workaround is converting to int as above. We should convert when we parse.
+        if int(self.board_size) != event.board_size:
+            (b, m) = (False, m + '; board size')
+
         return {'message': m, 'valid': b, 'tag': tag, }
 
     def check_validity(self):
