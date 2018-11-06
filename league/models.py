@@ -35,6 +35,10 @@ class LeagueEvent(models.Model):
         ('ddk', 'ddk'),
         ('dan', 'dan')
     )
+    CLOCK_TYPE_CHOICES = (
+        ('byoyomi', 'byoyomi'),
+        ('fisher', 'fisher'),
+    )
     #start and end of the league
     begin_time = models.DateTimeField(blank=True)
     end_time = models.DateTimeField(blank=True)
@@ -58,10 +62,15 @@ class LeagueEvent(models.Model):
         choices=EVENT_TYPE_CHOICES,
         default='ladder')
     tag = models.CharField(max_length=10, default='#OSR')
+
+    clock_type = models.CharField(
+        max_length=10,
+        choices=CLOCK_TYPE_CHOICES,
+        default='byoyomi')
     # main time in minutes
     main_time = models.PositiveSmallIntegerField(default=1800)
-    # byo yomi time in sec
-    byo_time = models.PositiveSmallIntegerField(default=30)
+    # additional time in sec. Either byoyomi or per move if fisher
+    additional_time = models.PositiveSmallIntegerField(default=30)
 
     board_size = models.PositiveSmallIntegerField(default=19)
 
@@ -457,12 +466,22 @@ class Sgf(models.Model):
         else:
             tag = False
             (b, m) = (False, m + '; Tag missing')
-        # check the byoyomi
-        byo = utils.get_byoyomi(self.byo)
-        if byo['n'] < 3 or byo['t'] < event.byo_time:
-            (b, m) = (False, m + '; byo-yomi')
+        # check the time settings:
         if int(self.time) < event.main_time:
             (b, m) = (False, m + '; main time')
+
+        if event.clock_type == 'byoyomi':
+            byo = utils.get_byoyomi(self.byo)
+            # if self.byo isn't byoyomi timesettings, we get [0,0] -> not valid
+            if byo['n'] < 3 or byo['t'] < event.additional_time:
+                (b, m) = (False, m + '; byo-yomi')
+        # Beware: From the API, byo will be "30" but in the SGF we get "30 fischer"
+
+        elif 'fischer' in self.byo:
+            if int(self.byo.split(' ')[0]) < event.additional_time:
+                (b, m) = (False, m + '; additional time')
+        else:
+            (b, m) = (False, m + '; Time settings')
         # no result shouldn't happen automaticly, but with admin upload, who knows
         if self.result == '?':
             (b, m) = (False, m + '; no result')
@@ -804,7 +823,7 @@ class User(AbstractUser):
                 if game_ended < time_limit:
                     break
                 # then we check if we have the same  id in db.
-                # Since it's ordered by time, no need to keep going.
+                # Since it's ordered by time, no need to keep going. but we do?
                 if Sgf.objects.filter(ogs_id=game['id']).exists():
                     continue
 
@@ -814,23 +833,36 @@ class User(AbstractUser):
                 else:
                     opponent_ogs_id = game['white']
                 # Check if opponent is a opponent
-                if opponent_ogs_id in opponents:
-                    # we need to get timesetting datas here because they are not
-                    # in OGS sgfs
-                    time_settings = json.loads(game["time_control_parameters"])
-                    if 'system' in time_settings and time_settings['system'] == "byoyomi":
-                        sgf = Sgf()
-                        sgf.time = time_settings['main_time']
-                        # Sadly byo is recorded as a string 3x30 byo-yomi in db
-                        sgf.byo = str(time_settings['periods']) + 'x' + \
-                            str(time_settings['period_time']) + ' byo-yomi'
-                        sgf.wplayer = game['players']['white']['username']
-                        sgf.bplayer = game['players']['black']['username']
-                        sgf.urlto = 'https://online-go.com/api/v1/games/' +\
-                            str(game['id']) + '/sgf/'
-                        sgf.ogs_id = game['id']
-                        sgf.p_status = 1
-                        sgf.save()
+                if opponent_ogs_id not in opponents:
+                    continue
+
+                # we need to get timesetting datas here because they are not
+                # in OGS sgfs
+                time_settings = json.loads(game["time_control_parameters"])
+                # Some SGF does not have "system" in time_settings. Why? when?
+                # we had this check in the commit 3cea232.
+                if 'system' not in time_settings:
+                    continue
+                sgf = Sgf()
+                if time_settings['system'] == "byoyomi":
+                    sgf.time = time_settings['main_time']
+                    # Sadly byo is recorded as a string 3x30 byo-yomi in db
+                    sgf.byo = str(time_settings['periods']) + 'x' + \
+                        str(time_settings['period_time']) + ' byo-yomi'
+
+                elif time_settings['system'] == "fischer":
+                    sgf.time = time_settings['initial_time']
+                    sgf.byo = str(time_settings['time_increment'])
+                else:
+                    continue
+
+                sgf.wplayer = game['players']['white']['username']
+                sgf.bplayer = game['players']['black']['username']
+                sgf.urlto = 'https://online-go.com/api/v1/games/' +\
+                    str(game['id']) + '/sgf/'
+                sgf.ogs_id = game['id']
+                sgf.p_status = 1
+                sgf.save()
             # this else will be executed only if no break appeared in the inner loop
             else:
                 time.sleep(2)

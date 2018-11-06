@@ -102,7 +102,7 @@ def scraper():
     if sgf is None:
         sgf = Sgf.objects.filter(p_status=1).first()
     if sgf is not None:
-        # parse the sgf datas to populate the rows -> KGS archive request
+        # parse the sgf datas to populate the rows -> KGS/OGS archive request
         sgf = sgf.parse()
         # if the sgf doesn't have a result (unfinished game) we just delete it
         # If the game was a OGS private game result will also be '?'. See models.sgf.parse
