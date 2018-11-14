@@ -916,6 +916,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     kgs_username = models.CharField(max_length=10, blank=True)
     ogs_username = models.CharField(max_length=40, blank=True)
+    go_quest_username = models.CharField(max_length=40, blank=True)
     kgs_rank = models.CharField(max_length=40, blank=True)
     ogs_rank = models.CharField(max_length=40, blank=True)
     # ogs_id is set in ogs.get_user_id

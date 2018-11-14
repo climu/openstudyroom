@@ -153,6 +153,7 @@ class ProfileForm(ModelForm):
             'ogs_username',
             'kgs_username',
             'country',
+            'go_quest_username'
         ]
         widgets = {'country': CountrySelectWidget()}
 

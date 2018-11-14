@@ -21,6 +21,9 @@
        </a>
      </p>
     {% endif %}
+    {% if user.profile.go_quest_username %}
+    <p>Go Quest Username: <b>{{user.profile.go_quest_username}}</b></p>
+    {% endif %}
     {% if discord_user %}
 
     <p>Discord username :

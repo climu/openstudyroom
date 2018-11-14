@@ -1,11 +1,7 @@
 {% extends 'full_width.html' %}
 {% load bootstrap3 league_tags%}
 
-{%block page_intro %}
 
-{% include 'league/includes/user_nav.html' with active='league' %}
-
-{% endblock %}
 {% block title %}OSR league admin - Leagues{% endblock %}
 
 {% block heading %}
@@ -14,6 +10,8 @@
 </div>
 {%endblock%}
 {% block content %}
+
+{% include 'league/includes/user_nav.html' with active='league' %}
 
 <form action="" method="POST">{% csrf_token %}
 {%bootstrap_field form.bio %}
@@ -24,6 +22,8 @@ Please make sure all the league games you have played so far are on the results 
 </div>
 {%bootstrap_field form.ogs_username %}
 {%bootstrap_field form.kgs_username %}
+{%bootstrap_field form.go_quest_username %}
+
 
   {% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
   <a class="btn btn-danger pull-right" href="{% url 'league:league_account' object.user.username %}">
