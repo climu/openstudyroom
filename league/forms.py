@@ -8,6 +8,7 @@ import pytz
 
 from .models import Division, LeagueEvent, Profile
 from .ogs import get_user_id, get_user_rank
+from tournament.models import TournamentPlayer
 
 class SgfAdminForm(forms.Form):
     sgf = forms.CharField(label='sgf data', widget=forms.Textarea(attrs={'cols': 60, 'rows': 20}))
@@ -189,6 +190,24 @@ class ProfileForm(ModelForm):
                 open_players = self.instance.user.leagueplayer_set.filter(event__is_open=True)
                 open_players.update(ogs_username=ogs_username)
         return ogs_username
+
+    def clean_go_quest_username(self):
+        if not self.cleaned_data['go_quest_username']:
+            return ''
+        go_quest_username = self.cleaned_data['go_quest_username']
+        if go_quest_username:
+            if Profile.objects.filter(go_quest_username__iexact=go_quest_username).\
+                    exclude(pk=self.instance.pk).exists():
+                self.add_error(
+                    'go_quest_username',
+                    'Someone is already using this Go Quest username. Please contact an admin'
+                )
+            else:
+                # udate goquest username for all players
+                open_players = self.instance.user.leagueplayer_set.filter(event__is_open=True)
+                open_players.update(go_quest_username=go_quest_username)
+                print(open_players)
+        return go_quest_username
 
     def clean(self):
         super(ProfileForm, self).clean()
