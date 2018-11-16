@@ -12,6 +12,7 @@ class TournamentForm(forms.ModelForm):
             'begin_time',
             'end_time',
             'tag',
+            'clock_type',
             'main_time',
             'additional_time',
             'board_size',

@@ -284,7 +284,7 @@ class Sgf(models.Model):
     place = models.CharField(max_length=200, default='?')
     result = models.CharField(max_length=200, default='?')
     league_valid = models.BooleanField(default=False)
-    date = models.DateTimeField(default=datetime.datetime.now, blank=True)
+    date = models.DateTimeField(default=datetime.datetime.now, blank=True, null=True)
     board_size = models.SmallIntegerField(default=19)
     handicap = models.SmallIntegerField(default=0)
     komi = models.DecimalField(default=6.5, max_digits=5, decimal_places=2)
@@ -314,6 +314,9 @@ class Sgf(models.Model):
 
     def get_players(self, event):
         """return the players of this sgf for this event."""
+
+        [black_player, white_player] = [None, None]
+
         if self.place.startswith('OGS'):
             black_player = LeaguePlayer.objects.filter(
                 event=event,
@@ -324,7 +327,7 @@ class Sgf(models.Model):
                 event=event,
                 ogs_username__iexact=self.wplayer
             ).first()
-        else:
+        elif self.place.startswith('KGS'):
             black_player = LeaguePlayer.objects.filter(
                 event=event,
                 kgs_username__iexact=self.bplayer
@@ -334,7 +337,16 @@ class Sgf(models.Model):
                 event=event,
                 kgs_username__iexact=self.wplayer
             ).first()
+        elif self.place.startswith('GOQUEST'):
+            black_player = LeaguePlayer.objects.filter(
+                event=event,
+                go_quest_username__iexact=self.bplayer.split(" ")[0]
+            ).first()
 
+            white_player = LeaguePlayer.objects.filter(
+                event=event,
+                go_quest_username__iexact=self.wplayer.split(" ")[0]
+            ).first()
         return [black_player, white_player]
 
     def update_related(self, events):
@@ -1071,6 +1083,8 @@ class LeaguePlayer(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     kgs_username = models.CharField(max_length=20, default='', null=True, blank=True)
     ogs_username = models.CharField(max_length=40, null=True, blank=True)
+    go_quest_username = models.CharField(max_length=40, null=True, blank=True)
+
     #kgs_rank = models.CharField(max_length=20, default='')
     event = models.ForeignKey('LeagueEvent', on_delete=models.CASCADE)
     division = models.ForeignKey('Division', null=True, blank=True, on_delete=models.CASCADE)

@@ -71,6 +71,7 @@ class Tournament(LeagueEvent):
             return out
 
         settings = sgf.check_event_settings(self)
+
         if not settings['valid']:
             out.update({'message': settings['message']})
         elif self.stage == 1:

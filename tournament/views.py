@@ -674,6 +674,7 @@ def invite_user(request, tournament_id):
             player.event = tournament
             player.kgs_username = user.profile.kgs_username
             player.ogs_username = user.profile.ogs_username
+            player.go_quest_username = user.profile.go_quest_username
             player.user = user
             player.order = tournament.last_player_order() + 1
             player.save()

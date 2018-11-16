@@ -5,6 +5,7 @@
 {%block page_intro %}
 {% if request.user.is_league_admin %}
 <div class="container">
+<div class="row">
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav navbar-left">
   {% if request.user.is_osr_admin %}
@@ -19,5 +20,7 @@
 </ul>
 </nav>
 </div>
+</div>
+
 {% endif %}
 {% endblock %}
