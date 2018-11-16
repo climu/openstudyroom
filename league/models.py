@@ -977,7 +977,7 @@ class Division(models.Model):
         ordering = ['-league_event', 'order']
 
     def __str__(self):
-        return self.name
+        return self.name + self.league_event.name
 
     def number_games(self):
         return self.sgf_set.distinct().count()
@@ -1095,7 +1095,7 @@ class LeaguePlayer(models.Model):
         unique_together = ('user', 'division',)
 
     def __str__(self):
-        return str(self.pk) + self.kgs_username
+        return str(self.pk) + ": " + self.user.username + ", " + self.event.name
 
     def get_results(self):
         """Return a player results.
