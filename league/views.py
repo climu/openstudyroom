@@ -547,7 +547,9 @@ def account(request, user_name=None):
 
     players = user.leagueplayer_set.exclude(event__event_type='tournament').order_by('-pk')
 
-    sgfs = Sgf.objects.defer('sgf_text').filter(Q(white=user) | Q(black=user)).\
+    sgfs = Sgf.objects.defer('sgf_text').\
+        exclude(date__isnull=True).\
+        filter(Q(white=user) | Q(black=user)).\
         prefetch_related('white', 'black', 'winner').\
         select_related('white__profile', 'black__profile')
 

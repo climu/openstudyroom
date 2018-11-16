@@ -9,6 +9,7 @@ from league.models import User, Sgf
 def overview(request):
     '''Render various stats OSR related'''
     games = Sgf.objects\
+        .exclude(date__isnull=True)\
         .defer('sgf_text')\
         .filter(league_valid=True)\
         .annotate(month=TruncMonth('date'))\
