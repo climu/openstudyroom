@@ -23,7 +23,7 @@ function formatHeader(header) {
     return headerParts.join('');
 }
 
-function updateSGF(sgf){
+function updateSGF(sgf, date){
   const [prefix, headerStr, moves] = parseSGF(sgf);
   const header = parseHeader(headerStr);
   header['KM'] = '6.5';
@@ -31,6 +31,8 @@ function updateSGF(sgf){
   header['TM'] = '180';
   header['OT'] = '2 fischer';
   header['C'] = '#OSR';
+  header['DT'] = date;
+
   const newSGF = [prefix, formatHeader(header), moves].join(';');
   return newSGF;
 }

@@ -1,14 +1,14 @@
 import datetime
 
 from django import forms
-from django.contrib.auth.models import  Group
+from django.contrib.auth.models import Group
 from django.forms import ModelForm
 from django_countries.widgets import CountrySelectWidget
 import pytz
 
 from .models import Division, LeagueEvent, Profile
 from .ogs import get_user_id, get_user_rank
-from tournament.models import TournamentPlayer
+
 
 class SgfAdminForm(forms.Form):
     sgf = forms.CharField(label='sgf data', widget=forms.Textarea(attrs={'cols': 60, 'rows': 20}))

@@ -20,7 +20,10 @@
     <button  class="btn btn-info" id="go-quest-btn">
       {% bootstrap_icon "equalizer" %}  Go Quest
     </button>
+    <input
+      class="datepicker">
   </div>
+
   <div class="col-lg-4">
     {%if sgf.league_valid %}
     <button form="sgf-form" type="submit" class="btn btn-success " formaction="{%url 'tournament:create_sgf' tournament.pk%}"onclick="return confirm('Save the sgf and create a league game ?')" >
@@ -110,16 +113,36 @@ This SGF is not valid :
 
 {% endblock %}
 
+{% block extra_head_js %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css">
+{% endblock %}
+
 {% block extra_js %}
+
+
 <script src="{% static 'league/js/goquest_sgf.js'%}"></script>
 <script >
-$('#go-quest-btn').click(function(){
+$(document).ready(function() {
+  $('#go-quest-btn').click(function(){
 
-  var sgf = $('#id_sgf').val()
-  sgf = updateSGF(sgf)
-  $('#id_sgf').val(sgf)
-})
+    var sgf = $('#id_sgf').val()
+    var date = $('.datepicker').val()
+    sgf = updateSGF(sgf, date)
+    $('#id_sgf').val(sgf)
+  })
 
+now = moment().format('YYYY-MM-DD');
+$('.datepicker').val(now)
+$('.datepicker').datepicker({
+    format: 'yyyy-mm-dd',
+    autoclose:true,
+    todayHighlight:true,
+    zIndexOffset:10000,
+    title:'sgf date'
+});
+} );
 
 </script>
 {% endblock %}
