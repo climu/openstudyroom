@@ -1,6 +1,6 @@
 {% extends 'league/admin/base.html' %}
 
-{% load bootstrap3 league_tags%}
+{% load bootstrap3 league_tags tz%}
 
 {% block title %}OSR league admin - Leagues{% endblock %}
 
@@ -12,6 +12,7 @@
 </div>
 {%endblock%}
 {% block content %}
+{% timezone "UTC" %}
 <div class="row">
   {% if object.number_players == 0 and object.number_divisions > 0%}
   <div class="alert alert-info clearfix">
@@ -151,7 +152,9 @@
   {% endfor %}
 </div>
 </div>
+{% endtimezone %}
 {% endblock %}
+
 
 {% block extra_css %}
     {{ form.media.css }}
@@ -159,4 +162,5 @@
 
 {% block extra_js %}
 {{ form.media.js }}
+
 {% endblock extra_js %}
