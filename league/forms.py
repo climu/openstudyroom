@@ -116,7 +116,6 @@ class LeagueEventForm(forms.ModelForm):
             'pploss',
             'min_matchs',
             'tag',
-            'server',
             'board_size',
             'clock_type',
             'main_time',
@@ -133,7 +132,18 @@ class LeagueEventForm(forms.ModelForm):
             'begin_time': forms.SelectDateWidget(years=EVENT_YEAR_CHOICES),
             'end_time': forms.SelectDateWidget(years=EVENT_YEAR_CHOICES),
         }
-
+        help_texts = {
+            'name': "Name of the league",
+            'event_type': 'League will work',
+            'begin_time': "UTC time at 00:00.",
+            'end_time': "Set it to the 1st to have full month.",
+            'nb_matchs': 'Maximum number of match two players can play together',
+            'ppwin': 'Point per win',
+            'pploss': 'Point per loss',
+            'min_matchs': 'Minimum of match for a user to be considered active',
+            'is_open': 'Can people register and game get scraped?',
+            'is_public': 'Can people see the league?',
+        }
 
 class EmailForm(forms.Form):
     subject = forms.CharField(required=True)

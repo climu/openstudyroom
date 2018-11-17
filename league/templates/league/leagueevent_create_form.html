@@ -1,5 +1,5 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 league_tags%}
+{% load bootstrap3 league_tags tz%}
 {% block title %}OSR league admin - Create new Event{% endblock %}
 {% block heading %}
 <div class="page-header">
@@ -13,6 +13,7 @@
 </div>
 {%endblock%}
 {% block content %}
+{% timezone "UTC" %}
 <div class="row">
 <div class="col-md-4">
   <legend>      {% if copy_from%}
@@ -26,6 +27,7 @@
 </form>
 </div>
 </div>
+{% endtimezone %}
 {% endblock %}
 
 {% block extra_css %}
