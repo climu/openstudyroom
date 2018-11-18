@@ -2,7 +2,7 @@
 
 Open Study Room (OSR) is a community of go/baduk/weiqi player who shares, builds and organizes knowledge, opportunities and resources for learning, studying and playing Go online as part of a thriving worldwide community.
 
-You can always meet us in our [discord server]](https://discord.gg/b7meDjX).
+You can always meet us in our [discord server](https://discord.gg/b7meDjX).
 
 # Our website
 This is the code of our website that runs at [openstudyroom.org](http://openstudyroom.org).
