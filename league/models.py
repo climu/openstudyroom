@@ -327,7 +327,7 @@ class Sgf(models.Model):
                 event=event,
                 ogs_username__iexact=self.wplayer
             ).first()
-        elif self.place.startswith('KGS'):
+        elif self.place.startswith('The KGS'):
             black_player = LeaguePlayer.objects.filter(
                 event=event,
                 kgs_username__iexact=self.bplayer
