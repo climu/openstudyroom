@@ -26,7 +26,6 @@ function formatHeader(header) {
 function updateSGF(sgf, date){
   const [prefix, headerStr, moves] = parseSGF(sgf);
   const header = parseHeader(headerStr);
-  header['KM'] = '6.5';
   header['PC'] = 'GOQUEST';
   header['TM'] = '180';
   header['OT'] = '2 fischer';
