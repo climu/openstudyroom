@@ -62,6 +62,7 @@ class LeagueEvent(models.Model):
         choices=EVENT_TYPE_CHOICES,
         default='ladder')
     tag = models.CharField(max_length=10, default='#OSR')
+    komi = models.DecimalField(default=6.5, max_digits=2, decimal_places=1)
 
     clock_type = models.CharField(
         max_length=10,
@@ -499,7 +500,8 @@ class Sgf(models.Model):
             (b, m) = (False, m + '; no result')
         if self.number_moves < 20:
             (b, m) = (False, m + '; number moves')
-        if not str(self.komi).startswith('6.5'):
+        # Here again, self.komi is a str !!!! Django allow saving str in decimal field in db?
+        if float(self.komi) != event.komi:
             (b, m) = (False, m + '; komi')
         # self.board_size is added at parse. So it's a string. THat's a bug I fear.
         # dirty workaround is converting to int as above. We should convert when we parse.
