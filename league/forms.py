@@ -117,6 +117,7 @@ class LeagueEventForm(forms.ModelForm):
             'min_matchs',
             'tag',
             'board_size',
+            'komi',
             'clock_type',
             'main_time',
             'additional_time',

@@ -16,6 +16,7 @@ class TournamentForm(forms.ModelForm):
             'main_time',
             'additional_time',
             'board_size',
+            'komi',
             'is_open',
             'is_public',
             'use_calendar',
