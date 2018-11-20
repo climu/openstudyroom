@@ -8,12 +8,14 @@
     {% if user.profile.bio is not None %}
     <p>{{user.profile.bio|safe|rendered}}</p>
     {% endif %}
+
     {% if user.profile.kgs_username %}
     <p>KGS Username:
       <a href="http://kgs.gosquares.net/index.rhtml.en?id={{user.profile.kgs_username}}" class="{% if user.is_online_kgs %} online{% else %} offline{%endif%}">
       {{user.profile.kgs_username}} {% if user.profile.kgs_rank %}({{user.profile.kgs_rank}}){% endif %}
     </a></p>
     {% endif %}
+
     {% if user.profile.ogs_id > 0 %}
     <p>OGS Username:
        <a href="https://online-go.com/player/{{user.profile.ogs_id}}" class="{% if user.is_online_kgs %} online{% else %} offline{%endif%}">
@@ -21,11 +23,12 @@
        </a>
      </p>
     {% endif %}
-    {% if user.profile.go_quest_username %}
-    <p>Go Quest Username: <b>{{user.profile.go_quest_username}}</b></p>
-    {% endif %}
-    {% if discord_user %}
 
+    {% if user.profile.go_quest_username %}
+    <p>Go Quest Username: <a href="http://wars.fm/go9#user/{{user.profile.go_quest_username}}">{{user.profile.go_quest_username}}</a></p>
+    {% endif %}
+
+    {% if discord_user %}
     <p>Discord username :
       {% if discord_user.avatar %}
       <img class="widget-member-avatar" src="https://cdn.discordapp.com/avatars/{{discord_user.uid}}/{{discord_user.avatar}}">
