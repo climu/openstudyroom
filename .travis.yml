@@ -13,6 +13,7 @@ install:
   - pip install --quiet pylint pylint-django
 
 script:
+  - ./manage.py makemigrations && ./manage.py test -v1
   - pylint community fixtures fullcalendar home league openstudyroom search wgo manage.py
 
 notifications:
