@@ -221,6 +221,10 @@ def list_games(request, event_id=None, sgf_id=None):
     if event_id is None:
         sgfs = Sgf.objects.defer('sgf_text').filter(league_valid=True).\
             prefetch_related('white', 'black', 'winner').\
+            prefetch_related(
+                Prefetch('white__discord_user', to_attr='discord_users'),
+                Prefetch('black__discord_user', to_attr='discord_users')
+            ).\
             select_related('white__profile', 'black__profile').\
             order_by('-date')
         context.update({'sgfs': sgfs})
@@ -236,8 +240,13 @@ def list_games(request, event_id=None, sgf_id=None):
             'result',
             'league_valid').filter(league_valid=True).\
             prefetch_related('white', 'black', 'winner').\
+            prefetch_related(
+                Prefetch('white__discord_user', to_attr='discord_users'),
+                Prefetch('black__discord_user', to_attr='discord_users')
+            ).\
             select_related('white__profile', 'black__profile').\
             order_by('-date')
+        sgfs = list(sgfs)
         template = loader.get_template('league/games.html')
         can_join = event.can_join(request.user)
         can_quit = event.can_quit(request.user)
@@ -373,6 +382,7 @@ def list_players(request, event_id=None, division_id=None):
         users = User.objects.filter(groups__name='league_member').\
             prefetch_related(
                 'leagueplayer_set',
+                Prefetch('discord_user', to_attr='discord_users'),
                 Prefetch(
                     'winner_sgf',
                     queryset=Sgf.objects.defer('sgf_text').all()
@@ -385,7 +395,8 @@ def list_players(request, event_id=None, division_id=None):
                     'white_sgf',
                     queryset=Sgf.objects.defer('sgf_text').all()
                 ),
-                'profile')
+                'profile',
+                )
         users = [user.get_stats for user in users]
         context = {
             'users': users,
