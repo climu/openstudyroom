@@ -125,7 +125,7 @@ def user_link(user, meijin=None):
     # test if discord_user was preloaded
     if hasattr(user, 'discord_users'):
         if len(user.discord_users) > 0:
-            discord_user = discord_user[0]
+            discord_user = user.discord_users[0]
         else:
             discord_user = None
     else:
