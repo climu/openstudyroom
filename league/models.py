@@ -7,7 +7,7 @@ import time
 from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
 from django.db import models
-from django.db.models import Q, Prefetch
+from django.db.models import Q
 from django.utils import timezone
 from machina.core import validators
 from machina.models.fields import MarkupTextField
@@ -227,7 +227,7 @@ class LeagueEvent(models.Model):
                 is_public=True,
                 community__isnull=True
             )
-        events.exclude(event_type='tournament')
+        events = events.exclude(event_type='tournament')
         return events
 
 
@@ -1022,13 +1022,7 @@ class Division(models.Model):
             {opponent1 : [{'id':game1.pk, 'r':1/0},{'id':game2.pk, 'r':1/0},...],opponent2:}
         """
         sgfs = self.sgf_set.defer('sgf_text').select_related('winner', 'white', 'black').all()
-        players = LeaguePlayer.objects.\
-            filter(division=self).\
-            prefetch_related(
-                'user__profile',
-                'division',
-                Prefetch('user__discord_user', to_attr='discord_users'),
-            )
+        players = LeaguePlayer.objects.filter(division=self).prefetch_related('user__profile')
         # First create a list of players with extra fields
         results = []
         for player in players:
