@@ -30,10 +30,10 @@ class LeagueEvent(models.Model):
     EVENT_TYPE_CHOICES = (
         ('ladder', 'ladder'),
         ('league', 'league'),
-        ('tournament', 'tournament'),
         ('meijin', 'meijin'),
+        ('dan', 'dan'),
         ('ddk', 'ddk'),
-        ('dan', 'dan')
+        ('tournament', 'tournament'),
     )
     CLOCK_TYPE_CHOICES = (
         ('byoyomi', 'byoyomi'),
@@ -227,7 +227,7 @@ class LeagueEvent(models.Model):
                 is_public=True,
                 community__isnull=True
             )
-        events = events.exclude(event_type='tournament')
+        events = events.exclude(event_type='tournament').order_by('event_type')
         return events
 
 
