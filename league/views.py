@@ -724,7 +724,8 @@ def admin(request):
                 else:
                     with open('/etc/discord_welcome_hook_url.txt') as f:
                         discord_url = f.read().strip()
-                message = "Please welcome our new member " + user.username + " with a violent game of baduk. \n"
+                n_users = User.objects.filter(groups__name__in=['league_member']).count()
+                message = "Please welcome our " + str(n_users) + "th user **" + user.username + "** with a violent game of baduk. \n"
                 if user.profile.kgs_username:
                     message += "KGS : " + user.profile.kgs_username + " \n"
                 if user.profile.ogs_username:
