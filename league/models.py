@@ -511,7 +511,7 @@ class Sgf(models.Model):
         return {'message': m, 'valid': b, 'tag': tag, }
 
     def check_validity(self):
-        """Check sgf validity for all open events.
+        """Check sgf validity for all open leaguesevents.
 
         Return a list of valid leagues is the sgf is valid and [] if not
         Update the sgf but do NOT save it to db. This way allow some preview.
@@ -525,7 +525,7 @@ class Sgf(models.Model):
             self.message = 'same sgf already in db : ' + str(duplicate)
             return []
 
-        events = LeagueEvent.objects.filter(is_open=True)  # get all open events
+        events = LeagueEvent.objects.filter(is_open=True).exclude(event_type='tournament')  # get all open events
         message = ''
         # if no open events, the sgf can't be valid
         if len(events) == 0:
