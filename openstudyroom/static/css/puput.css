@@ -124,7 +124,10 @@ h3 {
 .responsive-object{
   padding-bottom: 10px !important;
 }
-
+.responsive-object > iframe {
+    max-width: 100% !important;
+    height: auto;
+}
 .about {
     background: #222222 none repeat scroll 0 0;
     margin-bottom: 4em;
