@@ -124,7 +124,7 @@ h3 {
 .responsive-object{
   padding-bottom: 10px !important;
 }
-.responsive-object > iframe {
+.blog_grid .responsive-object > iframe {
     max-width: 100% !important;
     height: auto;
 }
