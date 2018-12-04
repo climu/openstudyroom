@@ -1,6 +1,7 @@
 from django.conf.urls import url
 
 from . import views
+from league.views import LeagueEventCreate
 
 app_name = 'community'
 
@@ -46,11 +47,6 @@ urlpatterns = [
         name='community_update'
     ),
     url(
-        r'^(?P<community_pk>[0-9]+)/create-league/$',
-        views.community_create_league,
-        name='create_league'
-    ),
-    url(
         r'^(?P<community_pk>[0-9]+)/join/(?P<user_pk>[0-9]+)/$',
         views.community_join,
         name='community_join'
@@ -69,5 +65,10 @@ urlpatterns = [
         r'^$',
         views.community_list,
         name='community_list'
+    ),
+    url(
+        r'^(?P<community_pk>[0-9]+)/league/create/$',
+        LeagueEventCreate.as_view(),
+        name='create_league'
     ),
 ]

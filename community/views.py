@@ -120,30 +120,6 @@ def community_list(request):
     )
 
 @login_required()
-def community_create_league(request, community_pk):
-    community = get_object_or_404(Community, pk=community_pk)
-    if not community.is_admin(request.user):
-        raise Http404('What are you doing here?')
-    else:
-        if request.method == 'POST':
-            league = LeagueEvent(community=community)
-            form = LeagueEventForm(request.POST, instance=league)
-            if form.is_valid:
-                form.save()
-
-            return HttpResponseRedirect(reverse(
-                'community:community_page',
-                kwargs={'slug': community.slug}))
-        else:
-            form = LeagueEventForm
-            return render(
-                request,
-                'community/create_league.html',
-                {'community': community, 'form': form}
-            )
-
-
-@login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def community_join(request, community_pk, user_pk):
     community = get_object_or_404(Community, pk=community_pk)

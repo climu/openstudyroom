@@ -31,6 +31,7 @@ import pytz
 import requests
 from discord_bind.models import DiscordUser
 
+from community.models import Community
 from . import utils
 from . import ogs
 from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
@@ -990,11 +991,29 @@ class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                'end_time': datetime.datetime.now()}
 
     def test_func(self):
-        return self.request.user.is_authenticated and \
+        if not self.request.user.is_authenticated:
+            return False
+        community_pk = self.kwargs.get('community_pk', None)
+        if community_pk is not None:
+            community = get_object_or_404(Community, pk=community_pk)
+            return community.is_admin(self.request.user)
+        else:
             self.request.user.is_league_admin()
 
     def get_login_url(self):
         return '/'
+
+    def get_success_url(self):
+        community_pk = self.kwargs.get('community_pk', None)
+        if community_pk is not None:
+            community = get_object_or_404(Community, pk=community_pk)
+            return reverse(
+                'community:community_page',
+                kwargs={'slug': community.slug}
+            )
+        else:
+            return reverse('league:admin_events')
+
 
     def get_initial(self):
         copy_from_pk = self.kwargs.get('copy_from_pk', None)
@@ -1009,10 +1028,17 @@ class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                 'description': copy_from.description,
                 'prizes': copy_from.prizes
             }
+
         return initials
 
     def form_valid(self, form):
         response = super(LeagueEventCreate, self).form_valid(form)
+
+        community_pk = self.kwargs.get('community_pk', None)
+        if community_pk is not None:
+            community = get_object_or_404(Community, pk=community_pk)
+            self.object.community=community
+            self.object.save()
         copy_from_pk = self.kwargs.get('copy_from_pk', None)
         if copy_from_pk is not None:
             copy_from = get_object_or_404(LeagueEvent, pk=copy_from_pk)
