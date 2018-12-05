@@ -644,6 +644,13 @@ class User(AbstractUser):
     def is_osr_admin(self):
         return self.groups.filter(name='OSR_admin').exists()
 
+    def can_create_event(self, community=None):
+        if not self.is_authenticated:
+            return False
+        if community is not None:
+            return community.is_admin(self)
+        else:
+            return self.is_league_admin()
 
     def nb_games(self):
         players = self.leagueplayer_set.all()

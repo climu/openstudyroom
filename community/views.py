@@ -7,9 +7,9 @@ from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
 from django.db.models import Q
 
-from league.forms import LeagueEventForm
 from league.models import User, LeagueEvent, Sgf
-
+from league.views import LeagueEventCreate
+from tournament.views import TournamentCreate
 from .models import Community
 from .forms import CommunityForm, AdminCommunityForm, CommunytyUserForm
 
@@ -220,3 +220,43 @@ def admin_invite_user(request, pk):
             'community:admin_user_list',
             kwargs={'pk': community.pk}
         ))
+
+
+class CommunityLeagueEventCreate(LeagueEventCreate):
+    """subclass of LeagueEventCreate view for communitys"""
+
+    def test_func(self):
+        community_pk = self.kwargs.get('community_pk')
+        community = get_object_or_404(Community, pk=community_pk)
+        return community.is_admin(self.request.user)
+
+    def get_success_url(self):
+        community_pk = self.kwargs.get('community_pk')
+        community = get_object_or_404(Community, pk=community_pk)
+        return reverse(
+                'community:community_page',
+                kwargs={'slug': community.slug}
+        )
+
+    def form_valid(self, form):
+        response = super(LeagueEventCreate, self).form_valid(form)
+        community_pk = self.kwargs.get('community_pk')
+        community = get_object_or_404(Community, pk=community_pk)
+        self.object.community = community
+        self.object.save()
+        return response
+
+class CommunityTournamentCreate(TournamentCreate):
+    """subclass of TournamentCreate view for communitys"""
+    def test_func(self):
+        community_pk = self.kwargs.get('community_pk')
+        community = get_object_or_404(Community, pk=community_pk)
+        return community.is_admin(self.request.user)
+
+    def get_success_url(self):
+        community_pk = self.kwargs.get('community_pk')
+        community = get_object_or_404(Community, pk=community_pk)
+        return reverse(
+            'community:community_page',
+            kwargs={'slug': community.slug}
+        )
