@@ -35,11 +35,6 @@ class Tournament(LeagueEvent):
         on_delete=models.CASCADE
     )
 
-    def is_admin(self, user):
-        return user.is_authenticated and\
-            user.is_league_admin() or\
-            user.groups.filter(name='tournament_master').exists()
-
     def last_player_order(self):
         last_player = TournamentPlayer.objects.filter(event=self).order_by('order').last()
         if last_player is None:
