@@ -53,6 +53,14 @@ def match_result(context):
     return mark_safe(html)
 
 
+@register.filter
+def tournament_link(event):
+    html = '<a href="/tournament/' + str(event.pk) + '">'
+    if event.community is not None:
+        html += '(' + event.community.slug + ') '
+    html += str(event.name) + '</a>'
+    return mark_safe(html)
+
 
 def rows(thelist, n):
     """

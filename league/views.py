@@ -1109,7 +1109,10 @@ def admin_events_delete(request, event_id):
     message = 'Successfully deleted the event ' + str(event)
     messages.success(request, message)
     event.delete()
-    return HttpResponseRedirect(reverse('league:admin_events'))
+    if 'next' in form.cleaned_data:
+        return HttpResponseRedirect(form.cleaned_data['next'])
+    else:
+        return HttpResponseRedirect(reverse('league:admin_events'))
 
 
 @login_required()
@@ -1126,7 +1129,10 @@ def admin_create_division(request, event_id):
             division.league_event = event
             division.order = event.last_division_order() + 1
             division.save()
-        return HttpResponseRedirect(reverse('league:admin_events_update', kwargs={'pk': event_id}))
+        if 'next' in form.cleaned_data:
+            return HttpResponseRedirect(form.cleaned_data['next'])
+        else:
+            return HttpResponseRedirect(reverse('league:admin_events_update', kwargs={'pk': event_id}))
     else:
         raise Http404("What are you doing here ?")
 
@@ -1186,8 +1192,10 @@ def admin_division_up_down(request, division_id):
                 division_1.save()
                 division_2.order = order_2
                 division_2.save()
-            return HttpResponseRedirect(
-                reverse('league:admin_events_update', kwargs={'pk': event.pk}))
+            if 'next' in form.cleaned_data:
+                return HttpResponseRedirect(form.cleaned_data['next'])
+            else:
+                return HttpResponseRedirect(reverse('league:admin_events_update', kwargs={'pk': event_id}))
     raise Http404("What are you doing here ?")
 
 @login_required

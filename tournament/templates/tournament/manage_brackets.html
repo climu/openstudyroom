@@ -7,7 +7,7 @@
 {% block title %}Manage tournament brackets{% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1>{{tournament.name}} brackets</h1>
+    <h1>{{tournament | tournament_link}} brackets</h1>
 </div>
 {%endblock%}
 {% block content %}

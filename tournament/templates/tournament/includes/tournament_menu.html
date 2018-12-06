@@ -38,7 +38,15 @@
 {% if admin %}
 <ul class="nav navbar-nav navbar-right active" style="margin-right:5px;">
   <li>
+    {% if active == "groups" %}
+    <a href="{% url "tournament:manage_groups" tournament.pk%}">
+    {% elif active == "brackets" %}
+    <a href="{% url "tournament:manage_brackets" tournament.pk%}">
+    {% elif active == "games" %}
+    <a href="{% url "tournament:manage_brackets" tournament.pk%}">
+    {% else %}
     <a href="{% url "tournament:manage_settings" tournament.pk%}">
+    {% endif %}
       <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
     </a>
   </li>
