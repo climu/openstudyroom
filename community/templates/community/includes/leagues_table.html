@@ -1,0 +1,36 @@
+{% load bootstrap3 league_tags %}
+<table id="league-table" class="table">
+  <thead>
+    <th>Name</th>
+    <th>Begin</th>
+    <th>Ends</th>
+    <th>Type</th>
+    <th># Divisions</th>
+    <th># Players</th>
+    <th># games </th>
+    {% if admin %}
+    <th>Edit </th>
+    {% endif %}
+  </thead>
+  <tbody>
+  {% for league in leagues %}
+  <tr {% if league.is_open %}class="success"{% endif %}>
+    <td>
+      {{league | event_link}}
+      {% if  not league.is_public %}
+   <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+     {% endif %}
+   </td>
+    <td>{{league.begin_time |date:"SHORT_DATE_FORMAT"}}</td>
+    <td>{{league.end_time |date:"SHORT_DATE_FORMAT"}}</td>
+    <td>{{league.type}}</td>
+    <td>{{ league.number_divisions }}</td>
+    <td>{{league.number_players}}</td>
+    <td>{{ league.number_games}}</td>
+    {% if admin %}
+    <td><a href= "{% url 'community:update_league' league.pk %}"> {% bootstrap_icon 'wrench' %} </a></td>
+    {% endif %}
+  </tr>
+  {% endfor %}
+</tbody>
+</table>

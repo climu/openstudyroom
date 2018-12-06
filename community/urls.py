@@ -70,4 +70,14 @@ urlpatterns = [
         views.CommunityLeagueEventCreate.as_view(),
         name='create_league'
     ),
+    url(
+        r'^league/(?P<pk>[0-9]+)/update/$',
+        views.CommunityLeagueEventUpdate.as_view(),
+        name='update_league'
+    ),
+    url(
+        r'^(?P<community_pk>[0-9]+)/tournament/create/$',
+        views.CommunityTournamentCreate.as_view(),
+        name='create_tournament'
+    ),
 ]

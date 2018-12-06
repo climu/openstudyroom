@@ -965,21 +965,13 @@ class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return '/'
 
     def get_success_url(self):
-        if self.request.user.is_league_admin():
-            return reverse('league:admin_events')
-        else:
-            return reverse(
-                'community:community_page',
-                kwargs={'slug': self.get_object().community.slug}
-            )
+        return reverse('league:admin_events')
+
 
     def get_context_data(self, **kwargs):
         context = super(LeagueEventUpdate, self).get_context_data(**kwargs)
         league = self.get_object()
-        if league.community is None:
-            context['other_events'] = league.get_other_events
-        else:
-            context['other_events'] = league.get_other_events().filter(community=league.community)
+        context['other_events'] = league.get_other_events
         return context
 
 class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -1205,7 +1197,6 @@ def division_set_winner(request, division_id):
     division = get_object_or_404(Division, pk=division_id)
     if request.method == 'POST':
         form = ActionForm(request.POST)
-        print(request.POST)
         if form.is_valid():
             user_id = form.cleaned_data['user_id']
             if user_id < 0:

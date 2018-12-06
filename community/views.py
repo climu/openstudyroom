@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.db.models import Q
 
 from league.models import User, LeagueEvent, Sgf
-from league.views import LeagueEventCreate
+from league.views import LeagueEventCreate, LeagueEventUpdate
 from tournament.views import TournamentCreate
 from .models import Community
 from .forms import CommunityForm, AdminCommunityForm, CommunytyUserForm
@@ -90,6 +90,8 @@ def community_page(request, slug):
     if community.private and not community.is_member(request.user):
         raise Http404('What are you doing here?')
     leagues = community.leagueevent_set.all()
+    tournaments = leagues.filter(event_type='tournament')
+    leagues = leagues.exclude(event_type='tournament')
     admin = community.is_admin(request.user)
     if not admin:
         leagues = leagues.filter(is_public=True)
@@ -103,6 +105,7 @@ def community_page(request, slug):
     context = {
         'community': community,
         'leagues': leagues,
+        'tournaments': tournaments,
         'sgfs': sgfs,
         'admin': community.is_admin(request.user),
         'can_join': can_join,
@@ -246,6 +249,21 @@ class CommunityLeagueEventCreate(LeagueEventCreate):
         self.object.save()
         return response
 
+class CommunityLeagueEventUpdate(LeagueEventUpdate):
+    def get_success_url(self):
+        print("here")
+        return reverse(
+            'community:community_page',
+            kwargs={'slug': self.get_object().community.slug}
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super(LeagueEventUpdate, self).get_context_data(**kwargs)
+        league = self.get_object()
+        context['other_events'] = league.get_other_events().filter(community=league.community)
+        return context
+
+
 class CommunityTournamentCreate(TournamentCreate):
     """subclass of TournamentCreate view for communitys"""
     def test_func(self):
@@ -260,3 +278,10 @@ class CommunityTournamentCreate(TournamentCreate):
             'community:community_page',
             kwargs={'slug': community.slug}
         )
+    def form_valid(self, form):
+        response = super(TournamentCreate, self).form_valid(form)
+        community_pk = self.kwargs.get('community_pk')
+        community = get_object_or_404(Community, pk=community_pk)
+        self.object.community = community
+        self.object.save()
+        return response
