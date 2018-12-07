@@ -91,7 +91,7 @@ urlpatterns = [
         name='manage_calendar'
     ),
     url(
-        r'^(?P<tournament_id>[0-9]+)/settings/$',
+        r'^(?P<tournament_id>[0-9]+)/admin/settings/$',
         views.manage_settings,
         name='manage_settings'
     ),

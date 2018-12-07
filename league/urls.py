@@ -68,7 +68,7 @@ urlpatterns = [
     ),
     url(
         r'^admin/events/create/(?P<copy_from_pk>[0-9]+)/$',
-        views.LeagueEventCreate.as_view(success_url='/league/admin/events/'),
+        views.LeagueEventCreate.as_view(),
         name='admin_events_create'
     ),
     url(r'^admin/events/(?P<event_id>[0-9]+)/set_primary/$',

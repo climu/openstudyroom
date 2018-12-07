@@ -46,11 +46,6 @@ urlpatterns = [
         name='community_update'
     ),
     url(
-        r'^(?P<community_pk>[0-9]+)/create-league/$',
-        views.community_create_league,
-        name='create_league'
-    ),
-    url(
         r'^(?P<community_pk>[0-9]+)/join/(?P<user_pk>[0-9]+)/$',
         views.community_join,
         name='community_join'
@@ -69,5 +64,20 @@ urlpatterns = [
         r'^$',
         views.community_list,
         name='community_list'
+    ),
+    url(
+        r'^(?P<community_pk>[0-9]+)/league/create/$',
+        views.CommunityLeagueEventCreate.as_view(),
+        name='create_league'
+    ),
+    url(
+        r'^league/(?P<pk>[0-9]+)/update/$',
+        views.CommunityLeagueEventUpdate.as_view(),
+        name='update_league'
+    ),
+    url(
+        r'^(?P<community_pk>[0-9]+)/tournament/create/$',
+        views.CommunityTournamentCreate.as_view(),
+        name='create_tournament'
     ),
 ]

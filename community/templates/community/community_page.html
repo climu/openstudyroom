@@ -75,7 +75,14 @@ return false;};
 
 </div>
 </div>
-<div class="panel panel-default">
+
+<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#leagues">Leagues</a></li>
+  <li><a data-toggle="tab" href="#tournaments">tournaments</a></li>
+  <li><a data-toggle="tab" href="#members">Members</a></li>
+</ul>
+<div class="tab-content">
+<div id="leagues" class="panel panel-default tab-pane fade in active">
 <div class="panel-heading clearfix">
   <h3>
 All {{community.name}} leagues
@@ -90,41 +97,27 @@ All {{community.name}} leagues
 </h3>
 Open leagues are green.
 </div>
-<table id="league-table" class="table">
-  <thead>
-    <th>Name</th>
-    <th>Begin</th>
-    <th>Ends</th>
-    <th>Type</th>
-    <th># Divisions</th>
-    <th># Players</th>
-    <th># games </th>
-    {% if admin %}
-    <th>Edit </th>
-    {% endif %}
-  </thead>
-  <tbody>
-  {% for league in leagues %}
-  <tr {% if league.is_open %}class="success"{% endif %}>
-    <td>
-      {{league | event_link}}
-      {% if  not league.is_public %}
-   <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-     {% endif %}
-   </td>
-    <td>{{league.begin_time |date:"SHORT_DATE_FORMAT"}}</td>
-    <td>{{league.end_time |date:"SHORT_DATE_FORMAT"}}</td>
-    <td>{{league.type}}</td>
-    <td>{{ league.number_divisions }}</td>
-    <td>{{league.number_players}}</td>
-    <td>{{ league.number_games}}</td>
-    {% if admin %}
-    <td><a href= "{% url 'league:admin_events_update' league.pk %}"> {% bootstrap_icon 'wrench' %} </a></td>
-    {% endif %}
-  </tr>
-  {% endfor %}
-</tbody>
-</table>
+{% include "community/includes/leagues_table.html" with leagues=leagues%}
+</div>
+
+<div id="tournaments" class="panel panel-default tab-pane fade">
+<div class="panel-heading clearfix">
+  <h3>
+All {{community.name}} tournaments
+{% if admin %}
+<a href="{% url 'community:create_tournament' community.pk %}">
+  <button class="btn btn-success pull-right">
+    {% bootstrap_icon 'plus' %}
+    Create new tournament
+  </button>
+</a>
+{% endif %}
+</h3>
+Open tournament are green.
+</div>
+{% include "community/includes/tournaments_table.html" with leagues=tournaments%}
+
+</div>
 </div>
 
 <div class="panel panel-default">
@@ -165,6 +158,19 @@ $(document).ready(function() {
   "order": [[ 0, "desc" ]]});
 } );
 
+</script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+$('#cal-event-table').DataTable({
+  "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
+  "columnDefs": [ {
+    targets: 1,
+    render: $.fn.dataTable.render.moment( 'MMM DD, YYYY HH:mm','MMM DD, YYYY HH:mm' )
+  } ],
+  "order": [[ 1, "desc" ]]
+});
+} );
 </script>
 
 {% endblock %}

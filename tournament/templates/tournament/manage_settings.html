@@ -1,9 +1,9 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 static league_tags%}
+{% load bootstrap3 static tournament_tags league_tags%}
 {% block title %}OSR league admin - Manage a tournament{% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1>{{tournament.name}} settings & players</h1>
+    <h1>{{tournament | tournament_link}} settings & players</h1>
 </div>
 {%endblock%}
 {% block content %}

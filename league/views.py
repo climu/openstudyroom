@@ -964,21 +964,13 @@ class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return '/'
 
     def get_success_url(self):
-        if self.request.user.is_league_admin():
-            return reverse('league:admin_events')
-        else:
-            return reverse(
-                'community:community_page',
-                kwargs={'slug': self.get_object().community.slug}
-            )
+        return reverse('league:admin_events')
+
 
     def get_context_data(self, **kwargs):
         context = super(LeagueEventUpdate, self).get_context_data(**kwargs)
         league = self.get_object()
-        if league.community is None:
-            context['other_events'] = league.get_other_events
-        else:
-            context['other_events'] = league.get_other_events().filter(community=league.community)
+        context['other_events'] = league.get_other_events
         return context
 
 class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -986,29 +978,33 @@ class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     form_class = LeagueEventForm
     model = LeagueEvent
     template_name_suffix = '_create_form'
-    initial = {'begin_time': datetime.datetime.now(),
-               'end_time': datetime.datetime.now()}
 
     def test_func(self):
-        return self.request.user.is_authenticated and \
-            self.request.user.is_league_admin()
+        return self.request.user.is_league_admin()
 
     def get_login_url(self):
         return '/'
 
+    def get_success_url(self):
+        return reverse('league:admin_events')
+
     def get_initial(self):
         copy_from_pk = self.kwargs.get('copy_from_pk', None)
-        initials = {}
+        initials = {
+            'begin_time': datetime.datetime.now(),
+            'end_time': datetime.datetime.now()
+        }
         if copy_from_pk is not None:
             copy_from = get_object_or_404(LeagueEvent, pk=copy_from_pk)
-            initials = {
+            initials.update({
                 'event_type': copy_from.event_type,
                 'nb_matchs': copy_from.nb_matchs,
                 'ppwin': copy_from.ppwin,
                 'pploss': copy_from.pploss,
                 'description': copy_from.description,
                 'prizes': copy_from.prizes
-            }
+            })
+
         return initials
 
     def form_valid(self, form):
@@ -1112,7 +1108,10 @@ def admin_events_delete(request, event_id):
     message = 'Successfully deleted the event ' + str(event)
     messages.success(request, message)
     event.delete()
-    return HttpResponseRedirect(reverse('league:admin_events'))
+    if 'next' in form.cleaned_data:
+        return HttpResponseRedirect(form.cleaned_data['next'])
+    else:
+        return HttpResponseRedirect(reverse('league:admin_events'))
 
 
 @login_required()
@@ -1129,7 +1128,10 @@ def admin_create_division(request, event_id):
             division.league_event = event
             division.order = event.last_division_order() + 1
             division.save()
-        return HttpResponseRedirect(reverse('league:admin_events_update', kwargs={'pk': event_id}))
+        if 'next' in form.cleaned_data:
+            return HttpResponseRedirect(form.cleaned_data['next'])
+        else:
+            return HttpResponseRedirect(reverse('league:admin_events_update', kwargs={'pk': event_id}))
     else:
         raise Http404("What are you doing here ?")
 
@@ -1189,8 +1191,10 @@ def admin_division_up_down(request, division_id):
                 division_1.save()
                 division_2.order = order_2
                 division_2.save()
-            return HttpResponseRedirect(
-                reverse('league:admin_events_update', kwargs={'pk': event.pk}))
+            if 'next' in form.cleaned_data:
+                return HttpResponseRedirect(form.cleaned_data['next'])
+            else:
+                return HttpResponseRedirect(reverse('league:admin_events_update', kwargs={'pk': event.pk}))
     raise Http404("What are you doing here ?")
 
 @login_required
@@ -1200,7 +1204,6 @@ def division_set_winner(request, division_id):
     division = get_object_or_404(Division, pk=division_id)
     if request.method == 'POST':
         form = ActionForm(request.POST)
-        print(request.POST)
         if form.is_valid():
             user_id = form.cleaned_data['user_id']
             if user_id < 0:
