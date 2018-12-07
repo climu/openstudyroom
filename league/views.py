@@ -31,7 +31,6 @@ import pytz
 import requests
 from discord_bind.models import DiscordUser
 
-from community.models import Community
 from . import utils
 from . import ogs
 from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
@@ -1195,7 +1194,7 @@ def admin_division_up_down(request, division_id):
             if 'next' in form.cleaned_data:
                 return HttpResponseRedirect(form.cleaned_data['next'])
             else:
-                return HttpResponseRedirect(reverse('league:admin_events_update', kwargs={'pk': event_id}))
+                return HttpResponseRedirect(reverse('league:admin_events_update', kwargs={'pk': event.pk}))
     raise Http404("What are you doing here ?")
 
 @login_required

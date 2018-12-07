@@ -242,7 +242,7 @@ class CommunityLeagueEventCreate(LeagueEventCreate):
         )
 
     def form_valid(self, form):
-        response = super(LeagueEventCreate, self).form_valid(form)
+        response = super(CommunityLeagueEventCreate, self).form_valid(form)
         community_pk = self.kwargs.get('community_pk')
         community = get_object_or_404(Community, pk=community_pk)
         self.object.community = community
@@ -258,7 +258,7 @@ class CommunityLeagueEventUpdate(LeagueEventUpdate):
         )
 
     def get_context_data(self, **kwargs):
-        context = super(LeagueEventUpdate, self).get_context_data(**kwargs)
+        context = super(CommunityLeagueEventUpdate, self).get_context_data(**kwargs)
         league = self.get_object()
         context['other_events'] = league.get_other_events().filter(community=league.community)
         return context
@@ -279,7 +279,7 @@ class CommunityTournamentCreate(TournamentCreate):
             kwargs={'slug': community.slug}
         )
     def form_valid(self, form):
-        response = super(TournamentCreate, self).form_valid(form)
+        response = super(CommunityTournamentCreate, self).form_valid(form)
         community_pk = self.kwargs.get('community_pk')
         community = get_object_or_404(Community, pk=community_pk)
         self.object.community = community
