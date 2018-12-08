@@ -23,7 +23,7 @@ from .utils import save_round
 
 def rules(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
-    admin = request.user.is_league_admin(tournament)
+    admin = request.user.is_authenticated and request.user.is_league_admin(tournament)
     groups = TournamentGroup.objects.filter(league_event=tournament).exists()
 
     context = {
@@ -36,7 +36,7 @@ def rules(request, tournament_id):
 
 def prizes(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
-    admin = request.user.is_league_admin(tournament)
+    admin = request.user.is_authenticated and request.user.is_league_admin(tournament)
     groups = TournamentGroup.objects.filter(league_event=tournament).exists()
 
     context = {
@@ -49,7 +49,7 @@ def prizes(request, tournament_id):
 
 def about(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
-    admin = request.user.is_league_admin(tournament)
+    admin = request.user.is_authenticated and request.user.is_league_admin(tournament)
     groups = TournamentGroup.objects.filter(league_event=tournament).exists()
     now = timezone.now()
     events = tournament.tournamentevent_set.filter(end__gte=now).order_by('start')
@@ -72,7 +72,7 @@ def brackets_view(request, tournament_id):
     context = {
         'tournament': tournament,
         'groups': groups,
-        'admin': request.user.is_league_admin(tournament),
+        'admin': request.user.is_authenticated and request.user.is_league_admin(tournament),
         'brackets': brackets
     }
     template = loader.get_template('tournament/brackets.html')
@@ -88,8 +88,7 @@ def groups_view(request, tournament_id):
     context = {
         'tournament': tournament,
         'groups': groups,
-        'admin': request.user.is_league_admin(tournament)
-
+        'admin': request.user.is_authenticated and request.user.is_league_admin(tournament)
     }
     template = loader.get_template('tournament/groups.html')
     return HttpResponse(template.render(context, request))
@@ -112,7 +111,7 @@ def games_view(request, tournament_id, sgf_id=None):
         'sgfs': sgfs,
         'tournament': tournament,
         'groups': groups,
-        'admin': request.user.is_league_admin(tournament)
+        'admin': request.user.is_authenticated and request.user.is_league_admin(tournament)
     }
     if sgf_id is not None:
         sgf = get_object_or_404(Sgf, pk=sgf_id)
@@ -129,7 +128,7 @@ def players_view(request, tournament_id):
         'tournament': tournament,
         'players': players,
         'groups': groups,
-        'admin': request.user.is_league_admin(tournament)
+        'admin': request.user.is_authenticated and request.user.is_league_admin(tournament)
     }
     template = loader.get_template('tournament/players.html')
     return HttpResponse(template.render(context, request))
@@ -141,7 +140,7 @@ def calendar(request, tournament_id):
 
     context = {
         'tournament': tournament,
-        'admin': request.user.is_league_admin(tournament),
+        'admin': request.user.is_authenticated and request.user.is_league_admin(tournament),
         'groups': groups,
         'user': request.user
     }
