@@ -119,27 +119,26 @@ $('.post-content').each(function() {
     $( this ).html(str)
 })
 
+$( document ).on( "mouseenter", "a.coord", function() {
+    e = $( this ).html();
+    id = $( this ).attr('data-target');
+    player = $('#'+ id)[0]._wgo_player;
+    var t, n;
+    t = e.charCodeAt(0) - "a".charCodeAt(0);
+    if (t < 0) t += "a".charCodeAt(0) - "A".charCodeAt(0);
+    if (t > 7) t--;
+    n = e.charCodeAt(1) - "0".charCodeAt(0);
+    if (e.length > 2) n = n * 10 + (e.charCodeAt(2) - "0".charCodeAt(0));
+    n = player.kifuReader.game.size - n;
+    player._tmp_mark = {
+        type: "MA",
+        x: t,
+        y: n
+    };
+    player.board.addObject(player._tmp_mark);
+});
 
-$('.coord').hover(
-    function(){
-        e = $( this ).html();
-        id = $( this ).attr('data-target');
-        player = $('#'+ id)[0]._wgo_player;
-        var t, n;
-        t = e.charCodeAt(0) - "a".charCodeAt(0);
-        if (t < 0) t += "a".charCodeAt(0) - "A".charCodeAt(0);
-        if (t > 7) t--;
-        n = e.charCodeAt(1) - "0".charCodeAt(0);
-        if (e.length > 2) n = n * 10 + (e.charCodeAt(2) - "0".charCodeAt(0));
-        n = player.kifuReader.game.size - n;
-        player._tmp_mark = {
-            type: "MA",
-            x: t,
-            y: n
-        };
-        player.board.addObject(player._tmp_mark);
-    },
-    function() {
+$( document ).on( "mouseleave", "a.coord", function() {
         id = $( this ).attr('data-target');
         player = $('#'+ id)[0]._wgo_player;
         player.board.removeObject(player._tmp_mark);
@@ -147,12 +146,13 @@ $('.coord').hover(
     }
 );
 
-$('.move').click(function(){
+$( document ).on( "click", "a.move", function() {
     var n = parseInt($( this ).html().replace(/[^0-9\.]/g, ''));
     id = $( this ).attr('data-target');
     player = $('#'+ id)[0]._wgo_player;
     player.goTo(n);
 });
+
 moment.locale('{{LANGUAGE_CODE}}');
 gmt($('.post'),'{{TIME_ZONE}}','{% tz_offset %}')
 </script>
