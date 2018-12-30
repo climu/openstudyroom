@@ -1,10 +1,11 @@
 import json
 from django.http import HttpResponse
 from django.template import loader
-from django.db.models import Count
+from django.db.models import Count, Case, IntegerField, When
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.functions import TruncMonth
 from league.models import User, Sgf
+
 
 def overview(request):
     '''Render various stats OSR related'''
@@ -15,7 +16,19 @@ def overview(request):
         .annotate(month=TruncMonth('date'))\
         .values('month')\
         .annotate(total=Count('id'))\
-        .values('month', 'total')\
+        .annotate(kgs=Count(
+            Case(
+                When(place__startswith="The KGS", then=1),
+                output_field=IntegerField(),
+                distinct=True
+            )))\
+        .annotate(ogs=Count(
+            Case(
+                When(place__startswith="OGS", then=1),
+                output_field=IntegerField(),
+                distinct=True
+            )))\
+        .values('month', 'total', 'kgs', 'ogs')\
         .order_by('month')
     games = list(games)
     games = json.dumps(games, cls=DjangoJSONEncoder)

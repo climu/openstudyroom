@@ -36,8 +36,66 @@
 
 <script>
 window.onload = function(){
-var games = {{games|safe}};
-config = config_from_json(games, 'number of games');
+    var games = {{games|safe}};
+
+    var labels = games.map(function(e) {
+      return moment(e.month).format('YYYY MM')
+    });
+
+    var KGS_values = games.map(function(e) {
+      return e.kgs
+    });
+    var OGS_values = games.map(function(e) {
+      return e.ogs
+    });
+
+    var config = {
+       type: 'line',
+       data: {
+          labels: labels,
+          datasets: [
+            {
+               label: "OGS",
+               data: OGS_values,
+               backgroundColor: 'rgba(0, 119, 204, 0.3)',
+            },
+            {
+             label: "KGS",
+             data: KGS_values,
+             backgroundColor: 'rgb(40, 182, 44,0.3)',
+            fill:0
+          },
+
+        ]
+       },
+       options: {
+            scales: {
+                xAxes: [{
+                    time: {
+                      displayFormats: {
+                              month: 'MMM YYYY'
+                            }
+                    }
+                }],
+                yAxes: [{
+                    stacked: true
+                }]
+            },
+            tooltips: {
+                mode: 'index',
+                callbacks: {
+                  // Use the footer callback to display the sum of the items showing in the tooltip
+                  footer: function(tooltipItems, data) {
+                    var sum = 0;
+                    tooltipItems.forEach(function(tooltipItem) {
+                      sum += data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                    });
+                    return 'Games: ' + sum;
+                  },
+                },
+        }
+      }
+      }
 
 var games_chart = new Chart($('#gameChart'), config);
 
