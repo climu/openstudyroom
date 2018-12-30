@@ -17,7 +17,10 @@
   <meta property="og:image" content="https://openstudyroom.org/media/images/logo_fond_blanc.original.jpg"/>
   <link href="https://fonts.googleapis.com/css?family=Raleway:400,500" rel="stylesheet">
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="title" content="{% block meta_title %}{% if blog_page.seo_title %}{{ blog_page.seo_title }}{% else %}{{ blog_page.title }}{% endif %}{% endblock meta_title %}"/>
+  <meta name="description" content="{% block meta_description %}{{ blog_page.search_description }}{% endblock meta_description %}"/>
 
+  {% if not debug %}
   <!-- Google Analytics -->
     <script>
       window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
@@ -26,6 +29,7 @@
     </script>
     <script async src='https://www.google-analytics.com/analytics.js'></script>
   <!-- End Google Analytics -->
+  {% endif %}
 
   <link rel="icon" type="image/png" href="/media/images/2_nCHXP3t.original.png" />
   <title>
@@ -39,8 +43,6 @@
     {% endblock %}
   </title>
 
-  <meta name="title" content="{% block meta_title %}{% if blog_page.seo_title %}{{ blog_page.seo_title }}{% else %}{{ blog_page.title }}{% endif %}{% endblock meta_title %}"/>
-  <meta name="description" content="{% block meta_description %}{{ blog_page.search_description }}{% endblock meta_description %}"/>
 
   {# Global stylesheets #}
   {% bootstrap_css %}
