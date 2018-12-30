@@ -1,5 +1,9 @@
 {% load bootstrap3 league_tags %}
-<table id="league-table" class="table">
+{% load l10n i18n %}
+
+{% localize off %}
+{% language 'en' %}
+<table id="leagues-table" class="table">
   <thead>
     <th>Name</th>
     <th>Begin</th>
@@ -21,8 +25,8 @@
    <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
      {% endif %}
    </td>
-    <td>{{league.begin_time |date:"SHORT_DATE_FORMAT"}}</td>
-    <td>{{league.end_time |date:"SHORT_DATE_FORMAT"}}</td>
+    <td>{{league.begin_time |date:"M d, Y"}}</td>
+    <td>{{league.end_time |date:"M d, Y"}}</td>
     <td>{{league.type}}</td>
     <td>{{ league.number_divisions }}</td>
     <td>{{league.number_players}}</td>
@@ -34,3 +38,6 @@
   {% endfor %}
 </tbody>
 </table>
+{% endlanguage %}
+
+{% endlocalize %}

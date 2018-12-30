@@ -3,8 +3,7 @@
 
 {% localize off %}
 {% language 'en' %}
-{% timezone "UTC" %}
-<table class="table" id="cal-event-table">
+<table class="table" id="tournaments-table">
  <thead>
    <th>Name</th>
    <th>Begin Time (UTC/24h)</th>
@@ -18,8 +17,8 @@
   <tr>
     <td><a href="{% url "tournament:view" tournament.pk %}">{{tournament.name}}</a></td>
 
-    <td>{{tournament.begin_time |date:'M d, Y H:i'}}</td>
-    <td>{{tournament.end_time |date:'M d, Y H:i'}}</td>
+    <td>{{tournament.begin_time |date:"M d, Y"}}</td>
+    <td>{{tournament.end_time |date:"M d, Y"}}</td>
 
     <td>
       <a href="{% url 'tournament:manage_settings' tournament.pk %}">
@@ -42,7 +41,6 @@
 </tbody>
 
 </table>
-{% endtimezone %}
 {% endlanguage %}
 
 {% endlocalize %}

@@ -5,19 +5,22 @@ from django.views.generic.edit import UpdateView
 from django.urls import reverse
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Q, Case, IntegerField, When, Value
 
 from league.models import User, LeagueEvent, Sgf
 from league.views import LeagueEventCreate, LeagueEventUpdate
+from league.forms import ActionForm
 from tournament.views import TournamentCreate
 from .models import Community
 from .forms import CommunityForm, AdminCommunityForm, CommunytyUserForm
+
 
 @login_required()
 @user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def admin_community_list(request):
     communitys = Community.objects.all()
     return render(request, 'community/admin/community_list.html', {'communitys': communitys})
+
 
 @login_required()
 @user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
@@ -86,32 +89,53 @@ def admin_community_delete(request, pk):
 
 
 def community_page(request, slug):
+    """ Main community view.
+
+    Shows community descriptions, leagues, tournaments, members and games.
+    """
+
     community = get_object_or_404(Community, slug=slug)
+
     if community.private and not community.is_member(request.user):
         raise Http404('What are you doing here?')
-    leagues = community.leagueevent_set.all()
-    tournaments = leagues.filter(event_type='tournament')
-    leagues = leagues.exclude(event_type='tournament')
-    admin = community.is_admin(request.user)
-    if not admin:
-        leagues = leagues.filter(is_public=True)
-    sgfs = Sgf.objects.filter(league_valid=True, events__in=leagues).order_by('-date')
 
+    # check rights
+    admin = community.is_admin(request.user)
+    # we should have a can_join method
     can_join = request.user.is_authenticated and \
         request.user.is_league_member() and \
         not community.is_member(request.user) and \
         not community.close
+
+    # get leagues and tournaments
+    leagues = community.leagueevent_set.all()
+    if not admin:
+        leagues = leagues.filter(is_public=True)
+    tournaments = leagues.filter(event_type='tournament')
+    leagues = leagues.exclude(event_type='tournament')
+
+    # get members
+
+    members = User.objects.filter(groups=community.user_group).select_related('profile')
+    admins = members.filter(groups=community.admin_group)
+
+
+    # get game records
+    sgfs = Sgf.objects.filter(league_valid=True, events__in=leagues).order_by('-date')
 
     context = {
         'community': community,
         'leagues': leagues,
         'tournaments': tournaments,
         'sgfs': sgfs,
-        'admin': community.is_admin(request.user),
+        'admin': admin,
         'can_join': can_join,
-        'can_quit': community.user_group in request.user.groups.all()
+        'can_quit': community.user_group in request.user.groups.all(),
+        'members': members,
+        'admins': admins
     }
     return render(request, 'community/community_page.html', context)
+
 
 def community_list(request):
     groups = request.user.groups.all()
@@ -121,6 +145,7 @@ def community_list(request):
         'community/community_list.html',
         {'communitys': communitys}
     )
+
 
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
@@ -142,6 +167,7 @@ def community_join(request, community_pk, user_pk):
         ))
     else:
         raise Http404('what are you doing here ?')
+
 
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
@@ -220,9 +246,38 @@ def admin_invite_user(request, pk):
             message = "We don't have such a user."
             messages.success(request, message)
         return HttpResponseRedirect(reverse(
-            'community:admin_user_list',
-            kwargs={'pk': community.pk}
+            'community:community_page',
+            kwargs={'slug': community.slug}
         ))
+
+
+@login_required()
+def manage_admins(request, pk):
+    community = get_object_or_404(Community, pk=pk)
+    if not community.is_admin(request.user):
+        raise Http404('what are you doing here')
+    if request.method == 'POST':
+        form = ActionForm(request.POST)
+        if form.is_valid():
+            user = get_object_or_404(User, pk=form.cleaned_data['user_id'])
+            group = community.admin_group
+            if form.cleaned_data['action'] == "rm":
+                if not community.is_admin(user):
+                    raise Http404('what are you doing here')
+                group.user_set.remove(user)
+                message = "Succesfully removed " + user.username + " from community admins."
+            elif form.cleaned_data['action'] == "add":
+                if community.is_admin(user):
+                    raise Http404('what are you doing here')
+                group.user_set.add(user)
+                message = "Succesfully added " + user.username + " to community admins."
+            messages.success(request, message)
+    return HttpResponseRedirect(reverse(
+        'community:community_page',
+        kwargs={'slug': community.slug}
+    ))
+
+
 
 
 class CommunityLeagueEventCreate(LeagueEventCreate):

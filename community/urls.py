@@ -31,6 +31,11 @@ urlpatterns = [
         name='admin_community_update'
     ),
     url(
+        r'^(?P<pk>[0-9]+)/admin/manage/$',
+        views.manage_admins,
+        name='manage_admins'
+    ),
+    url(
         r'^(?P<pk>[0-9]+)/users/$',
         views.admin_user_list,
         name='admin_user_list'

@@ -36,8 +36,6 @@ return false;};
   <h3> {{community.name}} ({{community.slug}})
   {% if admin %}
   <a href="{% url 'community:community_update' community.pk %}"><button class="btn btn-default pull-right">{% bootstrap_icon 'wrench' %} Edit </button></a>
-  <a href="{% url 'community:admin_user_list' community.pk %}"><button class="btn btn-default pull-right">{% bootstrap_icon 'user' %} Manage users </button></a>
-
   {% endif %}
   {% if can_join %}
   <form action=" {% url 'community:community_join' community.pk request.user.pk %}" method="post" >
@@ -81,6 +79,7 @@ return false;};
   <li><a data-toggle="tab" href="#tournaments">tournaments</a></li>
   <li><a data-toggle="tab" href="#members">Members</a></li>
 </ul>
+
 <div class="tab-content">
 <div id="leagues" class="panel panel-default tab-pane fade in active">
 <div class="panel-heading clearfix">
@@ -100,6 +99,7 @@ Open leagues are green.
 {% include "community/includes/leagues_table.html" with leagues=leagues%}
 </div>
 
+
 <div id="tournaments" class="panel panel-default tab-pane fade">
 <div class="panel-heading clearfix">
   <h3>
@@ -116,9 +116,36 @@ All {{community.name}} tournaments
 Open tournament are green.
 </div>
 {% include "community/includes/tournaments_table.html" with leagues=tournaments%}
+</div>
 
+
+<div id="members" class="panel panel-default tab-pane fade">
+<div class="panel-heading clearfix">
+  <h3>
+All {{community.name}} members
+{% if admin %}
+  <div class="pull-right">
+    Invite a user
+    <form action=" {% url 'community:admin_invite_user' community.pk %}" method="post" >
+        {% csrf_token %}
+        <div class="form-group">
+        <input type="text" name="username" placeholder="OSR exact username" >
+        <button type="submit" class="btn btn-success btn-sm"  >
+        {% bootstrap_icon "ok" %} Invite  !
+        </button>
+        </div>
+        </form>
+  </div>
+{% endif %}
+</h3>
+Community admins are blue.
+</div>
+
+{% include "community/includes/members_table.html" with members=members%}
 </div>
 </div>
+
+
 
 <div class="panel panel-default">
 <div class="panel-heading"><h3>{{community.name}} Games</h4></div>
@@ -156,20 +183,26 @@ $(document).ready(function() {
     render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','MMM DD, YYYY' )
   } ],
   "order": [[ 0, "desc" ]]});
-} );
 
-</script>
+    $('#tournaments-table').DataTable({
+      "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
+      "columnDefs": [ {
+        targets: 1,
+        render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','MMM DD, YYYY' )
+      } ],
+      "order": [[ 1, "desc" ]]
+    });
 
-<script type="text/javascript">
-$(document).ready(function() {
-$('#cal-event-table').DataTable({
-  "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
-  "columnDefs": [ {
-    targets: 1,
-    render: $.fn.dataTable.render.moment( 'MMM DD, YYYY HH:mm','MMM DD, YYYY HH:mm' )
-  } ],
-  "order": [[ 1, "desc" ]]
-});
+    $('#leagues-table').DataTable({
+      "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
+      "columnDefs": [ {
+        targets: 1,
+        render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','MMM DD, YYYY' )
+      } ],
+      "order": [[ 1, "desc" ]]
+    });
+
+    $('#members-table').DataTable()
 } );
 </script>
 
