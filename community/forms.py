@@ -3,25 +3,27 @@ from django.forms import ModelForm
 
 from league.models import User
 
+from machina.models.fields import MarkupTextFieldWidget
+
 from .models import Community
 
-from machina.models.fields import MarkupTextFieldWidget
 
 class AdminCommunityForm(ModelForm):
     class Meta:
         model = Community
 
-        fields = ['name',
-        'slug',
-        'description',
-        'private_description',
-        'close',
-        'private',
-        'promote'
+        fields = [
+            'name',
+            'slug',
+            'description',
+            'private_description',
+            'close',
+            'private',
+            'promote'
         ]
         widgets = {
-        'description': MarkupTextFieldWidget(attrs={'placeholder': 'Public description of the community.'}),
-        'private_description': MarkupTextFieldWidget(attrs={'placeholder': 'Only community members can see it.'},)
+            'description': MarkupTextFieldWidget(attrs={'placeholder': 'Public description of the community.'}),
+            'private_description': MarkupTextFieldWidget(attrs={'placeholder': 'Only community members can see it.'},)
         }
 
         help_texts = {
@@ -32,25 +34,27 @@ class AdminCommunityForm(ModelForm):
             'promote': "If promoted, it's leagues will be shown to everyone in leagues views (same as OSR leagues)."
         }
 
+
 class CommunityForm(ModelForm):
     class Meta:
         model = Community
         fields = [
-        'description',
-        'private_description',
-        'close',
-        'private'
+            'description',
+            'private_description',
+            'close',
+            'private'
         ]
 
         widgets = {
-        'description': MarkupTextFieldWidget(attrs={'placeholder': 'Public description of the community.'}),
-        'private_description': MarkupTextFieldWidget(attrs={'placeholder': 'Only community members can see it.'},)
+            'description': MarkupTextFieldWidget(attrs={'placeholder': 'Public description of the community.'}),
+            'private_description': MarkupTextFieldWidget(attrs={'placeholder': 'Only community members can see it.'},)
         }
 
         help_texts = {
             'close': "If close, it's invitation only community. Otherwise, anyone can join.",
             'private': "If private, only members can see the community.",
         }
+
 
 class CommunytyUserForm(forms.Form):
     username = forms.CharField(label='username')

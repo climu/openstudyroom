@@ -21,6 +21,7 @@ from .ogs import get_user_rank
 
 # pylint: disable=no-member
 
+
 class LeagueEvent(models.Model):
     """A League.
 
@@ -39,7 +40,7 @@ class LeagueEvent(models.Model):
         ('byoyomi', 'byoyomi'),
         ('fisher', 'fisher'),
     )
-    #start and end of the league
+    # start and end of the league
     begin_time = models.DateTimeField(blank=True)
     end_time = models.DateTimeField(blank=True)
     # This should have been a charfield from the start.
@@ -75,16 +76,16 @@ class LeagueEvent(models.Model):
 
     board_size = models.PositiveSmallIntegerField(default=19)
 
-    #if the league is a community league
+    # if the league is a community league
     community = models.ForeignKey(Community, blank=True, null=True, on_delete=models.CASCADE)
-    #small text to show on league pages
+    # small text to show on league pages
     description = MarkupTextField(
-            blank=True, null=True,
-            validators=[validators.NullableMaxLengthValidator(2000)]
+        blank=True, null=True,
+        validators=[validators.NullableMaxLengthValidator(2000)]
     )
     prizes = MarkupTextField(
-            blank=True, null=True,
-            validators=[validators.NullableMaxLengthValidator(5000)]
+        blank=True, null=True,
+        validators=[validators.NullableMaxLengthValidator(5000)]
     )
 
     class Meta:
@@ -440,7 +441,6 @@ class Sgf(models.Model):
                 return sgfs.first().pk
         return -1
 
-
     def check_players(self, event):
         m = ''
         b = True
@@ -573,12 +573,11 @@ class User(AbstractUser):
         self.n_win = None
         self.n_games = None
 
-
     def join_event(self, event, division=None):
         if not event.can_join(self):
             return False
         if division is None:
-                division = event.last_division()
+            division = event.last_division()
         if not division:
             return False
         player = LeaguePlayer()
@@ -647,7 +646,6 @@ class User(AbstractUser):
     def is_osr_admin(self):
         return self.groups.filter(name='OSR_admin').exists()
 
-
     def nb_games(self):
         players = self.leagueplayer_set.all()
         n = 0
@@ -659,7 +657,7 @@ class User(AbstractUser):
         return self.leagueplayer_set.all().count()
 
     def nb_win(self):
-        #return self.winner_sgf.count()
+        # return self.winner_sgf.count()
         players = self.leagueplayer_set.all()
         n = 0
         for player in players:
@@ -728,7 +726,6 @@ class User(AbstractUser):
                     if opponent.user not in opponents:
                         opponents.append(opponent.user)
         return opponents
-
 
     @staticmethod
     def kgs_online_users():
@@ -940,8 +937,8 @@ class Profile(models.Model):
     ogs_id = models.PositiveIntegerField(default=0, blank=True, null=True)
     # User can write what he wants in bio
     bio = MarkupTextField(
-            blank=True, null=True,
-            validators=[validators.NullableMaxLengthValidator(2000)]
+        blank=True, null=True,
+        validators=[validators.NullableMaxLengthValidator(2000)]
     )
     # p_status help manage the scraplist
     p_status = models.PositiveSmallIntegerField(default=0)
@@ -1090,7 +1087,7 @@ class LeaguePlayer(models.Model):
     ogs_username = models.CharField(max_length=40, null=True, blank=True)
     go_quest_username = models.CharField(max_length=40, null=True, blank=True)
 
-    #kgs_rank = models.CharField(max_length=20, default='')
+    # kgs_rank = models.CharField(max_length=20, default='')
     event = models.ForeignKey('LeagueEvent', on_delete=models.CASCADE)
     division = models.ForeignKey('Division', null=True, blank=True, on_delete=models.CASCADE)
     # p_status is deprecated, we now store that in player profile
