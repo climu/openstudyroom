@@ -440,22 +440,24 @@ def join_event(request, event_id, user_id):
     if request.method == 'POST':
         form = ActionForm(request.POST)
         if form.is_valid() and form.cleaned_data['action'] == 'join':
-            division = event.last_division()
-            if not division:  # the event have no division
-                message = "The Event you tryed to join have no division. That's strange."
+            if user.join_event(event):
+                meijin_league = LeagueEvent.objects.filter(
+                    event_type='meijin',
+                    is_open=True,
+                    community__isnull=True
+                ).order_by('end_time').first()
+                if meijin_league is not None:
+                    user.join_event(meijin_league)
+                monthly_league = LeagueEvent.objects.filter(
+                    event_type='ladder',
+                    is_open=True,
+                    community__isnull=True
+                ).order_by('end_time').first()
+                if monthly_league is not None:
+                    user.join_event(monthly_league)
+                message = "Welcome in " + event.name + " ! You can start playing right now."
             else:
-                if user.join_event(event, division):
-                    meijin_league = LeagueEvent.objects.filter(
-                        event_type='meijin',
-                        is_open=True,
-                        community__isnull=True
-                    ).order_by('end_time').first()
-                    if meijin_league is not None:
-                        meijin_division = meijin_league.division_set.first()
-                        user.join_event(meijin_league, meijin_division)
-                    message = "Welcome in " + event.name + " ! You can start playing right now."
-                else:
-                    message = "Oops ! Something went wrong. You didn't join."
+                message = "Oops ! Something went wrong. You didn't join."
             messages.success(request, message)
             return HttpResponseRedirect(form.cleaned_data['next'])
 

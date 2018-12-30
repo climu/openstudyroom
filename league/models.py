@@ -574,18 +574,21 @@ class User(AbstractUser):
         self.n_games = None
 
 
-    def join_event(self, event, division):
+    def join_event(self, event, division=None):
         if not event.can_join(self):
             return False
-        else:
-            player = LeaguePlayer()
-            player.event = event
-            player.division = division
-            player.kgs_username = self.profile.kgs_username
-            player.ogs_username = self.profile.ogs_username
-            player.user = self
-            player.save()
-            return True
+        if division is None:
+                division = event.last_division()
+        if not division:
+            return False
+        player = LeaguePlayer()
+        player.event = event
+        player.division = division
+        player.kgs_username = self.profile.kgs_username
+        player.ogs_username = self.profile.ogs_username
+        player.user = self
+        player.save()
+        return True
 
     def is_online(self):
         """return a boolean saying if a user is online in either KGS, OGS or discord"""
