@@ -7,7 +7,7 @@ from machina.core import validators
 class Community(models.Model):
 
     name = models.CharField(max_length=30, blank=True, unique=True)
-    slug = models.CharField(max_length=8, blank=True, unique=True)
+    slug = models.CharField(max_length=8, unique=True)
     admin_group = models.ForeignKey(Group, related_name='admin_community', on_delete=models.CASCADE)
     user_group = models.ForeignKey(Group, null=True, blank=True, related_name='user_community', on_delete=models.CASCADE)
     close = models.BooleanField(default=False)
