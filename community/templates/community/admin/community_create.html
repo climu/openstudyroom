@@ -6,11 +6,13 @@
 </div>
 {%endblock%}
 {% block content %}
+
 <form action="" method="POST">{% csrf_token %}
 {%bootstrap_form form %}
 	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
 </form>
 
+<a class="btn btn-danger pull-right" href="/league/admin/">Cancel</a>
 {% endblock %}
 {% block extra_css %}
     {{ form.media.css }}
