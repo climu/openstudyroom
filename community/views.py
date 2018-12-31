@@ -262,13 +262,9 @@ def manage_admins(request, pk):
             user = get_object_or_404(User, pk=form.cleaned_data['user_id'])
             group = community.admin_group
             if form.cleaned_data['action'] == "rm":
-                if not community.is_admin(user):
-                    raise Http404('what are you doing here')
                 group.user_set.remove(user)
                 message = "Succesfully removed " + user.username + " from community admins."
             elif form.cleaned_data['action'] == "add":
-                if community.is_admin(user):
-                    raise Http404('what are you doing here')
                 group.user_set.add(user)
                 message = "Succesfully added " + user.username + " to community admins."
             messages.success(request, message)
