@@ -48,7 +48,7 @@ return false;};
     </a>
   </li>
   {% endfor %}
-  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrap list</a></li>
+  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrape list</a></li>
   </ul>
 {% include 'league/includes/league_nav.html' with active='games' %}
 <div class="well"> This table shows all games that have been played in the {{event.name}}</div>
