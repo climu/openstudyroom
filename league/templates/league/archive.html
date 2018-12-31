@@ -38,9 +38,7 @@
         <td>{{event.begin_time |date:"M d, Y"}}</td>
         <td>{{event.end_time |date:"M d, Y"}}</td>
         <td>
-          {% if event.is_primary %} <strong>{%endif%}
           {{event |event_link}}
-          {% if event.is_primary %} </strong>{%endif%}
            {% if  not event.is_public %}
           <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
             {% endif %}

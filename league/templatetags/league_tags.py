@@ -169,7 +169,13 @@ def event_link(event):
     html = '<a href="/league/' + str(event.pk) + '">'
     if event.community is not None:
         html += '(' + event.community.slug + ') '
-    html += str(event.name) + '</a>'
+    if event.is_primary:
+        html += '<strong>'
+    html += str(event.name)
+    if event.is_primary:
+        html += '</strong>'
+    html += '</a>'
+
     return mark_safe(html)
 
 

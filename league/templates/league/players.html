@@ -16,7 +16,13 @@
         {% if ev.community %}
         ({{ev.community.slug}})
         {% endif %}
+        {% if ev.is_primary %}
+          <strong>
+        {% endif %}
         {{ev.name}}
+        {% if ev.is_primary %}
+        </strong>
+        {% endif %}
       </a>
     </li>
   {% endfor %}

@@ -35,7 +35,14 @@ return false;};
   <li class="active"><a href="{% url 'league:archives' %}">Archives</a></li>
   {% for ev in open_events %}
   <li>
-    <a href="{% url 'league:games' ev.pk %}">{{ev}}</a>
+    <a href="{% url 'league:games' ev.pk %}">
+      {% if ev.is_primary %}
+        <strong>
+      {% endif %}
+      {{ev.name}}
+      {% if ev.is_primary %}
+      </strong>
+      {% endif %}</a>
   </li>
   {% endfor %}
   <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrape list</a></li>
