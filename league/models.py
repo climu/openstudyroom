@@ -57,7 +57,8 @@ class LeagueEvent(models.Model):
     is_open = models.BooleanField(default=False)
     # A non public league can only be seen by
     is_public = models.BooleanField(default=False)
-    server = models.CharField(max_length=10, default='KGS')  # KGS, OGS
+    # A primary league will automatically be joined when joining other leagues
+    is_primary = models.BooleanField(default=False)
     event_type = models.CharField(  # ladder, tournament, league
         max_length=10,
         choices=EVENT_TYPE_CHOICES,

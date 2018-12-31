@@ -14,6 +14,7 @@ class SgfAdminForm(forms.Form):
     sgf = forms.CharField(label='sgf data', widget=forms.Textarea(attrs={'cols': 60, 'rows': 20}))
     url = forms.CharField(label="KGS archive link", required=False)
 
+
 class ActionForm(forms.Form):
     action = forms.CharField(label='action', widget=forms.HiddenInput(), required=False)
     user_id = forms.IntegerField(label='user_id', widget=forms.HiddenInput(), required=False)
@@ -82,6 +83,7 @@ class LeagueSignupForm(forms.Form):
 class UploadFileForm(forms.Form):
     file = forms.FileField()
 
+
 class LeaguePopulateForm(forms.Form):
     # a form related to a set of leagueplayers with one field per player.
     def __init__(self, from_event, to_event, *args, **kwargs):
@@ -95,6 +97,7 @@ class LeaguePopulateForm(forms.Form):
             #division =divisions.filter(order=player.division.order).first()
             #if division != None:
             #    self.fields['player_'+str(player.pk)].inital = (division.pk,division.name)
+
 
 class DivisionForm(ModelForm):
     next = forms.CharField(label='next', widget=forms.HiddenInput(), required=False)
@@ -123,6 +126,7 @@ class LeagueEventForm(forms.ModelForm):
             'additional_time',
             'is_open',
             'is_public',
+            'is_primary',
             'description',
             'prizes'
         ]
@@ -141,10 +145,15 @@ class LeagueEventForm(forms.ModelForm):
             'nb_matchs': 'Maximum number of match two players can play together',
             'ppwin': 'Point per win',
             'pploss': 'Point per loss',
+            'main_time': 'The minimum starting time of the clock.',
+            'additional_time': "If byoyomi, user will have a minimum 3 x this time byoyomi.\
+                If Fischer, it's the additional time per move",
             'min_matchs': 'Minimum of match for a user to be considered active',
             'is_open': 'Can people register and game get scraped?',
             'is_public': 'Can people see the league?',
+            'is_primary': 'A primary league will automatically be joined when joining another league.'
         }
+
 
 class EmailForm(forms.Form):
     subject = forms.CharField(required=True)
@@ -156,6 +165,7 @@ class TimezoneForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['timezone']
+
 
 class ProfileForm(ModelForm):
     class Meta:

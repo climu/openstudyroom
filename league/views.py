@@ -418,11 +418,17 @@ def list_players(request, event_id=None, division_id=None):
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def join_event(request, event_id, user_id):
-    """Add a user to a league. After some check we calls the models.LeagueEvent.join_event method."""
+    """Add a user to a league. After some check we calls the models.LeagueEvent.join_event method.
+
+    We will also join all primary leagues as follow:
+        - if we are joining a community league, we join all primary league of this community.
+        - if not, we join all primary OSR leagues
+    """
+
     # We already know that request.user is a league member.
     # So he can join an open event by himself.
     # If he is a league admin, he can make another user
-    #If he isn't any of this just don't consider the request
+    # If he isn't any of this just don't consider the request
     user = get_object_or_404(User, pk=user_id)
     if not request.user.is_league_admin and not request.user == user:
         message = "What are you doing here?"
@@ -436,28 +442,40 @@ def join_event(request, event_id, user_id):
         messages.success(request, message)
         return HttpResponseRedirect(reverse('league:league_account'))
 
-    #Process request
+    # Process request
     if request.method == 'POST':
         form = ActionForm(request.POST)
         if form.is_valid() and form.cleaned_data['action'] == 'join':
-            if user.join_event(event):
-                meijin_league = LeagueEvent.objects.filter(
-                    event_type='meijin',
+            # get primary leagues to auto join.
+            if event.community is None:
+                primary_leagues = LeagueEvent.objects.filter(
                     is_open=True,
-                    community__isnull=True
-                ).order_by('end_time').first()
-                if meijin_league is not None:
-                    user.join_event(meijin_league)
-                monthly_league = LeagueEvent.objects.filter(
-                    event_type='ladder',
-                    is_open=True,
-                    community__isnull=True
-                ).order_by('end_time').first()
-                if monthly_league is not None:
-                    user.join_event(monthly_league)
-                message = "Welcome in " + event.name + " ! You can start playing right now."
+                    community__isnull=True,
+                    is_primary=True)
             else:
+                primary_leagues = LeagueEvent.objects.filter(
+                    is_open=True,
+                    community=event.community,
+                    is_primary=True)
+
+            # set up success message
+            message = "Welcome in " + event.name + " ! You can start playing right now.\n"
+
+
+            if not user.join_event(event):
                 message = "Oops ! Something went wrong. You didn't join."
+                messages.success(request, message)
+                return HttpResponseRedirect(form.cleaned_data['next'])
+
+            joined_leagues = []
+            for league in primary_leagues:
+                if user.join_event(league):
+                    joined_leagues.append(league)
+            if joined_leagues:
+                message += "On top of that, you automatically joined the following leagues: "
+                for league in joined_leagues:
+                    message += league.name + " "
+
             messages.success(request, message)
             return HttpResponseRedirect(form.cleaned_data['next'])
 

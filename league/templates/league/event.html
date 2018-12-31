@@ -21,6 +21,9 @@
 
 {% get_current_timezone as TIME_ZONE %}
 <h3>Infos</h3>
+{% if event.is_primary %}
+<p> This league is a <b>primary league</b>. It means it will be automatically joined when joining another league.
+{% endif %}
 <p>The <b>{{event.name}}</b> started on <b>{{event.begin_time |date:"M d, Y H:i" }}</b> ({{TIME_ZONE}}) and {% if close %} stoped{% else %}will stop{%endif%} on <b>{{event.end_time |date:"M d, Y H:i" }}</b> ({{TIME_ZONE}}).</p>
 <p>{{event.number_players}} players played {{event.number_games}} games in {{event.number_divisions}} divisions. That is {{event.percent_game_played}} % of {{event.possible_games}} possible games.</p>
 
