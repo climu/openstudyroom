@@ -23,5 +23,26 @@
 
 </div>
 
+{% endblock %}
+
+
+{% block extra_js %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#leagues-table').DataTable({
+    "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
+    "columnDefs": [ {
+      targets: 4,
+      render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','MMM DD, YYYY' )
+    } ],
+    "order": [[ 4, "desc" ]]
+  });
+} );
+</script>
 
 {% endblock %}

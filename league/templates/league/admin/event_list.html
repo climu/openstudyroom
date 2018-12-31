@@ -1,7 +1,8 @@
-{% load community_tags %}
-<table id='events-table' class='display table' cellspacing='0' width='100%' >
+{% load community_tags l10n i18n %}
+{% localize off %}
+{% language 'en' %}
+<table id='leagues-table' class='display table' cellspacing='0' width='100%' >
 	<thead>
-	<tr>
 		<th>Status</th>
 		<th>Public?</th>
 		<th>Name</th>
@@ -15,7 +16,6 @@
 		<th>ppl</th>
 		<th>min match</th>
     <th>copy</th>
-
 	</thead>
 	<tbody>
 	{% for event in events %}
@@ -38,3 +38,7 @@
 	{% endfor %}
 	</tbody>
 </table>
+
+{% endlanguage %}
+
+{% endlocalize %}
