@@ -15,8 +15,8 @@
 
 <tr {% if user in admins %} class="info"{% endif %}>
   <td>{{user|user_link}}</td>
-  <td>{{user.profile.kgs_username}}</td>
   <td>{{user.profile.ogs_username}}</td>
+  <td>{{user.profile.kgs_username}}</td>
   {% if admin %}
 
   <td>  <form action=" {% url 'community:community_quit' community.pk user.pk %}" method="post" >
