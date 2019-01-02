@@ -332,6 +332,20 @@ def dan(request):
         kwargs={'event_id': league.pk})
     )
 
+def ninenine(request):
+    """A simple view that redirects to the last open 9x9 league."""
+    league = LeagueEvent.objects.filter(
+        event_type='league',
+        is_open=True,
+        community__isnull=True,
+        board_size=9
+    ).order_by('end_time').first()
+
+    return HttpResponseRedirect(reverse(
+        'league:results',
+        kwargs={'event_id': league.pk})
+    )
+
 def archives(request):
     """Show a list of all leagues."""
     events = LeagueEvent.get_events(request.user).exclude(event_type='tournament')
