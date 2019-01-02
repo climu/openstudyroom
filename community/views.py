@@ -115,13 +115,15 @@ def community_page(request, slug):
     leagues = leagues.exclude(event_type='tournament')
 
     # get members
-
     members = User.objects.filter(groups=community.user_group).select_related('profile')
     admins = members.filter(groups=community.admin_group)
 
-
     # get game records
-    sgfs = Sgf.objects.filter(league_valid=True, events__in=leagues).order_by('-date')
+    sgfs = Sgf.objects.defer('sgf_text').\
+        filter(league_valid=True, events__in=leagues).\
+        prefetch_related('white', 'black', 'winner').\
+        select_related('white__profile', 'black__profile').\
+        order_by('-date')
 
     context = {
         'community': community,
