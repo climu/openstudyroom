@@ -5,7 +5,7 @@
 
 ## Preperation
 
-Install docker for your operating system. If -God forbids- You are using windows, install docker machine as well and adjust all of the commands accordingly.
+Install docker for your operating system.
 
 Clone this repository and cd into it.
 
