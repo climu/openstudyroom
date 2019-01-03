@@ -1,0 +1,23 @@
+{% extends "todo/base.html" %}
+{% block page_heading %}{% endblock %}
+{% block title %}Add Todo List{% endblock %}
+{% block content %}
+
+  <h2>Add a list:</h2>
+
+  <form action="" method="post">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label for="id_name">List Name</label>
+      <input type="text" class="form-control" id="id_name" name="name" aria-describedby="inputNameHelp" placeholder="">
+      <small id="inputNameHelp" class="form-text text-muted">The full display name for this list.</small>
+    </div>
+    <div class="form-group">
+      <label for="id_group">Group</label>
+      {{form.group}}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+{% endblock %}

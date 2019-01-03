@@ -1,0 +1,17 @@
+{{ task.assigned_to.first_name }} -
+
+A new task on the list {{ task.task_list.name }} has been assigned to you by {{ task.created_by.get_full_name }}:
+
+{{ task.title }}
+
+{% if task.note %}
+{% autoescape off %}
+Note: {{ task.note }}
+{% endautoescape %}
+{% endif %}
+
+Task details/comments:
+http://{{ site }}{% url 'todo:task_detail' task.id %}
+
+List {{ task.task_list.name }}:
+http://{{ site }}{% url 'todo:list_detail' task.task_list.id task.task_list.slug %}

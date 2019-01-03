@@ -107,7 +107,8 @@ INSTALLED_APPS = [
 
     'discord_bind',
     #"anymail",
-    'stats'
+    'stats',
+    'todo'
 
 ]+ get_machina_apps()
 

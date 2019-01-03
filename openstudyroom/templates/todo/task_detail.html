@@ -1,0 +1,92 @@
+{% extends "todo/base.html" %}
+
+{% block title %}Task:{{ task.title }}{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-sm-8">
+      <h3 class="card-title">{{ task.title }}</h3>
+      {% if task.note %}
+        <p class="card-text">{{ task.note|safe|urlize|linebreaks }}</p>
+      {% endif %}
+    </div>
+
+    <div class="col-sm-4">
+      <ul class="list-group">
+        <li class="list-group-item">
+          <form action="" method="post">
+            {% csrf_token %}
+
+            <button class="btn btn-sm btn-primary" id="EditTaskButton" type="button"
+            data-toggle="collapse" data-target="#AddEditTask">Edit Task</button>
+
+            <a href="{% url "todo:task_toggle_done" task.id %}" class="btn btn-info btn-sm">
+              {% if task.completed %} Mark Not Done {% else %} Mark Done {% endif %}
+            </a>
+
+            <a href="{% url "todo:delete_task" task.id %}" class="btn btn-danger btn-sm">Delete</a>
+          </form>
+        </li>
+        <li class="list-group-item">
+          <strong>Assigned to:</strong>
+          {% if task.assigned_to %} {{ task.assigned_to.get_full_name }} {% else %} Anyone {% endif %}
+        </li>
+        <li class="list-group-item">
+          <strong>Reported by:</strong> {{ task.created_by.get_full_name }}
+        </li>
+        <li class="list-group-item">
+          <strong>Due date:</strong> {{ task.due_date }}
+        </li>
+        
+        {% if task.completed %}
+          <li class="list-group-item">
+            <strong>Completed on:</strong> {{ task.completed_date}}
+          </li>
+        {% else %}
+          <li class="list-group-item">
+            <strong>Completed:</strong> {{ task.completed|yesno:"Yes,No" }}
+          </li>
+        {% endif %}
+          
+        <li class="list-group-item">
+          <strong>In list:</strong>
+          <a href="{% url 'todo:list_detail' task.task_list.id task.task_list.slug %}">
+            {{ task.task_list }}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="TaskEdit">
+    {# Task edit / new task form #}
+    {% include 'todo/include/task_edit.html' %}
+  </div>
+
+  <h5>Add comment</h5>
+  <form action="" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <textarea class="form-control" name="comment-body" rows="3"></textarea>
+    </div>
+    <input class="btn btn-sm btn-primary" type="submit" name="add_comment" value="Add Comment">
+  </form>
+
+  <div class="task_comments mt-4">
+    {% if comment_list %}
+      <h5>Comments on this task</h5>
+      {% for comment in comment_list %}
+        <p>
+          <strong>{{ comment.author.first_name }}
+            {{ comment.author.last_name }},
+            {{ comment.date|date:"F d Y P" }}
+          </strong>
+        </p>
+        {{ comment.body|safe|urlize|linebreaks }}
+      {% endfor %}
+    {% else %}
+        <h5>No comments (yet).</h5>
+    {% endif %}
+  </div>
+
+{% endblock %}
