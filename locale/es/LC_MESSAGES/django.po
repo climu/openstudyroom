@@ -1,21 +1,11 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-03 16:19+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: openstudyroom\n"
+"Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: discord_bind/apps.py:33
@@ -28,24 +18,20 @@ msgid "Continue reading"
 msgstr ""
 
 #: league/templates/emails/welcome.txt:2
-#, python-format
-msgid ""
-"\n"
+msgid "\n"
 "Hello and welcome to the Open Study Room, %(user.username)s!\n"
 "\n"
-"You have just been accepted as an OSR member, and we are glad to have you "
-"onboard.\n"
+"You have just been accepted as an OSR member, and we are glad to have you onboard.\n"
 "\n"
-"After logging in, you should take a look at your profile page, located at "
-"openstudyroom.org/profile/\n"
+"After logging in, you should take a look at your profile page, located at openstudyroom.org/profile/\n"
 "There you will be able to manage your e-mail address and passwords.\n"
 "\n"
-"You can now also use our forums and join our Discord server at https://"
-"discord.gg/b7meDjX .\n"
+"You can now also use our forums and join our Discord server at https://discord.gg/b7meDjX .\n"
 "\n"
 "Looking forward to see you there!\n"
 "\n"
 "openstudyroom.org\n"
+""
 msgstr ""
 
 #: league/templates/league/profile.html:4
@@ -101,9 +87,7 @@ msgid "Warning:"
 msgstr ""
 
 #: openstudyroom/templates/account/email.html:53
-msgid ""
-"You currently do not have any e-mail address set up. You should really add "
-"an e-mail address so you can receive notifications, reset your password, etc."
+msgid "You currently do not have any e-mail address set up. You should really add an e-mail address so you can receive notifications, reset your password, etc."
 msgstr ""
 
 #: openstudyroom/templates/account/email.html:61
@@ -119,38 +103,31 @@ msgid "Do you really want to remove the selected e-mail address?"
 msgstr ""
 
 #: openstudyroom/templates/account/email/email_confirmation_message.txt:1
-#, python-format
-msgid ""
-"A user on %(site_name)s has created an account using this email address.\n"
+msgid "A user on %(site_name)s has created an account using this email address.\n"
 "\n"
 "To confirm this email address, go to %(activate_url)s\n"
 "\n"
 "If you did not sign up for this site, you can ignore this message.\n"
+""
 msgstr ""
 
 #: openstudyroom/templates/account/email/email_confirmation_subject.txt:1
-#, python-format
 msgid "Confirm email address for %(site_name)s"
 msgstr ""
 
 #: openstudyroom/templates/account/email/invite_user.txt:1
-#, python-format
-msgid ""
-"You have been invited to sign up at %(name)s.\n"
+msgid "You have been invited to sign up at %(name)s.\n"
 "\n"
 "%(signup_url)s\n"
+""
 msgstr ""
 
 #: openstudyroom/templates/account/email/invite_user_subject.txt:1
-#, python-format
 msgid "Create an account on %(name)s"
 msgstr ""
 
 #: openstudyroom/templates/account/email/password_change.txt:1
-#, python-format
-msgid ""
-"This is the email notification to confirm your password has been changed on "
-"%(now)s."
+msgid "This is the email notification to confirm your password has been changed on %(now)s."
 msgstr ""
 
 #: openstudyroom/templates/account/email/password_change_subject.txt:1
@@ -158,18 +135,14 @@ msgid "Change password email notification"
 msgstr ""
 
 #: openstudyroom/templates/account/email/password_reset.txt:1
-#, python-format
-msgid ""
-"You're receiving this email because you or someone else has requested a "
-"password for your user account at %(site_name)s.\n"
-"It can be safely ignored if you did not request a password reset. Click the "
-"link below to reset your password.\n"
+msgid "You're receiving this email because you or someone else has requested a password for your user account at %(site_name)s.\n"
+"It can be safely ignored if you did not request a password reset. Click the link below to reset your password.\n"
 "\n"
 "%(password_reset_url)s\n"
+""
 msgstr ""
 
 #: openstudyroom/templates/account/email/password_reset_subject.txt:1
-#, python-format
 msgid "[%(site_name)s] Password reset"
 msgstr ""
 
@@ -178,10 +151,7 @@ msgid "Confirm E-mail Address"
 msgstr ""
 
 #: openstudyroom/templates/account/email_confirm.html:22
-#, python-format
-msgid ""
-"Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
-"address for user %(user_display)s."
+msgid "Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail address for user %(user_display)s."
 msgstr ""
 
 #: openstudyroom/templates/account/email_confirm.html:26
@@ -189,10 +159,7 @@ msgid "Confirm"
 msgstr ""
 
 #: openstudyroom/templates/account/email_confirm.html:33
-#, python-format
-msgid ""
-"This e-mail confirmation link expired or is invalid. Please <a href="
-"\"%(email_url)s\">issue a new e-mail confirmation request</a>."
+msgid "This e-mail confirmation link expired or is invalid. Please <a href=\"%(email_url)s\">issue a new e-mail confirmation request</a>."
 msgstr ""
 
 #: openstudyroom/templates/account/email_confirmation_sent.html:5
@@ -201,12 +168,7 @@ msgid "Confirm your email address"
 msgstr ""
 
 #: openstudyroom/templates/account/email_confirmation_sent.html:10
-#, python-format
-msgid ""
-"We have sent you an email to <b>%(email)s</b> for verification. Follow the "
-"link provided to finalize the signup process. If you do not receive it "
-"within a few minutes, contact us at <a href=\"mailto:openstudyroom@gmail.com"
-"\">openstudyroom@gmail.com</a>."
+msgid "We have sent you an email to <b>%(email)s</b> for verification. Follow the link provided to finalize the signup process. If you do not receive it within a few minutes, contact us at <a href=\"mailto:openstudyroom@gmail.com\">openstudyroom@gmail.com</a>."
 msgstr ""
 
 #: openstudyroom/templates/account/email_confirmation_sent.html:11
@@ -219,7 +181,6 @@ msgid "Email confirmed"
 msgstr ""
 
 #: openstudyroom/templates/account/email_confirmed.html:9
-#, python-format
 msgid "You have confirmed <b>%(email)s</b>"
 msgstr ""
 
@@ -233,11 +194,7 @@ msgid "Bad Token"
 msgstr ""
 
 #: openstudyroom/templates/account/password_reset_from_key.html:18
-#, python-format
-msgid ""
-"The password reset link was invalid, possibly because it has already been "
-"used.  Please request a <a href=\"%(passwd_reset_url)s\">new password reset</"
-"a>."
+msgid "The password reset link was invalid, possibly because it has already been used.  Please request a <a href=\"%(passwd_reset_url)s\">new password reset</a>."
 msgstr ""
 
 #: openstudyroom/templates/account/password_reset_from_key.html:25
@@ -281,12 +238,10 @@ msgstr ""
 
 #: openstudyroom/templates/forum_conversation/topic_detail.html:52
 #: openstudyroom/templates/forum_member/user_posts_list.html:75
-#, python-format
 msgid "By: <a href=\"%(poster_url)s\">%(username)s</a> on %(creation_date)s"
 msgstr ""
 
 #: openstudyroom/templates/forum_conversation/topic_detail.html:56
-#, python-format
 msgid "By: %(poster_username)s on %(creation_date)s"
 msgstr ""
 
@@ -303,7 +258,6 @@ msgid "on"
 msgstr ""
 
 #: openstudyroom/templates/forum_conversation/topic_detail.html:76
-#, python-format
 msgid "edited %(counter)s time in total."
 msgid_plural "edited %(counter)s times in total."
 msgstr[0] ""
@@ -323,7 +277,6 @@ msgid "Anonymous user"
 msgstr ""
 
 #: openstudyroom/templates/forum_member/forum_profile_detail.html:4
-#, python-format
 msgid "%(username)s profile"
 msgstr ""
 
@@ -336,23 +289,17 @@ msgid "Statistics"
 msgstr ""
 
 #: openstudyroom/templates/forum_member/forum_profile_detail.html:45
-#, python-format
-msgid ""
-"<h2><strong>%(counter)s</strong></h2>\n"
+msgid "<h2><strong>%(counter)s</strong></h2>\n"
 "                    <p><small>Post</small></p>"
-msgid_plural ""
-"<h2><strong>%(counter)s</strong></h2>\n"
+msgid_plural "<h2><strong>%(counter)s</strong></h2>\n"
 "                    <p><small>Posts</small></p>"
 msgstr[0] ""
 msgstr[1] ""
 
 #: openstudyroom/templates/forum_member/forum_profile_detail.html:50
-#, python-format
-msgid ""
-"<h2><strong>%(counter)s</strong></h2>\n"
+msgid "<h2><strong>%(counter)s</strong></h2>\n"
 "                    <p><small>Topic</small></p>"
-msgid_plural ""
-"<h2><strong>%(counter)s</strong></h2>\n"
+msgid_plural "<h2><strong>%(counter)s</strong></h2>\n"
 "                    <p><small>Topics</small></p>"
 msgstr[0] ""
 msgstr[1] ""
@@ -366,7 +313,6 @@ msgid "View all"
 msgstr ""
 
 #: openstudyroom/templates/forum_member/forum_profile_detail.html:74
-#, python-format
 msgid "On %(creation_date)s"
 msgstr ""
 
@@ -376,7 +322,6 @@ msgid "Topics that you are subscribed to"
 msgstr ""
 
 #: openstudyroom/templates/forum_member/subscription_topic_list.html:17
-#, python-format
 msgid "%(counter)s topic found"
 msgid_plural "%(counter)s topics found"
 msgstr[0] ""
@@ -421,12 +366,10 @@ msgstr ""
 
 #: openstudyroom/templates/forum_member/user_posts_list.html:4
 #: openstudyroom/templates/forum_member/user_posts_list.html:34
-#, python-format
 msgid "%(username)s's posts"
 msgstr ""
 
 #: openstudyroom/templates/forum_member/user_posts_list.html:42
-#, python-format
 msgid "%(counter)s post found"
 msgid_plural "%(counter)s posts found"
 msgstr[0] ""
@@ -441,9 +384,7 @@ msgid "Archived Messages"
 msgstr ""
 
 #: openstudyroom/templates/postman/archives.html:7
-msgid ""
-"Messages in this folder will never be removed. You can use this folder for "
-"long term storage."
+msgid "Messages in this folder will never be removed. You can use this folder for long term storage."
 msgstr ""
 
 #: openstudyroom/templates/postman/archives.html:12
@@ -562,7 +503,6 @@ msgstr ""
 
 #: openstudyroom/templates/postman/email_user.txt:4
 #: openstudyroom/templates/postman/email_visitor.txt:3
-#, python-format
 msgid "On %(date)s, you asked to send a message to the user '%(recipient)s'."
 msgstr ""
 
@@ -577,13 +517,11 @@ msgid ", for the following reason:"
 msgstr ""
 
 #: openstudyroom/templates/postman/email_user.txt:11
-#, python-format
 msgid "You have received a message from the user '%(sender)s'"
 msgstr ""
 
 #: openstudyroom/templates/postman/email_user_subject.txt:1
 #: openstudyroom/templates/postman/email_visitor_subject.txt:1
-#, python-format
 msgid "Message \"%(subject)s\" on the site %(sitename)s"
 msgstr ""
 
@@ -596,7 +534,6 @@ msgid "As a reminder, please find below the content of your message."
 msgstr ""
 
 #: openstudyroom/templates/postman/email_visitor.txt:10
-#, python-format
 msgid "On %(date)s, you sent a message to the user '%(sender)s'."
 msgstr ""
 
@@ -617,8 +554,7 @@ msgid "The site administrator"
 msgstr ""
 
 #: openstudyroom/templates/postman/email_visitor.txt:18
-msgid ""
-"Note: This message is issued by an automated system.\n"
+msgid "Note: This message is issued by an automated system.\n"
 "Do not reply, this would not be taken into account."
 msgstr ""
 
@@ -646,9 +582,7 @@ msgid "Deleted Messages"
 msgstr ""
 
 #: openstudyroom/templates/postman/trash.html:10
-msgid ""
-"Messages in this folder can be removed from time to time. For long term "
-"storage, use instead the archive folder."
+msgid "Messages in this folder can be removed from time to time. For long term storage, use instead the archive folder."
 msgstr ""
 
 #: openstudyroom/templates/postman/view.html:5
@@ -693,3 +627,4 @@ msgstr ""
 #: openstudyroom/templates/puput/blog_page.html:57
 msgid "No results founds."
 msgstr ""
+
