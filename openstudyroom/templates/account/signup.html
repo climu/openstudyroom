@@ -58,6 +58,8 @@
                 {%bootstrap_field form.password1 show_label=False addon_before="<span class='glyphicon glyphicon-lock'></span>  " %}
                 {%bootstrap_field form.password2 show_label=False addon_before="<span class='glyphicon glyphicon-lock'></span>  " %}
                 {%bootstrap_field form.timezone show_label=True addon_before="<span class='glyphicon glyphicon-globe'></span>  " %}
+                {%bootstrap_field form.communities show_label=True addon_before="<span class='glyphicon glyphicon-globe'></span>  " %}
+                <div class="help-block">Select the communities you have interest in.</div>
 
                   <input type="hidden" name="{{ redirect_field_name }}" value="/welcome/">
                 <button type="submit" class="btn btn-primary">Sign up</button>
