@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-03 16:04+0100\n"
+"POT-Creation-Date: 2019-01-03 16:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,6 +25,27 @@ msgstr ""
 #: home/templates/home/home_page.html:92
 #: openstudyroom/templates/puput/blog_page.html:53
 msgid "Continue reading"
+msgstr ""
+
+#: league/templates/emails/welcome.txt:2
+#, python-format
+msgid ""
+"\n"
+"Hello and welcome to the Open Study Room, %(user.username)s!\n"
+"\n"
+"You have just been accepted as an OSR member, and we are glad to have you "
+"onboard.\n"
+"\n"
+"After logging in, you should take a look at your profile page, located at "
+"openstudyroom.org/profile/\n"
+"There you will be able to manage your e-mail address and passwords.\n"
+"\n"
+"You can now also use our forums and join our Discord server at https://"
+"discord.gg/b7meDjX .\n"
+"\n"
+"Looking forward to see you there!\n"
+"\n"
+"openstudyroom.org\n"
 msgstr ""
 
 #: league/templates/league/profile.html:4
