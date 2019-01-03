@@ -36,7 +36,6 @@ urlpatterns = [
 
     url(r'^messages/', include('postman.urls', namespace='postman')),
     url(r'^community/', include('community.urls', namespace='community')),
-    url('todo/', include('todo.urls', namespace="todo")),
     url(r'', include('puput.urls')),
     # For anything not caught by a more specific rule above, hand over to
     # Wagtail's page serving mechanism. This should be the last pattern in
