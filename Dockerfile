@@ -1,4 +1,4 @@
-FROM python:3.5.3
+FROM python:3.5-stretch
 
 # Do not buffer python's stdout or stderr
 ENV PYTHONUNBUFFERED 1
