@@ -218,7 +218,7 @@ WAGTAIL_SITE_NAME = "openstudyroom"
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
 BASE_URL = 'http://openstudyroom.org'
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 #do that before migrate
 AUTH_USER_MODEL = 'league.User'

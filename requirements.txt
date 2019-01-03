@@ -1,4 +1,3 @@
-appdirs==1.4.3
 astroid==1.5.3
 beautifulsoup4==4.6.0
 bs4==0.0.1
