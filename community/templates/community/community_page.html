@@ -73,7 +73,9 @@ return false;};
 
 </div>
 </div>
-
+{% if admin %}
+  {% include "community/includes/new_user_table.html"%}
+{% endif %}
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#leagues">Leagues</a></li>
   <li><a data-toggle="tab" href="#tournaments">tournaments</a></li>

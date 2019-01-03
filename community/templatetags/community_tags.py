@@ -15,3 +15,10 @@ def community_link(community, slug=None):
     )
     link += '">' + community.name + '</a>'
     return mark_safe(link)
+
+@register.filter()
+def new_member_communities(user):
+    communities = user.groups.\
+        filter(name__icontains='_community_new_member').\
+        values_list('new_user_community__name', flat=True)
+    return mark_safe(', '.join(communities))

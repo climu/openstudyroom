@@ -1,5 +1,5 @@
 {% extends "league/admin/base.html" %}
-{% load wagtailcore_tags bootstrap3 %}
+{% load wagtailcore_tags bootstrap3 community_tags %}
 {% block title %}OSR league admin{% endblock %}
 {% block heading %}
 <div class="page-header">
@@ -13,7 +13,15 @@
   <div class="panel-heading"><h3> List of new users </h3></div>
     <table id='new_user-table' class='display table' >
       <thead>
-        <tr><th>username</th><th>email</th><th>kgs_username</th><th>ogs_username</th><th>Delete</th><th>No games</th><th>Accept</th>
+        <tr>
+          <th>username</th>
+          <th>email</th>
+          <th>kgs_username</th>
+          <th>ogs_username</th>
+          <th>Communities interest</th>
+          <th>Delete</th>
+          <th>No games</th>
+          <th>Accept</th>
         </thead>
         <tbody>
           {% for new_user in new_users %}
@@ -37,6 +45,9 @@
               {% if new_user.profile.ogs_id > 0 %}
                  <a href="https://online-go.com/player/{{new_user.profile.ogs_id}}">{{new_user.profile.ogs_username}}</a>
               {% endif %}
+            </td>
+            <td>
+              {{new_user | new_member_communities}}
             </td>
             <td>
               <button class="btn newuser btn-danger btn-xs" action="delete" user_name="{{new_user.username}}" user_id="{{new_user.pk}}">

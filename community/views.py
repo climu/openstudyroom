@@ -117,6 +117,8 @@ def community_page(request, slug):
     # get members
     members = User.objects.filter(groups=community.user_group).select_related('profile')
     admins = members.filter(groups=community.admin_group)
+    new_members = User.objects.filter(groups=community.new_user_group).filter(groups__name='league_member').select_related('profile')
+
 
     # get game records
     sgfs = Sgf.objects.defer('sgf_text').\
@@ -124,7 +126,7 @@ def community_page(request, slug):
         prefetch_related('white', 'black', 'winner').\
         select_related('white__profile', 'black__profile').\
         order_by('-date')
-
+    print(new_members)
     context = {
         'community': community,
         'leagues': leagues,
@@ -134,7 +136,8 @@ def community_page(request, slug):
         'can_join': can_join,
         'can_quit': community.user_group in request.user.groups.all(),
         'members': members,
-        'admins': admins
+        'admins': admins,
+        'new_members': new_members
     }
     return render(request, 'community/community_page.html', context)
 
@@ -180,6 +183,7 @@ def community_quit(request, community_pk, user_pk):
         raise Http404('what are you doing here')
     if request.method == 'POST':
         user.groups.remove(community.user_group)
+        user.groups.remove(community.new_user_group)
         if user == request.user:
             message = "You just quit the " + community.name + " community."
             messages.success(request, message)
@@ -196,8 +200,8 @@ def community_quit(request, community_pk, user_pk):
             message = user.username + " is not in your community anymore."
             messages.success(request, message)
             return HttpResponseRedirect(reverse(
-                'community:admin_user_list',
-                kwargs={'pk': community.pk}
+                'community:community_page',
+                kwargs={'slug': community.slug}
             ))
     else:
         raise Http404('what are you doing here ?')
@@ -240,6 +244,7 @@ def admin_invite_user(request, pk):
         if form.is_valid():
             user = User.objects.get(username__iexact=form.cleaned_data['username'])
             user.groups.add(community.user_group)
+            user.groups.remove(community.new_user_group)
             # group = Group.objects.get(name='league_member')/
             # user.groups.add(group)
             message = user.username +" is now a member of your community."

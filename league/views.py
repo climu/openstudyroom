@@ -749,12 +749,18 @@ def admin(request):
         user = User.objects.get(pk=user_id)
         if user.groups.filter(name='new_user').exists():
             if action == "welcome":
-                user.groups.clear()
+                # remove new user group
+                group = Group.objects.get(name='new_user')
+                group.user_set.remove(user)
+                # add league_member group
                 group = Group.objects.get(name='league_member')
                 user.groups.add(group)
+                # send email
                 utils.quick_send_mail(user, 'emails/welcome.txt')
+                # send discord webhook
                 if settings.DEBUG:
                     discord_url = 'http://exemple.com' # change this for local test
+
                 else:
                     with open('/etc/discord_welcome_hook_url.txt') as f:
                         discord_url = f.read().strip()
@@ -769,8 +775,16 @@ def admin(request):
                         message += " (" + user.profile.ogs_rank + ")"
                 values = {"content": message}
                 requests.post(discord_url, json=values)
+                # manage communities welcome
+                community_groups = user.groups.\
+                    filter(name__icontains='_community_new_member').\
+                    filter(new_user_community__close=False)
+                for group in community_groups:
+                    user.groups.add(group.new_user_community.get().user_group)
+                    user.groups.remove(group)
+
             elif action[0:6] == "delete":
-                if action[7:15] == "no_games":# deletion due to no played games
+                if action[7:15] == "no_games":  # deletion due to no played games
                     utils.quick_send_mail(user, 'emails/no_games.txt')
                 user.delete()
         else:

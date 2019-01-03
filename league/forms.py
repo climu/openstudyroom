@@ -8,7 +8,7 @@ import pytz
 
 from .models import Division, LeagueEvent, Profile
 from .ogs import get_user_id, get_user_rank
-
+from community.models import Community
 
 class SgfAdminForm(forms.Form):
     sgf = forms.CharField(label='sgf data', widget=forms.Textarea(attrs={'cols': 60, 'rows': 20}))
@@ -30,6 +30,12 @@ class LeagueSignupForm(forms.Form):
         required=False,
         initial='UTC'
     )
+
+    def __init__(self, *args, **kwargs):
+        super(LeagueSignupForm, self).__init__(*args, **kwargs)
+        communities = Community.objects.filter(private=False)
+        choices = [(community.pk, community.name) for community in communities]
+        self.fields["communities"] = forms.MultipleChoiceField(choices=choices, required=False)
 
     def clean_kgs_username(self):
         if not self.cleaned_data['kgs_username']:
@@ -63,6 +69,10 @@ class LeagueSignupForm(forms.Form):
         user.kgs_username = self.cleaned_data['kgs_username']
         group = Group.objects.get(name='new_user')
         user.groups.add(group)
+        if self.cleaned_data['communities']:
+            communities = Community.objects.filter(pk__in=self.cleaned_data['communities'])
+            for community in communities:
+                user.groups.add(community.new_user_group)
         user.save()
         profile = Profile(
             user=user,
@@ -78,6 +88,8 @@ class LeagueSignupForm(forms.Form):
             if id > 0:
                 profile.ogs_rank = get_user_rank(id)
         profile.save()
+
+
 
 
 class UploadFileForm(forms.Form):
@@ -227,7 +239,6 @@ class ProfileForm(ModelForm):
                 # udate goquest username for all players
                 open_players = self.instance.user.leagueplayer_set.filter(event__is_open=True)
                 open_players.update(go_quest_username=go_quest_username)
-                print(open_players)
         return go_quest_username
 
     def clean(self):
