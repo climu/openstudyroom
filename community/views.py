@@ -5,7 +5,7 @@ from django.views.generic.edit import UpdateView
 from django.urls import reverse
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
-from django.db.models import Q, Case, IntegerField, When, Value
+from django.db.models import Q
 
 from league.models import User, LeagueEvent, Sgf
 from league.views import LeagueEventCreate, LeagueEventUpdate
@@ -117,8 +117,10 @@ def community_page(request, slug):
     # get members
     members = User.objects.filter(groups=community.user_group).select_related('profile')
     admins = members.filter(groups=community.admin_group)
-    new_members = User.objects.filter(groups=community.new_user_group).filter(groups__name='league_member').select_related('profile')
-
+    new_members = User.objects.\
+        filter(groups=community.new_user_group).\
+        filter(groups__name='league_member').\
+        select_related('profile')
 
     # get game records
     sgfs = Sgf.objects.defer('sgf_text').\
