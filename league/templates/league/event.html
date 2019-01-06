@@ -1,10 +1,10 @@
 {% extends "league/base.html" %}
-{% load static tz league_tags bootstrap3 calendar_tags community_tags%}
+{% load static tz league_tags bootstrap3 calendar_tags community_tags i18n %}
 
 {% block title %}{{event}}- Overview{% endblock %}
 {% block content %}
 <ul class="nav nav-tabs">
-  <li ><a href="{% url 'league:archives' %}">Archives</a></li>
+  <li ><a href="{% url 'league:archives' %}">{% trans "Archives" %}</a></li>
   {%if event not in open_events%}
   <li class="active">
     {{event |event_link}}
@@ -15,38 +15,39 @@
     {{ev|event_link}}
   </li>
   {% endfor %}
-  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrape list</a></li>
+  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">{% trans "Scrape list" %}</a></li>
 </ul>
 {% include 'league/includes/league_nav.html' with active='overview' %}
 
 {% get_current_timezone as TIME_ZONE %}
-<h3>Infos</h3>
+<h3>{% trans "Infos" %}</h3>
 {% if event.is_primary %}
-<p> This league is a <b>primary league</b>. It means it will be automatically joined when joining another league.
+<p>{% blocktrans %}This league is a <b>primary league</b>. It means it will be automatically joined when joining another league.{% endblocktrans %}</p>
 {% endif %}
-<p>The <b>{{event.name}}</b> started on <b>{{event.begin_time |date:"M d, Y H:i" }}</b> ({{TIME_ZONE}}) and {% if close %} stoped{% else %}will stop{%endif%} on <b>{{event.end_time |date:"M d, Y H:i" }}</b> ({{TIME_ZONE}}).</p>
-<p>{{event.number_players}} players played {{event.number_games}} games in {{event.number_divisions}} divisions. That is {{event.percent_game_played}} % of {{event.possible_games}} possible games.</p>
+<p>{% blocktrans %}The <b>{{event.name}}</b> started on <b>{{event.begin_time |date:"M d, Y H:i" }}</b> ({{TIME_ZONE}}) and {% endblocktrans %}{% if close %}
+  {% comment %}Translators: Following words is for the sentence "the league will start/stop on {{date}}"{% endcomment %}
+   {% trans "stoped" %}{% else %}{% trans "will stop" %}{% endif %} {% trans "on" %} <b>{{event.end_time |date:"M d, Y H:i" }}</b> ({{TIME_ZONE}}).</p>
+<p>{% blocktrans %}{{event.number_players}} players played {{event.number_games}} games in {{event.number_divisions}} divisions. That is {{event.percent_game_played}} % of {{event.possible_games}} possible games.{% endblocktrans %}</p>
 
-<h3>Game settings </h3>
+<h3>{% trans "Game settings" %}</h3>
 <ul>
-  <li> Game must be played either on the KGS or on the OGS go server.</li>
-  <li> Game must be <b>public</b>.</li>
-  <li> Games must be played with <b>no handicap</b></li>
-  <li> Games must use <b>Japanese timesetting</b> with at least <b>{{event.get_main_time_min}} min main time</b> and
-    <b>3 x {{event.additional_time}} sec byo-yomi</b>.</li>
-  <li>At least one player must tag the game saying <b>{{event.tag | upper}}</b> or <b>{{event.tag|lower}}</b>.</li>
-  <li>The game can be ranked or free to the convenience of the players.</li>
-  <li>Komi must be set to <b>{{event.komi}}</b>.</li>
-  <li> If played on OGS, <b>game analysis should be disabled.</b></li>
-  <li>Using a bot such as Leela or Crazy Stone during league game is strictly forbidden. The OSR team might check some games from time to time to look for matching with these go engines.</li>
+  <li>{% trans "Game must be played either on the KGS or on the OGS go server" %}.</li>
+  <li>{% trans "Game must be <b>public</b>." %}</li>
+  <li>{% trans "Games must be played with <b>no handicap</b>" %}</li>
+  <li>{% blocktrans %}Games must use <b>Japanese timesetting</b> with at least <b>{{event.get_main_time_min}} min main time</b> and <b>3 x {{event.additional_time}} sec byo-yomi</b>.{% endblocktrans %}</li>
+  <li>{% blocktrans %}At least one player must tag the game saying <b>{{event.tag | upper}}</b> or <b>{{event.tag|lower}}</b>.{% endblocktrans %}</li>
+  <li>{%trans "The game can be ranked or free to the convenience of the players." %}</li>
+  <li>{% blocktrans %}Komi must be set to <b>{{event.komi}}</b>.{% endblocktrans %}</li>
+  <li>{% trans "If played on OGS, <b>game analysis should be disabled</b>." %}</li>
+  <li>{% trans "Using a bot such as Leela or Crazy Stone during league game is strictly forbidden. The OSR team might check some games from time to time to look for matching with these go engines." %}</li>
 </ul>
-<h3> League rules </h3>
+<h3> {% trans "League rules" %}</h3>
 <ul>
-  <li> Players can play up to <b>{{event.nb_matchs}} games</b> against the same opponent {%if event.type == ladder %} within the group{%endif%}.</li>
-  <li>A win grants <b>{{event.ppwin}} points</b> and a loss grants <b>{{event.pploss}}</b>.</li>
-  <li>Players who played at least <b>{{event.min_matchs}} games</b> will be added to the next league, once this one has ended.</li>
+  <li>{% blocktrans %}Players can play up to <b>{{event.nb_matchs}} games</b> against the same opponent {% endblocktrans %}{%if event.type == ladder %} {% trans "within the group" %}{%endif%}.</li>
+  <li>{% blocktrans %}A win grants <b>{{event.ppwin}} points</b> and a loss grants <b>{{event.pploss}}</b>.{% endblocktrans %}</li>
+  <li>{% blocktrans %}Players who played at least <b>{{event.min_matchs}} games</b> will be added to the next league, once this one has ended.{% endblocktrans %}</li>
 </ul>
-<p>Players are strongly encouraged to review their game afterward. If both players have the same rank, or if your opponent can't help you in reviewing the game, one should feel free to ask stronger players in our kgs room and/or in our discord channel help for the review.</p>
+<p>{%trans "Players are strongly encouraged to review their game afterward. If both players have the same rank, or if your opponent can't help you in reviewing the game, one should feel free to ask stronger players in our kgs room and/or in our discord channel help for the review." %}</p>
 </ul>
 {% endblock %}}
 {% if event.is_open %}
@@ -56,7 +57,7 @@
 <script type="text/javascript">
 var end = Date.now() + {{event.remaining_sec}};
 $("#countdown").countdown(end,function(event) {
-    $(this).html(event.strftime('League ends in %D day%!D %H:%M:%S'));
+    $(this).html(event.strftime('{%trans "League ends in" %} %D day%!D %H:%M:%S'));
   });
 </script>
 

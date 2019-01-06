@@ -1,17 +1,17 @@
-{% load bootstrap3 forum_markup_tags %}
+{% load bootstrap3 forum_markup_tags i18n %}
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav navbar-left">
   <li {% if active == 'results' %} class="active" {% endif %}>
-    <a href="{% url 'league:results' event.pk %}">Results</a>
+    <a href="{% url 'league:results' event.pk %}">{% trans "Results" %}</a>
   </li>
   <li {% if active == 'players' %} class="active" {% endif %}>
-    <a href="{% url 'league:players' event.pk %}">Players</a>
+    <a href="{% url 'league:players' event.pk %}">{% trans "Players" %}</a>
   </li>
   <li {% if active == 'games' %} class="active" {% endif %}>
-    <a href="{% url 'league:games' event.pk %}">Games</a>
+    <a href="{% url 'league:games' event.pk %}">{% trans "Games" %}</a>
   </li>
   <li {% if active == 'overview' %} class="active" {% endif %}>
-    <a href="{% url 'league:event' event.pk %}">Infos</a>
+    <a href="{% url 'league:event' event.pk %}">{% trans "Infos" %}</a>
   </li>
 </ul>
 {% if event.is_open %}
@@ -24,8 +24,8 @@
   <div class="form-group">
   <input type="hidden" name="action" value="join">
   <input type="hidden" name="next" value="{{request.path}}">
-  <button type="submit" class="btn btn-default"  onclick="return confirm('You are about to join the {{event}}. Allright?')">
-  {% bootstrap_icon "ok" %} Join {{event.name}} !
+  <button type="submit" class="btn btn-default"  onclick="return confirm('{% blocktrans %} You are about to join the {{event}}. Allright? {% endblocktrans %}')">
+  {% bootstrap_icon "ok" %} {% trans "Join" %} {{event.name}} !
   </button>
   </div>
   </form>
@@ -35,8 +35,8 @@
    <div class="form-group">
    <input type="hidden" name="action" value="quit">
    <input type="hidden" name="next" value="{{request.path}}">
-   <button type="submit" class="btn btn-default"  onclick="return confirm('You are about to quit the {{event}}. Allright?')">
-   {% bootstrap_icon "remove" %} Quit {{event.name}} !
+   <button type="submit" class="btn btn-default"  onclick="return confirm('{% blocktrans %}You are about to quit the {{event}}. Allright?{% endblocktrans %}')">
+   {% bootstrap_icon "remove" %} {% trans "Quit" %} {{event.name}} !
    </button>
    </div>
    </form>
