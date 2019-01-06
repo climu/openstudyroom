@@ -28,6 +28,7 @@ class LeagueEvent(models.Model):
     The Event name is unfortunate and should be removed mone day.
     """
 
+    # Orders ared defined in get_events
     EVENT_TYPE_CHOICES = (
         ('ladder', 'ladder'),
         ('league', 'league'),
@@ -229,7 +230,13 @@ class LeagueEvent(models.Model):
                 is_public=True,
                 community__isnull=True
             )
-        events = events.exclude(event_type='tournament').order_by('event_type')
+        events = events.exclude(event_type='tournament')
+        order = ['ladder', 'league', 'meijin', 'dan', 'ddk', 'tournament']
+        whens = []
+        for ind, v in enumerate(order):
+            whens.append(models.When(event_type=v, then=ind))
+        events = events.annotate(_sort_index=models.Case(*whens, output_field=models.IntegerField()))
+        events = events.order_by('_sort_index')
         return events
 
 
