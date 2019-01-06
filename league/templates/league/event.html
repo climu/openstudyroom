@@ -32,10 +32,10 @@
   <li> Game must be played either on the KGS or on the OGS go server.</li>
   <li> Games must be played with <b>no handicap</b></li>
   <li> Games must use <b>Japanese timesetting</b> with at least <b>{{event.get_main_time_min}} min main time</b> and
-    <b>5 x {{event.additional_time}} sec byo-yomi</b>.</li>
+    <b>3 x {{event.additional_time}} sec byo-yomi</b>.</li>
   <li>At least one player must tag the game saying <b>{{event.tag | upper}}</b> or <b>{{event.tag|lower}}</b>.</li>
   <li>The game can be ranked or free to the convenience of the players.</li>
-  <li>Komi must be set to <b>6.5 </b>.</li>
+  <li>Komi must be set to <b>{{event.komi}}</b>.</li>
 
   <li>Using a bot such as Leela or Crazy Stone during league game is strictly forbidden. The OSR team might check some games from time to time to look for matching with these go engines.</li>
 </ul>
