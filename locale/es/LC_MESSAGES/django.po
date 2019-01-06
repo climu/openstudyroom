@@ -10,13 +10,14 @@ msgstr ""
 
 #: discord_bind/apps.py:33
 msgid "Discord Binding"
-msgstr ""
+msgstr "Enlazar Discord"
 
 #: home/templates/home/home_page.html:92
 #: openstudyroom/templates/puput/blog_page.html:53
 msgid "Continue reading"
 msgstr "Continuar leyendo"
 
+#. It's tricky, but the English message starts and ends with a new line. The translate message needs it too otherwise django cannot compile the translation.
 #: league/templates/emails/welcome.txt:2
 msgid "\n"
 "Hello and welcome to the Open Study Room, %(user.username)s!\n"
@@ -32,7 +33,8 @@ msgid "\n"
 "\n"
 "openstudyroom.org\n"
 ""
-msgstr "Bienvenido a Open Study Room, %(user.username)s!\n"
+msgstr "\n"
+"Hola y bienvenido a Open Study Room, %(user.username)s!\n"
 "\n"
 "Has sido aceptado como un miembro de OSR y estamos felices de tenerte a bordo.\n"
 "\n"
@@ -43,7 +45,8 @@ msgstr "Bienvenido a Open Study Room, %(user.username)s!\n"
 "\n"
 "¡Esperamos verte allí!\n"
 "\n"
-"openstudyroom.org"
+"openstudyroom.org\n"
+""
 
 #: league/templates/league/profile.html:4
 #: openstudyroom/templates/forum_member/forum_profile_update.html:4
@@ -59,7 +62,7 @@ msgstr "(opcional)"
 #: league/templates/league/profile.html:48
 #: openstudyroom/templates/forum_member/forum_profile_update.html:43
 msgid "Submit"
-msgstr "Entregar"
+msgstr "Enviar"
 
 #: openstudyroom/templates/account/email.html:16
 msgid "E-mail Addresses"
@@ -111,7 +114,7 @@ msgstr "Añadir correo electrónico"
 
 #: openstudyroom/templates/account/email.html:79
 msgid "Do you really want to remove the selected e-mail address?"
-msgstr "¿En verdad quieres quitar el correo electrónico seleccionado?"
+msgstr "¿En verdad quieres remover el correo electrónico seleccionado?"
 
 #: openstudyroom/templates/account/email/email_confirmation_message.txt:1
 msgid "A user on %(site_name)s has created an account using this email address.\n"
@@ -124,7 +127,8 @@ msgstr "Un usuario en %(site_name)s ha creado una cuenta usando esta dirección 
 "\n"
 "Para confirmar esta dirección de correo electrónico, ve a %(active_url)s\n"
 "\n"
-"Si no te registraste en esta página, puedes ignorar estemensaje."
+"Si no te registraste en esta página, puedes ignorar este mensaje.\n"
+""
 
 #: openstudyroom/templates/account/email/email_confirmation_subject.txt:1
 msgid "Confirm email address for %(site_name)s"
@@ -137,7 +141,8 @@ msgid "You have been invited to sign up at %(name)s.\n"
 ""
 msgstr "Has sido invitado para registrarte en %(name)s.\n"
 "\n"
-"%(signup_url)s"
+"%(signup_url)s\n"
+""
 
 #: openstudyroom/templates/account/email/invite_user_subject.txt:1
 msgid "Create an account on %(name)s"
@@ -157,11 +162,16 @@ msgid "You're receiving this email because you or someone else has requested a p
 "\n"
 "%(password_reset_url)s\n"
 ""
-msgstr ""
+msgstr "Está recibiendo este correo debido a que usted o alguien más solicitó una contraseña para su cuenta de usuario en %(site_name)s.\n"
+"Puede ignorarlo si usted no ha solicitado un cambio de contraseña.\n"
+"Cliquee el link de abajo para cambiar su contraseña.\n"
+"\n"
+"%(password_reset_url)s\n"
+""
 
 #: openstudyroom/templates/account/email/password_reset_subject.txt:1
 msgid "[%(site_name)s] Password reset"
-msgstr ""
+msgstr " [%(site_name)s] Cambio de contraseña"
 
 #: openstudyroom/templates/account/email_confirm.html:12
 msgid "Confirm E-mail Address"
@@ -277,8 +287,8 @@ msgstr "el"
 #: openstudyroom/templates/forum_conversation/topic_detail.html:76
 msgid "edited %(counter)s time in total."
 msgid_plural "edited %(counter)s times in total."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "editado %(counter)s vez en total."
+msgstr[1] "editado %(counter)s veces en total."
 
 #. Mótivo
 #: openstudyroom/templates/forum_conversation/topic_detail.html:81
@@ -311,16 +321,21 @@ msgid "<h2><strong>%(counter)s</strong></h2>\n"
 "                    <p><small>Post</small></p>"
 msgid_plural "<h2><strong>%(counter)s</strong></h2>\n"
 "                    <p><small>Posts</small></p>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<h2><strong>%(counter)s</strong></h2>\n"
+"                    <p><small>Post</small></p>"
+msgstr[1] "<h2><strong>%(counter)s</strong></h2>\n"
+"                    <p><small>Posts</small></p>"
 
 #: openstudyroom/templates/forum_member/forum_profile_detail.html:50
 msgid "<h2><strong>%(counter)s</strong></h2>\n"
 "                    <p><small>Topic</small></p>"
 msgid_plural "<h2><strong>%(counter)s</strong></h2>\n"
 "                    <p><small>Topics</small></p>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<h2><strong>%(counter)s</strong></h2>\n"
+"                    <p><small>Tema</small></p>\n"
+""
+msgstr[1] "<h2><strong>%(counter)s</strong></h2>\n"
+"                    <p><small>Temas</small></p>"
 
 #: openstudyroom/templates/forum_member/forum_profile_detail.html:64
 msgid "Recent posts"
@@ -332,7 +347,7 @@ msgstr "Ver todos"
 
 #: openstudyroom/templates/forum_member/forum_profile_detail.html:74
 msgid "On %(creation_date)s"
-msgstr ""
+msgstr "En %(creation_date)s"
 
 #: openstudyroom/templates/forum_member/subscription_topic_list.html:4
 #: openstudyroom/templates/forum_member/subscription_topic_list.html:10
@@ -342,8 +357,8 @@ msgstr "Temas a los que estás suscrito"
 #: openstudyroom/templates/forum_member/subscription_topic_list.html:17
 msgid "%(counter)s topic found"
 msgid_plural "%(counter)s topics found"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(counter)s tema encontrado"
+msgstr[1] "%(counter)s temas encontrados"
 
 #: openstudyroom/templates/forum_member/subscription_topic_list.html:31
 msgid "Not topics found."
@@ -371,11 +386,11 @@ msgstr "No"
 #: openstudyroom/templates/forum_member/topic_unsubscribe.html:5
 #: openstudyroom/templates/forum_member/topic_unsubscribe.html:12
 msgid "Unsubscribe from topic"
-msgstr ""
+msgstr "Desuscribir del tema"
 
 #: openstudyroom/templates/forum_member/topic_unsubscribe.html:15
 msgid "Would you like to unsubscribe from this topic?"
-msgstr ""
+msgstr "¿Te gustaría desuscribirte de este tema?"
 
 #: openstudyroom/templates/forum_member/user_posts_list.html:4
 #: openstudyroom/templates/forum_member/user_posts_list.html:34
@@ -385,25 +400,25 @@ msgstr "Mis mensajes"
 #: openstudyroom/templates/forum_member/user_posts_list.html:4
 #: openstudyroom/templates/forum_member/user_posts_list.html:34
 msgid "%(username)s's posts"
-msgstr ""
+msgstr "posts de %(username)s"
 
 #: openstudyroom/templates/forum_member/user_posts_list.html:42
 msgid "%(counter)s post found"
 msgid_plural "%(counter)s posts found"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(counter)s post encontrado"
+msgstr[1] "%(counter)s posts encontrados"
 
 #: openstudyroom/templates/forum_member/user_posts_list.html:49
 msgid "No posts found"
-msgstr ""
+msgstr "Ningún post encontrado."
 
 #: openstudyroom/templates/postman/archives.html:3
 msgid "Archived Messages"
-msgstr ""
+msgstr "Mensajes archivados"
 
 #: openstudyroom/templates/postman/archives.html:7
 msgid "Messages in this folder will never be removed. You can use this folder for long term storage."
-msgstr ""
+msgstr "Los mensajes en esta carpeta nunca serán removidos. Puede usar esta carpeta como almacenamiento a largo plazo."
 
 #: openstudyroom/templates/postman/archives.html:12
 #: openstudyroom/templates/postman/base.html:18
@@ -454,7 +469,7 @@ msgstr "Basura"
 
 #: openstudyroom/templates/postman/base.html:3
 msgid "Messaging"
-msgstr ""
+msgstr "Mensajería"
 
 #: openstudyroom/templates/postman/base_folder.html:14
 msgid "Sorry, this page number is invalid."
@@ -462,21 +477,21 @@ msgstr "Lo sentimos, este número de página no es válido."
 
 #: openstudyroom/templates/postman/base_folder.html:19
 msgid "by conversation"
-msgstr ""
+msgstr "por conversación"
 
 #: openstudyroom/templates/postman/base_folder.html:22
 msgid "by message"
-msgstr ""
+msgstr "por mensaje"
 
 #: openstudyroom/templates/postman/base_folder.html:28
 #: openstudyroom/templates/postman/view.html:15
 #: openstudyroom/templates/postman/view.html:43
 msgid "Archive"
-msgstr ""
+msgstr "Archivos"
 
 #: openstudyroom/templates/postman/base_folder.html:29
 msgid "Undelete"
-msgstr ""
+msgstr "Recuperar"
 
 #: openstudyroom/templates/postman/base_folder.html:30
 msgid "Mark as read"
@@ -509,7 +524,7 @@ msgstr "Fecha"
 
 #: openstudyroom/templates/postman/base_folder.html:55
 msgid "g:i A,M j,n/j/y"
-msgstr ""
+msgstr "g: i A, M j, n / j / y"
 
 #: openstudyroom/templates/postman/base_folder.html:62
 msgid "No messages."
@@ -522,7 +537,7 @@ msgstr "Enviar"
 #: openstudyroom/templates/postman/email_user.txt:4
 #: openstudyroom/templates/postman/email_visitor.txt:3
 msgid "On %(date)s, you asked to send a message to the user '%(recipient)s'."
-msgstr ""
+msgstr "El %(date)s, usted solicitó enviar un mensaje al usuario '%(recipient)s'."
 
 #: openstudyroom/templates/postman/email_user.txt:6
 #: openstudyroom/templates/postman/email_visitor.txt:5
@@ -553,11 +568,11 @@ msgstr "Como un recordatorio, a continuación encontrará el contenido de su men
 
 #: openstudyroom/templates/postman/email_visitor.txt:10
 msgid "On %(date)s, you sent a message to the user '%(sender)s'."
-msgstr ""
+msgstr "El %(date)s, usted envió un mensaje al usuario '%(sender)s'."
 
 #: openstudyroom/templates/postman/email_visitor.txt:11
 msgid "Please find below the answer from your correspondent."
-msgstr ""
+msgstr "Por favor encuentre abajo la respuesta de su correspondiente."
 
 #: openstudyroom/templates/postman/email_visitor.txt:14
 msgid "Thank you again for your interest in our services."
@@ -593,7 +608,7 @@ msgstr "Contestar"
 
 #: openstudyroom/templates/postman/sent.html:8
 msgid "Sent"
-msgstr "Enviado"
+msgstr "Enviados"
 
 #: openstudyroom/templates/postman/trash.html:3
 msgid "Deleted Messages"
