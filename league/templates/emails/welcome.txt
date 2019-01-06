@@ -1,3 +1,4 @@
+{% load i18n %}
 Hello and welcome to the Open Study Room, {{user.username}}!
 
 You have just been accepted as an OSR member, and we are glad to have you onboard.

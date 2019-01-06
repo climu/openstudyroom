@@ -1,0 +1,674 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-01-02 14:52+0100\n"
+"PO-Revision-Date: 2019-01-02 14:18+0156\n"
+"Last-Translator: b'  <>'\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Translated-Using: django-rosetta 0.9.0\n"
+
+#: discord_bind/apps.py:33
+msgid "Discord Binding"
+msgstr "Liens discord"
+
+#: home/templates/home/home_page.html:92
+#: openstudyroom/templates/puput/blog_page.html:53
+msgid "Continue reading"
+msgstr ""
+
+#: league/templates/league/profile.html:4
+#: openstudyroom/templates/forum_member/forum_profile_update.html:4
+#: openstudyroom/templates/forum_member/forum_profile_update.html:19
+msgid "Edit forum profile"
+msgstr ""
+
+#: league/templates/league/profile.html:32
+#: openstudyroom/templates/forum_member/forum_profile_update.html:27
+msgid "(optional)"
+msgstr ""
+
+#: league/templates/league/profile.html:48
+#: openstudyroom/templates/forum_member/forum_profile_update.html:43
+msgid "Submit"
+msgstr ""
+
+#: openstudyroom/templates/account/email.html:16
+msgid "E-mail Addresses"
+msgstr ""
+
+#: openstudyroom/templates/account/email.html:20
+msgid "The following e-mail addresses are associated with your account:"
+msgstr ""
+
+#: openstudyroom/templates/account/email.html:34
+msgid "Verified"
+msgstr ""
+
+#: openstudyroom/templates/account/email.html:36
+msgid "Unverified"
+msgstr ""
+
+#: openstudyroom/templates/account/email.html:38
+msgid "Primary"
+msgstr ""
+
+#: openstudyroom/templates/account/email.html:44
+msgid "Make Primary"
+msgstr ""
+
+#: openstudyroom/templates/account/email.html:45
+msgid "Re-send Verification"
+msgstr ""
+
+#: openstudyroom/templates/account/email.html:46
+msgid "Remove"
+msgstr ""
+
+#: openstudyroom/templates/account/email.html:53
+msgid "Warning:"
+msgstr ""
+
+#: openstudyroom/templates/account/email.html:53
+msgid ""
+"You currently do not have any e-mail address set up. You should really add "
+"an e-mail address so you can receive notifications, reset your password, "
+"etc."
+msgstr ""
+
+#: openstudyroom/templates/account/email.html:61
+msgid "Add E-mail Address"
+msgstr ""
+
+#: openstudyroom/templates/account/email.html:68
+msgid "Add E-mail"
+msgstr ""
+
+#: openstudyroom/templates/account/email.html:79
+msgid "Do you really want to remove the selected e-mail address?"
+msgstr ""
+
+#: openstudyroom/templates/account/email/email_confirmation_message.txt:1
+#, python-format
+msgid ""
+"A user on %(site_name)s has created an account using this email address.\n"
+"\n"
+"To confirm this email address, go to %(activate_url)s\n"
+"\n"
+"If you did not sign up for this site, you can ignore this message.\n"
+msgstr ""
+
+#: openstudyroom/templates/account/email/email_confirmation_subject.txt:1
+#, python-format
+msgid "Confirm email address for %(site_name)s"
+msgstr ""
+
+#: openstudyroom/templates/account/email/invite_user.txt:1
+#, python-format
+msgid ""
+"You have been invited to sign up at %(name)s.\n"
+"\n"
+"%(signup_url)s\n"
+msgstr ""
+
+#: openstudyroom/templates/account/email/invite_user_subject.txt:1
+#, python-format
+msgid "Create an account on %(name)s"
+msgstr ""
+
+#: openstudyroom/templates/account/email/password_change.txt:1
+#, python-format
+msgid ""
+"This is the email notification to confirm your password has been changed on "
+"%(now)s."
+msgstr ""
+
+#: openstudyroom/templates/account/email/password_change_subject.txt:1
+msgid "Change password email notification"
+msgstr ""
+
+#: openstudyroom/templates/account/email/password_reset.txt:1
+#, python-format
+msgid ""
+"You're receiving this email because you or someone else has requested a password for your user account at %(site_name)s.\n"
+"It can be safely ignored if you did not request a password reset. Click the link below to reset your password.\n"
+"\n"
+"%(password_reset_url)s\n"
+msgstr ""
+
+#: openstudyroom/templates/account/email/password_reset_subject.txt:1
+#, python-format
+msgid "[%(site_name)s] Password reset"
+msgstr ""
+
+#: openstudyroom/templates/account/email_confirm.html:12
+msgid "Confirm E-mail Address"
+msgstr ""
+
+#: openstudyroom/templates/account/email_confirm.html:22
+#, python-format
+msgid ""
+"Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
+"address for user %(user_display)s."
+msgstr ""
+
+#: openstudyroom/templates/account/email_confirm.html:26
+msgid "Confirm"
+msgstr ""
+
+#: openstudyroom/templates/account/email_confirm.html:33
+#, python-format
+msgid ""
+"This e-mail confirmation link expired or is invalid. Please <a "
+"href=\"%(email_url)s\">issue a new e-mail confirmation request</a>."
+msgstr ""
+
+#: openstudyroom/templates/account/email_confirmation_sent.html:5
+#: openstudyroom/templates/account/email_confirmation_sent.html:8
+msgid "Confirm your email address"
+msgstr ""
+
+#: openstudyroom/templates/account/email_confirmation_sent.html:10
+#, python-format
+msgid ""
+"We have sent you an email to <b>%(email)s</b> for verification. Follow the "
+"link provided to finalize the signup process. If you do not receive it "
+"within a few minutes, contact us at <a "
+"href=\"mailto:openstudyroom@gmail.com\">openstudyroom@gmail.com</a>."
+msgstr ""
+
+#: openstudyroom/templates/account/email_confirmation_sent.html:11
+msgid "Go back"
+msgstr ""
+
+#: openstudyroom/templates/account/email_confirmed.html:5
+#: openstudyroom/templates/account/email_confirmed.html:8
+msgid "Email confirmed"
+msgstr ""
+
+#: openstudyroom/templates/account/email_confirmed.html:9
+#, python-format
+msgid "You have confirmed <b>%(email)s</b>"
+msgstr ""
+
+#: openstudyroom/templates/account/password_reset_from_key.html:6
+#: openstudyroom/templates/account/password_reset_from_key.html:9
+msgid "Change Password"
+msgstr ""
+
+#: openstudyroom/templates/account/password_reset_from_key.html:9
+msgid "Bad Token"
+msgstr ""
+
+#: openstudyroom/templates/account/password_reset_from_key.html:18
+#, python-format
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a <a href=\"%(passwd_reset_url)s\">new password "
+"reset</a>."
+msgstr ""
+
+#: openstudyroom/templates/account/password_reset_from_key.html:25
+msgid "change password"
+msgstr ""
+
+#: openstudyroom/templates/account/password_reset_from_key.html:29
+msgid "Your password is now changed."
+msgstr ""
+
+#: openstudyroom/templates/board_base.html:40
+msgid "Search..."
+msgstr ""
+
+#: openstudyroom/templates/board_base.html:47
+msgid "Advanced search"
+msgstr ""
+
+#: openstudyroom/templates/board_base.html:70
+msgid "Subscriptions"
+msgstr ""
+
+#: openstudyroom/templates/board_base.html:71
+msgid "View my messages"
+msgstr ""
+
+#: openstudyroom/templates/board_base.html:75
+msgid "Moderation queue"
+msgstr ""
+
+#: openstudyroom/templates/forum_conversation/topic_detail.html:33
+msgid "Edit"
+msgstr ""
+
+#: openstudyroom/templates/forum_conversation/topic_detail.html:37
+#: openstudyroom/templates/postman/base_folder.html:27
+#: openstudyroom/templates/postman/view.html:13
+#: openstudyroom/templates/postman/view.html:41
+msgid "Delete"
+msgstr ""
+
+#: openstudyroom/templates/forum_conversation/topic_detail.html:52
+#: openstudyroom/templates/forum_member/user_posts_list.html:75
+#, python-format
+msgid "By: <a href=\"%(poster_url)s\">%(username)s</a> on %(creation_date)s"
+msgstr ""
+
+#: openstudyroom/templates/forum_conversation/topic_detail.html:56
+#, python-format
+msgid "By: %(poster_username)s on %(creation_date)s"
+msgstr ""
+
+#: openstudyroom/templates/forum_conversation/topic_detail.html:76
+msgid "Last edited by:"
+msgstr ""
+
+#: openstudyroom/templates/forum_conversation/topic_detail.html:76
+msgid "Updated"
+msgstr ""
+
+#: openstudyroom/templates/forum_conversation/topic_detail.html:76
+msgid "on"
+msgstr ""
+
+#: openstudyroom/templates/forum_conversation/topic_detail.html:76
+#, python-format
+msgid "edited %(counter)s time in total."
+msgid_plural "edited %(counter)s times in total."
+msgstr[0] ""
+msgstr[1] ""
+
+#: openstudyroom/templates/forum_conversation/topic_detail.html:81
+msgid "Reason:"
+msgstr ""
+
+#: openstudyroom/templates/forum_conversation/topic_detail.html:97
+#: openstudyroom/templates/forum_member/user_posts_list.html:94
+msgid "Posts:"
+msgstr ""
+
+#: openstudyroom/templates/forum_conversation/topic_detail.html:100
+msgid "Anonymous user"
+msgstr ""
+
+#: openstudyroom/templates/forum_member/forum_profile_detail.html:4
+#, python-format
+msgid "%(username)s profile"
+msgstr ""
+
+#: openstudyroom/templates/forum_member/forum_profile_detail.html:32
+msgid "Edit profile"
+msgstr ""
+
+#: openstudyroom/templates/forum_member/forum_profile_detail.html:40
+msgid "Statistics"
+msgstr ""
+
+#: openstudyroom/templates/forum_member/forum_profile_detail.html:45
+#, python-format
+msgid ""
+"<h2><strong>%(counter)s</strong></h2>\n"
+"                    <p><small>Post</small></p>"
+msgid_plural ""
+"<h2><strong>%(counter)s</strong></h2>\n"
+"                    <p><small>Posts</small></p>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: openstudyroom/templates/forum_member/forum_profile_detail.html:50
+#, python-format
+msgid ""
+"<h2><strong>%(counter)s</strong></h2>\n"
+"                    <p><small>Topic</small></p>"
+msgid_plural ""
+"<h2><strong>%(counter)s</strong></h2>\n"
+"                    <p><small>Topics</small></p>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: openstudyroom/templates/forum_member/forum_profile_detail.html:64
+msgid "Recent posts"
+msgstr ""
+
+#: openstudyroom/templates/forum_member/forum_profile_detail.html:64
+msgid "View all"
+msgstr ""
+
+#: openstudyroom/templates/forum_member/forum_profile_detail.html:74
+#, python-format
+msgid "On %(creation_date)s"
+msgstr ""
+
+#: openstudyroom/templates/forum_member/subscription_topic_list.html:4
+#: openstudyroom/templates/forum_member/subscription_topic_list.html:10
+msgid "Topics that you are subscribed to"
+msgstr ""
+
+#: openstudyroom/templates/forum_member/subscription_topic_list.html:17
+#, python-format
+msgid "%(counter)s topic found"
+msgid_plural "%(counter)s topics found"
+msgstr[0] ""
+msgstr[1] ""
+
+#: openstudyroom/templates/forum_member/subscription_topic_list.html:31
+msgid "Not topics found."
+msgstr ""
+
+#: openstudyroom/templates/forum_member/topic_subscribe.html:5
+#: openstudyroom/templates/forum_member/topic_subscribe.html:12
+msgid "Subscribe to topic"
+msgstr ""
+
+#: openstudyroom/templates/forum_member/topic_subscribe.html:15
+msgid "Would you like to subscribe to this topic?"
+msgstr ""
+
+#: openstudyroom/templates/forum_member/topic_subscribe.html:18
+#: openstudyroom/templates/forum_member/topic_unsubscribe.html:18
+msgid "Yes"
+msgstr ""
+
+#: openstudyroom/templates/forum_member/topic_subscribe.html:19
+#: openstudyroom/templates/forum_member/topic_unsubscribe.html:19
+msgid "No"
+msgstr ""
+
+#: openstudyroom/templates/forum_member/topic_unsubscribe.html:5
+#: openstudyroom/templates/forum_member/topic_unsubscribe.html:12
+msgid "Unsubscribe from topic"
+msgstr ""
+
+#: openstudyroom/templates/forum_member/topic_unsubscribe.html:15
+msgid "Would you like to unsubscribe from this topic?"
+msgstr ""
+
+#: openstudyroom/templates/forum_member/user_posts_list.html:4
+#: openstudyroom/templates/forum_member/user_posts_list.html:34
+msgid "My messages"
+msgstr ""
+
+#: openstudyroom/templates/forum_member/user_posts_list.html:4
+#: openstudyroom/templates/forum_member/user_posts_list.html:34
+#, python-format
+msgid "%(username)s's posts"
+msgstr ""
+
+#: openstudyroom/templates/forum_member/user_posts_list.html:42
+#, python-format
+msgid "%(counter)s post found"
+msgid_plural "%(counter)s posts found"
+msgstr[0] ""
+msgstr[1] ""
+
+#: openstudyroom/templates/forum_member/user_posts_list.html:49
+msgid "No posts found"
+msgstr ""
+
+#: openstudyroom/templates/postman/archives.html:3
+msgid "Archived Messages"
+msgstr ""
+
+#: openstudyroom/templates/postman/archives.html:7
+msgid ""
+"Messages in this folder will never be removed. You can use this folder for "
+"long term storage."
+msgstr ""
+
+#: openstudyroom/templates/postman/archives.html:12
+#: openstudyroom/templates/postman/base.html:18
+#: openstudyroom/templates/postman/base_write.html:27
+#: openstudyroom/templates/postman/inbox.html:11
+#: openstudyroom/templates/postman/sent.html:13
+#: openstudyroom/templates/postman/trash.html:15
+msgid "Inbox"
+msgstr ""
+
+#: openstudyroom/templates/postman/archives.html:13
+#: openstudyroom/templates/postman/base.html:19
+#: openstudyroom/templates/postman/base_write.html:28
+#: openstudyroom/templates/postman/inbox.html:12
+#: openstudyroom/templates/postman/sent.html:3
+#: openstudyroom/templates/postman/sent.html:14
+#: openstudyroom/templates/postman/trash.html:16
+msgid "Sent Messages"
+msgstr ""
+
+#: openstudyroom/templates/postman/archives.html:14
+#: openstudyroom/templates/postman/base.html:20
+#: openstudyroom/templates/postman/base_write.html:29
+#: openstudyroom/templates/postman/inbox.html:13
+#: openstudyroom/templates/postman/sent.html:15
+#: openstudyroom/templates/postman/trash.html:17
+#: openstudyroom/templates/postman/write.html:3
+msgid "Write"
+msgstr ""
+
+#: openstudyroom/templates/postman/archives.html:15
+#: openstudyroom/templates/postman/base.html:21
+#: openstudyroom/templates/postman/base_write.html:30
+#: openstudyroom/templates/postman/inbox.html:14
+#: openstudyroom/templates/postman/sent.html:16
+#: openstudyroom/templates/postman/trash.html:18
+msgid "Archives"
+msgstr ""
+
+#: openstudyroom/templates/postman/archives.html:16
+#: openstudyroom/templates/postman/base.html:22
+#: openstudyroom/templates/postman/base_write.html:31
+#: openstudyroom/templates/postman/inbox.html:15
+#: openstudyroom/templates/postman/sent.html:17
+#: openstudyroom/templates/postman/trash.html:19
+msgid "Trash"
+msgstr ""
+
+#: openstudyroom/templates/postman/base.html:3
+msgid "Messaging"
+msgstr ""
+
+#: openstudyroom/templates/postman/base_folder.html:14
+msgid "Sorry, this page number is invalid."
+msgstr ""
+
+#: openstudyroom/templates/postman/base_folder.html:19
+msgid "by conversation"
+msgstr ""
+
+#: openstudyroom/templates/postman/base_folder.html:22
+msgid "by message"
+msgstr ""
+
+#: openstudyroom/templates/postman/base_folder.html:28
+#: openstudyroom/templates/postman/view.html:15
+#: openstudyroom/templates/postman/view.html:43
+msgid "Archive"
+msgstr ""
+
+#: openstudyroom/templates/postman/base_folder.html:29
+msgid "Undelete"
+msgstr ""
+
+#: openstudyroom/templates/postman/base_folder.html:30
+msgid "Mark as read"
+msgstr ""
+
+#: openstudyroom/templates/postman/base_folder.html:31
+msgid "Mark as unread"
+msgstr ""
+
+#: openstudyroom/templates/postman/base_folder.html:36
+msgid "Action"
+msgstr ""
+
+#: openstudyroom/templates/postman/base_folder.html:37
+msgid "Sender"
+msgstr ""
+
+#: openstudyroom/templates/postman/base_folder.html:38
+#: openstudyroom/templates/postman/reply.html:4
+msgid "Recipient"
+msgstr ""
+
+#: openstudyroom/templates/postman/base_folder.html:39
+msgid "Subject"
+msgstr ""
+
+#: openstudyroom/templates/postman/base_folder.html:40
+msgid "Date"
+msgstr ""
+
+#: openstudyroom/templates/postman/base_folder.html:55
+msgid "g:i A,M j,n/j/y"
+msgstr ""
+
+#: openstudyroom/templates/postman/base_folder.html:62
+msgid "No messages."
+msgstr ""
+
+#: openstudyroom/templates/postman/base_write.html:19
+msgid "Send"
+msgstr ""
+
+#: openstudyroom/templates/postman/email_user.txt:4
+#: openstudyroom/templates/postman/email_visitor.txt:3
+#, python-format
+msgid "On %(date)s, you asked to send a message to the user '%(recipient)s'."
+msgstr ""
+
+#: openstudyroom/templates/postman/email_user.txt:6
+#: openstudyroom/templates/postman/email_visitor.txt:5
+msgid "Your message has been rejected by the moderator"
+msgstr ""
+
+#: openstudyroom/templates/postman/email_user.txt:6
+#: openstudyroom/templates/postman/email_visitor.txt:5
+msgid ", for the following reason:"
+msgstr ""
+
+#: openstudyroom/templates/postman/email_user.txt:11
+#, python-format
+msgid "You have received a message from the user '%(sender)s'"
+msgstr ""
+
+#: openstudyroom/templates/postman/email_user_subject.txt:1
+#: openstudyroom/templates/postman/email_visitor_subject.txt:1
+#, python-format
+msgid "Message \"%(subject)s\" on the site %(sitename)s"
+msgstr ""
+
+#: openstudyroom/templates/postman/email_visitor.txt:1
+msgid "Dear visitor,"
+msgstr ""
+
+#: openstudyroom/templates/postman/email_visitor.txt:8
+msgid "As a reminder, please find below the content of your message."
+msgstr ""
+
+#: openstudyroom/templates/postman/email_visitor.txt:10
+#, python-format
+msgid "On %(date)s, you sent a message to the user '%(sender)s'."
+msgstr ""
+
+#: openstudyroom/templates/postman/email_visitor.txt:11
+msgid "Please find below the answer from your correspondent."
+msgstr ""
+
+#: openstudyroom/templates/postman/email_visitor.txt:14
+msgid "Thank you again for your interest in our services."
+msgstr ""
+
+#: openstudyroom/templates/postman/email_visitor.txt:15
+msgid "For more comfort, we encourage you to open an account on the site."
+msgstr ""
+
+#: openstudyroom/templates/postman/email_visitor.txt:16
+msgid "The site administrator"
+msgstr ""
+
+#: openstudyroom/templates/postman/email_visitor.txt:18
+msgid ""
+"Note: This message is issued by an automated system.\n"
+"Do not reply, this would not be taken into account."
+msgstr ""
+
+#: openstudyroom/templates/postman/inbox.html:3
+msgid "Received Messages"
+msgstr ""
+
+#: openstudyroom/templates/postman/inbox.html:6
+msgid "Received"
+msgstr ""
+
+#: openstudyroom/templates/postman/reply.html:3
+#: openstudyroom/templates/postman/view.html:17
+#: openstudyroom/templates/postman/view.html:45
+#: openstudyroom/templates/postman/view.html:52
+msgid "Reply"
+msgstr ""
+
+#: openstudyroom/templates/postman/sent.html:8
+msgid "Sent"
+msgstr ""
+
+#: openstudyroom/templates/postman/trash.html:3
+msgid "Deleted Messages"
+msgstr ""
+
+#: openstudyroom/templates/postman/trash.html:10
+msgid ""
+"Messages in this folder can be removed from time to time. For long term "
+"storage, use instead the archive folder."
+msgstr ""
+
+#: openstudyroom/templates/postman/view.html:5
+msgid "Conversation"
+msgstr ""
+
+#: openstudyroom/templates/postman/view.html:5
+msgid "Message"
+msgstr ""
+
+#: openstudyroom/templates/postman/view.html:11
+#: openstudyroom/templates/postman/view.html:39
+msgid "Back"
+msgstr ""
+
+#: openstudyroom/templates/postman/view.html:30
+msgid "Rejected"
+msgstr ""
+
+#: openstudyroom/templates/postman/view.html:30
+msgid ":"
+msgstr ""
+
+#: openstudyroom/templates/postman/view.html:49
+msgid "Fast Reply"
+msgstr ""
+
+#: openstudyroom/templates/puput/base.html:30
+msgid "Search OSR blog"
+msgstr ""
+
+#: openstudyroom/templates/puput/base.html:39
+msgid "Last Entries"
+msgstr ""
+
+#: openstudyroom/templates/puput/blog_page.html:6
+#: openstudyroom/templates/puput/blog_page.html:7
+#: openstudyroom/templates/puput/blog_page.html:29
+msgid "Entries for"
+msgstr ""
+
+#: openstudyroom/templates/puput/blog_page.html:57
+msgid "No results founds."
+msgstr ""
