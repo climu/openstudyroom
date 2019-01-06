@@ -851,6 +851,10 @@ class User(AbstractUser):
                 if opponent_ogs_id not in opponents:
                     continue
 
+                # Check game analysis
+                if not game['disable_analysis']:
+                    continue
+
                 # we need to get timesetting datas here because they are not
                 # in OGS sgfs
                 time_settings = json.loads(game["time_control_parameters"])
