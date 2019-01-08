@@ -504,12 +504,12 @@ def quit_league(request, event_id, user_id=None):
         form = ActionForm(request.POST)
         if form.is_valid():
             league = get_object_or_404(LeagueEvent, pk=event_id)
-            # member can quit for them but admins can quit anyone
             if user_id is None:
                 user = request.user
-            elif request.user.is_league_admin():
-                user = get_object_or_404(User, pk=user_id)
             else:
+                user = get_object_or_404(User, pk=user_id)
+            # member can quit for them but admins can quit anyone
+            if not (user == request.user or request.user.is_league_admin()):
                 raise Http404('What are you doing here?1')
             if league.can_quit(user):
                 player = LeaguePlayer.objects.filter(user=user, event=league).first()
