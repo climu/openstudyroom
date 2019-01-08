@@ -1,5 +1,5 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 league_tags static forum_markup_tags%}
+{% load bootstrap3 league_tags static forum_markup_tags i18n %}
 {% block title %}OSR - {{community.name}}{% endblock %}
 {% block extra_head_js %}
 <script type="text/javascript">
@@ -98,7 +98,11 @@ All {{community.name}} leagues
 </h3>
 Open leagues are green.
 </div>
+{% language 'en' %}
+
 {% include "community/includes/leagues_table.html" with leagues=leagues%}
+{%endlanguage%}
+
 </div>
 
 
@@ -117,7 +121,10 @@ All {{community.name}} tournaments
 </h3>
 Open tournament are green.
 </div>
+{% language 'en' %}
 {% include "community/includes/tournaments_table.html" with leagues=tournaments%}
+{%endlanguage%}
+
 </div>
 
 
@@ -155,8 +162,10 @@ Community admins are blue.
 <div class="col-md-4">
   <div id ="game_infos">
 </div>
-
+{% language 'en' %}
 {% include "league/includes/games.html" with sgfs=sgfs %}
+{%endlanguage%}
+
 </div>
 
 <div class="col-md-8">
