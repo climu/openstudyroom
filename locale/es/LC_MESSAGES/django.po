@@ -230,7 +230,7 @@ msgstr "cambiar contraseña"
 
 #: openstudyroom/templates/account/password_reset_from_key.html:29
 msgid "Your password is now changed."
-msgstr "Tu contraseña no ha sido modificada."
+msgstr "Su contraseña no ha sido modificada."
 
 #: openstudyroom/templates/board_base.html:40
 msgid "Search..."
@@ -731,7 +731,7 @@ msgstr "Si se juega en OGS, <b>el análisis de la partida debería ser desactiva
 #. no sé cómo traducir bien "matching"
 #: league/templates/league/event.html:42
 msgid "Using a bot such as Leela or Crazy Stone during league game is strictly forbidden. The OSR team might check some games from time to time to look for matching with these go engines."
-msgstr "Usar un bot como Leela o Crazy Stone durante partidas de liga está estrictamente prohibido. El equipo OSR podría revisar algunas partidas de vez en cuando para buscar similitudes con éstos."
+msgstr "Usar un bot como Leela o Crazy Stone durante partidas de liga está estrictamente prohibido. El equipo OSR podría revisar algunas partidas de vez en cuando para analizar correlaciones con éstos."
 
 #: league/templates/league/event.html:44
 msgid "League rules"
@@ -775,7 +775,7 @@ msgstr "Partidas"
 
 #: league/templates/league/includes/league_nav.html:27
 msgid " You are about to join the %(event)s. Allright? "
-msgstr " Usted está a punto de unirse a %(event)s. ¿De acuerdo?"
+msgstr " Usted está a punto de unirse a %(event)s. ¿De acuerdo? "
 
 #: league/templates/league/includes/league_nav.html:28
 msgid "Join"
@@ -791,11 +791,11 @@ msgstr ""
 
 #: openstudyroom/templates/account/signup.html:14
 msgid "Join the Open Study Room"
-msgstr ""
+msgstr "Ingresar a Open Study Room"
 
 #: openstudyroom/templates/account/signup.html:22
 msgid "The Open Study Room"
-msgstr ""
+msgstr "Open Study Room"
 
 #: openstudyroom/templates/account/signup.html:24
 msgid "Take chance to join an online go community dedicated to play, teach, learn and study the fascinating game of go"
@@ -811,7 +811,7 @@ msgstr ""
 
 #: openstudyroom/templates/account/signup.html:32
 msgid "Register here"
-msgstr ""
+msgstr "Registrarse aquí"
 
 #: openstudyroom/templates/account/signup.html:34
 msgid "Registering will allow you to participate in our <a href='/league/league_rules'>leagues</a>, use our <a href='/forum/'>forums</a> and our discord server"
@@ -831,7 +831,7 @@ msgstr ""
 
 #: openstudyroom/templates/account/signup.html:41
 msgid "OSR code of conduct"
-msgstr ""
+msgstr "Código de conducta de OSR"
 
 #: openstudyroom/templates/account/signup.html:42
 msgid "By creating an account on OSR website, you agree to <a href='/code-conduct/'>OSR code of conduct</a>. Just simple common sense rules so everyone can get along nicely"
