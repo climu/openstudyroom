@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openstudyroom\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-06 11:27+0100\n"
+"POT-Creation-Date: 2019-01-08 12:23+0100\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -434,6 +434,91 @@ msgstr "cambiar contraseña"
 #: openstudyroom/templates/account/password_reset_from_key.html:29
 msgid "Your password is now changed."
 msgstr "Tu contraseña no ha sido modificada."
+
+#: openstudyroom/templates/account/signup.html:14
+msgid "Join the Open Study Room"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:22
+msgid "The Open Study Room"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:24
+msgid ""
+"Take chance to join an online go community dedicated to play, teach, learn "
+"and study the fascinating game of go"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:27
+msgid ""
+"It's free, community driven, and we welcome everyone from beginers to strong "
+"dans"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:30
+msgid ""
+"If you are uncertain what OSR is, or have any questions, be sure to read our "
+"<a href='/faq/'>FAQ</a>. You can also ask us directly in <a href='https://"
+"discord.gg/b7meDjX'>Discord server</a>"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:32
+msgid "Register here"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:34
+msgid ""
+"Registering will allow you to participate in our <a href='/league/"
+"league_rules'>leagues</a>, use our <a href='/forum/'>forums</a> and our "
+"discord server"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:37
+msgid ""
+"Just fill this form by indicating your <a href='https://www.gokgs.com'>KGS</"
+"a> and/or <a href='https://online-go.com'>OGS</a> username so that our "
+"automatic game finder can upload your league games to your profile"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:39
+msgid ""
+"We will check that your OGS/KGS username are valid (at least one game) and "
+"that you verify your email before activating your account"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:40
+msgid ""
+"Setting your timezone will allow our website to adapt all times to your "
+"local time"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:41
+msgid "OSR code of conduct"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:42
+msgid ""
+"By creating an account on OSR website, you agree to <a href='/code-"
+"conduct/'>OSR code of conduct</a>. Just simple common sense rules so "
+"everyone can get along nicely"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:48
+#: openstudyroom/templates/account/signup.html:65
+msgid "Sign up"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:62
+msgid "Select the communities you have interest in"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:69
+msgid "Already have an account?"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:69
+msgid "Log in"
+msgstr ""
 
 #: openstudyroom/templates/board_base.html:40
 msgid "Search..."

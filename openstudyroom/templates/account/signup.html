@@ -1,6 +1,6 @@
 {% extends "full_width.html" %}
 
-{% load account %}
+{% load account i18n %}
 
 {% load bootstrap3 %}
 {%block title%}Sign up{%endblock%}
@@ -11,7 +11,7 @@
 
 {% block heading %}
 <div class="page-header">
-    <h1>Join the Open Study Room</h1>
+    <h1>{% trans "Join the Open Study Room" %}</h1>
 </div>
 {% endblock %}
 
@@ -19,33 +19,33 @@
 {% block content %}
     <div class="row">
       <div class="col-md-8">
-        <legend><h3>The Open Study Room</h3></legend>
+        <legend><h3>{% trans "The Open Study Room" %}</h3></legend>
           <p>
-      Take chance to join an online go community dedicated to play, teach, learn and study the fascinating game of go.
+      {% trans "Take chance to join an online go community dedicated to play, teach, learn and study the fascinating game of go" %}.
       </p>
       <p>
-        It's free, community driven, and we welcome everyone from beginers to strong dans.
+        {% trans "It's free, community driven, and we welcome everyone from beginers to strong dans" %}.
       </p>
       <p>
-        If you are uncertain what OSR is, or have any questions, be sure to read our <a href="/faq/">FAQ</a>. You can also ask us directly in <a href="https://discord.gg/b7meDjX">Discord server</a>.
+        {% trans "If you are uncertain what OSR is, or have any questions, be sure to read our <a href='/faq/'>FAQ</a>. You can also ask us directly in <a href='https://discord.gg/b7meDjX'>Discord server</a>" %}.
       </p>
-        <legend><h3>Register here</h3></legend>
+        <legend><h3>{% trans "Register here" %}</h3></legend>
       <p>
-        Registering will allow you to participate in our <a href="/league/league_rules">leagues</a>, use our <a href="/forum/">forums</a> and our discord server.
+        {% trans "Registering will allow you to participate in our <a href='/league/league_rules'>leagues</a>, use our <a href='/forum/'>forums</a> and our discord server" %}.
       </p>
       <p>
-        Just fill this form by indicating your <a href="https://www.gokgs.com">KGS</a> and/or <a href="https://online-go.com">OGS</a> username so that our automatic game finder can upload your league games to your profile.
+        {% trans "Just fill this form by indicating your <a href='https://www.gokgs.com'>KGS</a> and/or <a href='https://online-go.com'>OGS</a> username so that our automatic game finder can upload your league games to your profile" %}.
       </p>
-      <p> We will check that your OGS/KGS username are valid (at least one game) and that you verify your email before activating your account.</p>
-      <p>Setting your timezone will allow our website to adapt all times to your local time.</p>
-      <legend><h3>OSR code of conduct</h3></legend>
-      <p> By creating an account on OSR website, you agree to <a href="/code-conduct/">OSR code of conduct</a>. Just simple common sense rules so everyone can get along nicely.</p>
+      <p> {% trans "We will check that your OGS/KGS username are valid (at least one game) and that you verify your email before activating your account" %}.</p>
+      <p>{% trans "Setting your timezone will allow our website to adapt all times to your local time" %}.</p>
+      <legend><h3>{% trans "OSR code of conduct" %}</h3></legend>
+      <p>{% trans "By creating an account on OSR website, you agree to <a href='/code-conduct/'>OSR code of conduct</a>. Just simple common sense rules so everyone can get along nicely" %}.</p>
       </div>
 
         <div class="col-md-4">
             <form id="signup_form" method="post" action="{% url "account_signup" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
                 {% csrf_token %}
-                <legend><h3>Sign up</h3></legend>
+                <legend><h3>{% trans "Sign up" %}</h3></legend>
                 {% for error in form.non_field_errors %}
                     <div class="alert alert-danger">
                         <strong>{{ error|escape }}</strong>
@@ -59,14 +59,14 @@
                 {%bootstrap_field form.password2 show_label=False addon_before="<span class='glyphicon glyphicon-lock'></span>  " %}
                 {%bootstrap_field form.timezone show_label=True addon_before="<span class='glyphicon glyphicon-globe'></span>  " %}
                 {%bootstrap_field form.communities show_label=True addon_before="<span class='glyphicon glyphicon-globe'></span>  " %}
-                <div class="help-block">Select the communities you have interest in.</div>
+                <div class="help-block">{% trans "Select the communities you have interest in" %}.</div>
 
                   <input type="hidden" name="{{ redirect_field_name }}" value="/welcome/">
-                <button type="submit" class="btn btn-primary">Sign up</button>
+                <button type="submit" class="btn btn-primary">{% trans "Sign up" %}</button>
             </form>
             <p class="login-signup">
                 <small>
-                   Already have an account?  <strong><a href="{% url 'account_login' %}">Log in</a></strong>
+                   {% trans "Already have an account?"%}  <strong><a href="{% url 'account_login' %}">{% trans "Log in" %}</a></strong>
                 </small>
             </p>
         </div>
