@@ -1,5 +1,5 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 league_tags static forum_markup_tags i18n %}
+{% load bootstrap3 league_tags static forum_markup_tags i18n%}
 {% block title %}OSR - {{community.name}}{% endblock %}
 {% block extra_head_js %}
 <script type="text/javascript">
@@ -35,7 +35,7 @@ return false;};
 <div class="panel-heading clearfix">
   <h3> {{community.name}} ({{community.slug}})
   {% if admin %}
-  <a href="{% url 'community:community_update' community.pk %}"><button class="btn btn-default pull-right">{% bootstrap_icon 'wrench' %} Edit </button></a>
+  <a href="{% url 'community:community_update' community.pk %}"><button class="btn btn-default pull-right">{% bootstrap_icon 'wrench' %} {% trans "Edit" %} </button></a>
   {% endif %}
   {% if can_join %}
   <form action=" {% url 'community:community_join' community.pk request.user.pk %}" method="post" >
@@ -43,8 +43,10 @@ return false;};
     <div class="form-group">
     <input type="hidden" name="action" value="join">
     <input type="hidden" name="next" value="{{request.path}}">
-    <button type="submit" class="btn btn-success pull-right"  onclick="return confirm('You are about to join the {{community.name}} community. Allright?')">
-    {% bootstrap_icon "ok" %} Join {{community.name}} !
+    <button type="submit" class="btn btn-success pull-right"  onclick="return confirm('
+    {% blocktrans with name=community.name %}You are about to join the {{name}} community. Allright? {% endblocktrans %}
+    ')">
+    {% bootstrap_icon "ok" %} {% trans "Join" %} {{community.name}} !
     </button>
     </div>
     </form>
@@ -56,7 +58,7 @@ return false;};
     <input type="hidden" name="action" value="join">
     <input type="hidden" name="next" value="{{request.path}}">
     <button type="submit" class="btn btn-danger pull-right"  onclick="return confirm('You are about to quit the {{community.name}} community. Allright?')">
-    {% bootstrap_icon "remove" %} Quit {{community.name}} !
+    {% bootstrap_icon "remove" %} {% trans "Quit" %} {{community.name}} !
     </button>
     </div>
     </form>
@@ -73,81 +75,72 @@ return false;};
 
 </div>
 </div>
-{% if admin %}
-  {% include "community/includes/new_user_table.html"%}
-{% endif %}
+
 <ul class="nav nav-tabs">
-  <li class="active"><a data-toggle="tab" href="#leagues">Leagues</a></li>
-  <li><a data-toggle="tab" href="#tournaments">tournaments</a></li>
-  <li><a data-toggle="tab" href="#members">Members</a></li>
+  <li class="active"><a data-toggle="tab" href="#leagues">{% trans "Leagues" %}</a></li>
+  <li><a data-toggle="tab" href="#tournaments">{% trans "tournaments" %}</a></li>
+  <li><a data-toggle="tab" href="#members">{% trans "Members" %}</a></li>
 </ul>
 
 <div class="tab-content">
 <div id="leagues" class="panel panel-default tab-pane fade in active">
 <div class="panel-heading clearfix">
   <h3>
-All {{community.name}} leagues
+{% blocktrans with name=community.name %}All {{name}} leagues {% endblocktrans %}
 {% if admin %}
 <a href="{% url 'community:create_league' community.pk %}">
   <button class="btn btn-success pull-right">
     {% bootstrap_icon 'plus' %}
-    Create new league
+    {% trans "Create new league" %}
   </button>
 </a>
 {% endif %}
 </h3>
-Open leagues are green.
+{% trans "Open leagues are green." %}
 </div>
-{% language 'en' %}
-
 {% include "community/includes/leagues_table.html" with leagues=leagues%}
-{%endlanguage%}
-
 </div>
 
 
 <div id="tournaments" class="panel panel-default tab-pane fade">
 <div class="panel-heading clearfix">
   <h3>
-All {{community.name}} tournaments
+{% blocktrans with name=community.name %}All {{name}} tournaments {% endblocktrans %}
 {% if admin %}
 <a href="{% url 'community:create_tournament' community.pk %}">
   <button class="btn btn-success pull-right">
     {% bootstrap_icon 'plus' %}
-    Create new tournament
+    {% trans "Create new tournament" %}
   </button>
 </a>
 {% endif %}
 </h3>
-Open tournament are green.
+{% trans "Open tournament are green." %}
 </div>
-{% language 'en' %}
 {% include "community/includes/tournaments_table.html" with leagues=tournaments%}
-{%endlanguage%}
-
 </div>
 
 
 <div id="members" class="panel panel-default tab-pane fade">
 <div class="panel-heading clearfix">
   <h3>
-All {{community.name}} members
+{% blocktrans with name=community.name %}All {{name}} members {% endblocktrans %}
 {% if admin %}
   <div class="pull-right">
-    Invite a user
+    {% trans "Invite a user" %}
     <form action=" {% url 'community:admin_invite_user' community.pk %}" method="post" >
         {% csrf_token %}
         <div class="form-group">
-        <input type="text" name="username" placeholder="OSR exact username" >
+        <input type="text" name="username" placeholder="{% trans 'OSR exact username' %}" >
         <button type="submit" class="btn btn-success btn-sm"  >
-        {% bootstrap_icon "ok" %} Invite  !
+        {% bootstrap_icon "ok" %} {% trans "Invite  !" %}
         </button>
         </div>
         </form>
   </div>
 {% endif %}
 </h3>
-Community admins are blue.
+{% trans "Community admins are blue." %}
 </div>
 
 {% include "community/includes/members_table.html" with members=members%}
@@ -157,22 +150,20 @@ Community admins are blue.
 
 
 <div class="panel panel-default">
-<div class="panel-heading"><h3>{{community.name}} Games</h4></div>
+<div class="panel-heading"><h3>{{community.name}} {% trans "Games" %}</h4></div>
 <div class ="row">
 <div class="col-md-4">
   <div id ="game_infos">
 </div>
-{% language 'en' %}
-{% include "league/includes/games.html" with sgfs=sgfs %}
-{%endlanguage%}
 
+{% include "league/includes/games.html" with sgfs=sgfs %}
 </div>
 
 <div class="col-md-8">
 
     <div id="player">
       <div class="alert alert-info">
-      Click a game result to see it.
+      {% trans "Click a game result to see it." %}
     </div>
   </div>
 </div>
