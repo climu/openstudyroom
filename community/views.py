@@ -127,8 +127,8 @@ def community_page(request, slug):
         filter(league_valid=True, events__in=leagues).\
         prefetch_related('white', 'black', 'winner').\
         select_related('white__profile', 'black__profile').\
+        distinct().\
         order_by('-date')
-    print(new_members)
     context = {
         'community': community,
         'leagues': leagues,
