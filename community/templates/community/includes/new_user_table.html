@@ -17,10 +17,10 @@
       {% for user in new_members %}
         <tr>
           <td>{{user.username}}</td>
-          <td>{{user.ogs_username}}</td>
-          <td>{{user.kgs_username}}</td>
+          <td>{{user.profile.ogs_username}}</td>
+          <td>{{user.profile.kgs_username}}</td>
           <td>
-                <form action=" {% url 'community:community_quit' community.pk user.pk %}" method="post" >
+                <form class="form-inline" action=" {% url 'community:community_quit' community.pk user.pk %}" method="post" >
                 {% csrf_token %}
                 <div class="form-group">
                 <input type="hidden" name="action" value="quit">
