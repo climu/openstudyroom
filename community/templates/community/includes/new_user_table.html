@@ -1,4 +1,4 @@
-{% load bootstrap3 %}
+{% load bootstrap3 i18n %}
 <div class="panel panel-default ">
   <div class="panel-heading">
     New users.
@@ -6,26 +6,27 @@
   <div class="panel-body">
   <table class="table">
     <thead>
-      <th>Username </th>
-      <th> OGS username </th>
-      <th> KGS username </th>
-      <th> Reject</th>
-      <th> Accept</th>
+      <th>{% trans "username" %}</th>
+      <th> OGS {% trans "username" %} </th>
+      <th> KGS {% trans "username" %} </th>
+      <th> {% trans "reject" %}</th>
+      <th> {% trans "accept" %}</th>
 
     </thead>
     <tbody>
       {% for user in new_members %}
         <tr>
           <td>{{user.username}}</td>
-          <td>{{user.profile.ogs_username}}</td>
-          <td>{{user.profile.kgs_username}}</td>
+          <td>{{user.ogs_username}}</td>
+          <td>{{user.kgs_username}}</td>
           <td>
-                <form class="form-inline" action=" {% url 'community:community_quit' community.pk user.pk %}" method="post" >
+                <form action=" {% url 'community:community_quit' community.pk user.pk %}" method="post" >
                 {% csrf_token %}
                 <div class="form-group">
                 <input type="hidden" name="action" value="quit">
                 <input type="hidden" name="next" value="{{request.path}}">
-                <button type="submit" class="btn btn-danger btn-sm"  onclick="return confirm('You are about to kick {{user.username}}. Allright?')">
+                <button type="submit" class="btn btn-danger btn-sm"  onclick="return confirm('
+                {% blocktrans with username=user.username %}You are about to kick {{username}}. Allright?{% endblocktrans %}')">
                 {% bootstrap_icon "remove" %}
                 </button>
                 </div>
@@ -38,7 +39,8 @@
                 {% csrf_token %}
                 <div class="form-group">
                 <input type="hidden" name="username" value="{{user.username}}" >
-                <button type="submit" class="btn btn-success btn-sm"  onclick="return confirm('You are about to add {{user.username}} as a community member?')">
+                <button type="submit" class="btn btn-success btn-sm"  onclick="return confirm('
+                {% blocktrans with username=user.username %}You are about to add {{username}} as a community member?{% endblocktrans %}')">
                 {% bootstrap_icon "plus" %}
                 </button>
                 </div>

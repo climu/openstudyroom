@@ -1,12 +1,12 @@
-{% load league_tags bootstrap3 %}
+{% load league_tags bootstrap3 i18n %}
 
 <table id="members-table" class="table">
   <thead>
-    <th>Username</th>
-    <th>OGS username</th>
+    <th>{% trans "username" %}</th>
+    <th>OGS {% trans "username" %}</th>
 	<th>KGS username</th>
 	{% if admin %}
-    <th>kick out</th>
+    <th>{% trans "kick out" %}</th>
 	<th>admin</th>
 	{% endif %}
   </thead>
@@ -24,8 +24,9 @@
       <div class="form-group">
       <input type="hidden" name="action" value="quit">
       <input type="hidden" name="next" value="{{request.path}}">
-      <button type="submit" class="btn btn-danger btn-sm"  onclick="return confirm('You are about to kick {{user.username}}. Allright?')">
-      {% bootstrap_icon "remove" %} Kick  !
+      <button type="submit" class="btn btn-danger btn-sm"  onclick="return confirm('
+      {% blocktrans with username=user.username %}You are about to kick {{username}}. Allright?{% endblocktrans %}')">
+      {% bootstrap_icon "remove" %} {% trans "Kick  !" %}
       </button>
       </div>
       </form>
@@ -40,7 +41,8 @@
 		<input type="hidden" name="user_id" value="{{user.pk}}">
 	 	<input type="hidden" name="action" value="add">
 	 	<input type="hidden" name="next" value="{{request.path}}">
-	 	<button type="submit" class="btn btn-success btn-sm"  onclick="return confirm('You are about to add {{user.username}} as a community admin?')">
+	 	<button type="submit" class="btn btn-success btn-sm"  onclick="return confirm('
+    {% blocktrans with username=user.username %}You are about to add {{username}} as a community admin?{% endblocktrans %}')">
 	 	{% bootstrap_icon "plus" %}
 	 	</button>
 	 	</div>
@@ -55,7 +57,8 @@
   	  <input type="hidden" name="user_id" value="{{user.pk}}">
 	  <input type="hidden" name="action" value="rm">
 	  <input type="hidden" name="next" value="{{request.path}}">
-	  <button type="submit" class="btn btn-danger btn-sm"  onclick="return confirm('You are about to remove {{user.username}} from community admins?')">
+	  <button type="submit" class="btn btn-danger btn-sm"  onclick="return confirm('
+    {% blocktrans with username=user.username %}You are about to remove {{username}} from community admins?{% endblocktrans %}')">
 	  {% bootstrap_icon "minus" %}
 	  </button>
 	  </div>

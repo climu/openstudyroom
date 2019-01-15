@@ -1,43 +1,44 @@
 {% load bootstrap3 league_tags %}
 {% load l10n i18n %}
 
-{% localize off %}
-{% language 'en' %}
+
 <table id="leagues-table" class="table">
   <thead>
-    <th>Name</th>
-    <th>Begin</th>
-    <th>Ends</th>
-    <th>Type</th>
-    <th># Divisions</th>
-    <th># Players</th>
-    <th># games </th>
+    <th>{% trans "name" %}</th>
+    <th>{% trans "begin" %}</th>
+    <th>{% trans "ends" %}</th>
+    <th>{% trans "type" %}</th>
+    <th>{% trans "divisions" %}</th>
+    <th>{% trans "players" %}</th>
+    <th>{% trans "games" %}</th>
     {% if admin %}
-    <th>Edit </th>
+    <th>{% trans "edit" %}</th>
     {% endif %}
   </thead>
   <tbody>
-  {% for league in leagues %}
-  <tr {% if league.is_open %}class="success"{% endif %}>
-    <td>
-      {{league | event_link}}
-      {% if  not league.is_public %}
-   <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-     {% endif %}
-   </td>
-    <td>{{league.begin_time |date:"M d, Y"}}</td>
-    <td>{{league.end_time |date:"M d, Y"}}</td>
-    <td>{{league.type}}</td>
-    <td>{{ league.number_divisions }}</td>
-    <td>{{league.number_players}}</td>
-    <td>{{ league.number_games}}</td>
-    {% if admin %}
-    <td><a href= "{% url 'community:update_league' league.pk %}"> {% bootstrap_icon 'wrench' %} </a></td>
-    {% endif %}
-  </tr>
-  {% endfor %}
+  {% localize off %}
+  {% language 'en' %}
+    {% for league in leagues %}
+    <tr {% if league.is_open %}class="success"{% endif %}>
+      <td>
+        {{league | event_link}}
+        {% if  not league.is_public %}
+     <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+       {% endif %}
+     </td>
+      <td>{{league.begin_time |date:"M d, Y"}}</td>
+      <td>{{league.end_time |date:"M d, Y"}}</td>
+      <td>{{league.type}}</td>
+      <td>{{ league.number_divisions }}</td>
+      <td>{{league.number_players}}</td>
+      <td>{{ league.number_games}}</td>
+      {% if admin %}
+      <td><a href= "{% url 'community:update_league' league.pk %}"> {% bootstrap_icon 'wrench' %} </a></td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  {% endlanguage %}
+
+  {% endlocalize %}
 </tbody>
 </table>
-{% endlanguage %}
-
-{% endlocalize %}

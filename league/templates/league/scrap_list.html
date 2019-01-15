@@ -1,31 +1,30 @@
 {% extends "league/base.html" %}
-{% load bootstrap3 league_tags%}
-{% block title %}OSR leagues - Scrape list{% endblock %}
+{% load bootstrap3 league_tags i18n%}
+{% block title %}{% trans "OSR leagues" %} - {% trans "Scrape list" %}{% endblock %}
 {% block heading%}
   <div class="page-header">
-      <h1>OSR League - Scrape list</h1>
+      <h1>{% trans "OSR leagues" %} - {% trans "Scrape list" %}</h1>
     </div>
 {%endblock%}
 {% block content %}
 <ul class="nav nav-tabs">
-  <li ><a href="{% url 'league:archives' %}">Archives</a></li>
+  <li ><a href="{% url 'league:archives' %}">{% trans "Archives" %}</a></li>
   {% for ev in open_events %}
   <li {%if ev == event %} class="active"{%endif %}>
     {{ev|event_link}}
   </li>
   {% endfor %}
-  <li class="active pull-right"><a href="{% url 'league:scrap_list' %}">Scrape list</a></li>
+  <li class="active pull-right"><a href="{% url 'league:scrap_list' %}">{% trans "Scrape list" %}</a></li>
 </ul>
-<div class="well"> Every 5 minutes, our system checks whether a player (one player at a time) has played any new games.
-  This table shows the players that are next in line to be checked by the system.
+<div class="well"> {% trans "Every 5 minutes, our system checks whether a player (one player at a time) has played any new games. This table shows the players that are next in line to be checked by the system." %}
 
 {% if request.user.is_authenticated and request.user.profile in profiles %}
   <form action="" method="POST" class="form-inline" >{% csrf_token %}
-    <span> If you just played a game, you can move you up this list by clicking this button :</span>
+    <span> {% trans "If you just played a game, you can move you up this list by clicking this button :" %}</span>
 
     <input type="hidden" name="action" value="p_status_up">
     <button type="submit" formaction="{% url 'league:scrap_list_up' request.user.profile.pk %}" class="btn btn-primary btn-xs">
-      {% bootstrap_icon "arrow-up" %} Put me up !
+      {% bootstrap_icon "arrow-up" %} {% trans "Put me up !" %}
     </button>
   </form>
    {% endif %}
@@ -33,10 +32,10 @@
 <table id='player-table' class='display table' cellspacing='0' width='100%' >
 	<thead>
 	<tr>
-		<th>Player</th>
-		<th>Check in (min)</th>
+		<th>{% trans "player" %}</th>
+		<th>{% trans "check in (min)" %}</th>
     {% if request.user.is_authenticated and request.user.is_league_admin %}
-    <th> Put up</th>
+    <th>{% trans "put up" %}</th>
     {% endif %}
 
 	</thead>

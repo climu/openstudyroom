@@ -1,11 +1,11 @@
 {% extends "league/base.html" %}
-{% load tz static league_tags bootstrap3%}
-{% block title %}{{event}}- Results{% endblock %}
+{% load tz static league_tags bootstrap3 i18n %}
+{% block title %}{{event}}- {% trans "results" %}{% endblock %}
 
 
 {% block content %}
 <ul class="nav nav-tabs">
-  <li ><a href="{% url 'league:archives' %}">Archives</a></li>
+  <li ><a href="{% url 'league:archives' %}">{% trans "Archives" %}</a></li>
   {%if event not in open_events%}
   <li class="active">{{event |event_link}}</li>
     {%endif%}
@@ -25,7 +25,7 @@
     </a>
   </li>
   {% endfor %}
-  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrape list</a></li>
+  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">{% trans "Scrape list" %}</a></li>
 
 </ul>
 {% include 'league/includes/league_nav.html' with active='results' %}
@@ -44,14 +44,14 @@
 {% include "league/includes/results_ladder.html"  %}
 {% else %}
 <div class="well">
-  This league is empty !
+  {% trans "This league is empty !" %}
 </div>
 {% endif %}
 {% endif %}
 
 {% else %}
 <div class="well">
-  This league is empty !
+  {% trans "This league is empty !" %}
 </div>
 {% endif %}
 
