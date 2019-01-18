@@ -106,7 +106,7 @@ urlpatterns = [
     url(r'^(?P<event_id>[0-9]+)/quit/$', views.quit_league, name='quit_league'),
     url(r'^(?P<event_id>[0-9]+)/quit/(?P<user_id>[0-9]+)/$', views.quit_league, name='quit_league'),
 
-    url(r'^admin/create-all-profiles/$', views.create_all_profiles, name='create_all_profiles'),
+    url(r'^admin/create-profile/(?P<user_id>[0-9]+)$', views.create_profile, name='create_profile'),
     url(r'^admin/update-all-sgf-check-code/$',
         views.update_all_sgf_check_code, name='update_all_sgf_check_code'),
     url(

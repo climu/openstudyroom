@@ -747,53 +747,57 @@ def admin(request):
         user_id = request.POST.get('user_id')
         action = request.POST.get('action')
         user = User.objects.get(pk=user_id)
-        if user.groups.filter(name='new_user').exists():
-            if action == "welcome":
-                # remove new user group
-                group = Group.objects.get(name='new_user')
-                group.user_set.remove(user)
-                # add league_member group
-                group = Group.objects.get(name='league_member')
-                user.groups.add(group)
-                # send email
-                utils.quick_send_mail(user, 'emails/welcome.txt')
-                # send discord webhook
-                if settings.DEBUG:
-                    discord_url = 'http://exemple.com' # change this for local test
+        if user.groups.filter(name='new_user').exists() and action == "welcome":
+            # remove new user group
+            group = Group.objects.get(name='new_user')
+            group.user_set.remove(user)
+            # add league_member group
+            group = Group.objects.get(name='league_member')
+            user.groups.add(group)
+            # send email
+            utils.quick_send_mail(user, 'emails/welcome.txt')
+            # send discord webhook
+            if settings.DEBUG:
+                discord_url = 'http://exemple.com' # change this for local test
 
-                else:
-                    with open('/etc/discord_welcome_hook_url.txt') as f:
-                        discord_url = f.read().strip()
-                n_users = User.objects.filter(groups__name__in=['league_member']).count()
-                message = "Please welcome our %dth user **%s** with a violent game of baduk.\n" % (n_users, user.username)
-                if user.profile.kgs_username:
-                    message += "KGS : " + user.profile.kgs_username + " \n"
-                if user.profile.ogs_username:
-                    message += "OGS : [" + user.profile.ogs_username +\
-                        "](https://online-go.com/player/" + str(user.profile.ogs_id) + ")"
-                    if user.profile.ogs_rank:
-                        message += " (" + user.profile.ogs_rank + ")"
-                values = {"content": message}
-                requests.post(discord_url, json=values)
-                # manage communities welcome
-                community_groups = user.groups.\
-                    filter(name__icontains='_community_new_member').\
-                    filter(new_user_community__close=False)
-                for group in community_groups:
-                    user.groups.add(group.new_user_community.get().user_group)
-                    user.groups.remove(group)
+            else:
+                with open('/etc/discord_welcome_hook_url.txt') as f:
+                    discord_url = f.read().strip()
+            n_users = User.objects.filter(groups__name__in=['league_member']).count()
+            message = "Please welcome our %dth user **%s** with a violent game of baduk.\n" % (n_users, user.username)
+            if user.profile.kgs_username:
+                message += "KGS : " + user.profile.kgs_username + " \n"
+            if user.profile.ogs_username:
+                message += "OGS : [" + user.profile.ogs_username +\
+                    "](https://online-go.com/player/" + str(user.profile.ogs_id) + ")"
+                if user.profile.ogs_rank:
+                    message += " (" + user.profile.ogs_rank + ")"
+            values = {"content": message}
+            requests.post(discord_url, json=values)
+            # manage communities welcome
+            community_groups = user.groups.\
+                filter(name__icontains='_community_new_member').\
+                filter(new_user_community__close=False)
+            for group in community_groups:
+                user.groups.add(group.new_user_community.get().user_group)
+                user.groups.remove(group)
 
-            elif action[0:6] == "delete":
-                if action[7:15] == "no_games":  # deletion due to no played games
-                    utils.quick_send_mail(user, 'emails/no_games.txt')
-                user.delete()
+        elif action[0:6] == "delete":
+            print("here")
+            if action[7:15] == "no_games":  # deletion due to no played games
+                utils.quick_send_mail(user, 'emails/no_games.txt')
+            user.delete()
         else:
             return HttpResponse('failure')
         return HttpResponse('succes')
 
     # on normal /league/admin load
     else:
+        # get new users
         new_users = User.objects.filter(groups__name='new_user')
+        # get users without a profile
+        no_profile_users = User.objects.filter(profile=None)
+
         # get url of admin board if debug = False
         if settings.DEBUG:
             board_url = 'https://mensuel.framapad.org/p/1N0qTQCsk6?showControls=true&showChat=false&showLineNumbers=false&useMonospaceFont=false'
@@ -803,6 +807,7 @@ def admin(request):
         context = {
             'new_users': new_users,
             'board_url': board_url,
+            'no_profile_users': no_profile_users,
         }
         template = loader.get_template('league/admin/dashboard.html')
         return HttpResponse(template.render(context, request))
@@ -1482,16 +1487,15 @@ def admin_users_list(request, event_id=None, division_id=None):
 
 @login_required()
 @user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
-def create_all_profiles(request):
-    """Create all profiles for users. Should be removed now"""
+def create_profile(request, user_id):
+    """Create profiles for a user."""
+    user = get_object_or_404(User, pk=user_id)
     if request.method == 'POST':
         form = ActionForm(request.POST)
         if form.is_valid():
-            users = User.objects.filter(profile__isnull=True)
-            for user in users:
-                profile = Profile(user=user, kgs_username=user.kgs_username)
-                profile.save()
-            message = "Successfully created " + str(users.count()) + " profiles."
+            profile = Profile(user=user)
+            profile.save()
+            message = "Successfully created a profile for " + user.username + " ."
             messages.success(request, message)
             return HttpResponseRedirect(reverse('league:admin'))
         else:

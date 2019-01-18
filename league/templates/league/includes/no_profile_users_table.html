@@ -1,0 +1,58 @@
+
+{% load bootstrap3 community_tags %}
+
+  <div class="panel panel-default">
+  <div class="panel-heading"><h3> Users with no profiles </h3></div>
+    <table id='new_user-table' class='display table' >
+      <thead>
+        <tr>
+          <th>username</th>
+          <th>email</th>
+          <th>Communities interest</th>
+          <th>Delete</th>
+          <th>Create profile</th>
+        </thead>
+        <tbody>
+          {% for u in no_profile_users %}
+          <tr>
+            <td>{{u.username}}</td>
+
+            <td>
+              {% with new_user.get_primary_email as email %}
+              {% if email is none %}
+              {{new_user.email}}
+              {% else %}
+              {{email.email}}
+              {% if email.verified %}
+              {% bootstrap_icon "ok" %}
+              {% endif %}
+              {% endif %}
+            </td>
+            {% endwith %}
+            <td>
+              {{u | new_member_communities}}
+            </td>
+            <td>
+
+              <button class="btn newuser btn-danger btn-xs" action="delete" user_name="{{u.username}}" user_id="{{u.pk}}">
+                {% bootstrap_icon "remove" %}
+              </button>
+            </td>
+            <td>
+              <form action=" {% url 'league:create_profile' u.pk %}" method="post" >
+                  {% csrf_token %}
+                  <div class="form-group">
+                  <button type="submit" class="btn btn-success btn-xs" onclick="return confirm('Are you sure you want to create a profile for {{u.username}}?')" >
+                  {% bootstrap_icon "plus" %}
+                  </button>
+                  </div>
+                  </form>
+            </td>
+
+            </td>
+          </tr>
+          {% endfor %}
+        </tbdoy>
+    </table>
+
+  </div>

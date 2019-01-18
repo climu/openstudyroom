@@ -9,6 +9,9 @@
 {% block content %}
 <div class="row">
 
+{% if no_profile_users %}
+{% include 'league/includes/no_profile_users_table.html' %}
+{% endif %}
   <div class="panel panel-default">
   <div class="panel-heading"><h3> List of new users </h3></div>
     <table id='new_user-table' class='display table' >
@@ -40,7 +43,11 @@
               {% endif %}
             </td>
             {% endwith %}
-            <td><a href="https://www.gokgs.com/gameArchives.jsp?user={{new_user.kgs_username}}" target="_blank">{{new_user.kgs_username}}</a></td>
+            <td>
+              {% if new_user.profile.kgs_username %}
+              <a href="https://www.gokgs.com/gameArchives.jsp?user={{new_user.profile.kgs_username}}" target="_blank">{{new_user.profile.kgs_username}}</a>
+              {% endif %}
+            </td>
             <td>
               {% if new_user.profile.ogs_id > 0 %}
                  <a href="https://online-go.com/player/{{new_user.profile.ogs_id}}">{{new_user.profile.ogs_username}}</a>
@@ -121,7 +128,7 @@ $.ajaxSetup({   headers: {  "X-CSRFToken": csrftoken  }  });
 				}
 			});
 			//hide user
-	                $(this).parent().parent().remove();
+	    $(this).parent().parent().remove();
 		}
 	});
 
