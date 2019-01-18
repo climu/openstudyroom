@@ -25,7 +25,7 @@
                 <div class="form-group">
                 <input type="hidden" name="action" value="quit">
                 <input type="hidden" name="next" value="{{request.path}}">
-                <button type="submit" class="btn btn-danger btn-sm"  onclick="return confirm('
+                <button type="submit" class="btn btn-danger btn-xs"  onclick="return confirm('
                 {% blocktrans with username=user.username %}You are about to kick {{username}}. Allright?{% endblocktrans %}')">
                 {% bootstrap_icon "remove" %}
                 </button>
@@ -39,7 +39,7 @@
                 {% csrf_token %}
                 <div class="form-group">
                 <input type="hidden" name="username" value="{{user.username}}" >
-                <button type="submit" class="btn btn-success btn-sm"  onclick="return confirm('
+                <button type="submit" class="btn btn-success btn-xs"  onclick="return confirm('
                 {% blocktrans with username=user.username %}You are about to add {{username}} as a community member?{% endblocktrans %}')">
                 {% bootstrap_icon "plus" %}
                 </button>
