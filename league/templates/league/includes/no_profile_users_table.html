@@ -18,9 +18,9 @@
             <td>{{u.username}}</td>
 
             <td>
-              {% with new_user.get_primary_email as email %}
+              {% with u.get_primary_email as email %}
               {% if email is none %}
-              {{new_user.email}}
+              {{u.email}}
               {% else %}
               {{email.email}}
               {% if email.verified %}
