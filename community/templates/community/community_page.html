@@ -71,10 +71,14 @@ return false;};
 {% if can_quit %}
 <p>{{community.private_description|safe|rendered}}</p>
 {% endif %}
-
-
 </div>
 </div>
+
+{% if admin %}
+  {% include "community/includes/new_user_table.html"%}
+{% endif %}
+
+
 
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#leagues">{% trans "Leagues" %}</a></li>
