@@ -1,4 +1,4 @@
-{% load wagtailcore_tags league_tags%}
+{% load wagtailcore_tags league_tags i18n%}
 {% get_meijin as meijin %}
 
 {# generate a table from a game queryset #}
@@ -6,10 +6,10 @@
 <table id='game-table' class='display table small' cellspacing='0' width='100%'>
    <thead>
      <tr>
-       <th>date</th>
-       <th>white</th>
-       <th>black</th>
-       <th>result</th>
+       <th>{% trans "date" %}</th>
+       <th>{% trans "white" %}</th>
+       <th>{% trans "black" %}</th>
+       <th>{% trans "result" %}</th>
     </thead>
     <tbody>
 {% for sgf in sgfs %}

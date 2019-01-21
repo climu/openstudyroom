@@ -1,12 +1,12 @@
 {% extends "league/base.html" %}
-{% load tz static league_tags bootstrap3 %}
+{% load tz static league_tags bootstrap3 i18n %}
 
-{% block title %}{{event}}- Players{% endblock %}
+{% block title %}{{event}} - {% trans "Players" %}{% endblock %}
 {% block content %}
 {% get_meijin as meijin %}
 
 <ul class="nav nav-tabs">
-  <li ><a href="{% url 'league:archives' %}">Archives</a></li>
+  <li ><a href="{% url 'league:archives' %}">{% trans "Archives" %}</a></li>
   {%if event not in open_events%}
     <li class="active">{{event |event_link}}</li>
   {%endif%}
@@ -26,20 +26,20 @@
       </a>
     </li>
   {% endfor %}
-  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrape list</a></li>
+  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">{% trans "Scrape list" %}</a></li>
 </ul>
 
 {% include 'league/includes/league_nav.html' with active='players' %}
 
 <div class="well">
-  This table show all users who play{% if not event.is_open %}ed{% endif %} in the {{event.name}}.
+  {% trans "This table show all users who" %} {% if not event.is_open %}{% trans "played" %}{% else %} {% trans "play" %}{% endif %} {% trans "in the" %} {{event.name}}.
 </div>
 
 <div class="row equal ">
   <div class="col-md-6">
     <div class="panel panel-default">
       <div class="panel-heading">
-        Filter by server (check to only see users who plays on this server)
+        {% trans "Filter by server (check to only see users who plays on this server)" %}
       </div>
       <div class="panel-body">
         <div class="checkbox div-checkbox ">
@@ -61,7 +61,7 @@
     <div class="col-md-6">
       <div class="panel panel-default">
         <div class="panel-heading">
-          Filter by division (check to see users of this division)
+          {% trans "Filter by division (check to see users of this division)" %}
         </div>
         <div class="panel-body">
           {% for division in divisions %}
@@ -81,13 +81,13 @@
 <table id='player-table' class=' table table-hover '  >
    <thead>
      <tr>
-       <th>Division</th>
-       <th>Rank</th>
-       <th>Player</th>
-       <th>score</th>
-       <th># Win</th>
-       <th># Loss</th>
-       <th># Games</th>
+       <th>{% trans "division" %}</th>
+       <th>{% trans "rank" %}</th>
+       <th>{% trans "player" %}</th>
+       <th>{% trans "score" %}</th>
+       <th>{% trans "win" %}</th>
+       <th>{% trans "loss" %}</th>
+       <th>{% trans "games" %}</th>
        <th class="hidden">OGS</th>
        <th class="hidden">KGS</th>
      </tr>

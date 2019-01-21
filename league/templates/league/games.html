@@ -31,7 +31,6 @@ return false;};
 </script>
 {% endblock %}
 {% block content %}
-{% language 'en' %}
 
 <ul class="nav nav-tabs">
   <li ><a href="{% url 'league:archives' %}">Archives</a></li>
@@ -90,13 +89,15 @@ return false;};
   </div>
 </div>
 
-  {%endlanguage%}
 {% endblock %}
 
 {% block extra_js %}
+{% get_current_language as LANGUAGE_CODE %}
+
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/locale/{{LANGUAGE_CODE}}.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
@@ -105,7 +106,7 @@ $('#game-table').DataTable({
 
   "columnDefs": [ {
     targets: 0,
-    render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','MMM DD, YYYY' )
+    render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','L', '{{LANGUAGE_CODE}}' )
   } ],
   "order": [[ 0, "desc" ]]
 });

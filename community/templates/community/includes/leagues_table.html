@@ -16,8 +16,6 @@
     {% endif %}
   </thead>
   <tbody>
-  {% localize off %}
-  {% language 'en' %}
     {% for league in leagues %}
     <tr {% if league.is_open %}class="success"{% endif %}>
       <td>
@@ -37,8 +35,5 @@
       {% endif %}
     </tr>
     {% endfor %}
-  {% endlanguage %}
-
-  {% endlocalize %}
 </tbody>
 </table>

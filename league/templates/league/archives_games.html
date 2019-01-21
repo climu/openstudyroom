@@ -30,9 +30,8 @@ return false;};
 </script>
 {% endblock %}
 {% block content %}
-{% language 'en' %}
 <ul class="nav nav-tabs">
-  <li class="active"><a href="{% url 'league:archives' %}">Archives</a></li>
+  <li class="active"><a href="{% url 'league:archives' %}">{% trans "Archives" %}</a></li>
   {% for ev in open_events %}
   <li>
     <a href="{% url 'league:games' ev.pk %}">
@@ -45,13 +44,13 @@ return false;};
       {% endif %}</a>
   </li>
   {% endfor %}
-  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrape list</a></li>
+  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">{% trans "Scrape list" %}</a></li>
   </ul>
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav navbar-left">
-  <li><a href="{% url 'league:archives' %}">Leagues</a></li>
-  <li><a href="{% url 'league:players'  %}">Players</a></li>
-  <li class="active"><a href="{% url 'league:games'  %}">Games</a></li>
+  <li><a href="{% url 'league:archives' %}">{% trans "Leagues" %}</a></li>
+  <li><a href="{% url 'league:players'  %}">{% trans "Players" %}</a></li>
+  <li class="active"><a href="{% url 'league:games'  %}">{% trans "Games" %}</a></li>
 </ul>
 </nav>
 <div class="well"> This table shows all games that have been played in the Open Study Room</div>
@@ -76,21 +75,21 @@ return false;};
     {% else %}
     <div id="player">
       <div class="alert alert-info">
-      Click a game result to see it.
+      {% trans "Click a game result to see it." %}
     </div>
     </div>
   {% endif %}
 </div>
 </div>
-  {%endlanguage%}
 {% endblock %}
 
 
 {% block extra_js %}
-
+{% get_current_language as LANGUAGE_CODE %}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/locale/{{LANGUAGE_CODE}}.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
 
 <script type="text/javascript">
@@ -99,7 +98,7 @@ $('#game-table').DataTable({
   "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
   "columnDefs": [ {
     targets: 0,
-    render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','MMM DD, YYYY' )
+    render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','L', '{{LANGUAGE_CODE}}' )
   } ],
   "order": [[ 0, "desc" ]]
 
