@@ -1,6 +1,6 @@
 # Contributing to Open Study Room website
 
-Thank you for your will to help OSR!
+Thank you for your interest in helping OSR!
 
 This project, as all of the OSR community, grows through the gifts of energy and time of many people.
 You are apparently considering giving some of yours, and that is much appreciated!
