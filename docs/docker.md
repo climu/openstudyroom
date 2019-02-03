@@ -3,15 +3,24 @@
 **DISCLAIMER: this is still experimental and not recommended for production. Use at your own risk.**
 
 
-## Preperation
+## Preparation
 
 Install docker for your operating system.
+
+Note: You may need to take steps to tell your system to run the dockerd service and add your username to the `docker` group:
+```bash
+sudo systemctl start docker
+sudo usermod -a -G docker <username>
+```
+
+The system will not see changes to your groups until your next login, but you can update that manually within a shell with `exec su <username>`
+
 
 Clone this repository and cd into it.
 
 ## Starting the docker service
 
-**NOTE**: Buidling the docker image after any major change will take a lot of time. 
+**NOTE**: Building the docker image after any major change will take a lot of time. 
 
 Run the `docker.sh` file **or** run these commands.
 
