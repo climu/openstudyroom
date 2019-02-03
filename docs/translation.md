@@ -1,20 +1,20 @@
 OSR is an international community and there is a collective effort to translate the website.
 
-There are two areas that needs works:
+There are two areas that needs work:
 1. marking strings to be translated in our templates.
 2. translate the strings.
 
 
 ## 1. Marking the strings
-Our HTML are rendered from django templates located in the `/templates/` folders of our apps.
+Our HTML is rendered from django templates located in the `/templates/` folders of our apps.
 
 Here are quick links to our templates folders:
 
-* [leagues](https://github.com/climu/openstudyroom/tree/localisation/league/templates)
-* [communities](https://github.com/climu/openstudyroom/tree/localisation/community/templates/community)
-* [tournament](https://github.com/climu/openstudyroom/tree/localisation/tournament/templates/tournament)
-* [calendar](https://github.com/climu/openstudyroom/tree/localisation/fullcalendar/templates/fullcalendar)
-* [main folder](https://github.com/climu/openstudyroom/tree/localisation/openstudyroom/templates)
+* [leagues](/league/templates)
+* [communities](/community/templates/community)
+* [tournament](/tournament/templates/tournament)
+* [calendar](/fullcalendar/templates/fullcalendar)
+* [main folder](/openstudyroom/templates)
 
 You need to mark the strings you want to be translated as follow:
 - using [trans template tag](https://docs.djangoproject.com/en/2.1/topics/i18n/translation/#trans-template-tag) like that: `{% trans "string" %}`. Those shouldn't contain any template variable.

@@ -2,8 +2,8 @@
 
 Thank you for your will to help OSR!
 
-This project, as all of the OSR community, grows by the energy and time of many people.
-You are apparently considering giving some of yours and thats much appreciated.
+This project, as all of the OSR community, grows through the gifts of energy and time of many people.
+You are apparently considering giving some of yours, and that is much appreciated!
 
 ![cho_hug](https://cdn.discordapp.com/attachments/430062036903395329/444192620504416268/WroCzKKKj7o.png)
 
