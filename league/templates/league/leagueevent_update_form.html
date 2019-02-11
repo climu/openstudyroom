@@ -1,10 +1,8 @@
 {% extends 'league/admin/base.html' %}
 
-{% load bootstrap3 league_tags tz%}
+{% load bootstrap3 league_tags i18n l10n tz%}
 
 {% block title %}OSR league admin - Leagues{% endblock %}
-
-
 
 {% block heading %}
 <div class="page-header">
@@ -12,6 +10,9 @@
 </div>
 {%endblock%}
 {% block content %}
+
+{% localize off %}
+{% language 'en' %}
 {% timezone "UTC" %}
 <div class="row">
   {% if object.number_players == 0 and object.number_divisions > 0%}
@@ -156,6 +157,9 @@
 </div>
 </div>
 {% endtimezone %}
+{% endlanguage %}
+{% endlocalize %}
+
 {% endblock %}
 
 

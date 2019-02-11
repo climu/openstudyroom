@@ -3,6 +3,7 @@ import datetime
 from django import forms
 from django.contrib.auth.models import Group
 from django.forms import ModelForm
+from django.utils.timezone import make_aware
 from django_countries.widgets import CountrySelectWidget
 import pytz
 from community.models import Community
@@ -121,6 +122,17 @@ class DivisionForm(ModelForm):
 
 
 class LeagueEventForm(forms.ModelForm):
+    begin_time = forms.DateField(
+        input_formats=['%d/%m/%Y'],
+        widget=forms.DateInput(format='%d/%m/%Y'),
+        help_text="UTC time at 00:00. Format: dd/mm/yyyy"
+    )
+    end_time = forms.DateField(
+        input_formats=['%d/%m/%Y'],
+        widget=forms.DateInput(format='%d/%m/%Y'),
+        help_text="Set it to the 1st to have full month."
+    )
+
     class Meta:
         model = LeagueEvent
         fields = [
@@ -145,17 +157,13 @@ class LeagueEventForm(forms.ModelForm):
             'prizes'
         ]
         # Customise year list to show 2 years in the past/future
-        EVENT_YEAR_CHOICES = range(datetime.date.today().year - 2, datetime.date.today().year + 3)
+        #EVENT_YEAR_CHOICES = range(datetime.date.today().year - 2, datetime.date.today().year + 3)
         widgets = {
-            'name': forms.TextInput(),
-            'begin_time': forms.SelectDateWidget(years=EVENT_YEAR_CHOICES),
-            'end_time': forms.SelectDateWidget(years=EVENT_YEAR_CHOICES),
+            'name': forms.TextInput()
         }
         help_texts = {
             'name': "Name of the league",
             'event_type': 'League will work',
-            'begin_time': "UTC time at 00:00.",
-            'end_time': "Set it to the 1st to have full month.",
             'nb_matchs': 'Maximum number of match two players can play together',
             'ppwin': 'Point per win',
             'pploss': 'Point per loss',
@@ -168,6 +176,12 @@ class LeagueEventForm(forms.ModelForm):
             'is_primary': 'A primary league will automatically be joined when joining another league.'
         }
 
+    def clean(self):
+        '''convert replace timezones to utc'''
+        cleaned_data = self.cleaned_data
+        cleaned_data['begin_time'] = make_aware(datetime.datetime.combine(cleaned_data['begin_time'], datetime.time()), pytz.utc)
+        cleaned_data['end_time'] = make_aware(datetime.datetime.combine(cleaned_data['end_time'], datetime.time()), pytz.utc)
+        return cleaned_data
 
 class EmailForm(forms.Form):
     subject = forms.CharField(required=True)
