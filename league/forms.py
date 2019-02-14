@@ -179,9 +179,22 @@ class LeagueEventForm(forms.ModelForm):
     def clean(self):
         '''convert replace timezones to utc'''
         cleaned_data = self.cleaned_data
-        cleaned_data['begin_time'] = make_aware(datetime.datetime.combine(cleaned_data['begin_time'], datetime.time()), pytz.utc)
-        cleaned_data['end_time'] = make_aware(datetime.datetime.combine(cleaned_data['end_time'], datetime.time()), pytz.utc)
+        cleaned_data['begin_time'] = make_aware(
+            datetime.datetime.combine(
+                cleaned_data['begin_time'],
+                datetime.time()
+            ),
+            pytz.utc
+        )
+        cleaned_data['end_time'] = make_aware(
+            datetime.datetime.combine(
+                cleaned_data['end_time'],
+                datetime.time()
+            ),
+            pytz.utc
+        )
         return cleaned_data
+
 
 class EmailForm(forms.Form):
     subject = forms.CharField(required=True)

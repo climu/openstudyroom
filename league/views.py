@@ -493,8 +493,9 @@ def join_event(request, event_id, user_id):
             messages.success(request, message)
             return HttpResponseRedirect(form.cleaned_data['next'])
 
-    #Default return
+    # Default return
     return HttpResponseRedirect('/')
+
 
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
@@ -586,7 +587,6 @@ def account(request, user_name=None):
         filter(Q(white=user) | Q(black=user)).\
         prefetch_related('white', 'black', 'winner').\
         select_related('white__profile', 'black__profile')
-
 
     for event in open_events:
         event_players = LeaguePlayer.objects.filter(user=user, event=event)
@@ -695,6 +695,7 @@ def scrap_list_up(request, profile_id):
                     messages.success(request, message)
                     return HttpResponseRedirect(reverse('league:scrap_list'))
     raise Http404("What are you doing here ?")
+
 
 def discord_api(request):
     """ API to feed the discord bot"""
