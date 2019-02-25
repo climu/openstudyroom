@@ -7,7 +7,7 @@ from django.utils.timezone import make_aware
 from django_countries.widgets import CountrySelectWidget
 import pytz
 from community.models import Community
-
+from community.widget import Community_select
 from .models import Division, LeagueEvent, Profile
 from .ogs import get_user_id, get_user_rank
 
@@ -38,7 +38,11 @@ class LeagueSignupForm(forms.Form):
         super(LeagueSignupForm, self).__init__(*args, **kwargs)
         communities = Community.objects.filter(private=False)
         choices = [(community.pk, community.name) for community in communities]
-        self.fields["communities"] = forms.MultipleChoiceField(choices=choices, required=False)
+        self.fields["communities"] = forms.MultipleChoiceField(
+            choices=choices,
+            required=False,
+            widget=Community_select
+        )
 
     def clean_kgs_username(self):
         if not self.cleaned_data['kgs_username']:
@@ -91,8 +95,6 @@ class LeagueSignupForm(forms.Form):
             if id > 0:
                 profile.ogs_rank = get_user_rank(id)
         profile.save()
-
-
 
 
 class UploadFileForm(forms.Form):
