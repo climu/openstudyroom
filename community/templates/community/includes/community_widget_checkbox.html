@@ -5,7 +5,7 @@
       <div class="checkbox">
         <label for="id_communities_{{forloop.counter0}}">
           <input type="checkbox" name="communities" value="{{community.pk}}" class="" id="id_communities_{{forloop.counter0}}" title="">
-           <span data-toggle="tooltip" data-html="true" rel="tooltip" title="<h5>{{ community.name }}</h5>{{community.description |safe|rendered|truncatewords_html:30}}">
+           <span data-toggle="tooltip" data-html="true" rel="tooltip" title="<h5>{{ community.name }}</h5>{{community.description |safe|rendered|truncatewords_html:30|striptags}}">
              {{ community.name }}
            </span>
          </label>
