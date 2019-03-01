@@ -1058,7 +1058,14 @@ class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                 'pploss': copy_from.pploss,
                 'description': copy_from.description,
                 'prizes': copy_from.prizes,
-                'community': copy_from.community
+                'community': copy_from.community,
+                'min_matchs': copy_from.min_matchs,
+                'tag': copy_from.tag,
+                'board_size': copy_from.board_size,
+                'komi': copy_from.komi,
+                'clock_type': copy_from.clock_type,
+                'main_time': copy_from.main_time,
+                'additional_time': copy_from.additional_time,
             })
 
         return initials
