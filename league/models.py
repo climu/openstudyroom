@@ -976,7 +976,7 @@ class Profile(models.Model):
 class Division(models.Model):
     """A group of players in a league"""
     league_event = models.ForeignKey('LeagueEvent', on_delete=models.CASCADE,)
-    name = models.TextField(max_length=20)
+    name = models.TextField(max_length=60)
     order = models.SmallIntegerField(default=0)
     winner = models.ForeignKey(
         'User',
