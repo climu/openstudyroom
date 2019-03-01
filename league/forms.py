@@ -156,12 +156,14 @@ class LeagueEventForm(forms.ModelForm):
             'is_public',
             'is_primary',
             'description',
-            'prizes'
+            'prizes',
+            'community'
         ]
         # Customise year list to show 2 years in the past/future
         #EVENT_YEAR_CHOICES = range(datetime.date.today().year - 2, datetime.date.today().year + 3)
         widgets = {
-            'name': forms.TextInput()
+            'name': forms.TextInput(),
+            'community': forms.HiddenInput()
         }
         help_texts = {
             'name': "Name of the league",

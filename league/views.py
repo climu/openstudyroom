@@ -1057,7 +1057,8 @@ class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                 'ppwin': copy_from.ppwin,
                 'pploss': copy_from.pploss,
                 'description': copy_from.description,
-                'prizes': copy_from.prizes
+                'prizes': copy_from.prizes,
+                'community': copy_from.community
             })
 
         return initials
