@@ -7,7 +7,6 @@
     <th>{% trans "name" %}</th>
     <th>{% trans "begin" %}</th>
     <th>{% trans "ends" %}</th>
-    <th>{% trans "type" %}</th>
     <th>{% trans "divisions" %}</th>
     <th>{% trans "players" %}</th>
     <th>{% trans "games" %}</th>
@@ -26,7 +25,6 @@
      </td>
       <td>{{league.begin_time |date:"M d, Y"}}</td>
       <td>{{league.end_time |date:"M d, Y"}}</td>
-      <td>{{league.type}}</td>
       <td>{{ league.number_divisions }}</td>
       <td>{{league.number_players}}</td>
       <td>{{ league.number_games}}</td>
