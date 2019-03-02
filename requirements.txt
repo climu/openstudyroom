@@ -4,8 +4,8 @@ bs4==0.0.1
 certifi==2017.7.27.1
 chardet==3.0.4
 defusedxml==0.4.1
-Django==2.0.9
-django-allauth==0.30.0
+Django==2.1
+django-allauth==0.38.0
 django-annoying==0.10.3
 django-anymail==4.2
 django-appconf==1.0.2
@@ -43,8 +43,8 @@ oauthlib==2.0.1
 olefile==0.44
 packaging==16.8
 Pillow==4.2.1
-psycopg2==2.7.5
-puput==1.0.2
+psycopg2-binary==2.7.5
+puput==1.0.3
 pybbm==0.18.4
 pylint==1.7.4
 pylint-django==0.7.2
@@ -52,7 +52,7 @@ pylint-plugin-utils==0.2.6
 pyparsing==2.1.10
 python-dateutil==2.6.1
 python3-openid==3.0.10
-pytz==2017.2
+pytz==2018.5
 raven==6.4.0
 rcssmin==1.0.6
 requests==2.20.0
@@ -64,7 +64,7 @@ sqlparse==0.2.3
 Unidecode==0.4.21
 urllib3==1.24.1
 vobject==0.9.5
-wagtail==2.0.2
+wagtail==2.3
 wagtailmenus==2.11.1
 webencodings==0.5.1
 Willow==1.1
