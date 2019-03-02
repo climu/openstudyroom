@@ -65,11 +65,7 @@ class Community(models.Model):
         return list(User.objects.filter(groups=self.admin_group))
 
     def is_admin(self, user):
-        admin = user.is_authenticated and (
-            user.is_league_admin() or
-            self.admin_group in user.groups.all()
-        )
-        return admin
+        return user.is_authenticated and self.admin_group in user.groups.all()
 
     def is_member(self, user):
         return user in self.user_group.user_set.all()
