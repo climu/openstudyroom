@@ -36,3 +36,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 DISCORD_CLIENT_ID = "xxxxxxxxxxxxxxxxx"
 DISCORD_CLIENT_SECRET = "xxxxxxxxxxxxxxxxxx"
+
+SITE_URL = "http://127.0.0.1:8000"
