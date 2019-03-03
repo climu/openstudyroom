@@ -1,29 +1,30 @@
 from django import forms
 from django.forms import ModelForm
 from league.models import Profile
-from league.forms import ProfileForm
+from league.forms import ProfileForm, LeagueEventForm
 from .models import Tournament, TournamentGroup, Round
 
-class TournamentForm(forms.ModelForm):
+class TournamentForm(LeagueEventForm):
     class Meta:
         model = Tournament
         fields = [
             'name',
+            'event_type',
             'begin_time',
             'end_time',
+            'ppwin',
+            'pploss',
             'tag',
+            'board_size',
+            'komi',
             'clock_type',
             'main_time',
             'additional_time',
-            'board_size',
-            'komi',
             'is_open',
             'is_public',
-            'use_calendar',
             'description',
-            'ppwin',
-            'pploss',
-            'event_type',
+            'prizes',
+            'community'
         ]
         widgets = {
             'name': forms.TextInput(),
@@ -32,6 +33,8 @@ class TournamentForm(forms.ModelForm):
             'ppwin': forms.HiddenInput(),
             'pploss': forms.HiddenInput(),
             'event_type': forms.HiddenInput(),
+            'community': forms.HiddenInput()
+            
         }
 
 class TournamentAboutForm(ModelForm):
