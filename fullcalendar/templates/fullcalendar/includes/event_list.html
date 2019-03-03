@@ -7,7 +7,7 @@
   </h3>
 {% get_now as now %}
   {% public_events as public_events%}
-
+<div {% if public_events|length > 3 %} class="pre-scrollable" {% endif %}>
 {% for cal_event in public_events %}
   {% if cal_event.url %}  <a href="{{cal_event.url}}">    {% endif %}
 <div class="panel cal-event-sidebar">
@@ -35,3 +35,4 @@
 </div>
     {% if cal_event.url %}  </a>  {% endif %}
 {% endfor %}
+</div>
