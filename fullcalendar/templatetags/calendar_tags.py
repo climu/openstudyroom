@@ -13,10 +13,10 @@ def public_events(context):
         my_games = list(GameAppointmentEvent.get_future_games(user))
         public_events = list(PublicEvent.get_future_public_events())
         cal_events = my_games + public_events
-        cal_events = sorted(cal_events, key=lambda k: k.start)[:3]
+        cal_events = sorted(cal_events, key=lambda k: k.start)
         return cal_events
     else:
-        public_events = PublicEvent.get_future_public_events().order_by('start')[:3]
+        public_events = PublicEvent.get_future_public_events().order_by('start')
         return public_events
 
 
