@@ -29,10 +29,10 @@ class Community(models.Model):
     promote = models.BooleanField(default=False)
     description = MarkupTextField(
         blank=True, null=True,
-        validators=[validators.NullableMaxLengthValidator(2000)])
+        validators=[validators.NullableMaxLengthValidator(4000)])
     private_description = MarkupTextField(
         blank=True, null=True,
-        validators=[validators.NullableMaxLengthValidator(2000)])
+        validators=[validators.NullableMaxLengthValidator(4000)])
 
     def __str__(self):
         return self.name
