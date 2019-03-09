@@ -226,6 +226,15 @@ class Match(models.Model):
     winner = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name="winner_match", on_delete=models.CASCADE)
     order = models.PositiveSmallIntegerField()
 
+    def __str__(self):
+        out = self.bracket.tournament.name + " "
+        if self.player1:
+            out += self.player_1.user.username + " "
+        if self.player2:
+            out += self.player_2.user.username
+
+        return out
+
 class TournamentEvent(PublicEvent):
     """ Public event related to a tournament."""
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE )
