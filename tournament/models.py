@@ -227,11 +227,11 @@ class Match(models.Model):
     order = models.PositiveSmallIntegerField()
 
     def __str__(self):
-        out = self.bracket.tournament.name + " "
-        if self.player1:
-            out += self.player_1.user.username + " "
-        if self.player2:
-            out += self.player_2.user.username
+        out = str(self.round) + ": match " + str(self.order)
+        if self.player_1:
+            out += " " + self.player_1.user.username
+        if self.player_2:
+            out += " " + self.player_2.user.username
 
         return out
 
