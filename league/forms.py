@@ -149,6 +149,7 @@ class LeagueEventForm(forms.ModelForm):
             'tag',
             'board_size',
             'komi',
+            'max_handicap',
             'clock_type',
             'main_time',
             'additional_time',
