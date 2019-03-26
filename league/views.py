@@ -785,7 +785,6 @@ def admin(request):
                 user.groups.remove(group)
 
         elif action[0:6] == "delete":
-            print("here")
             if action[7:15] == "no_games":  # deletion due to no played games
                 utils.quick_send_mail(user, 'emails/no_games.txt')
             user.delete()

@@ -76,6 +76,11 @@ urlpatterns = [
         name='create_league'
     ),
     url(
+        r'^(?P<community_pk>[0-9]+)/league/copy/(?P<copy_from_pk>[0-9]+)/$',
+        views.CommunityLeagueEventCreate.as_view(),
+        name='create_league'
+    ),
+    url(
         r'^league/(?P<pk>[0-9]+)/update/$',
         views.CommunityLeagueEventUpdate.as_view(),
         name='update_league'

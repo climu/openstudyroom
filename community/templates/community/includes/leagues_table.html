@@ -12,6 +12,7 @@
     <th>{% trans "games" %}</th>
     {% if admin %}
     <th>{% trans "edit" %}</th>
+    <th> {% trans "copy" %}</th>
     {% endif %}
   </thead>
   <tbody>
@@ -30,6 +31,7 @@
       <td>{{ league.number_games}}</td>
       {% if admin %}
       <td><a href= "{% url 'community:update_league' league.pk %}"> {% bootstrap_icon 'wrench' %} </a></td>
+      <td> <a href= "{% url 'community:create_league' community.pk league.pk %}"> <i class="fa fa-copy"></i> </a> </td>
       {% endif %}
     </tr>
     {% endfor %}
