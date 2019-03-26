@@ -66,6 +66,7 @@ class LeagueEvent(models.Model):
         default='ladder')
     tag = models.CharField(max_length=10, default='#OSR')
     komi = models.DecimalField(default=6.5, max_digits=2, decimal_places=1)
+    min_handicap = models.SmallIntegerField(default=0)
     max_handicap = models.SmallIntegerField(default=0)
     clock_type = models.CharField(
         max_length=10,
@@ -428,7 +429,6 @@ class Sgf(models.Model):
                 return self
             self.sgf_text = r.text
         prop = utils.parse_sgf_string(self.sgf_text)
-        # prop['time'] = int(prop['time'])
         for k, v in prop.items():
             setattr(self, k, v)
         self.p_status = 0
@@ -478,6 +478,7 @@ class Sgf(models.Model):
         we don't touch the sgf but return a dict {'message': string , 'valid' : boolean, 'tag',boolean}
         Note that this method does not check if a sgf is already in db.
         """
+
         b = True
         m = ''
         if self.game_type == 'review':
@@ -514,7 +515,7 @@ class Sgf(models.Model):
                 (b, m) = (False, m + '; komi')
         elif float(self.komi) != event.komi:
             (b, m) = (False, m + '; komi')
-        if self.handicap > event.max_handicap:
+        if self.handicap > event.max_handicap or self.handicap < event.max_handicap:
             (b, m) = (False, m + '; handicap')
         # self.board_size is added at parse. So it's a string. THat's a bug I fear.
         # dirty workaround is converting to int as above. We should convert when we parse.
