@@ -150,6 +150,7 @@ class LeagueEventForm(forms.ModelForm):
             'board_size',
             'komi',
             'max_handicap',
+            'min_handicap',
             'clock_type',
             'main_time',
             'additional_time',
@@ -178,7 +179,11 @@ class LeagueEventForm(forms.ModelForm):
             'min_matchs': 'Minimum of match for a user to be considered active',
             'is_open': 'Can people register and game get scraped?',
             'is_public': 'Can people see the league?',
-            'is_primary': 'A primary league will automatically be joined when joining another league.'
+            'is_primary': 'A primary league will automatically be joined when joining another league.',
+            'komi': 'Valid komi for even games of the league. For handicap games, the valid komi is always 0.5',
+            'max_handicap': 'Games handicap must be lower or equal.',
+            'min_handicap': 'Games handicap must be greater or equal.',
+
         }
 
     def clean(self):
