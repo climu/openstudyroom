@@ -52,14 +52,16 @@
                     </div>
                 {% endfor %}
                 {%bootstrap_field form.username show_label=False addon_before="<span class='glyphicon glyphicon-user'></span>  " %}
-                {%bootstrap_field form.kgs_username show_label=False addon_before="<span class='small'>KGS</span>" %}
-                {%bootstrap_field form.ogs_username show_label=False addon_before="<span class='small'>OGS</span>" %}
                 {%bootstrap_field form.email show_label=False addon_before="<span class='glyphicon glyphicon-envelope'></span>  " %}
                 {%bootstrap_field form.password1 show_label=False addon_before="<span class='glyphicon glyphicon-lock'></span>  " %}
                 {%bootstrap_field form.password2 show_label=False addon_before="<span class='glyphicon glyphicon-lock'></span>  " %}
+                <div class="help-block">{% trans "We ask at least one valid username from KGS or OGS" %}.</div>
+                {%bootstrap_field form.kgs_username show_label=False addon_before="<span class='small'>KGS</span>" %}
+                {%bootstrap_field form.ogs_username show_label=False addon_before="<span class='small'>OGS</span>" %}
+
                 {%bootstrap_field form.timezone show_label=True addon_before="<span class='glyphicon glyphicon-globe'></span>  " %}
                 {%bootstrap_field form.communities show_label=True addon_before="<span class='glyphicon glyphicon-globe'></span>  " %}
-                <div class="help-block">{% trans "Select the communities you have interest in" %}.</div>
+                <div class="help-block">{% trans "Selection of <a href='/community/'>communities</a> hosted by OSR you may have interest in" %}.</div>
 
                   <input type="hidden" name="{{ redirect_field_name }}" value="/welcome/">
                 <button type="submit" class="btn btn-primary">{% trans "Sign up" %}</button>

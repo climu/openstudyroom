@@ -28,7 +28,7 @@ class LeagueSignupForm(forms.Form):
     kgs_username = forms.CharField(max_length=10, required=False)
     ogs_username = forms.CharField(max_length=40, required=False)
     timezone = forms.ChoiceField(
-        label='Time Zone',
+        label='Time Zone (optional)',
         choices=[(t, t) for t in pytz.common_timezones],
         required=False,
         initial='UTC'
@@ -39,6 +39,7 @@ class LeagueSignupForm(forms.Form):
         communities = Community.objects.filter(private=False)
         choices = [(community.pk, community.name) for community in communities]
         self.fields["communities"] = forms.MultipleChoiceField(
+            label= "Communities (optional)",
             choices=choices,
             required=False,
             widget=Community_select
