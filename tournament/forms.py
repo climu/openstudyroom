@@ -60,4 +60,5 @@ class RoundForm(ModelForm):
 
 class ForfeitForm(forms.Form):
     winner = forms.IntegerField(label='user_id')
+    looser = forms.IntegerField(label='looser_id', widget=forms.HiddenInput(), required=False)
     next = forms.CharField(label='next', widget=forms.HiddenInput(), required=False)
