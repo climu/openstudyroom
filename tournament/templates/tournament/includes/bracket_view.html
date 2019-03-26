@@ -2,9 +2,11 @@
 
 {% for bracket in brackets %}
   <legend >
-  {{bracket.name}}
+    {{bracket.name}}
   </legend>
+
   {% with bracket.get_rounds as rounds %}
+
   <div class=" bracket">
     {% for round in rounds %}
       <ul class="round">
@@ -12,53 +14,41 @@
       </ul>
     {% endfor %}
   </div>
-    <div class="bracket">
-
+  <div class="bracket">
     {% for round in rounds %}
       <ul class="round">
-
         {% for match in round.get_matchs %}
-        <li class="spacer">&nbsp;</li>
-        <li class="panel panel-default match">
-            <div class="panel-body match {% if match.sgf %} played {% endif %}"
-                  id="match_{{match.pk}}"
-                  data-match="{{match.pk}}"
-                   data-round="{{round.pk}}"
-                   data-bracket="{{bracket.pk}}">
-                {% if match.player_1 %}
-                <div
+          <li class="spacer">&nbsp;</li>
+          <li class="panel panel-default match">
+          <div class="panel-body match {% if match.sgf %} played {% endif %}"
+            id="match_{{match.pk}}"
+            data-match="{{match.pk}}"
+            data-round="{{round.pk}}"
+            data-bracket="{{bracket.pk}}">
+            {% if match.player_1 %}
+              <div
                   class="list-group-item
                   {% if match.winner and match.winner == match.player_1 %}list-group-item-success{% endif %}"
-                  data-id="{{match.player_1.pk}}">
-                  {% if match.player_1.user.profile.country %}
-                  <img   src="{{match.player_1.user.profile.country.flag}}">
-                  {% endif %}
-                  {{match.player_1.user |user_link}}
-                  {% if match.winner %}
-                    {% if match.winner == match.player_1 %}
+                  data-id="{{match.player_1.pk}}"
+              >
+              {% if match.player_1.user.profile.country %}
+                <img  src="{{match.player_1.user.profile.country.flag}}">
+              {% endif %}
+
+              {{match.player_1.user |user_link}}
+
+              {% if match.winner == match.player_1 %}
                     <span class="pull-right">
                       {% match_result %}
                     </span>
-                    {% endif %}
-                  {% elif admin %}
-                  <span class="pull-right">
-                  <form action="{% url 'tournament:forfeit_bracket' tournament.pk match.pk %}"  method="post" class="form">
-                    {% csrf_token %}
-                    <input id="winner" name="winner" type="hidden" value="{{match.player_2.pk}}">
-                    <input id="looser" name="looser" type="hidden" value="{{match.player_1.pk}}">
-                    <input id="next" name="next" type="hidden" value="{{request.path}}">
-                    <button
-                      type="submit"
-                      class="btn btn-danger btn-xs"
-                      onclick="return confirm('{{match.player_1.user.username}} declare forfeit ?')"
-                      data-toggle="tooltip"
-                      title="{{match.player_1.user.username}} forfeit this match"
-                    >
-                      F
-                    </button>
-                  </form>
-                  </span>
                   {% endif %}
+
+              {% if admin  and not match.sgf %}
+                <span class="pull-right">
+                {% include "tournament/includes/bracket_forfeit_buttons.html" with player=match.player_1 opponent=match.player_2 %}
+              </span>
+              {% endif %}
+
 
                </div>
                 {% endif %}
@@ -70,30 +60,16 @@
                   <img   src="{{match.player_2.user.profile.country.flag}}">
                   {% endif %}
                   {{match.player_2.user |user_link}}
-                  {% if match.winner %}
-                    {% if match.winner == match.player_2 %}
+                  {% if match.winner == match.player_2 %}
                     <span class="pull-right">
-                      {% match_result %}
+                        {% match_result %}
                     </span>
-                    {% endif %}
-                  {% elif admin %}
-                  <span class="pull-right">
-                  <form action="{% url 'tournament:forfeit_bracket' tournament.pk match.pk %}"  method="post" class="form">
-                    {% csrf_token %}
-                    <input id="winner" name="winner" type="hidden" value="{{match.player_2.pk}}">
-                    <input id="looser" name="looser" type="hidden" value="{{match.player_1.pk}}">
-                    <input id="next" name="next" type="hidden" value="{{request.path}}">
-                    <button
-                      type="submit"
-                      class="btn btn-danger btn-xs"
-                      onclick="return confirm('{{match.player_1.user.username}} declare forfeit ?')"
-                      data-toggle="tooltip"
-                      title="{{match.player_1.user.username}} forfeit this match"
-                    >
-                      F
-                    </button>
-                  </form>
-                  </span>
+                  {% endif %}
+
+                  {% if admin  and not match.sgf %}
+                    <span class="pull-right">
+                      {% include "tournament/includes/bracket_forfeit_buttons.html" with player=match.player_2 opponent=match.player_1 %}
+                    </span>
                   {% endif %}
 
                 </div>

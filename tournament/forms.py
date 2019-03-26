@@ -34,7 +34,7 @@ class TournamentForm(LeagueEventForm):
             'pploss': forms.HiddenInput(),
             'event_type': forms.HiddenInput(),
             'community': forms.HiddenInput()
-            
+
         }
 
 class TournamentAboutForm(ModelForm):
@@ -60,5 +60,4 @@ class RoundForm(ModelForm):
 
 class ForfeitForm(forms.Form):
     winner = forms.IntegerField(label='user_id')
-    looser = forms.IntegerField(label='user_id')
     next = forms.CharField(label='next', widget=forms.HiddenInput(), required=False)

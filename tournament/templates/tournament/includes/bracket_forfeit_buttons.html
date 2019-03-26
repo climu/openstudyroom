@@ -1,0 +1,34 @@
+
+{% if match.winner %}
+  {% if match.winner != player %}
+  <form action="{% url 'tournament:forfeit_bracket' tournament.pk match.pk %}"  method="post" class="form">
+    {% csrf_token %}
+    <input id="winner" name="winner" type="hidden" value="-1">
+    <input id="next" name="next" type="hidden" value="{{request.path}}">
+    <button
+      type="submit"
+      class="btn btn-danger btn-xs"
+      onclick="return confirm('Are you sure you want to cancel this forfeit ?')"
+      data-toggle="tooltip"
+      title="Cancel this forfeit"
+    >
+      Cancel
+    </button>
+  </form>
+  {% endif %}
+{% else %}
+<form action="{% url 'tournament:forfeit_bracket' tournament.pk match.pk %}"  method="post" class="form">
+  {% csrf_token %}
+  <input id="winner" name="winner" type="hidden" value="{{player.pk}}">
+  <input id="next" name="next" type="hidden" value="{{request.path}}">
+  <button
+    type="submit"
+    class="btn btn-danger btn-xs"
+    onclick="return confirm('{{player.user.username}} declare forfeit ?')"
+    data-toggle="tooltip"
+    title="{{player.user.username}} forfeit this match"
+  >
+    F
+  </button>
+</form>
+{% endif %}

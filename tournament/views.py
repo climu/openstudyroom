@@ -823,7 +823,11 @@ def forfeit_bracket(request, tournament_id, match_id):
     if request.method == 'POST':
         form = ForfeitForm(request.POST)
         if form.is_valid():
-            winner = get_object_or_404(TournamentPlayer, pk=form.cleaned_data['winner'])
+            winner_pk = form.cleaned_data['winner']
+            if winner_pk > 0:
+                winner = get_object_or_404(TournamentPlayer, pk=winner_pk)
+            else:
+                winner = None
             match.winner = winner
             match.save()
             return HttpResponseRedirect(form.cleaned_data['next'])
