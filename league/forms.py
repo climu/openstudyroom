@@ -39,7 +39,7 @@ class LeagueSignupForm(forms.Form):
         communities = Community.objects.filter(private=False)
         choices = [(community.pk, community.name) for community in communities]
         self.fields["communities"] = forms.MultipleChoiceField(
-            label= "Communities (optional)",
+            label="Communities (optional)",
             choices=choices,
             required=False,
             widget=Community_select
