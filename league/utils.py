@@ -149,18 +149,26 @@ def parse_sgf_string(sgf_string):
         'OT': 'byo',
         'PC': 'place'
     }
-    out = {}
+    # default values:
+    out = {
+        'date': None,
+        'komi': 0,
+        'time': 0,
+        'board_size': 19,
+    }
     for key in prop:
         p = sgf_string.find(key + '[')  # find the key and get the index
         if p != -1:
             q = sgf_string.find(']', p)  # find the end of the tag
             out[prop[key]] = sgf_string[p + 3:q]
-    # convert string date to date object
 
-    if 'date' in out:
+    # Format  date, komi and time in proper type
+    if out['date'] is not None:
         out['date'] = datetime.datetime.strptime(out['date'], "%Y-%m-%d")
-    else:
-        out['date'] = None
+    out['komi'] = float(out['komi'])
+    out['time'] = int(out['time'])
+    out['board_size'] = int(out['board_size'])
+
     # counting the number of moves. Note that there could be a +-1 diff, but we don't really care
     out['number_moves'] = 2 * sgf_string.count(';B[')
     # We create a unique string based on exact time (ms) 5 first black moves where played.
