@@ -312,3 +312,9 @@ height: auto;
  height:16px;
  width:16px
 }
+
+#search_container {
+  position:absolute;
+  right:0px;
+  z-index:10;
+}
