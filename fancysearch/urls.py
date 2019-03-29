@@ -11,4 +11,9 @@ urlpatterns = [
         views.users_search,
         name='users_search'
     ),
+    url(
+            r'^pages/',
+            views.pages_search,
+            name='pages_search'
+    ),
     ]

@@ -44,12 +44,37 @@ Autocomplete search field with ajax requests
 function autocomplet() {
 	var min_length = 2;
 	var query = $('#search-input').val();
-  $('#user-results').html('<li class="list-group-item list-group-item-info text-center"> Users</li>')
 	if (query.length >= min_length) {
     request_users(query)
+    request_pages(query)
 	} else {
 		$('#search-results').hide();
 	}
+}
+
+function request_pages(query){
+  $.ajax({
+    url: '/search-api/pages/',
+    type: 'GET',
+    data: {query:query},
+    success:function(data){
+      $('#page-results').empty()
+      if (data.length > 0){
+        $('#page-results').html('<li class="list-group-item list-group-item-info text-center"> Pages</li>')
+      }
+      for (var i in data){
+        page = data[i]
+        console.log(page)
+        $('#page-results').append(format_page_search(page))
+      }
+    }
+  });
+  }
+
+function format_page_search(page){
+  console.log(page)
+  html = '<a href="' + page.url + '" class="list-group-item" >' + page.title + "</a>"
+  return html
 }
 
 function request_users(query){
@@ -58,6 +83,10 @@ function request_users(query){
     type: 'GET',
     data: {query:query},
     success:function(data){
+      $('#user-results').empty()
+      if (data.length > 0){
+        $('#user-results').html('<li class="list-group-item list-group-item-info text-center"> Users</li>')
+      }
       for (var i in data){
         user = data[i]
         $('#user-results').append(format_user_search(user))
