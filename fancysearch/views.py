@@ -4,11 +4,12 @@ from django.http import HttpResponse
 from league.models import User
 from home.models import FullWidthPage
 from wagtail.search.backends import get_search_backend
+from puput.models import BlogPage
+
 
 def users_search(request):
     query = request.GET.get('query', None)
     s = get_search_backend()
-    pages = s.search(query, FullWidthPage.objects.all())
     if query is not None:
         users = User.objects.filter(username__icontains=query).select_related('profile').prefetch_related('discord_user')
         results = []
@@ -54,6 +55,24 @@ def pages_search(request):
             results.append({
                 'title': str(page),
                 'url': page.get_url(request)
+            })
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+
+def blog_search(request):
+    query = request.GET.get('query', None)
+    if query is not None:
+        blog_page = BlogPage.objects.first()
+        entries = blog_page.get_entries().search(query)
+        results = []
+        for entry in entries:
+            results.append({
+                'title': entry.title,
+                'url': entry.get_url(request)
             })
         data = json.dumps(results)
     else:

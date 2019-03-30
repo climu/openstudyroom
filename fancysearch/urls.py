@@ -16,4 +16,9 @@ urlpatterns = [
             views.pages_search,
             name='pages_search'
     ),
+    url(
+            r'^blog/',
+            views.blog_search,
+            name='blog_search'
+    ),
     ]

@@ -54,6 +54,8 @@ var autocomplet = debounce(function() {
 	if (query.length >= min_length) {
     request_users(query)
     request_pages(query)
+    request_blog(query)
+
 	} else {
 		$('#search-results').hide();
 	}
@@ -72,12 +74,30 @@ function request_pages(query){
       }
       for (var i in data){
         page = data[i]
-        console.log(page)
         $('#page-results').append(format_page_search(page))
       }
     }
   });
   }
+
+  function request_blog(query){
+    $.ajax({
+      url: '/search-api/blog/',
+      type: 'GET',
+      data: {query:query},
+      success:function(data){
+        $('#blog-results').empty()
+        if (data.length > 0){
+          $('#blog-results').html('<li class="list-group-item list-group-item-info text-center"> Blog Post</li>')
+        }
+        for (var i in data){
+          page = data[i]
+          $('#blog-results').append(format_page_search(page))
+        }
+      }
+    });
+    }
+
 
 function format_page_search(page){
   console.log(page)
@@ -146,7 +166,7 @@ function format_user_search(user){
     return(html)
   }
 
-  // Returns a function, that, as long as it continues to be invoked, will not
+// Returns a function, that, as long as it continues to be invoked, will not
 // be triggered. The function will be called after it stops being called for
 // N milliseconds. If `immediate` is passed, trigger the function on the
 // leading edge, instead of the trailing.
