@@ -40,6 +40,13 @@ function gmt(selector, tz, offset){
 Autocomplete search field with ajax requests
 */
 
+function togglesearch(){
+  $('#search_container').toggleClass('hidden')
+  if (!($('#search_container').hasClass('hidden'))){
+      $('#search-input').focus()
+  }
+  $('#search-button').toggleClass('text-primary')
+}
 
 function autocomplet() {
 	var min_length = 2;

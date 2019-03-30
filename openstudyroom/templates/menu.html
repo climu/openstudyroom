@@ -64,7 +64,7 @@
   </li>
 {% endif %}
 <li>
-  <a href="#" onclick="$('#search_container').toggleClass('hidden');$('#search-input').focus()"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+  <a href="#" onclick="togglesearch()"><span id="search-button" class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
 </li>
 
 
@@ -72,7 +72,7 @@
 </div>
 </div>
 <div id ="search_container" class="hidden">
-<input id="search-input"  type="text" oninput="autocomplet()" class="inline" placeholder="Search"></input>
+<input id="search-input"  type="text" oninput="autocomplet()" class="inline" placeholder="Search" ></input>
 <div id="results">
 <div id="user-results" class="list-group"></div>
 <div id="page-results" class="list-group"></div>
