@@ -316,5 +316,9 @@ height: auto;
 #search_container {
   position:absolute;
   right:0px;
+  top:54px;
   z-index:10;
+}
+#search-results>div{
+  margin-bottom: 0px;
 }

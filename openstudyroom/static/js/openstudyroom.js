@@ -52,16 +52,35 @@ var autocomplet = debounce(function() {
 	var min_length = 2;
 	var query = $('#search-input').val();
 	if (query.length >= min_length) {
+    $('#search-results').show();
     request_users(query)
     request_pages(query)
     request_blog(query)
-
+    request_forum(query)
 	} else {
 		$('#search-results').hide();
 	}
 },
 250)
 
+function request_forum(query){
+  $.ajax({
+    url: '/search-api/forum/',
+    type: 'GET',
+    data: {query:query},
+    success:function(data){
+      $('#forum-results').empty()
+      if (data.length > 0){
+        var header = '<a href="/forum/search/?q=' + query + '" class="list-group-item list-group-item-info text-center"> Forum Topics</a>'
+        $('#forum-results').html(header)
+      }
+      for (var i in data){
+        page = data[i]
+        $('#forum-results').append(format_page_search(page))
+      }
+    }
+  });
+  }
 function request_pages(query){
   $.ajax({
     url: '/search-api/pages/',
@@ -88,7 +107,8 @@ function request_pages(query){
       success:function(data){
         $('#blog-results').empty()
         if (data.length > 0){
-          $('#blog-results').html('<li class="list-group-item list-group-item-info text-center"> Blog Post</li>')
+          var header = '<a href="/blog/search/?q=' + query + '" class="list-group-item list-group-item-info text-center"> Blog Posts</a>'
+          $('#blog-results').html(header)
         }
         for (var i in data){
           page = data[i]
@@ -100,7 +120,6 @@ function request_pages(query){
 
 
 function format_page_search(page){
-  console.log(page)
   html = '<a href="' + page.url + '" class="list-group-item" >' + page.title + "</a>"
   return html
 }

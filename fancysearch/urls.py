@@ -21,4 +21,9 @@ urlpatterns = [
             views.blog_search,
             name='blog_search'
     ),
+    url(
+            r'^forum/',
+            views.forum_search,
+            name='forum_search'
+    ),
     ]
