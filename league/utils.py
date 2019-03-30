@@ -154,6 +154,7 @@ def parse_sgf_string(sgf_string):
         'date': None,
         'komi': 0,
         'time': 0,
+        'handicap': 0,
         'board_size': 19,
     }
     for key in prop:
@@ -168,6 +169,8 @@ def parse_sgf_string(sgf_string):
     out['komi'] = float(out['komi'])
     out['time'] = int(out['time'])
     out['board_size'] = int(out['board_size'])
+    out['handicap'] = int(out['handicap'])
+
 
     # counting the number of moves. Note that there could be a +-1 diff, but we don't really care
     out['number_moves'] = 2 * sgf_string.count(';B[')
