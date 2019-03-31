@@ -319,6 +319,7 @@ height: auto;
   top:54px;
   z-index:10;
   width:250px;
+  box-shadow: -5px 5px 5px 0px rgba(150,150,150,0.2);
 }
 #search-results>div{
   margin-bottom: 0px;
