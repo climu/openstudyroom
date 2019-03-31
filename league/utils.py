@@ -171,6 +171,9 @@ def parse_sgf_string(sgf_string):
     out['board_size'] = int(out['board_size'])
     out['handicap'] = int(out['handicap'])
 
+    # Set handicap to 1 if handicap is 0 and komi is 0.5: https://github.com/climu/openstudyroom/issues/364
+    if out['handicap'] == 0 and out['komi'] == 0.5:
+        out['handicap'] = 1
 
     # counting the number of moves. Note that there could be a +-1 diff, but we don't really care
     out['number_moves'] = 2 * sgf_string.count(';B[')
