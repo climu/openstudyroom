@@ -186,6 +186,7 @@ class LeagueEvent(models.Model):
         if self.is_open and \
                 user.is_authenticated and \
                 user.is_league_member() and \
+                self.division_set.exists() and \
                 not LeaguePlayer.objects.filter(user=user, event=self).exists():
             if self.community is None:
                 return True
