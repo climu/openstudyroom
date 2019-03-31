@@ -511,8 +511,12 @@ class Sgf(models.Model):
         if self.number_moves < 20:
             (b, m) = (False, m + '; number moves')
         # Here again, self.komi is a str !!!! Django allow saving str in decimal field in db?
-        if self.handicap > 0:
-            if float(self.komi) != 0.5:
+        # silly me those comes from parse. Not from db!!!!
+
+        # How we deal with komi depends if handicap is allowed
+        if event.max_handicap > 0:
+            # here we allow event.komi or 0.5.
+            if float(self.komi) not in [event.komi, 0.5]:
                 (b, m) = (False, m + '; komi')
         elif float(self.komi) != event.komi:
             (b, m) = (False, m + '; komi')
