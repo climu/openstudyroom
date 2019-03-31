@@ -90,6 +90,10 @@ class LeagueEvent(models.Model):
         blank=True, null=True,
         validators=[validators.NullableMaxLengthValidator(5000)]
     )
+    additional_informations = MarkupTextField(
+        blank=True, null=True,
+        validators=[validators.NullableMaxLengthValidator(10000)]
+    )
 
     class Meta:
         ordering = ['-begin_time']

@@ -160,6 +160,7 @@ class LeagueEventForm(forms.ModelForm):
             'is_primary',
             'description',
             'prizes',
+            'additional_informations',
             'community'
         ]
         # Customise year list to show 2 years in the past/future
@@ -184,6 +185,7 @@ class LeagueEventForm(forms.ModelForm):
             'komi': 'Valid komi for even games of the league. For handicap games, the valid komi is always 0.5',
             'max_handicap': 'Games handicap must be lower or equal.',
             'min_handicap': 'Games handicap must be greater or equal.',
+            'additional_informations': 'This will be shown in the infos tab of the league.'
 
         }
 

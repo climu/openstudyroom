@@ -1,5 +1,6 @@
 {% extends "league/base.html" %}
-{% load static tz league_tags bootstrap3 calendar_tags community_tags i18n %}
+{% load static tz league_tags bootstrap3 calendar_tags community_tags i18n forum_markup_tags%}
+
 
 {% block title %}{{event}}- Overview{% endblock %}
 {% block content %}
@@ -28,6 +29,10 @@
   {% comment %}Translators: Following words is for the sentence "the league will start/stop on {{date}}"{% endcomment %}
    {% trans "stoped" %}{% else %}{% trans "will stop" %}{% endif %} {% trans "on" %} <b>{{event.end_time |date:"M d, Y H:i" }}</b> ({{TIME_ZONE}}).</p>
 <p>{% blocktrans with number_players=event.number_players number_games=event.number_games number_divisions=event.number_divisions percent_game_played=event.percent_game_played possible_games=event.possible_games %}{{number_players}} players played {{number_games}} games in {{number_divisions}} divisions. That is {{percent_game_played}} % of {{possible_games}} possible games.{% endblocktrans %}</p>
+
+{% if event.additional_informations %}
+  {{event.additional_informations|safe|rendered}}
+{% endif %}
 
 <h3>{% trans "Game settings" %}</h3>
 <ul>
