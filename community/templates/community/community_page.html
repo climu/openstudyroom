@@ -188,7 +188,7 @@ $(document).ready(function() {
   $('#game-table').DataTable({"bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
   "columnDefs": [ {
     targets: 0,
-    render: $.fn.dataTable.moment( 'MMM DD, YYYY','L', '{{LANGUAGE_CODE}}' )
+    render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','L', '{{LANGUAGE_CODE}}' )
   } ],
   "order": [[ 0, "desc" ]]});
 
