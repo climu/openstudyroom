@@ -38,7 +38,13 @@
 <ul>
   <li>{% trans "Game must be played either on the KGS or on the OGS go server" %}.</li>
   <li>{% trans "Game must be <b>public</b>." %}</li>
-  <li>{% trans "Games must be played with <b>no handicap</b>" %}</li>
+  {% if event.max_handicap == 0 %}
+    <li>{% trans "Games must be played with <b>no handicap</b>" %}</li>
+  {% else %}
+    <li>{% blocktrans with max_handi=event.max_handicap min_handi=event.min_handicap %}
+      Handicap must be between {{min_handi}} and {{max_handi}} inclusive.
+     {% endblocktrans %}</li>
+  {% endif %}
   <li>{% blocktrans with get_main_time_min=event.get_main_time_min additional_time=event.additional_time %}Games must use <b>Japanese timesetting</b> with at least <b>{{get_main_time_min}} min main time</b> and <b>3 x {{additional_time}} sec byo-yomi</b>.{% endblocktrans %}</li>
   <li>{% blocktrans with tag_upper=event.tag|upper tag_lower=event.tag|lower %}At least one player must tag the game saying <b>{{tag_upper}}</b> or <b>{{tag_lower}}</b>.{% endblocktrans %}</li>
   <li>{%trans "The game can be ranked or free to the convenience of the players." %}</li>
