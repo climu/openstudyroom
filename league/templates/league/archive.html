@@ -35,8 +35,8 @@
   <tbody>
     {% for event in  events %}
       <tr {% if event.is_open %}class="success"{% endif %}>
-        <td>{{event.begin_time |date:"Y-m-d""}}</td>
-        <td>{{event.end_time |date:"Y-m-d""}}</td>
+        <td>{{event.begin_time |date:"Y-m-d"}}</td>
+        <td>{{event.end_time |date:"Y-m-d"}}</td>
         <td>
           {{event |event_link}}
            {% if  not event.is_public %}
@@ -61,6 +61,7 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/locale/{{LANGUAGE_CODE}}.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
 
 <script type="text/javascript">
@@ -69,7 +70,7 @@ $(document).ready(function() {
     "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
     "columnDefs": [ {
       targets: [0,1],
-      render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','MMM DD, YYYY' )
+      render: $.fn.dataTable.render.moment( 'YYYY-MM-DD','L', '{{LANGUAGE_CODE}}' )
     } ],
     "order": [[ 1, "desc" ]]
   });
