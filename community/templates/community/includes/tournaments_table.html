@@ -17,8 +17,8 @@
   <tr>
     <td><a href="{% url "tournament:view" tournament.pk %}">{{tournament.name}}</a></td>
 
-    <td>{{tournament.begin_time |date:"M d, Y"}}</td>
-    <td>{{tournament.end_time |date:"M d, Y"}}</td>
+    <td>{{tournament.begin_time |date:"Y-m-d"}}</td>
+    <td>{{tournament.end_time |date:"Y-m-d"}}</td>
     {% if admin %}
     <td>
       <a href="{% url 'tournament:manage_settings' tournament.pk %}">

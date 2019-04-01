@@ -14,7 +14,7 @@
     <tbody>
 {% for sgf in sgfs %}
   <tr>
-    <td> {{ sgf.date |date:"M d, Y" }}</td>
+    <td> {{ sgf.date |date:"Y-m-d" }}</td>
     {% if sgf.winner == sgf.white %}
     <td><b> {{ sgf.white | user_link:meijin}}<b></td>
     <td> {{ sgf.black | user_link:meijin }}</td>

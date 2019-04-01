@@ -24,8 +24,8 @@
      <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
        {% endif %}
      </td>
-      <td>{{league.begin_time |date:"M d, Y"}}</td>
-      <td>{{league.end_time |date:"M d, Y"}}</td>
+      <td>{{league.begin_time |date:"Y-m-d"}}</td>
+      <td>{{league.end_time |date:"Y-m-d"}}</td>
       <td>{{ league.number_divisions }}</td>
       <td>{{league.number_players}}</td>
       <td>{{ league.number_games}}</td>

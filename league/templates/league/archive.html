@@ -35,8 +35,8 @@
   <tbody>
     {% for event in  events %}
       <tr {% if event.is_open %}class="success"{% endif %}>
-        <td>{{event.begin_time |date:"M d, Y"}}</td>
-        <td>{{event.end_time |date:"M d, Y"}}</td>
+        <td>{{event.begin_time |date:"Y-m-d""}}</td>
+        <td>{{event.end_time |date:"Y-m-d""}}</td>
         <td>
           {{event |event_link}}
            {% if  not event.is_public %}
@@ -68,7 +68,7 @@ $(document).ready(function() {
   $('#leagues-table').DataTable({
     "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
     "columnDefs": [ {
-      targets: 1,
+      targets: [0,1],
       render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','MMM DD, YYYY' )
     } ],
     "order": [[ 1, "desc" ]]

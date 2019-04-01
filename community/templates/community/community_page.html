@@ -188,15 +188,15 @@ $(document).ready(function() {
   $('#game-table').DataTable({"bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
   "columnDefs": [ {
     targets: 0,
-    render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','L', '{{LANGUAGE_CODE}}' )
+    render: $.fn.dataTable.render.moment( 'YYYY-MM-DD','L', '{{LANGUAGE_CODE}}' )
   } ],
   "order": [[ 0, "desc" ]]});
 
     $('#tournaments-table').DataTable({
       "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
       "columnDefs": [ {
-        targets: 1,
-        render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','L', '{{LANGUAGE_CODE}}' )
+        targets: [1,2],
+        render: $.fn.dataTable.render.moment( 'YYYY-MM-DD','L', '{{LANGUAGE_CODE}}' )
       } ],
       "order": [[ 1, "desc" ]]
     });
@@ -204,8 +204,8 @@ $(document).ready(function() {
     $('#leagues-table').DataTable({
       "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
       "columnDefs": [ {
-        targets: 1,
-        render: $.fn.dataTable.render.moment( 'MMM DD, YYYY','L', '{{LANGUAGE_CODE}}' )
+        targets: [1,2],
+        render: $.fn.dataTable.render.moment( 'YYYY-MM-DD','L', '{{LANGUAGE_CODE}}' )
       } ],
       "order": [[ 1, "desc" ]]
     });
