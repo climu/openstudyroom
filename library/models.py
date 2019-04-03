@@ -7,7 +7,7 @@ from machina.models.fields import MarkupTextField
 Topic = get_model('forum_conversation', 'Topic')
 
 
-class Library_entry(models.Model):
+class LibraryEntry(models.Model):
     TYPE_CHOICES = (
         ('link', 'link'),
         ('video', 'video'),
@@ -35,6 +35,6 @@ class Library_entry(models.Model):
         super(Library_entry, self).save(*args, **kwargs)
 
 
-class Forum_entry(Library_entry):
+class ForumEntry(LibraryEntry):
     """ Special entry made from a forum post """
     forum_post = models.ForeignKey(Topic, on_delete=models.CASCADE)
