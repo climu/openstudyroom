@@ -6,9 +6,11 @@
 }
 .me-available{
   color: black !important;
-      background-color: #ffff80 !important;
-      border-color: #ffff80;
-       opacity: 0.5;
+  background-color: #ffff80 !important;
+  border-color: #ffff80;
+  opacity: 0.5;
+  font-size: 1em;
+
 }
 .event-deleted{
   display: none;
@@ -17,6 +19,7 @@
 .other-available{
   margin:1px;
   color:white;
+  opacity: 0.5;
 }
 .controls{
 padding-right: 5px;
