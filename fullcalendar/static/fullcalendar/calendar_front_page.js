@@ -14,7 +14,7 @@ function load_calendar_member(timezone, locale, start_time_range, end_time_range
     selectHelper: false,
     minTime: start_time_range + ":00:00",
     maxTime: end_time_range + ":00:00",
-    height: '340',
+    height: 'auto',
     defaultView: 'agendaWeek',
     slotDuration :'02:00:00',
 
