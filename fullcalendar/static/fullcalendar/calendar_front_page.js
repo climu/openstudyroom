@@ -2,20 +2,9 @@
 function load_calendar_member(timezone, locale, start_time_range, end_time_range){
   $('#calendar').fullCalendar({
     locale:locale,
-    customButtons: {
-        myCustomButton: {
-            text: '?',
-            click: function() {
-                window.open('/calendar/help/', '_blank');
-            }
-        }
-    },
     header: {
-        left: '',
         center: 'title',
-        right: ''
     },
-
     weekNumbers: true,
     navLinks: false, // can click day/week names to navigate views
     editable: false,
@@ -25,7 +14,7 @@ function load_calendar_member(timezone, locale, start_time_range, end_time_range
     selectHelper: false,
     minTime: start_time_range + ":00:00",
     maxTime: end_time_range + ":00:00",
-    height: 'auto',
+    height: '340',
     defaultView: 'agendaWeek',
     slotDuration :'02:00:00',
 
@@ -48,7 +37,6 @@ function load_calendar_member(timezone, locale, start_time_range, end_time_range
 
         // If envent.type is other-available
         if (event.type === 'other-available'){
-            element.append(event.title);
             var text ='<ul>';
             event.users.forEach(function(element){
                 text +='<li>' + element + '</li>';
