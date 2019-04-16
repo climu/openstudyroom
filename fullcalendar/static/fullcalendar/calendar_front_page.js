@@ -3,7 +3,9 @@ function load_calendar_member(timezone, locale, start_time_range, end_time_range
   $('#calendar').fullCalendar({
     locale:locale,
     header: {
+        left:'',
         center: 'title',
+        right: ''
     },
     weekNumbers: true,
     navLinks: false, // can click day/week names to navigate views
