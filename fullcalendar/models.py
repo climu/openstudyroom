@@ -56,7 +56,7 @@ class AvailableEvent(CalEvent):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     @staticmethod
-    def get_formated_other_available(user, division_list, server_list):
+    def get_formated_other_available(user, division_list=None, server_list=None):
         """Return the other-available events related to a user for the divisions
         in division_list
 

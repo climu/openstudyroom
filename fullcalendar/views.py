@@ -47,8 +47,6 @@ class PublicEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return '/'
 
 
-
-
 def calendar_view(request, user_id=None):
     if user_id is None:
         user = request.user
@@ -59,7 +57,7 @@ def calendar_view(request, user_id=None):
     if not request.user.is_authenticated:
         template = 'fullcalendar/calendar.html'
         context = {'user': user}
-    #Own calendar for OSR members
+    # Own calendar for OSR members
     elif user == request.user and user.is_league_member:
         template = 'fullcalendar/calendar_member.html'
         context = {
@@ -76,6 +74,7 @@ def calendar_view(request, user_id=None):
             'end_time_range': request.user.profile.end_cal
         }
     return render(request, template, context)
+
 
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
@@ -169,7 +168,6 @@ def json_feed_other(request, user_id):
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
-
 def json_feed(request):
     """get all events for one user and serve a json."""
     user = request.user
@@ -184,7 +182,6 @@ def json_feed(request):
     start = make_aware(start, tz)
     end = datetime.strptime(request.GET.get('end'), '%Y-%m-%d')
     end = make_aware(end, tz)
-
 
     # get public events for everyone
     data = PublicEvent.get_formated_public_event(start, end, tz)
@@ -210,8 +207,15 @@ def json_feed(request):
 
         # others availability
         if json.loads(request.GET.get('other-av', False)):
-            server_list = json.loads(request.GET.get('servers', []))
-            leagues_list = json.loads(request.GET.get('divs', []))
+            if 'servers' in request.GET:
+                server_list = json.loads(request.GET.get('servers'))
+            else:
+                server_list = None
+            if 'divs' in request.GET:
+                leagues_list = json.loads(request.GET.get('divs'))
+            else:
+                leagues_list = None
+
             events = AvailableEvent.get_formated_other_available(
                 user,
                 leagues_list,
@@ -284,8 +288,8 @@ def json_feed(request):
                     'sender': event.sender.username
                 }
                 data.append(dict)
-
     return HttpResponse(json.dumps(data), content_type="application/json")
+
 
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
@@ -326,6 +330,7 @@ def cancel_game_ajax(request):
                 skip_notification=False
             )
             return HttpResponse('success')
+
 
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)

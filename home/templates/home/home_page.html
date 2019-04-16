@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static i18n wagtailcore_tags wagtailimages_tags puput_tags compress wagtailroutablepage_tags league_tags osr_tags%}
+{% load static i18n wagtailcore_tags wagtailimages_tags puput_tags compress wagtailroutablepage_tags league_tags osr_tags tz%}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/puput.css' %}"/>
@@ -21,10 +21,21 @@
 {% block page_intro %}
 
 {% if request.user.is_authenticated and request.user.is_league_member %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 ">
 
+    <div id="calendar"></div>
+  </div>
+  <div class="col-md-4">
+    {% include 'fullcalendar/includes/event_list.html'  %}
+  </div>
+</div>
+
+</div>
 {% else %}
   {% include "home/includes/homepage_intro.html"%}
-{% endif %}
+
 
 <div class="container">
   <div class="row">
@@ -40,7 +51,7 @@
   </div>
 
 </div>
-
+{% endif %}
 {% endblock %}
 
 
@@ -203,6 +214,19 @@
 
 
 {% block extra_js %}
+{% if request.user.is_authenticated and request.user.is_league_member %}
+  {% get_current_timezone as TIME_ZONE %}
+  {% get_current_language as LANGUAGE_CODE %}
+  <link rel='stylesheet' href='https://cdn.jsdelivr.net/qtip2/3.0.3/basic/jquery.qtip.min.css'/>
+  <script src='https://cdn.jsdelivr.net/qtip2/3.0.3/basic/jquery.qtip.min.js'></script>
+  <link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/calendar.css'%}"/>
+  
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js'></script>
+  <script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.6.1/locale-all.js'></script>
+  <script src={%static 'fullcalendar/calendar_front_page.js'%}></script>
+  <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css' />
+  {% endif %}
 <script>
 
 $(document).ready(function() {
@@ -212,6 +236,14 @@ $(document).ready(function() {
     }).get()
     maxHeight = Math.max.apply(null, heights);
     $(".col-equal").height(maxHeight);
+    {% if request.user.is_authenticated and request.user.is_league_member %}
+
+    load_calendar_member('{{TIME_ZONE}}', '{{LANGUAGE_CODE}}', 0, 24);
+    {% endif %}
+
 });
  </script>
+
+
+
 {% endblock %}
