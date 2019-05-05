@@ -1064,6 +1064,7 @@ class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                 'komi': copy_from.komi,
                 'clock_type': copy_from.clock_type,
                 'main_time': copy_from.main_time,
+                'max_main_time': copy_from.max_main_time,
                 'additional_time': copy_from.additional_time,
             })
 

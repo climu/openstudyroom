@@ -19,6 +19,7 @@ class TournamentForm(LeagueEventForm):
             'komi',
             'clock_type',
             'main_time',
+            'max_main_time',
             'additional_time',
             'is_open',
             'is_public',

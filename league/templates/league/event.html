@@ -45,7 +45,7 @@
       Handicap must be between {{min_handi}} and {{max_handi}} inclusive.
      {% endblocktrans %}</li>
   {% endif %}
-  <li>{% blocktrans with get_main_time_min=event.get_main_time_min additional_time=event.additional_time %}Games must use <b>Japanese timesetting</b> with at least <b>{{get_main_time_min}} min main time</b> and <b>3 x {{additional_time}} sec byo-yomi</b>.{% endblocktrans %}</li>
+  <li>{% blocktrans with get_main_time_min=event.get_main_time_min get_max_main_time_min=event.get_max_main_time_min additional_time=event.additional_time %}Games must use <b>Japanese timesetting</b> with at between <b>{{get_main_time_min}} min and {{get_max_main_time_min}} min main time</b> and <b>3 x {{additional_time}} sec byo-yomi</b>.{% endblocktrans %}</li>
   <li>{% blocktrans with tag_upper=event.tag|upper tag_lower=event.tag|lower %}At least one player must tag the game saying <b>{{tag_upper}}</b> or <b>{{tag_lower}}</b>.{% endblocktrans %}</li>
   <li>{%trans "The game can be ranked or free to the convenience of the players." %}</li>
   <li>{% blocktrans with komi=event.komi %}Komi must be set to <b>{{komi}}</b>.{% endblocktrans %}</li>

@@ -320,12 +320,12 @@ msgstr "Las partidas deben ser jugadas <b>sin hándicap</b>"
 #: league/templates/league/event.html:37
 #, python-format
 msgid ""
-"Games must use <b>Japanese timesetting</b> with at least <b>"
-"%(get_main_time_min)s min main time</b> and <b>3 x %(additional_time)s sec "
+"Games must use <b>Japanese timesetting</b> with at between <b>"
+"%(get_main_time_min)s min and %(get_max_main_time_min)s main time</b> and <b>3 x %(additional_time)s sec "
 "byo-yomi</b>."
 msgstr ""
-"Las partidas deben usar <b>byo-yomi japonés</b> con al menos <b>"
-"%(get_main_time_min)s min de tiempo principal</b> y <b>3 x "
+"Las partidas deben usar <b>byo-yomi japonés</b> con entre <b>"
+"%(get_main_time_min)s min y %(get_max_main_time_min)s min de tiempo principal</b> y <b>3 x "
 "%(additional_time)s seg byo-yomi</b>."
 
 #: league/templates/league/event.html:38

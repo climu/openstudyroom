@@ -72,8 +72,10 @@ class LeagueEvent(models.Model):
         max_length=10,
         choices=CLOCK_TYPE_CHOICES,
         default='byoyomi')
-    # main time in minutes
+    # minimum main time in seconds
     main_time = models.PositiveSmallIntegerField(default=1800)
+    # maximum main time in seconds    
+    max_main_time = models.PositiveSmallIntegerField(default=9000)
     # additional time in sec. Either byoyomi or per move if fisher
     additional_time = models.PositiveSmallIntegerField(default=30)
 
@@ -103,6 +105,9 @@ class LeagueEvent(models.Model):
 
     def get_main_time_min(self):
         return self.main_time / 60
+        
+    def get_max_main_time_min(self):
+        return self.max_main_time / 60
 
     def get_absolut_url(self):
         return reverse('league', kwargs={'pk': self.pk})
@@ -495,7 +500,10 @@ class Sgf(models.Model):
             (b, m) = (False, m + '; Tag missing')
         # check the time settings:
         if int(self.time) < event.main_time:
-            (b, m) = (False, m + '; main time')
+            (b, m) = (False, m + '; minimum main time')
+            
+        if int(self.time) > event.max_main_time:
+            (b, m) = (False, m + '; maximum main time')            
 
         if event.clock_type == 'byoyomi':
             byo = utils.get_byoyomi(self.byo)

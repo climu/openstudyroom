@@ -154,6 +154,7 @@ class LeagueEventForm(forms.ModelForm):
             'min_handicap',
             'clock_type',
             'main_time',
+            'max_main_time',
             'additional_time',
             'is_open',
             'is_public',
@@ -175,7 +176,8 @@ class LeagueEventForm(forms.ModelForm):
             'nb_matchs': 'Maximum number of match two players can play together',
             'ppwin': 'Point per win',
             'pploss': 'Point per loss',
-            'main_time': 'The minimum starting time of the clock.',
+            'main_time': 'The minimum starting time of the clock, in seconds.',
+            'max_main_time': 'The maximum starting time of the clock, in seconds.',
             'additional_time': "If byoyomi, user will have a minimum 3 x this time byoyomi.\
                 If Fischer, it's the additional time per move",
             'min_matchs': 'Minimum of match for a user to be considered active',
