@@ -208,3 +208,15 @@ def quick_send_mail(user, mail):
            [address.email],
            fail_silently=False,
         )
+
+def parse_ogs_iso8601_datetime(dt_str):
+    '''turn '2019-04-30T14:41:18.183258-04:00' into datetime.datetime(2019, 4, 30, 18, 41, 18, 183258)
+    OGS sends us these and we want to compare to a TZ-unaware datetime'''
+    no_tz = dt_str[:-6]
+    tz_str = dt_str[-6:]
+    offset_minutes = int(tz_str[1:3]) * 60 + int(tz_str[4:6])
+    if tz_str[0] == '-':
+        offset_minutes = -offset_minutes
+    dt = datetime.datetime.strptime(no_tz, '%Y-%m-%dT%H:%M:%S.%f')
+    dt -= datetime.timedelta(minutes=offset_minutes)
+    return dt

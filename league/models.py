@@ -850,11 +850,9 @@ class User(AbstractUser):
             url = request['next']
             for game in request['results']:
                 # first we check if end date og game is too old
-                # 2013-08-31T12:47:34.887Z
+                # 2013-08-31T12:47:34.887123-04:00
                 if game['ended']:
-                    game_ended = datetime.datetime.strptime(
-                        game['ended'],
-                        '%Y-%m-%dT%H:%M:%S.%fZ')
+                    game_ended = utils.parse_ogs_iso8601_datetime(game['ended'])
                 else:
                     continue
                 if game_ended < time_limit:
