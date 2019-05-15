@@ -38,7 +38,7 @@ urlpatterns = [
 
     url(r'^messages/', include('postman.urls', namespace='postman')),
     url(r'^community/', include('community.urls', namespace='community')),
-    url(r'',include(puput_urls)),
+    url(r'', include(puput_urls)),
     # For anything not caught by a more specific rule above, hand over to
     # Wagtail's page serving mechanism. This should be the last pattern in
     # the list:
