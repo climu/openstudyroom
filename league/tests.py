@@ -35,7 +35,7 @@ class TestUtils(unittest.TestCase):
             'place': 'The KGS Go Server at http://www.gokgs.com/',
             'number_moves': 268,
             'check_code': '20161119climunomenestmnhnimcf11',
-            'handicap': 0,
+            'handicap': 1,
         }
         assert parsed == expected
 

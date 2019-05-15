@@ -163,7 +163,7 @@ def parse_sgf_string(sgf_string):
             q = sgf_string.find(']', p)  # find the end of the tag
             out[prop[key]] = sgf_string[p + 3:q]
 
-    # Format  date, komi and time in proper type
+    # Format date, komi and time in proper type
     if out['date'] is not None:
         out['date'] = datetime.datetime.strptime(out['date'], "%Y-%m-%d")
     out['komi'] = float(out['komi'])
