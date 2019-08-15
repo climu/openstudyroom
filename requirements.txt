@@ -4,7 +4,7 @@ bs4==0.0.1
 certifi==2017.7.27.1
 chardet==3.0.4
 defusedxml==0.4.1
-Django==2.1.7
+Django==2.1.11
 django-allauth==0.38.0
 django-annoying==0.10.3
 django-anymail==4.2
@@ -30,7 +30,7 @@ django-taggit==0.23.0
 django-treebeard==4.3
 django-widget-tweaks==1.4.1
 djangorestframework==3.8.2
-draftjs-exporter==2.0.0
+draftjs-exporter==2.1.6
 gunicorn==19.6.0
 html5lib==0.999999999
 idna==2.6
@@ -44,7 +44,7 @@ olefile==0.44
 packaging==16.8
 Pillow==4.2.1
 psycopg2-binary==2.7.5
-puput==1.0.3
+puput==1.0.4
 pybbm==0.18.4
 pylint==1.7.4
 pylint-django==0.7.2
@@ -62,9 +62,9 @@ six==1.11.0
 sorl-thumbnail==12.3
 sqlparse==0.2.3
 Unidecode==0.4.21
-urllib3==1.24.1
+urllib3==1.24.2
 vobject==0.9.5
-wagtail==2.3
+wagtail==2.4
 wagtailmenus==2.11.1
 webencodings==0.5.1
 Willow==1.1
