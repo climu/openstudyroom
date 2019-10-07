@@ -1065,6 +1065,9 @@ class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                 'clock_type': copy_from.clock_type,
                 'main_time': copy_from.main_time,
                 'additional_time': copy_from.additional_time,
+                'min_handicap': copy_from.min_handicap,
+                'max_handicap': copy_from.max_handicap,
+                'additional_informations': copy_from.additional_informations,
             })
 
         return initials
