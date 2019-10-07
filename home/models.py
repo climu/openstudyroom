@@ -19,6 +19,7 @@ from wagtail.core.blocks import TextBlock, StructBlock, StreamBlock, FieldBlock,
     RichTextBlock, RawHTMLBlock, IntegerBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.documents.blocks import DocumentChooserBlock
+from wagtail.contrib.table_block.blocks import TableBlock
 from wagtail.core.signals import page_published
 from wagtailmenus.models import MenuPage
 from puput.models import EntryPage, BlogPage
@@ -121,6 +122,7 @@ class MyStreamBlock(StreamBlock):
     aligned_html = AlignedHTMLBlock(icon="code", label='Raw HTML')
     document = DocumentChooserBlock(icon="doc-full-inverse")
     wgo = WgoBlock(label="wgo")
+    table = TableBlock()
 
 
 class HomePage(Page):
