@@ -44,7 +44,7 @@ olefile==0.44
 packaging==16.8
 Pillow==4.2.1
 psycopg2-binary==2.7.5
-puput==1.0.4
+puput==1.0.5
 pybbm==0.18.4
 pylint==1.7.4
 pylint-django==0.7.2
@@ -64,7 +64,7 @@ sqlparse==0.2.3
 Unidecode==0.4.21
 urllib3==1.24.2
 vobject==0.9.5
-wagtail==2.4
+wagtail==2.5
 wagtailmenus==2.11.1
 webencodings==0.5.1
 Willow==1.1
