@@ -1,8 +1,10 @@
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
 
 from league.models import User
 
+import requests
 
 class CalEvent(models.Model):
 
@@ -153,6 +155,39 @@ class AvailableEvent(CalEvent):
             formated_events.append(dict)
 
         return formated_events
+
+    def annonce_on_discord(events):
+        """Announce new available events on discord.
+
+        events is a list of AvailableEvent all related to one single user.
+        """
+        if not events:
+            return
+
+        if settings.DEBUG:
+            return
+        else:
+            with open('/etc/discord_calendar_hook_url.txt') as f:
+                discord_url = f.read().strip()
+
+        user = events[0].user.username
+        title = "Plan your games!"
+        content = "[" + user +"]" + "(https://openstudyroom.org/league/account/" + user +") wants to play (UTC):\n\n"
+        for event in events:
+            content += "-" + event.start.strftime("%d/%m %H:%M") + " -> " + event.end.strftime("%d/%m %H:%M") + "\n"
+        values = {
+            "embeds": [{
+                "title": title,
+                "url": "https://openstudyroom.org/calendar/",
+                "description": content,
+                "footer":{
+                "text": "All times in `day/month` format in 24h UTC time"
+                }
+            }]
+        }
+        r = requests.post(discord_url, json=values)
+        r.raise_for_status()
+
 
 
 class GameRequestEvent(CalEvent):

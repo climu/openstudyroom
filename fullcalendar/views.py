@@ -444,6 +444,7 @@ def save(request):
     user = request.user
     tz = user.get_timezone()
     now = timezone.now()
+    to_announce = []
     if request.method == 'POST':
         changed_events = ''
         changed_events = sorted(
@@ -478,6 +479,8 @@ def save(request):
                             user=user
                             )
                         prev_event = new_event
+                        # add the event in the announce list
+                        to_announce.append(new_event)
 
             elif end > now:  # the event must have been moved or resized.
                 pk = event['pk']
@@ -495,6 +498,8 @@ def save(request):
                         ev.save()
                         prev_event = ev
 
+    # Announce nex available events
+    AvailableEvent.annonce_on_discord(to_announce)
     return HttpResponse('success')
 
 
