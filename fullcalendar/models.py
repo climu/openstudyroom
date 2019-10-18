@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.conf import settings
 
 from league.models import User
-
+from pytz import utc
 import requests
 
 class CalEvent(models.Model):
@@ -174,14 +174,14 @@ class AvailableEvent(CalEvent):
         title = "Plan your games!"
         content = "[" + user +"]" + "(https://openstudyroom.org/league/account/" + user +") wants to play (UTC):\n\n"
         for event in events:
-            content += "-" + event.start.strftime("%d/%m %H:%M") + " -> " + event.end.strftime("%d/%m %H:%M") + "\n"
+            content += "- " + event.start.astimezone(utc).strftime("%d/%m %H:%M") + " -> " + event.end.astimezone(utc).strftime("%H:%M") + "\n"
         values = {
             "embeds": [{
                 "title": title,
                 "url": "https://openstudyroom.org/calendar/",
                 "description": content,
                 "footer":{
-                "text": "All times in `day/month` format in 24h UTC time"
+                "text": "All times in day/month format in 24h UTC time"
                 }
             }]
         }
