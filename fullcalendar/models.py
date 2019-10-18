@@ -172,9 +172,9 @@ class AvailableEvent(CalEvent):
 
         user = events[0].user.username
         title = "Plan your games!"
-        content = "[" + user +"]" + "(https://openstudyroom.org/league/account/" + user +") wants to play (UTC):\n\n"
+        content = "[" + user +"]" + "(https://openstudyroom.org/league/account/" + user +") wants to play:\n\n"
         for event in events:
-            content += "- " + event.start.astimezone(utc).strftime("%d/%m %H:%M") + " -> " + event.end.astimezone(utc).strftime("%H:%M") + "\n"
+            content += "- " + event.start.astimezone(utc).strftime("%d/%m %H:%M") + " → " + event.end.astimezone(utc).strftime("%H:%M") + "\n"
         values = {
             "embeds": [{
                 "title": title,
