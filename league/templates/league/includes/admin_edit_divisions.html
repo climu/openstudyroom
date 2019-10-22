@@ -1,0 +1,90 @@
+{% load bootstrap3 %}
+<legend>{{object}} divisions</legend>
+<div class="panel panel-default">
+  <div class="panel-heading"> Create a new division</div>
+  <div class="panel-body">
+<form action="" method="POST" class="form-inline" >{% csrf_token %}
+<input type="hidden" name="next" value="{{request.path}}">
+<input id="name" class="form-control" name="name" placeholder="New division name" title=""  type="text">
+<button type="submit" formaction="{% url 'league:admin_create_division' object.pk %}" class="btn btn-primary  pull-right">
+  {% bootstrap_icon "plus" %} Create new division
+</button>
+</form>
+ </div>
+</div>
+{% for division in object.get_divisions %}
+<div class="panel panel-default">
+  <div class="panel-heading clearfix">
+<b>{{division.name}}</b>
+     <div class="pull-right">
+        <a href="{% url 'league:admin_users_list' object.pk division.pk %}">{{division.number_players}} players </a>| {{division.number_games}} games</div>
+   </div>
+  <div class="panel-body">
+    <div class="row">
+    <div class="col-md-6">
+    <form action="" method="POST" class="form-inline" >{% csrf_token %}
+      <input type="hidden" name="next" value="{{request.path}}">
+      <input id="name" class="form-control" name="name" placeholder="Division name" value="{{division.name}}" title=""  type="text">
+    <button type="submit" formaction="{% url 'league:admin_rename_division' division.pk %}" class="btn btn-primary">
+Rename
+</button>
+</form>
+</div>
+<div class="col-md-4">
+    <form action="" method="POST" class="form-inline" >{% csrf_token %}
+      <input type="hidden" name="action" value="delete_division">
+      <input type="hidden" name="next" value="{{request.path}}">
+      <button type="submit" formaction="{% url 'league:admin_delete_division' division.pk %}" class="btn btn-danger"
+      onclick="return confirm('Delete the {% if division.number_players > 0 %}division {{division}} and all its players/games?'{% else %}empty division {{division}}?'{% endif %} )">
+        {% bootstrap_icon "remove" %} Delete
+      </button>
+    </form>
+  </div>
+  <div class="col-md-1">
+    {% if not division.is_first %}
+    <form action="" method="POST" class="form-inline" >{% csrf_token %}
+      <input type="hidden" name="action" value="division_up">
+      <input type="hidden" name="next" value="{{request.path}}">
+      <button type="submit" formaction="{% url 'league:admin_division_up_down' division.pk %}" class="btn btn-primary">
+        {% bootstrap_icon "arrow-up" %}
+      </button>
+    </form>
+    {% endif %}
+  </div>
+  <div class="col-md-1">
+    {% if not division.is_last %}
+    <form action="" method="POST" class="form-inline" >{% csrf_token %}
+      <input type="hidden" name="action" value="division_down">
+      <input type="hidden" name="next" value="{{request.path}}">
+      <button type="submit" formaction="{% url 'league:admin_division_up_down' division.pk %}" class="btn btn-primary">
+        {% bootstrap_icon "arrow-down" %}
+      </button>
+    </form>
+    {% endif %}
+  </div>
+
+</div>
+</div>
+
+  <div class="panel-footer">
+
+  <form action="" method="POST" class="form-inline" >{% csrf_token %}
+      <label for="user_id">Winner
+        <select class="form-control" id="user_id" name="user_id">
+          <option value="-1">-------------</option>
+          {% for player in division.get_players %}
+          <option value="{{player.user.pk}}" {%if division.winner == player.user%}selected {%endif%}>
+            {{player.user.username}}
+          </option>
+          {% endfor %}
+        </select>
+      </label>
+      <input type="hidden" name="next" value="{{request.path}}">
+      <button type="submit" formaction="{% url 'league:division_set_winner' division.pk %}" class="btn btn-primary">
+        <i class="fa fa-trophy"></i>
+      </button>
+  </form>
+  </div>
+</div>
+
+{% endfor %}

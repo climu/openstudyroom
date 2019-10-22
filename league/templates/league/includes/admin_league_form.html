@@ -1,0 +1,44 @@
+{% load bootstrap3 league_tags%}
+
+<form action="" method="POST">{% csrf_token %}
+  <div class="col-md-4">
+    <legend>League settings
+      <div class="pull-right">
+        {% bootstrap_button "Save" button_type="submit" button_class="btn-primary" size="sm"%}
+      </div>
+    </legend>
+  	{% bootstrap_field form.name %}
+    {% bootstrap_field form.tag %}
+    {% bootstrap_field form.event_type %}
+    {% bootstrap_field form.begin_time %}
+    {% bootstrap_field form.end_time %}
+    {% bootstrap_field form.is_open %}
+    {% bootstrap_field form.is_public %}
+    {% bootstrap_field form.is_primary %}
+    {% bootstrap_field form.community %}
+
+    <legend>Match and points settings </legend>
+    {% bootstrap_field form.nb_matchs %}
+    {% bootstrap_field form.ppwin %}
+    {% bootstrap_field form.pploss %}
+    {% bootstrap_field form.min_matchs %}
+
+    <legend>Games settings </legend>
+    {% bootstrap_field form.board_size %}
+    {% bootstrap_field form.komi %}
+    {% bootstrap_field form.max_handicap %}
+    {% bootstrap_field form.min_handicap %}
+
+    <legend>Clock setting </legend>
+    {% bootstrap_field form.clock_type %}
+    {% bootstrap_field form.main_time %}
+    {% bootstrap_field form.additional_time %}
+  </div>
+  <div class="col-md-8">
+    {% bootstrap_field form.description %}
+    {% bootstrap_field form.prizes %}
+    {% bootstrap_field form.additional_informations %}
+    {% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
+  </div>
+
+</form>

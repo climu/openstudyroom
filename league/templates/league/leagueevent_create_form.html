@@ -15,18 +15,16 @@
 {% block content %}
 {% timezone "UTC" %}
 <div class="row">
-<div class="col-md-4">
-  <legend>      {% if copy_from%}
-          Copy {{copy_from}} league
-        {% else %}
-          Create new Event
-        {% endif %} </legend>
-<form action="" method="POST">{% csrf_token %}
-	{% bootstrap_form form %}
-	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
-</form>
+  <legend>
+    {% if copy_from%}
+        Copy {{copy_from}} league
+    {% else %}
+        Create new League
+    {% endif %}
+  </legend>
+  {% include 'league/includes/admin_league_form.html' %}
 </div>
-</div>
+
 {% endtimezone %}
 {% endblock %}
 
