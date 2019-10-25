@@ -10,7 +10,7 @@ from community.models import Community
 from community.widget import Community_select
 from .models import Division, LeagueEvent, Profile
 from .ogs import get_user_id, get_user_rank
-
+from openstudyroom.forms import RangeField
 
 
 class SgfAdminForm(forms.Form):
@@ -135,6 +135,7 @@ class LeagueEventForm(forms.ModelForm):
         widget=forms.DateInput(format='%d/%m/%Y'),
         help_text="Set it to the 1st to have full month."
     )
+    range = RangeField(min=0, max=5, values=[2,4])
 
     class Meta:
         model = LeagueEvent
@@ -161,13 +162,13 @@ class LeagueEventForm(forms.ModelForm):
             'description',
             'prizes',
             'additional_informations',
-            'community'
+            'community',
         ]
         # Customise year list to show 2 years in the past/future
         #EVENT_YEAR_CHOICES = range(datetime.date.today().year - 2, datetime.date.today().year + 3)
         widgets = {
             'name': forms.TextInput(),
-            'community': forms.HiddenInput()
+            'community': forms.HiddenInput(),
         }
         help_texts = {
             'name': "Name of the league",
