@@ -96,6 +96,10 @@
 {{ block.super }}
 <script src="{% static 'js/machina.min.js' %}" type="text/javascript" charset="utf-8"></script>
 <script src="{% static 'wgo/shortcode.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'wgo/glift_shortcode.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'js/glift_1_1_2.min.js' %}" type="text/javascript" charset="utf-8"></script>
+
+
 
 <script type="text/javascript">
   $(function() {
@@ -117,6 +121,18 @@
 $('.post-content').each(function() {
     str = preprocessor($( this ).html())
     $( this ).html(str)
+})
+$('.post-content').each(function() {
+    str = glift_preprocessor($( this ).html())
+    $( this ).html(str)
+})
+$('.glift-div').each(function(index){
+  id = "glift_" + index
+  $(this).attr('id', id)
+  glift.create({
+    divId:id,
+    sgf:$( this ).attr('data-sgf')
+  })
 })
 
 $( document ).on( "mouseenter", "a.coord", function() {
