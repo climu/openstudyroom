@@ -91,8 +91,15 @@ class WgoAlignmentChoiceBlock(FieldBlock):
 
 class ImageBlock(StructBlock):
     image = ImageChooserBlock()
-    caption = RichTextBlock()
+    caption = RichTextBlock(blank=True, null=True, required=False)
     alignment = ImageFormatChoiceBlock()
+    width = IntegerBlock(
+        default=None,
+        blank=True,
+        null=True,
+        required=False,
+        help_text="optional width in px. Default is auto."
+    )
 
 
 class AlignedHTMLBlock(StructBlock):
