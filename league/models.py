@@ -530,6 +530,8 @@ class Sgf(models.Model):
         # dirty workaround is converting to int as above. We should convert when we parse.
         if int(self.board_size) != event.board_size:
             (b, m) = (False, m + '; board size')
+        if event.begin_time > self.date or  self.date > event.end_time:
+            (b, m) = (False, m + '; wrong date')
 
         return {'message': m, 'valid': b, 'tag': tag, }
 
