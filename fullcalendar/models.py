@@ -156,6 +156,7 @@ class AvailableEvent(CalEvent):
 
         return formated_events
 
+    @staticmethod
     def annonce_on_discord(events):
         """Announce new available events on discord.
 
@@ -174,7 +175,8 @@ class AvailableEvent(CalEvent):
         title = "Plan your games!"
         content = "[" + user +"]" + "(https://openstudyroom.org/league/account/" + user +") wants to play:\n\n"
         for event in events:
-            content += "- " + event.start.astimezone(utc).strftime("%d/%m %H:%M") + " → " + event.end.astimezone(utc).strftime("%H:%M") + "\n"
+            content += "- " + event.start.astimezone(utc).strftime("%d/%m %H:%M") +\
+                " → " + event.end.astimezone(utc).strftime("%H:%M") + "\n"
         values = {
             "embeds": [{
                 "title": title,
