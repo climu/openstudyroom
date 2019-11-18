@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
+
 from machina.core import validators
 from machina.models.fields import MarkupTextField
 import pytz
@@ -530,7 +531,7 @@ class Sgf(models.Model):
         # dirty workaround is converting to int as above. We should convert when we parse.
         if int(self.board_size) != event.board_size:
             (b, m) = (False, m + '; board size')
-        if event.begin_time > self.date or  self.date > event.end_time:
+        if event.begin_time > timezone.make_aware(self.date, pytz.utc) or  timezone.make_aware(self.date, pytz.utc) > event.end_time:
             (b, m) = (False, m + '; wrong date')
 
         return {'message': m, 'valid': b, 'tag': tag, }
