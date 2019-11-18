@@ -114,6 +114,11 @@ def callback(request):
     def bind_user(request, data):
         """ Create or update a DiscordUser instance """
         uid = data.pop('uid')
+        # test if the django user already have a discord user binded. Delete it if so
+        discord_user = DiscordUser.objects.filter(user=request.user).first()
+        if discord_user:
+            discord_user.delete()
+        # test if a django user already is using this discord user. Update if so
         count = DiscordUser.objects.filter(uid=uid).update(user=request.user,
                                                            **data)
         if count == 0:

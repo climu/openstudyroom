@@ -46,7 +46,7 @@ class DiscordBindConf(AppConf):
     # URI settings
     REDIRECT_URI = None
     INVITE_URI = 'https://discordapp.com/channels/@me'
-    RETURN_URI = '/'
+    RETURN_URI = '/league/account/'
 
     class Meta:
         proxy = True
