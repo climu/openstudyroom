@@ -308,6 +308,7 @@ class Sgf(models.Model):
     byo = models.CharField(max_length=20, default='sgf')
     time = models.PositiveIntegerField(default=19)
     game_type = models.CharField(max_length=20, default='Free')
+    # message will not be used anymore. We render a dict of messages leagues dependants
     message = models.CharField(max_length=100, default='nothing', blank=True)
     number_moves = models.SmallIntegerField(default=100)
     p_status = models.SmallIntegerField(default=1)
@@ -456,65 +457,58 @@ class Sgf(models.Model):
         return -1
 
     def check_players(self, event):
-        m = ''
-        b = True
+        """ Check the players for a given SGF and league event.
+        Return a tuple (division, errors)
+        """
+        errors = []
         division = None
         [bplayer, wplayer] = self.get_players(event)
         if wplayer is not None and bplayer is not None:
             if wplayer.division != bplayer.division:
-                (b, m) = (False, m + '; players not in same division')
+                errors.append('players not in the same division')
             else:
                 w_results = wplayer.get_results()
                 if bplayer.user.pk in w_results:
                     if len(w_results[bplayer.user.pk]) >= event.nb_matchs:
-                        (b, m) = (False, '; max number of games')
+                        errors.append('max number of games')
                     else:
                         division = bplayer.division
                 else:
                     division = bplayer.division
         else:
-            (b, m) = (False, '; One of the players is not a league player')
-        return {'message': m, 'valid': b, 'division': division}
+            errors.append('One of the players is not a league player')
+        return division, errors
 
     def check_event_settings(self, event):
         """Check sgf settings for a given event.
 
-        tag , timesetting,not a review
+        tag , timesetting
         We don't preform check on players. This will be done at check_players
-        we don't touch the sgf but return a dict {'message': string , 'valid' : boolean, 'tag',boolean}
+        we don't touch the sgf but return  a list strings of errors.
+        The sgf is valid is the returned errors list is empty.
         Note that this method does not check if a sgf is already in db.
         """
 
-        b = True
-        m = ''
-        if self.game_type == 'review':
-            (b, m) = (False, m + ' review gametype')
-        if event.tag in self.sgf_text or str.lower(event.tag) in self.sgf_text:
-            tag = True
-        else:
-            tag = False
-            (b, m) = (False, m + '; Tag missing')
+        errors = []
+        if event.tag not in self.sgf_text and str.lower(event.tag) not in self.sgf_text:
+            errors.append('Tag missing')
         # check the time settings:
         if int(self.time) < event.main_time:
-            (b, m) = (False, m + '; main time')
+            errors.append('main time')
 
         if event.clock_type == 'byoyomi':
             byo = utils.get_byoyomi(self.byo)
             # if self.byo isn't byoyomi timesettings, we get [0,0] -> not valid
             if byo['n'] < 3 or byo['t'] < event.additional_time:
-                (b, m) = (False, m + '; byo-yomi')
+                errors.append('byo-yomi')
         # Beware: From the API, byo will be "30" but in the SGF we get "30 fischer"
 
         elif 'fischer' in self.byo:
             if int(self.byo.split(' ')[0]) < event.additional_time:
-                (b, m) = (False, m + '; additional time')
+                errors.append('additional time')
         else:
-            (b, m) = (False, m + '; Time settings')
-        # no result shouldn't happen automaticly, but with admin upload, who knows
-        if self.result == '?':
-            (b, m) = (False, m + '; no result')
-        if self.number_moves < 20:
-            (b, m) = (False, m + '; number moves')
+            errors.append('time settings')
+
         # Here again, self.komi is a str !!!! Django allow saving str in decimal field in db?
         # silly me those comes from parse. Not from db!!!!
 
@@ -522,70 +516,83 @@ class Sgf(models.Model):
         if event.max_handicap > 0:
             # here we allow event.komi or 0.5.
             if float(self.komi) not in [event.komi, 0.5]:
-                (b, m) = (False, m + '; komi')
+                errors.append('komi')
         elif float(self.komi) != event.komi:
-            (b, m) = (False, m + '; komi')
+            errors.append('komi')
         if self.handicap > event.max_handicap or self.handicap < event.min_handicap:
-            (b, m) = (False, m + '; handicap')
+            errors.append('handicap')
         # self.board_size is added at parse. So it's a string. THat's a bug I fear.
         # dirty workaround is converting to int as above. We should convert when we parse.
         if int(self.board_size) != event.board_size:
-            (b, m) = (False, m + '; board size')
-        if event.begin_time > timezone.make_aware(self.date, pytz.utc) or  timezone.make_aware(self.date, pytz.utc) > event.end_time:
-            (b, m) = (False, m + '; wrong date')
+            errors.append('board size')
+        if event.begin_time > timezone.make_aware(self.date, pytz.utc) or\
+          timezone.make_aware(self.date, pytz.utc) > event.end_time:
+            errors.append('date')
 
-        return {'message': m, 'valid': b, 'tag': tag, }
+        return errors
+
+    def check_global_settings(self):
+        """ Check the sgf settings that works for every leagues:
+        - game type
+        - result
+        - number of moves
+
+        Return a list of erros as strings. If sgf pass all tests, the list is empty.
+        """
+        errors = []
+        if self.game_type == 'review':
+            errors.append('review gametype')
+        # no result shouldn't happen automaticly, but with admin upload, who knows
+        if self.result == '?':
+            errors.append('no results')
+        if self.number_moves < 20:
+            errors.append('not enought moves')
+
+        return errors
 
     def check_validity(self):
         """Check sgf validity for all open leaguesevents.
 
-        Return a list of valid leagues is the sgf is valid and [] if not
+        Return a tuple (valid_events, errors) where:
+        - valid_events is the list of leagueevents the sgf is valid for
+        - errors is a list [{'league': leagueevent, 'errors' list_of_errors}.
+            The global errors will have the key 'league'  at None
+
         Update the sgf but do NOT save it to db. This way allow some preview.
-        I think the way we deal with message could be better:
-        maybe a dict with {'event1':'message', 'event2'...}
         """
+
+        global_errors = []
         # First we check if we have same sgf in db comparing check_code
         duplicate = self.is_duplicate()
         if duplicate > 0:
             self.league_valid = False
-            self.message = 'same sgf already in db : ' + str(duplicate)
-            return []
+            global_errors.append('same sgf already in db : ' + str(duplicate))
+            return [], [{'league':None, 'errors': global_errors}]
+
+        # check global errors
+        global_errors += self.check_global_settings()
+        errors_list = [{'league':None, 'errors': global_errors}]
+        if global_errors:
+            return [], errors_list
 
         events = LeagueEvent.objects.filter(is_open=True).exclude(event_type='tournament')  # get all open events
-        message = ''
+
         # if no open events, the sgf can't be valid
         if len(events) == 0:
-            return []
+            return [], errors_list
+
+
         valid_events = []
         for event in events:
-            settings = self.check_event_settings(event)
-            players = self.check_players(event)
-            check = {
-                'message': players['message'] + settings['message'],
-                'valid': players['valid'] and settings['valid'],
-                'tag': settings['tag'],
-                'players': players['valid']
-            }
-            # if the players are in this event, we keep this events message
-            if check['players']:
-                message = check['message']
-                if check['valid']:
-                    valid_events.append(event)
-
-        if len(valid_events) == 0:
-            # here sgf is valid for no event.
-            # if the sgf was tagged for an event, we display this event message.
-            # Otherwise, just the last one.
-            self.league_valid = False
-            if len(message) > 0:
-                self.message = message
-            else:
-                self.message = check['message']
-            return []
-        else:  # the sgf is valid for at lease one event.
-            self.league_valid = True
-            self.message = ''
-            return valid_events
+            event_errors = self.check_event_settings(event)
+            players_errors = self.check_players(event)[1]
+            event_errors += players_errors
+            if not event_errors:
+                valid_events.append(event)
+            errors_list.append({'league': event, 'errors': event_errors})
+        print(valid_events)
+        self.league_valid = len(valid_events) > 0
+        return valid_events, errors_list
 
 
 class User(AbstractUser):

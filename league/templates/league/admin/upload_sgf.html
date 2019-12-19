@@ -64,31 +64,10 @@
            </tbody>
          </table>
 </div>
-<div class="panel panel-default">
-
-  <div class="panel-heading">
-    {% if sgf.league_valid %}
-         This SGF is valid for those events:
-       </div>
-       <table class="table table-condensed">
-         {% for event in valid_events %}
-         <tr><td>{{event | event_link}}</td></tr>
-         {% endfor %}
-{% else %}
-This SGF is not valid :
+{% include 'league/includes/sgf_errors.html' %}
 
 
-</div>
-<table class="table table-condensed">
-{% with sgf.get_messages as messages %}
-{% for message in messages %}
-<tr><td>{{message}}</td></tr>
-{% endfor %}
-{% endwith %}
-{% endif %}
-</table>
 
-</div>
 </div>
 <div class="col-md-4">
   <form id="sgf-form" method="post" class="form">

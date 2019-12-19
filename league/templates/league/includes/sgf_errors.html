@@ -1,0 +1,45 @@
+{% load league_tags%}
+
+{% if sgf.league_valid %}
+  <div class="panel panel-success">
+    <div class="panel-heading">
+        This SGF is valid for those events:
+    </div>
+    <table class="table table-condensed">
+       {% for event in valid_events %}
+        <tr><td>{{event | event_link}}</td></tr>
+       {% endfor %}
+      </table>
+  </div>
+{% else %}
+  <div class="panel panel-danger">
+    <div class="panel-heading">
+        This SGF is valid for no events
+      </div>
+  </div>
+{% endif %}
+
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Not valid events
+        </div>
+    <table class="table table-condensed">
+      {% for dict in errors %}
+        {% if dict.errors %}
+        {% if  dict.league is None %}
+        <tr><th>Global errors</th></tr>
+        {% else %}
+        <th>{{ dict.league |event_link}}</th>
+        {% endif %}
+
+          {% for error in dict.errors %}
+            <tr><td>{{error}}</td></tr>
+          {% endfor %}
+        {% endif %}
+
+        {% endfor %}
+
+</table>
+
+   </div>

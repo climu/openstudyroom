@@ -109,7 +109,7 @@ def scraper():
         if sgf.result == '?':
             sgf.delete()
         else:
-            valid_events = sgf.check_validity()
+            valid_events = sgf.check_validity()[0]
             sgf.update_related(valid_events)
             sgf.save()
             # I think we could deal with sgf already in db one day here:
@@ -876,7 +876,7 @@ def create_sgf(request):
             sgf.sgf_text = form.cleaned_data['sgf']
             sgf.p_status = 2
             sgf = sgf.parse()
-            valid_events = sgf.check_validity()
+            valid_events = sgf.check_validity()[0]
             if sgf.league_valid:
                 sgf.save()
                 sgf.update_related(valid_events)
@@ -901,13 +901,14 @@ def upload_sgf(request):
             sgf.sgf_text = form.cleaned_data['sgf']
             sgf.p_status = 2
             sgf = sgf.parse()
-            valid_events = sgf.check_validity()
+            valid_events, errors = sgf.check_validity()
             form = SgfAdminForm(initial={'sgf': sgf.sgf_text})
 
             context = {
                 'sgf': sgf,
                 'form': form,
                 'valid_events': valid_events,
+                'errors': errors
             }
             template = loader.get_template('league/admin/upload_sgf.html')
             return HttpResponse(template.render(context, request))
@@ -920,12 +921,13 @@ def upload_sgf(request):
             request.session['sgf_data'] = None
             sgf.p_status = 2
             sgf = sgf.parse()
-            valid_events = sgf.check_validity()
+            valid_events, errors = sgf.check_validity()
             form = SgfAdminForm(initial={'sgf': sgf.sgf_text})
             context = {
                 'sgf': sgf,
                 'form': form,
                 'valid_events': valid_events,
+                'errors': errors
             }
             template = loader.get_template('league/admin/upload_sgf.html')
             return HttpResponse(template.render(context, request))
@@ -945,7 +947,7 @@ def admin_save_sgf(request, sgf_id):
             sgf.urlto = form.cleaned_data['url']
             sgf.p_status = 2
             sgf = sgf.parse()
-            valid_events = sgf.check_validity()
+            valid_events = sgf.check_validity()[0]
             sgf.update_related(valid_events)
             sgf.save()
     message = 'successfully saved the sgf in the db'
@@ -982,13 +984,14 @@ def admin_edit_sgf(request, sgf_id):
             sgf.urlto = form.cleaned_data['url']
             sgf.p_status = 2
             sgf = sgf.parse()
-            valid_events = sgf.check_validity()
+            valid_events, errors = sgf.check_validity()
             form = SgfAdminForm(initial={'sgf': sgf.sgf_text, 'url': sgf.urlto})
             context = {
                 'sgf': sgf,
                 'form': form,
                 'preview': True,
-                'valid_events': valid_events
+                'valid_events': valid_events,
+                'errors': errors
             }
             template = loader.get_template('league/admin/sgf_edit.html')
             return HttpResponse(template.render(context, request))
