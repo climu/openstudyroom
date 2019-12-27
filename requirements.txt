@@ -46,9 +46,8 @@ Pillow==6.2.0
 psycopg2-binary==2.7.5
 puput==1.0.5
 pybbm==0.18.4
-pylint==1.7.4
+pylint==1.7.6
 pylint-django==0.7.2
-pylint-plugin-utils==0.2.6
 pyparsing==2.1.10
 python-dateutil==2.6.1
 python3-openid==3.0.10

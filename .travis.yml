@@ -1,10 +1,11 @@
 language: python
 
+dist: bionic
+sudo: false
+
 python:
   - '3.5'
-  - 'nightly'
-
-sudo: false
+  - '3.6'
 
 cache: pip
 
