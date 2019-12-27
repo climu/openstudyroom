@@ -221,7 +221,7 @@ def p_status(status):
 
 @register.filter()
 def scrap_time(n):
-    return n * 5
+    return n * 2
 
 
 @register.filter()

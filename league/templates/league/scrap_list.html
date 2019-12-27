@@ -16,7 +16,7 @@
   {% endfor %}
   <li class="active pull-right"><a href="{% url 'league:scrap_list' %}">{% trans "Scrape list" %}</a></li>
 </ul>
-<div class="well"> {% trans "Every 5 minutes, our system checks whether a player (one player at a time) has played any new games. This table shows the players that are next in line to be checked by the system." %}
+<div class="well"> {% trans "Every 2 minutes, our system checks whether a player (one player at a time) has played any new games. This table shows the players that are next in line to be checked by the system." %}
 
 {% if request.user.is_authenticated and request.user.profile in profiles %}
   <form action="" method="POST" class="form-inline" >{% csrf_token %}
