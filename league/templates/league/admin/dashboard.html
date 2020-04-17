@@ -19,10 +19,12 @@
         <tr>
           <th>username</th>
           <th>email</th>
+          <th>date joined</th>
           <th>kgs_username</th>
           <th>ogs_username</th>
           <th>Communities interest</th>
           <th>Delete</th>
+          <th>email</th>
           <th>No games</th>
           <th>Accept</th>
         </thead>
@@ -43,6 +45,7 @@
               {% endif %}
             </td>
             {% endwith %}
+            <td>{{ new_user.date_joined | date:"SHORT_DATE_FORMAT" }}</td>
             <td>
               {% if new_user.profile.kgs_username %}
               <a href="https://www.gokgs.com/gameArchives.jsp?user={{new_user.profile.kgs_username}}" target="_blank">{{new_user.profile.kgs_username}}</a>
@@ -62,6 +65,11 @@
               </button>
             </td>
             <td>
+              <button class="btn newuser btn-danger btn-xs" action="delete_email_confirm" user_name="{{new_user.username}}" user_id="{{new_user.pk}}">
+                {% bootstrap_icon "remove" %}
+              </button>
+            </td>
+            <td>
               <button class="btn newuser btn-danger btn-xs" action="delete_no_games" user_name="{{new_user.username}}" user_id="{{new_user.pk}}">
                 {% bootstrap_icon "remove" %}
               </button>
@@ -73,7 +81,7 @@
             </td>
           </tr>
           {% endfor %}
-        </tbdoy>
+        </tbody>
     </table>
 
   </div>

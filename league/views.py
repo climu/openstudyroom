@@ -757,10 +757,10 @@ def admin(request):
             user.groups.add(group)
             # send email
             utils.quick_send_mail(user, 'emails/welcome.txt')
+
             # send discord webhook
             if settings.DEBUG:
                 discord_url = 'http://exemple.com' # change this for local test
-
             else:
                 with open('/etc/discord_welcome_hook_url.txt') as f:
                     discord_url = f.read().strip()
@@ -776,6 +776,7 @@ def admin(request):
                     message += " (" + user.profile.ogs_rank + ")"
             values = {"content": message}
             requests.post(discord_url, json=values)
+
             # manage communities welcome
             community_groups = user.groups.\
                 filter(name__icontains='_community_new_member').\
@@ -787,6 +788,8 @@ def admin(request):
         elif action[0:6] == "delete":
             if action[7:15] == "no_games":  # deletion due to no played games
                 utils.quick_send_mail(user, 'emails/no_games.txt')
+            if action[7:] == "email_confirm":
+                utils.quick_send_mail(user, 'emails/email_confirm.txt')
             user.delete()
         else:
             return HttpResponse('failure')

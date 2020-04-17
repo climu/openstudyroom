@@ -1,0 +1,11 @@
+Hello {{user.username}},
+
+You registered on Open Study Room website on the {{user.date_joined | date:"d/m/Y"}} but you didn't confirm your email since then.
+
+Since you have to confirm your email to use OSR website we deleted your registration.
+
+You are more than welcome to register again. If you do, please don't forget to confirm your email this time.
+
+Feel free to contact us at openstudyroom@gmail.com if you have any issue or question.
+
+openstudyroom.org
