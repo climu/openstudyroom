@@ -63,7 +63,7 @@ sqlparse==0.2.3
 Unidecode==0.4.21
 urllib3==1.24.2
 vobject==0.9.5
-wagtail==2.6.2
+wagtail==2.7.2
 wagtailmenus==3.0
 webencodings==0.5.1
 Willow==1.1
