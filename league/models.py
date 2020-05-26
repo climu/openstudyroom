@@ -263,6 +263,20 @@ class Registry(models.Model):
     kgs_delay = models.SmallIntegerField(default=19)
     # actual meijin
     meijin = models.ForeignKey('User', null=True, blank=True, on_delete=models.CASCADE)
+    # number of online discord users
+    discord_presence_count = models.PositiveSmallIntegerField(default=0)
+
+    @staticmethod
+    def get_discord_presence_count():
+        r = Registry.objects.get(pk=1)
+        return r.discord_presence_count
+
+    @staticmethod
+    def set_discord_presence_count(count):
+        r = Registry.objects.get(pk=1)
+        r.discord_presence_count = count
+        r.save()
+
 
     @staticmethod
     def get_primary_event():
