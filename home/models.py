@@ -23,6 +23,7 @@ from wagtail.contrib.table_block.blocks import TableBlock
 from wagtail.core.signals import page_published
 from wagtailmenus.models import MenuPage
 from puput.models import EntryPage, BlogPage
+from league.models import Registry
 import requests
 
 from machina.core.db.models import get_model
@@ -143,6 +144,7 @@ class HomePage(Page):
         if quotes:
             quote = random.choice(Quote.objects.all())
             context['quote'] = quote
+        context['discord_presence_count'] = Registry.get_discord_presence_count()
 #        user = request.user
 #        if user.is_authenticated and user.is_league_member:
 #            now = timezone.now()
