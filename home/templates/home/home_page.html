@@ -49,13 +49,21 @@
       <div class="row">
         {% include 'fullcalendar/includes/event_list.html'  %}
       </div>
-      <div class="row">
-        <div class="col-12 text-center">
+      <div class="row ">
+        <div class="col-md-12 now-osr">
         <h3 class="text-center">What's happening in OSR? </h3>
-        <a class="label label-default" style="font-size:1.2em; padding-right:0.3em;margin-right:0.3em;" href="https://discord.gg/b7meDjX" data-toggle="tooltip" title="Join OSR Discord" tabindex="-1">
+        <div >
+        <a class="label label-default"  href="https://discord.gg/b7meDjX" data-toggle="tooltip" title="Join OSR Discord" tabindex="-1">
            <i class="fab fa-discord "></i> {{discord_presence_count}}
          </a> <span>users connected in our discord right now.</span>
          </div>
+         <div>
+         <a class="label label-default"  href="https://discord.gg/b7meDjX" data-toggle="tooltip" title="Join our leagues" tabindex="-1">
+            <img src="https://openstudyroom.org/media/images/go_icon.original.png" style="height: 1.2em;padding-bottom:5px;"> {{games.total}}
+          </a> <span> games played this month in {{n_leagues}} leagues.</span>
+         </div>
+         </div>
+
       </div>
 
     </div>

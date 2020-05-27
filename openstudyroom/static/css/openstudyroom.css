@@ -327,3 +327,9 @@ height: auto;
 #search-input{
   width:100%
 }
+.now-osr >div>a {
+  font-size:1.2em;
+  padding-right:0.3em;
+  margin-right:0.3em;
+  line-height: 2em;
+}

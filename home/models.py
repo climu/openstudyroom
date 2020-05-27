@@ -1,12 +1,15 @@
 from __future__ import absolute_import, unicode_literals
 
 import random
+
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
+from django.db.models import Count, Case, IntegerField, When
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils import timezone
 #from django.utils import timezone
 from django import forms
 from django.urls import reverse
@@ -23,9 +26,8 @@ from wagtail.contrib.table_block.blocks import TableBlock
 from wagtail.core.signals import page_published
 from wagtailmenus.models import MenuPage
 from puput.models import EntryPage, BlogPage
-from league.models import Registry
+from league.models import Registry, Sgf, LeagueEvent
 import requests
-
 from machina.core.db.models import get_model
 ForumPost = get_model('forum_conversation', 'Post')
 
@@ -145,6 +147,30 @@ class HomePage(Page):
             quote = random.choice(Quote.objects.all())
             context['quote'] = quote
         context['discord_presence_count'] = Registry.get_discord_presence_count()
+        first_of_the_month = timezone.now().replace(day=1, hour=0, minute=0, second=0)
+        print(first_of_the_month)
+        games = Sgf.objects\
+            .exclude(date__isnull=True)\
+            .defer('sgf_text')\
+            .filter(league_valid=True)\
+            .filter(date__gte=first_of_the_month)\
+            .annotate(total=Count('id'))\
+            .annotate(kgs=Count(
+                Case(
+                    When(place__startswith="The KGS", then=1),
+                    output_field=IntegerField(),
+                    distinct=True
+                )))\
+            .annotate(ogs=Count(
+                Case(
+                    When(place__startswith="OGS", then=1),
+                    output_field=IntegerField(),
+                    distinct=True
+                )))\
+            .values('total', 'kgs', 'ogs')
+        context['games'] = games[0]
+        n_leagues = LeagueEvent.objects.filter(is_open=True, is_public=True, community__isnull=True).count()
+        context['n_leagues'] = n_leagues
 #        user = request.user
 #        if user.is_authenticated and user.is_league_member:
 #            now = timezone.now()
