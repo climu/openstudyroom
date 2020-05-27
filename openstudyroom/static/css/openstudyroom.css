@@ -70,7 +70,7 @@ img.img-magic:hover{
 
 .quote-header{
   color:#efefef;
-  max-width: 80%;
+  max-width: 70%;
   opacity: 0.85;
   font-weight: 400;
   position: relative;
@@ -338,6 +338,7 @@ height: auto;
   left:10px;
   color:#efefef;
   opacity: 0.85;
+  max-width: 30%;
 }
 .now-osr>div>span{
   text-shadow: 0 0 3px black, 0 0 7px rgba(0,0,0, 1), 0 0 10px black;
