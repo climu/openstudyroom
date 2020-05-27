@@ -338,12 +338,10 @@ height: auto;
   left:10px;
   color:#efefef;
   opacity: 0.85;
-  max-width: 30%;
-
 }
 .now-osr>div>span{
-  text-shadow: 0 0 7px rgba(0,0,0, 1), 0 0 3px black;
-  font-weight: 600;
+  text-shadow: 0 0 3px black, 0 0 7px rgba(0,0,0, 1), 0 0 10px black;
+  font-weight: 400;
 }
 .now-osr >div>a {
   padding: .2em .6em .3em .6em;
