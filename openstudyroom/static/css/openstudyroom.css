@@ -327,9 +327,32 @@ height: auto;
 #search-input{
   width:100%
 }
+
+
+.now-osr{
+  position: relative;
+  top:-40px;
+  left:10px;
+  color:#efefef;
+  opacity: 0.85;
+  max-width: 30%;
+
+}
+.now-osr>div>span{
+  text-shadow: 0 0 7px rgba(0,0,0, 1), 0 0 3px black;
+  font-weight: 600;
+}
 .now-osr >div>a {
-  font-size:1.2em;
+  padding: .2em .6em .3em .6em;
+  text-decoration: none;
   padding-right:0.3em;
   margin-right:0.3em;
   line-height: 2em;
+  background-color: #efefef;
+  opacity: 0.8;
+  color: rgba(1, 1, 1, 0.8);
+  border-radius: .25em;
+}
+.now-osr >div>a:hover{
+  opacity: 0.9;
 }
