@@ -11,12 +11,12 @@ def public_events(context):
     user = request.user
     if user.is_authenticated and user.is_league_admin():
         my_games = list(GameAppointmentEvent.get_future_games(user))
-        public_events = list(PublicEvent.objects.order_by('start').all()[:5])
+        public_events = list(PublicEvent.objects.order_by('-start').all()[:5])
         cal_events = my_games + public_events
         cal_events = sorted(cal_events, key=lambda k: k.start)[:5]
         return cal_events
     else:
-        public_events = PublicEvent.objects.all().order_by('start')[:5]
+        public_events = PublicEvent.objects.all().order_by('-start')[:5]
         return public_events
 
 
