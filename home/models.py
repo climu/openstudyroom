@@ -1,11 +1,11 @@
 from __future__ import absolute_import, unicode_literals
 
 import random
-
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
 from django.db.models import Count, Case, IntegerField, When
+from django.db.models.functions import TruncMonth
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.utils.encoding import python_2_unicode_compatible
@@ -30,7 +30,6 @@ from league.models import Registry, Sgf, LeagueEvent
 import requests
 from machina.core.db.models import get_model
 ForumPost = get_model('forum_conversation', 'Post')
-
 #from fullcalendar.models import AvailableEvent, GameRequestEvent
 
 
@@ -148,12 +147,13 @@ class HomePage(Page):
             context['quote'] = quote
         context['discord_presence_count'] = Registry.get_discord_presence_count()
         first_of_the_month = timezone.now().replace(day=1, hour=0, minute=0, second=0)
-        print(first_of_the_month)
         games = Sgf.objects\
             .exclude(date__isnull=True)\
             .defer('sgf_text')\
             .filter(league_valid=True)\
             .filter(date__gte=first_of_the_month)\
+            .annotate(month=TruncMonth('date'))\
+            .values('month')\
             .annotate(total=Count('id'))\
             .annotate(kgs=Count(
                 Case(
