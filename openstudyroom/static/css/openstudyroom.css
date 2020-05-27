@@ -241,6 +241,9 @@ blockquote{
 .cal-event-description{
   margin-top:10px;
 }
+.past-event{
+  opacity: 0.5;
+}
 .online::before {
     color: #3f3;
     content: "";

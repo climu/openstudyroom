@@ -10,7 +10,7 @@
 <div {% if public_events|length > 3 %} class="pre-scrollable" {% endif %}>
 {% for cal_event in public_events %}
   {% if cal_event.url %}  <a href="{{cal_event.url}}">    {% endif %}
-<div class="panel cal-event-sidebar">
+<div class="panel cal-event-sidebar {% if cal_event.start.date < now.date %} past-event{% endif %}">
   <div class="panel-body">
     <div class="col-md-4 col-xs-4">
       <p>
