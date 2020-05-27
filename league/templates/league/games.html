@@ -56,15 +56,10 @@ return false;};
   <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrape list</a></li>
   </ul>
 {% include 'league/includes/league_nav.html' with active='games' %}
-<div class="well"> This table shows all games that have been played in the {{event.name}}</div>
+
 
 <div class ="row">
 <div  class="col-md-4">
-  <div id ="game_infos">
-    {% if sgf %}
-  {% include "league/includes/game_info.html"  %}
-    {% endif %}
-</div>
 <div class="panel panel-default">
 <div class="panel-heading">Games from {{event}}</div>
 
@@ -74,6 +69,11 @@ return false;};
 </div>
 
 <div class="col-md-8">
+    <div id ="game_infos">
+      {% if sgf %}
+    {% include "league/includes/game_info.html"  %}
+      {% endif %}
+  </div>
   {% if sgf %}
   <div id="player" data-wgo="{{ sgf.sgf_text | prepare_sgf}}" >
     </div>

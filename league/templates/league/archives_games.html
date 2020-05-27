@@ -53,22 +53,21 @@ return false;};
   <li class="active"><a href="{% url 'league:games'  %}">{% trans "Games" %}</a></li>
 </ul>
 </nav>
-<div class="well"> This table shows all games that have been played in the Open Study Room</div>
 
 <div class ="row">
 <div class="col-md-4">
-  <div id ="game_infos">
-    {% if sgf %}
-  {% include "league/includes/game_info.html"  %}
-    {% endif %}
-</div>
 <div class="panel panel-default">
-<div class="panel-heading">Games</div>
+<div class="panel-heading">All OSR games</div>
 {% include "league/includes/games.html" with sgfs=sgfs %}
 </div>
 </div>
 
 <div class="col-md-8">
+    <div id ="game_infos">
+      {% if sgf %}
+    {% include "league/includes/game_info.html"  %}
+      {% endif %}
+  </div>
   {% if sgf %}
   <div id="player" data-wgo="{{ sgf.sgf_text | prepare_sgf}}" >
     </div>

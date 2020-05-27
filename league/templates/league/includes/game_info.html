@@ -1,26 +1,23 @@
 {% load league_tags bootstrap3 %}
 {% get_meijin as meijin %}
-<div class="panel panel-default ">
-<div class="panel-heading">Game infos</div>
-<div class="panel-body">
-  <div class="col-md-6">
-<p>White: {{sgf.white |user_link:meijin}}</p>
-<p> {{sgf.date|date:"M d, Y" }}</p>
-<p> <a href="{% url 'league:sgf' sgf.pk%}">{% bootstrap_icon 'save' %} Download sgf</a><p>
-</div>
-<div class="col-md-6">
-<p>Black: {{sgf.black |user_link:meijin}}</p>
-<p>{{sgf.result}}</p>
 
-{% if event %}
-  {% if event.event_type == "tournament" %}
-  <p> <a href="/tournament/{{event.pk}}/games/{{sgf.pk}}">{% bootstrap_icon 'link' %} Permalink</a></p>
-{% else %}
-  <p> <a href="/league/games/{{sgf.pk}}">{% bootstrap_icon 'link' %} Permalink</a></p>
-{% endif %}
-{% else %}
-  <p> <a href="/league/games/{{sgf.pk}}">{% bootstrap_icon 'link' %} Permalink</a></p>
-{% endif %}
-</div>
-</div>
-</div>
+  <p class="text-center">
+    <span class="pull-left">
+  {% if event %}
+    {% if event.event_type == "tournament" %}
+   <a href="/tournament/{{event.pk}}/games/{{sgf.pk}}" data-toggle="tooltip" title="Permalink">{% bootstrap_icon 'link' %}</a>
+  {% else %}
+   <a href="/league/games/{{sgf.pk}}" data-toggle="tooltip" title="Permalink">{% bootstrap_icon 'link' %}</a>
+  {% endif %}
+  {% else %}
+     <a href="/league/games/{{sgf.pk}}" data-toggle="tooltip" title="Permalink">{% bootstrap_icon 'link' %}</a>
+  {% endif %}
+  </span>
+  <span>
+    <i class="far fa-circle"></i> {{sgf.white |user_link:meijin}} vs {{sgf.black |user_link:meijin}} <i class="fas fa-circle"></i> on {{sgf.date|date:"M d, Y" }}: {{sgf.result}}
+</span>
+<span class="pull-right">
+<a href="{% url 'league:sgf' sgf.pk%}" data-toggle="tooltip" title="Download sgf">{% bootstrap_icon 'save' %}</a>
+
+</span>
+</p>
