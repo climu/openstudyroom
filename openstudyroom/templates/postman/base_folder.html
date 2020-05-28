@@ -52,7 +52,7 @@ in the INSTALLED_APPS setting.
     </a>
 {% endblock %}
    {% if message.is_replied %}</em>{% endif %}{% if message.is_new %}</strong>{% endif %}</td>
-   <td>{{ message.sent_at|compact_date:_("g:i A,M j,n/j/y") }}</td>
+   <td>{{ message.sent_at|compact_date:"g:i A,M j,n/j/y"}}</td>
   </tr>{% endfor %}
  </tbody>
 </table>
