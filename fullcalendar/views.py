@@ -192,7 +192,7 @@ def json_feed(request):
         # Games appointments
         data += GameAppointmentEvent.get_formated_game_appointments(user, now, tz)
 
-        if json.loads(request.GET.get('me-av', False)):
+        if request.GET.get('me-av', False):
             # his own availability
             me_available_events = AvailableEvent.objects.filter(
                 user=user,
@@ -206,7 +206,7 @@ def json_feed(request):
             )
 
         # others availability
-        if json.loads(request.GET.get('other-av', False)):
+        if request.GET.get('other-av', False):
             if 'servers' in request.GET:
                 server_list = json.loads(request.GET.get('servers'))
             else:
@@ -244,7 +244,7 @@ def json_feed(request):
                 data.append(dict)
 
         # Game requests
-        if json.loads(request.GET.get('game-request', False)):
+        if request.GET.get('game-request', False):
             # his game requests
             my_game_request = GameRequestEvent.objects.filter(
                 sender=user,
