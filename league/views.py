@@ -405,7 +405,7 @@ def list_players(request, event_id=None, division_id=None):
                     'white_sgf',
                     queryset=Sgf.objects.defer('sgf_text').all()
                 ),
-                'profile')
+                'profile', 'discord_user')
         users = [user.get_stats for user in users]
         context = {
             'users': users,
@@ -591,8 +591,8 @@ def account(request, user_name=None):
     sgfs = Sgf.objects.defer('sgf_text').\
         exclude(date__isnull=True).\
         filter(Q(white=user) | Q(black=user)).\
-        prefetch_related('white', 'black', 'winner').\
-        select_related('white__profile', 'black__profile')
+        select_related("white", "white__profile", "black", "black__profile", "winner").\
+        prefetch_related("white__discord_user", "black__discord_user")
 
     for event in open_events:
         event_players = LeaguePlayer.objects.filter(user=user, event=event)
