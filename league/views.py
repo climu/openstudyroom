@@ -21,7 +21,7 @@ from django.core.mail import send_mail
 from django.views.generic.edit import CreateView, UpdateView
 from django.template.defaultfilters import date as _date, time as _time
 from django.utils import timezone
-from django.db.models import Count, Case, IntegerField, When
+from django.db.models import Count, Case, IntegerField, When, Prefetch
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.functions import TruncMonth
 from machina.core.db.models import get_model
@@ -221,10 +221,14 @@ def list_games(request, event_id=None, sgf_id=None):
         context.update({'sgf': sgf})
 
     if event_id is None:
-        sgfs = Sgf.objects.defer('sgf_text').filter(league_valid=True).\
-            prefetch_related('white', 'black', 'winner').\
-            select_related('white__profile', 'black__profile').\
-            order_by('-date')
+        sgfs = (
+            Sgf.objects
+            .defer('sgf_text')
+            .filter(league_valid=True)
+            .select_related("white", "white__profile", "black", "black__profile", "winner")
+            .prefetch_related("white__discord_user", "black__discord_user")
+            .order_by('-date')
+            )
         context.update({'sgfs': sgfs})
         template = loader.get_template('league/archives_games.html')
 
@@ -237,8 +241,8 @@ def list_games(request, event_id=None, sgf_id=None):
             'winner',
             'result',
             'league_valid').filter(league_valid=True).\
-            prefetch_related('white', 'black', 'winner').\
-            select_related('white__profile', 'black__profile').\
+            select_related("white", "white__profile", "black", "black__profile", "winner").\
+            prefetch_related("white__discord_user", "black__discord_user").\
             order_by('-date')
         template = loader.get_template('league/games.html')
         can_join = event.can_join(request.user)
