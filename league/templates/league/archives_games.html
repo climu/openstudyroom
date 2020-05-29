@@ -1,5 +1,5 @@
 {% extends "league/base.html" %}
-{% load league_tags wgo_tags l10n i18n%}
+{% load league_tags wgo_tags l10n i18n static %}
 
 {% block title %}Archives - Games {% if sgf %}- {{sgf.black.username}} vs {{sgf.white.username}} {%endif %}{% endblock %}
 {% block extra_head_js %}
@@ -54,55 +54,50 @@ function load_game(sgf_id) {
 </ul>
 </nav>
 
-<div class ="row">
-<div class="col-md-4">
-<div class="panel panel-default">
-<div class="panel-heading">All OSR games</div>
-{% include "league/includes/games.html" with sgfs=sgfs %}
-</div>
-</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">All OSR games</div>
+            {% include "league/includes/games.html" with sgfs=sgfs %}
 
-<div class="col-md-8">
-    <div id ="game_infos">
+            <div class="gametable_info" role="status">Showing {{ start }} to {{ end }} of {{ sgf_count }} entries</div>
+            <div class="gametable_paginate">
+                <ul class="pagination">
+                    <li class="paginate_button {% if page == 1 %}disabled{% endif %}">
+                        <a href="{% if page > 1 %}?page={{ page|add:'-1' }}{% endif %}">Previous</a>
+                    </li>
+                    {% for i in page_range %}
+                        <li class="paginate_button {% if i == page %}active{% endif %}"><a href="?page={{ i }}">{{ i }}</a></li>
+                    {% endfor %}
+                    <li class="paginate_button {% if page >= total_pages %}disabled{% endif %}">
+                        <a href="{% if page < total_pages %}?page={{ page|add:1 }}{% endif %}">Next</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div id ="game_infos">
+          {% if sgf %}
+        {% include "league/includes/game_info.html"  %}
+          {% endif %}
+      </div>
       {% if sgf %}
-    {% include "league/includes/game_info.html"  %}
+      <div id="player" data-wgo="{{ sgf.sgf_text | prepare_sgf}}" >
+        </div>
+        {% else %}
+        <div id="player">
+          <div class="alert alert-info">
+          {% trans "Click a game result to see it." %}
+        </div>
+        </div>
       {% endif %}
-  </div>
-  {% if sgf %}
-  <div id="player" data-wgo="{{ sgf.sgf_text | prepare_sgf}}" >
     </div>
-    {% else %}
-    <div id="player">
-      <div class="alert alert-info">
-      {% trans "Click a game result to see it." %}
-    </div>
-    </div>
-  {% endif %}
-</div>
 </div>
 {% endblock %}
 
-
-{% block extra_js %}
-{% get_current_language as LANGUAGE_CODE %}
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/locale/{{LANGUAGE_CODE}}.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
-
-<script type="text/javascript">
-$(document).ready(function() {
-$('#game-table').DataTable({
-  "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
-  "columnDefs": [ {
-    targets: 0,
-    render: $.fn.dataTable.render.moment( 'YYYY-MM-DD','L', '{{LANGUAGE_CODE}}' )
-  } ],
-  "order": [[ 0, "desc" ]]
-
-});
-} );
-</script>
-
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/league.css' %}"/>
+<link rel="stylesheet" href="{% static 'league/css/archives_games.css' %}"/>
 {% endblock %}

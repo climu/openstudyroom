@@ -2,6 +2,7 @@ from collections import OrderedDict
 import json
 import datetime
 import io
+import math
 from time import sleep
 from zipfile import ZipFile
 
@@ -221,6 +222,10 @@ def list_games(request, event_id=None, sgf_id=None):
         context.update({'sgf': sgf})
 
     if event_id is None:
+        page = int(request.GET.get('page', 1))
+        page_size = 10
+        start = (page - 1) * page_size
+        end = page * page_size
         sgfs = (
             Sgf.objects
             .defer('sgf_text')
@@ -228,8 +233,27 @@ def list_games(request, event_id=None, sgf_id=None):
             .select_related("white", "white__profile", "black", "black__profile", "winner")
             .prefetch_related("white__discord_user", "black__discord_user")
             .order_by('-date')
-            )
-        context.update({'sgfs': sgfs})
+        )
+        sgf_count = len(sgfs)
+        total_pages = math.ceil(sgf_count / page_size)
+        page_range = [1]
+        if total_pages > 1:
+            if page > 2:
+                page_range.append(page - 1)
+            if page not in (1, total_pages):
+                page_range.append(page)
+            if page < total_pages - 1:
+                page_range.append(page + 1)
+            page_range.append(total_pages)
+        context.update({
+            'sgfs': sgfs[start:end],
+            'sgf_count': sgf_count,
+            'start': start + 1,
+            'end': min(end, sgf_count),
+            'page': page,
+            'page_range': page_range,
+            'total_pages': total_pages,
+        })
         template = loader.get_template('league/archives_games.html')
 
     else:

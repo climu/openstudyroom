@@ -1,0 +1,19 @@
+div.gametable_info {
+    padding-top: 8px;
+    white-space: nowrap;
+}
+div.gametable_paginate {
+    margin: 0;
+    white-space: nowrap;
+    text-align: right;
+}
+div.gametable_paginate ul.pagination {
+    margin: 2px 0;
+    white-space: nowrap;
+}
+
+@media screen and (max-width: 767px) {
+    div.gametable_paginate {
+        text-align: center;
+    }
+}
