@@ -9,7 +9,12 @@ from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.template.defaultfilters import slugify
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import (
+    HttpResponse,
+    HttpResponseRedirect,
+    Http404,
+    JsonResponse,
+)
 from django.urls import reverse
 from django.db.models import Count, Case, IntegerField, When, Q, Prefetch
 from django.contrib.auth.decorators import login_required
@@ -208,24 +213,25 @@ def download_all_sgf(request, user_id):
 
     return response
 
+
 def games_datatable_api(request):
     """
     Feed datatable with games infos as JSON.
     https://datatables.net/manual/server-side
     """
-    league_id = request.GET.get('league', '')
+    league_id = request.GET.get('league')
     base_sgfs_queryset = Sgf.objects.all()
     if league_id:
         league = get_object_or_404(LeagueEvent, pk=league_id)
         base_sgfs_queryset = base_sgfs_queryset.filter(events=league)
     sgfs = Sgf.fetch_and_get_context(base_sgfs_queryset)
     out = {
-        'draw': request.GET.get('draw', 0),
+        'draw': int(request.GET.get('draw', 0)),
         'recordsTotal': len(sgfs),
-        'data':sgfs
+        'data': sgfs,
     }
-    out_json = json.dumps(out)
-    return HttpResponse(out_json, content_type="application/json")
+    return JsonResponse(out)
+
 
 def list_games(request, event_id=None, sgf_id=None):
     """List all games and allow to show one with wgo."""
@@ -1025,12 +1031,12 @@ class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         return reverse('league:admin_events')
 
-
     def get_context_data(self, **kwargs):
         context = super(LeagueEventUpdate, self).get_context_data(**kwargs)
         league = self.get_object()
         context['other_events'] = league.get_other_events
         return context
+
 
 class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     """Create a league"""

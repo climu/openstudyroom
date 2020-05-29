@@ -10,12 +10,12 @@ python:
 cache: pip
 
 install:
-  - pip install --quiet --requirement requirements.txt
+  - pip install --quiet --requirement requirements_dev.txt
   - pip install --quiet pylint pylint-django
 
 script:
-  - ./manage.py makemigrations && ./manage.py test -v1
   - pylint community fixtures fullcalendar home league openstudyroom search wgo manage.py
+  - ./manage.py makemigrations && pytest --create-db
 
 notifications:
   email:
