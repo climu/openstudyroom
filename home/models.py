@@ -10,7 +10,6 @@ from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils import timezone
-#from django.utils import timezone
 from django import forms
 from django.urls import reverse
 
@@ -168,7 +167,10 @@ class HomePage(Page):
                     distinct=True
                 )))\
             .values('total', 'kgs', 'ogs')
-        context['games'] = games[0]
+        if games:
+            context['games'] = games[0]
+        else:
+            context['games'] = None
         n_leagues = LeagueEvent.objects.filter(is_open=True, is_public=True, community__isnull=True).count()
         context['n_leagues'] = n_leagues
 #        user = request.user
