@@ -1,0 +1,41 @@
+{% load static league_tags wgo_tags bootstrap3 l10n i18n%}
+
+<div class ="row">
+    <div  class="col-md-5">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {% if event %}
+                    Games from {{event}}
+                {% else %}
+                    All OSR games
+                {% endif %}
+            </div>
+            <table id='game-table' class='display table' width='100%'>
+                <thead>
+                <tr>
+                    <th>{% trans "date" %}</th>
+                    <th>{% trans "white" %}</th>
+                    <th>{% trans "black" %}</th>
+                    <th>{% trans "result" %}</th>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div id ="game_infos">
+            {% if sgf %}
+                {% include "league/includes/game_info.html"  %}
+            {% endif %}
+        </div>
+        {% if sgf %}
+            <div id="player" data-wgo="{{ sgf.sgf_text | prepare_sgf}}" >
+            </div>
+        {% else %}
+            <div id="player">
+                <div class="alert alert-info">
+                    Click a game result to see it.
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>

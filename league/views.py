@@ -41,7 +41,6 @@ from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm,
 ForumProfile = get_model('forum_member', 'ForumProfile')
 discord_url_file = "/etc/discord_url.txt"
 
-
 def scraper():
     """Check kgs to update our db.
     This is called every 5 mins by cron in production.
@@ -209,6 +208,24 @@ def download_all_sgf(request, user_id):
 
     return response
 
+def games_datatable_api(request):
+    """
+    Feed datatable with games infos as JSON.
+    https://datatables.net/manual/server-side
+    """
+    league_id = request.GET.get('league', '')
+    base_sgfs_queryset = Sgf.objects.all()
+    if league_id:
+        league = get_object_or_404(LeagueEvent, pk=league_id)
+        base_sgfs_queryset = base_sgfs_queryset.filter(events=league)
+    sgfs = Sgf.fetch_and_get_context(base_sgfs_queryset)
+    out = {
+        'draw': request.GET.get('draw', 0),
+        'recordsTotal': len(sgfs),
+        'data':sgfs
+    }
+    out_json = json.dumps(out)
+    return HttpResponse(out_json, content_type="application/json")
 
 def list_games(request, event_id=None, sgf_id=None):
     """List all games and allow to show one with wgo."""
@@ -220,40 +237,17 @@ def list_games(request, event_id=None, sgf_id=None):
         context.update({'sgf': sgf})
 
     if event_id is None:
-        sgfs = (
-            Sgf.objects
-            .defer('sgf_text')
-            .filter(league_valid=True)
-            .select_related("white", "white__profile", "black", "black__profile", "winner")
-            .prefetch_related("white__discord_user", "black__discord_user")
-            .order_by('-date')
-            )
-        context.update({'sgfs': sgfs})
         template = loader.get_template('league/archives_games.html')
 
     else:
         event = get_object_or_404(LeagueEvent, pk=event_id)
-        sgfs = event.sgf_set.only(
-            'date',
-            'black',
-            'white',
-            'winner',
-            'result',
-            'league_valid').filter(league_valid=True).\
-            select_related("white", "white__profile", "black", "black__profile", "winner").\
-            prefetch_related("white__discord_user", "black__discord_user").\
-            order_by('-date')
         template = loader.get_template('league/games.html')
-        can_join = event.can_join(request.user)
-        can_quit = event.can_quit(request.user)
         context.update({
-            'sgfs': sgfs,
             'event': event,
-            'can_join': can_join,
-            'can_quit': can_quit
+            'can_join': event.can_join(request.user),
+            'can_quit': event.can_quit(request.user)
         })
     return HttpResponse(template.render(context, request))
-
 
 def division_results(request, event_id=None, division_id=None):
     """Show the results of a division."""

@@ -7,7 +7,7 @@ import time
 from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.utils import timezone
 
 from machina.core import validators
@@ -19,6 +19,7 @@ from community.models import Community
 from django_countries.fields import CountryField
 from . import utils
 from .ogs import get_user_rank
+from discord_bind.models import DiscordUser
 
 # pylint: disable=no-member
 
@@ -608,6 +609,46 @@ class Sgf(models.Model):
         self.league_valid = len(valid_events) > 0
         return valid_events, errors_list
 
+    @staticmethod
+    def get_context(sgfs):
+        """Return a context for a sgfs queryset to be used in templates"""
+        meijin = Registry.objects.get(pk=1).meijin
+        sgfs_context = []
+        for sgf in sgfs:
+            sgf_context = (
+                sgf.date.strftime("%Y-%m-%d"),
+                sgf.white.build_context(sgf.winner, meijin),
+                sgf.black.build_context(sgf.winner, meijin),
+                {"sgf_pk": sgf.pk, "sgf_result": sgf.result},
+            )
+            sgfs_context.append(sgf_context)
+        return sgfs_context
+
+    @staticmethod
+    def fetch_and_get_context(base_sgfs_queryset):
+        """Fetch the database for all context elements related to a sgf queryset.
+        """
+        sgfs = (
+            base_sgfs_queryset
+            .defer('sgf_text')
+            .filter(league_valid=True)
+            .select_related("white", "white__profile", "black", "black__profile", "winner")
+            .prefetch_related(
+                Prefetch(
+                    "white__discord_user",
+                    queryset=DiscordUser.objects.all(),
+                    to_attr="discord_user_pf",
+                ),
+                Prefetch(
+                    "black__discord_user",
+                    queryset=DiscordUser.objects.all(),
+                    to_attr="discord_user_pf",
+                ),
+            )
+            .order_by('-date')
+        )
+        return Sgf.get_context(sgfs)
+
 
 class User(AbstractUser):
     """User used for auth in all project."""
@@ -973,6 +1014,43 @@ class User(AbstractUser):
         communitys = list(Community.objects.filter(user_group__in=communitys))
         return communitys
 
+    def build_context(self, winner=None, meijin=None):
+        """Build a context for a user to be used in templates.
+        winner is optional and only used for games related template"""
+        user_context = {
+        "kgs_data": None,
+        "kgs_online": False,
+        "ogs_online": False,
+        "ogs_data": None,
+        "discord_data": None,
+        "discord_online": False,
+        "winner": self == winner,
+        }
+        if self.profile.kgs_username:
+            user_context["kgs_online"] = self.is_online_kgs()
+            user_context["kgs_data"] = {
+            "username": self.profile.kgs_username,
+            "rank": self.profile.kgs_rank,
+            }
+        if self.profile.ogs_username:
+            user_context["ogs_online"] = self.is_online_ogs()
+            user_context["ogs_data"] = {
+            "username": self.profile.ogs_username,
+            "rank": self.profile.ogs_rank,
+            }
+        if self.discord_user_pf:
+            discord_user = self.discord_user_pf[0]
+            user_context["discord_online"] = discord_user.status != 'offline'
+            user_context["discord_data"] = {
+            "username": discord_user.username,
+            "status": discord_user.status,
+            "discriminator": discord_user.discriminator,
+            }
+        user_context["is_online"] = user_context["kgs_online"] or user_context["ogs_online"] or user_context["discord_online"]
+        user_context["account_url"] = "/league/account/%s" % self.username
+        user_context["username"] = self.username
+        user_context["is_meijin"] = self == meijin
+        return user_context
 
 class Profile(models.Model):
     """A user profile. Store settings and infos about a user."""

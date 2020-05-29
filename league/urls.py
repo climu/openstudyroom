@@ -120,5 +120,6 @@ urlpatterns = [
         views.ProfileUpdate.as_view(),
         name='profile_update'
     ),
-    url(r'discord-api/$', views.discord_api, name='discord_api')
+    url(r'discord-api/$', views.discord_api, name='discord_api'),
+    url(r'games-api/$', views.games_datatable_api, name='games_api')
 ]
