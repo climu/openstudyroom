@@ -1,7 +1,8 @@
-from collections import OrderedDict
-import json
 import datetime
 import io
+import json
+import orjson
+from collections import OrderedDict
 from time import sleep
 from zipfile import ZipFile
 
@@ -211,6 +212,80 @@ def download_all_sgf(request, user_id):
     return response
 
 
+def _build_user_context(user, winner, meijin):
+    user_context = {
+        "kgs_data": None,
+        "kgs_online": False,
+        "ogs_online": False,
+        "ogs_data": None,
+        "discord_data": None,
+        "discord_online": False,
+        "winner": user == winner,
+    }
+    if user.profile.kgs_username:
+        user_context["kgs_online"] = user.is_online_kgs()
+        user_context["kgs_data"] = {
+            "username": user.profile.kgs_username,
+            "rank": user.profile.kgs_rank,
+        }
+    if user.profile.ogs_username:
+        user_context["ogs_online"] = user.is_online_ogs()
+        user_context["ogs_data"] = {
+            "username": user.profile.ogs_username,
+            "rank": user.profile.ogs_rank,
+        }
+    if user.discord_user_pf:
+        discord_user = user.discord_user_pf[0]
+        user_context["discord_online"] = discord_user.status != 'offline'
+        user_context["discord_data"] = {
+            "username": discord_user.username,
+            "status": discord_user.status,
+            "discriminator": discord_user.discriminator,
+        }
+    user_context["is_online"] = user_context["kgs_online"] or user_context["ogs_online"] or user_context["discord_online"]
+    user_context["account_url"] = "/league/account/%s" % user.username
+    user_context["username"] = user.username
+    user_context["is_meijin"] = user == meijin
+    return user_context
+
+
+def _get_sgfs_context(sgfs):
+    meijin = Registry.objects.get(pk=1).meijin
+    sgfs_context = []
+    for sgf in sgfs:
+        sgf_context = (
+            sgf.date.strftime("%Y-%m-%d"),
+            _build_user_context(sgf.white, sgf.winner, meijin),
+            _build_user_context(sgf.black, sgf.winner, meijin),
+            {"sgf_pk": sgf.pk, "sgf_result": sgf.result},
+        )
+        sgfs_context.append(sgf_context)
+    return sgfs_context
+
+
+def _fetch_and_get_sgfs_context(base_sgfs_queryset):
+    sgfs = (
+        base_sgfs_queryset
+        .defer('sgf_text')
+        .filter(league_valid=True)
+        .select_related("white", "white__profile", "black", "black__profile", "winner")
+        .prefetch_related(
+            Prefetch(
+                "white__discord_user",
+                queryset=DiscordUser.objects.all(),
+                to_attr="discord_user_pf",
+            ),
+            Prefetch(
+                "black__discord_user",
+                queryset=DiscordUser.objects.all(),
+                to_attr="discord_user_pf",
+            ),
+        )
+        .order_by('-date')
+    )
+    return _get_sgfs_context(sgfs)
+
+
 def list_games(request, event_id=None, sgf_id=None):
     """List all games and allow to show one with wgo."""
     open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
@@ -219,40 +294,22 @@ def list_games(request, event_id=None, sgf_id=None):
     if sgf_id is not None:
         sgf = get_object_or_404(Sgf, pk=sgf_id, league_valid=True)
         context.update({'sgf': sgf})
-
     if event_id is None:
-        sgfs = (
-            Sgf.objects
-            .defer('sgf_text')
-            .filter(league_valid=True)
-            .select_related("white", "white__profile", "black", "black__profile", "winner")
-            .prefetch_related("white__discord_user", "black__discord_user")
-            .order_by('-date')
-            )
-        context.update({'sgfs': sgfs})
+        base_sgfs_queryset = Sgf.objects.all()
         template = loader.get_template('league/archives_games.html')
-
     else:
         event = get_object_or_404(LeagueEvent, pk=event_id)
-        sgfs = event.sgf_set.only(
-            'date',
-            'black',
-            'white',
-            'winner',
-            'result',
-            'league_valid').filter(league_valid=True).\
-            select_related("white", "white__profile", "black", "black__profile", "winner").\
-            prefetch_related("white__discord_user", "black__discord_user").\
-            order_by('-date')
+        base_sgfs_queryset = event.sgf_set.all()
         template = loader.get_template('league/games.html')
         can_join = event.can_join(request.user)
         can_quit = event.can_quit(request.user)
         context.update({
-            'sgfs': sgfs,
             'event': event,
             'can_join': can_join,
             'can_quit': can_quit
         })
+    sgfs_context = _fetch_and_get_sgfs_context(base_sgfs_queryset)
+    context.update(dict(sgfs_data_json=orjson.dumps(sgfs_context).decode("utf-8")))
     return HttpResponse(template.render(context, request))
 
 

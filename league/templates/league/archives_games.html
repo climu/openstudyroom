@@ -3,106 +3,60 @@
 
 {% block title %}Archives - Games {% if sgf %}- {{sgf.black.username}} vs {{sgf.white.username}} {%endif %}{% endblock %}
 {% block extra_head_js %}
-<script type="text/javascript">
-function load_game(sgf_id) {
-  var url = "/league/game/json/" + sgf_id
+    <script type="text/javascript">
+        function load_game(sgf_id) {
+            var url = "/league/game/json/" + sgf_id
 
-  $.ajax({
-    type: "GET",
-    url: "/league/game/json/" + sgf_id,
-    dataType: "json",
-    success: processData,
-    error: function(){ alert("failed"); }
-});
+            $.ajax({
+                type: "GET",
+                url: "/league/game/json/" + sgf_id,
+                dataType: "json",
+                success: processData,
+                error: function(){ alert("failed"); }
+            });
 
-function processData(data)
-{
-    document.getElementById("game_infos").innerHTML= data.game_infos ;
-    var elem = document.getElementById("player");
-    var player = new WGo.BasicPlayer(elem, {
-      sgf: data.sgf
-      });
-    window.history.pushState('page2', 'Title', data.permalink);
-    document.getElementById("game-header").innerHTML= ' - ' + data.white + ' vs ' + data.black;
-    document.title ='Archives - Games - '+ data.white + ' vs ' + data.black + ' - Open Study Room';
-};
-return false;};
-</script>
+            function processData(data)
+            {
+                document.getElementById("game_infos").innerHTML= data.game_infos ;
+                var elem = document.getElementById("player");
+                var player = new WGo.BasicPlayer(elem, {
+                    sgf: data.sgf
+                });
+                window.history.pushState('page2', 'Title', data.permalink);
+                document.getElementById("game-header").innerHTML= ' - ' + data.white + ' vs ' + data.black;
+                document.title ='Archives - Games - '+ data.white + ' vs ' + data.black + ' - Open Study Room';
+            };
+            return false;};
+    </script>
 {% endblock %}
 {% block content %}
-<ul class="nav nav-tabs">
-  <li class="active"><a href="{% url 'league:archives' %}">{% trans "Archives" %}</a></li>
-  {% for ev in open_events %}
-  <li>
-    <a href="{% url 'league:games' ev.pk %}">
-      {% if ev.is_primary %}
-        <strong>
-      {% endif %}
-      {{ev.name}}
-      {% if ev.is_primary %}
-      </strong>
-      {% endif %}</a>
-  </li>
-  {% endfor %}
-  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">{% trans "Scrape list" %}</a></li>
-  </ul>
-<nav class="navbar navbar-default">
-<ul class="nav navbar-nav navbar-left">
-  <li><a href="{% url 'league:archives' %}">{% trans "Leagues" %}</a></li>
-  <li><a href="{% url 'league:players'  %}">{% trans "Players" %}</a></li>
-  <li class="active"><a href="{% url 'league:games'  %}">{% trans "Games" %}</a></li>
-</ul>
-</nav>
-
-<div class ="row">
-<div class="col-md-4">
-<div class="panel panel-default">
-<div class="panel-heading">All OSR games</div>
-{% include "league/includes/games.html" with sgfs=sgfs %}
-</div>
-</div>
-
-<div class="col-md-8">
-    <div id ="game_infos">
-      {% if sgf %}
-    {% include "league/includes/game_info.html"  %}
-      {% endif %}
-  </div>
-  {% if sgf %}
-  <div id="player" data-wgo="{{ sgf.sgf_text | prepare_sgf}}" >
-    </div>
-    {% else %}
-    <div id="player">
-      <div class="alert alert-info">
-      {% trans "Click a game result to see it." %}
-    </div>
-    </div>
-  {% endif %}
-</div>
-</div>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{% url 'league:archives' %}">{% trans "Archives" %}</a></li>
+        {% for ev in open_events %}
+            <li>
+                <a href="{% url 'league:games' ev.pk %}">
+                    {% if ev.is_primary %}
+                        <strong>
+                    {% endif %}
+                    {{ev.name}}
+                    {% if ev.is_primary %}
+                        </strong>
+                    {% endif %}</a>
+            </li>
+        {% endfor %}
+        <li class="pull-right"><a href="{% url 'league:scrap_list' %}">{% trans "Scrape list" %}</a></li>
+    </ul>
+    <nav class="navbar navbar-default">
+        <ul class="nav navbar-nav navbar-left">
+            <li><a href="{% url 'league:archives' %}">{% trans "Leagues" %}</a></li>
+            <li><a href="{% url 'league:players'  %}">{% trans "Players" %}</a></li>
+            <li class="active"><a href="{% url 'league:games'  %}">{% trans "Games" %}</a></li>
+        </ul>
+    </nav>
+    {% include "league/includes/game_table_view.html" %}
 {% endblock %}
 
 
 {% block extra_js %}
-{% get_current_language as LANGUAGE_CODE %}
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/locale/{{LANGUAGE_CODE}}.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
-
-<script type="text/javascript">
-$(document).ready(function() {
-$('#game-table').DataTable({
-  "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
-  "columnDefs": [ {
-    targets: 0,
-    render: $.fn.dataTable.render.moment( 'YYYY-MM-DD','L', '{{LANGUAGE_CODE}}' )
-  } ],
-  "order": [[ 0, "desc" ]]
-
-});
-} );
-</script>
-
+    {% include "league/includes/sgrfs_datatable.html" with sgfs_data_json=sgfs_data_json %}
 {% endblock %}
