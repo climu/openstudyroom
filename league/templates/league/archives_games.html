@@ -22,6 +22,7 @@
       window.history.pushState('page2', 'Title', data.permalink);
       document.getElementById("game-header").innerText = ' - ' + data.white + ' vs ' + data.black;
       document.title ='Archives - Games - '+ data.white + ' vs ' + data.black + ' - Open Study Room';
+      $("[data-toggle=tooltip]").tooltip();
     };
 
     return false;
