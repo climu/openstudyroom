@@ -16,10 +16,10 @@ import pytz
 import requests
 
 from community.models import Community
+from discord_bind.models import DiscordUser
 from django_countries.fields import CountryField
 from . import utils
 from .ogs import get_user_rank
-from discord_bind.models import DiscordUser
 
 # pylint: disable=no-member
 
@@ -1046,7 +1046,11 @@ class User(AbstractUser):
             "status": discord_user.status,
             "discriminator": discord_user.discriminator,
             }
-        user_context["is_online"] = user_context["kgs_online"] or user_context["ogs_online"] or user_context["discord_online"]
+        user_context["is_online"] = (
+            user_context["kgs_online"]
+            or user_context["ogs_online"]
+            or user_context["discord_online"]
+        )
         user_context["account_url"] = "/league/account/%s" % self.username
         user_context["username"] = self.username
         user_context["is_meijin"] = self == meijin
