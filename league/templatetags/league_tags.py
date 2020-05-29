@@ -122,13 +122,9 @@ def user_link(user, meijin=None):
         else:
             tooltip += " class='offline'"
         tooltip += '>OGS: ' + o_info + '</p>'
-    # test if discord_user was pre-fetched
-    if hasattr(user, "discord_user_pf"):
-        discord_users = user.discord_user_pf
-    else:
-        discord_users = user.discord_user.all()
-    if discord_users:
-        discord_user = discord_users[0]
+    # test if discord_user was preloaded
+    if user.discord_user.all():
+        discord_user = user.discord_user.all()[0]
         discord_online = discord_user.status != 'offline'
         tooltip += "<p class='" + discord_user.status + "'>Discord: "
         tooltip += discord_user.username + ' (' + discord_user.discriminator +')</p>'
