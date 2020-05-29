@@ -632,7 +632,29 @@ class Sgf(models.Model):
             base_sgfs_queryset
             .defer('sgf_text')
             .filter(league_valid=True)
-            .select_related("white", "white__profile", "black", "black__profile", "winner")
+            .select_related("white", "black", "winner", "white__profile", "black__profile")
+            .only(
+            'black',
+            'white',
+            'result',
+            'league_valid',
+            'date',
+            'winner',
+            'white__username',
+            'black__username',
+            'white__profile__ogs_username',
+            'white__profile__kgs_username',
+            'white__profile__kgs_rank',
+            'white__profile__ogs_rank',
+            'white__profile__last_ogs_online',
+            'white__profile__last_kgs_online',
+            'black__profile__ogs_username',
+            'black__profile__kgs_username',
+            'black__profile__kgs_rank',
+            'black__profile__ogs_rank',
+            'black__profile__last_ogs_online',
+            'black__profile__last_kgs_online',
+            )
             .prefetch_related(
                 Prefetch(
                     "white__discord_user",
