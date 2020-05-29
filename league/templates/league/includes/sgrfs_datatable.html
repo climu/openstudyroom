@@ -46,7 +46,8 @@
                 $('#game-table_wrapper > div:first-child .col-sm-6:nth-child(2)').attr('class', 'col-sm-8');
                 $('#game-table_wrapper > div:last-child .col-sm-5:nth-child(1)').attr('class', 'row');
                 $('#game-table_wrapper > div:last-child .col-sm-7:nth-child(2)').attr('class', 'row');
-                $('#game-table_wrapper > div:last-child, div:last-child .row').css('margin', 0);
+                $('#game-table_wrapper > div:last-child').css('margin', 0);
+                $('#game-table_wrapper > div:last-child > .row').css('margin', 0);
                 $("[data-toggle=tooltip]").tooltip();
             },
             "columnDefs": [
