@@ -23,7 +23,7 @@
     <td> {{ sgf.white | user_link:meijin }}</td>
     <td><b> {{ sgf.black | user_link:meijin }}</b></td>
     {%endif%}
-    <td> {%if event %}{{ sgf |game_link:event }} {%else%}{{ sgf |game_link}}{%endif%}</td>
+    <td>{% if event %}{{ sgf |game_link:event }} {%else%}{{ sgf |game_link}}{%endif%}</td>
   </tr>
   {% endfor %}
 </tbody>

@@ -5,30 +5,30 @@
 {% block extra_head_js %}
 <script type="text/javascript">
 function load_game(sgf_id) {
-  var url = "/league/game/json/" + sgf_id
-
   $.ajax({
     type: "GET",
     url: "/league/game/json/" + sgf_id,
     dataType: "json",
     success: processData,
     error: function(){ alert("failed"); }
-});
+  });
 
-function processData(data)
-{
-    document.getElementById("game_infos").innerHTML= data.game_infos ;
+  function processData(data) {
+    document.getElementById("game_infos").innerHTML = data.game_infos;
     var elem = document.getElementById("player");
     var player = new WGo.BasicPlayer(elem, {
-      sgf: data.sgf
-      });
+      sgf: data.sgf,
+    });
     window.history.pushState('page2', 'Title', data.permalink);
-    document.getElementById("game-header").innerHTML= ' - ' + data.white + ' vs ' + data.black;
+    document.getElementById("game-header").innerText = ' - ' + data.white + ' vs ' + data.black;
     document.title ='Archives - Games - '+ data.white + ' vs ' + data.black + ' - Open Study Room';
+  };
+
+  return false;
 };
-return false;};
 </script>
 {% endblock %}
+
 {% block content %}
 <ul class="nav nav-tabs">
   <li class="active"><a href="{% url 'league:archives' %}">{% trans "Archives" %}</a></li>
