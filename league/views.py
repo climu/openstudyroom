@@ -11,7 +11,7 @@ from django.template.defaultfilters import slugify
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.urls import reverse
-from django.db.models import Q, Prefetch
+from django.db.models import Count, Case, IntegerField, When, Q, Prefetch
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -21,7 +21,6 @@ from django.core.mail import send_mail
 from django.views.generic.edit import CreateView, UpdateView
 from django.template.defaultfilters import date as _date, time as _time
 from django.utils import timezone
-from django.db.models import Count, Case, IntegerField, When, Prefetch
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.functions import TruncMonth
 from machina.core.db.models import get_model

@@ -1,7 +1,5 @@
 from django import template
 from django.utils.safestring import mark_safe
-from discord_bind.models import DiscordUser
-
 from league.models import Registry
 
 register = template.Library()
