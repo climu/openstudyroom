@@ -5,12 +5,13 @@ import vobject
 from django.shortcuts import render, get_object_or_404
 from django.views.generic.edit import UpdateView, CreateView
 from django.contrib.auth.decorators import user_passes_test, login_required
-from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.utils.timezone import make_aware
 from django.utils import timezone
 from django.template import loader
+from django.views.decorators.http import require_POST
 from postman.api import pm_broadcast, pm_write
 from pytz import utc
 
@@ -165,7 +166,7 @@ def json_feed_other(request, user_id):
             'sender': user.username
         }
         data.append(dict)
-    return HttpResponse(json.dumps(data), content_type="application/json")
+    return JsonResponse(data)
 
 
 def json_feed(request):
@@ -288,69 +289,35 @@ def json_feed(request):
                     'sender': event.sender.username
                 }
                 data.append(dict)
-    return HttpResponse(json.dumps(data), content_type="application/json")
+    return JsonResponse(data)
 
 
+@require_POST
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def update_time_range_ajax(request):
-    if request.method == 'POST':
-        start = request.POST.get('start')
-        end = request.POST.get('end')
-        request.user.profile.start_cal = start
-        request.user.profile.end_cal = end
-        request.user.profile.save()
-        return HttpResponse('success')
+    start = request.POST.get('start')
+    end = request.POST.get('end')
+    request.user.profile.start_cal = start
+    request.user.profile.end_cal = end
+    request.user.profile.save()
+    return HttpResponse('success')
 
 
+@require_POST
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
-def cancel_game_ajax(request):
+def cancel_game_ajax(request):  # pylint: disable=inconsistent-return-statements
     """Cancel a game appointment from calendar ajax post."""
     user = request.user
-    if request.method == 'POST':
-        pk = int(request.POST.get('pk'))
-        game_appointment = get_object_or_404(GameAppointmentEvent, pk=pk)
-        if user in game_appointment.users.all():
-            opponent = game_appointment.opponent(user)
-            game_appointment.delete()
-            # send a message
-            subject = user.username + ' has cancel your game appointment.'
-            plaintext = loader.get_template('fullcalendar/messages/game_cancel.txt')
-            context = {
-                'user': user,
-                'date': game_appointment.start
-            }
-            message = plaintext.render(context)
-            pm_write(
-                sender=user,
-                recipient=opponent,
-                subject=subject,
-                body=message,
-                skip_notification=False
-            )
-            return HttpResponse('success')
-
-
-@login_required()
-@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
-def accept_game_request_ajax(request):
-    """accept a game request from calendar ajax post."""
-    user = request.user
-    if request.method == 'POST':
-        pk = int(request.POST.get('pk'))
-        game_request = get_object_or_404(GameRequestEvent, pk=pk)
-        sender = game_request.sender
-        game_appointment = GameAppointmentEvent(
-            start=game_request.start,
-            end=game_request.end
-        )
-        game_appointment.save()
-        game_appointment.users.add(user, sender)
-        game_request.delete()
+    pk = int(request.POST.get('pk'))
+    game_appointment = get_object_or_404(GameAppointmentEvent, pk=pk)
+    if user in game_appointment.users.all():
+        opponent = game_appointment.opponent(user)
+        game_appointment.delete()
         # send a message
-        subject = user.username + ' has accepted your game request.'
-        plaintext = loader.get_template('fullcalendar/messages/game_request_accepted.txt')
+        subject = user.username + ' has cancel your game appointment.'
+        plaintext = loader.get_template('fullcalendar/messages/game_cancel.txt')
         context = {
             'user': user,
             'date': game_appointment.start
@@ -358,12 +325,46 @@ def accept_game_request_ajax(request):
         message = plaintext.render(context)
         pm_write(
             sender=user,
-            recipient=sender,
+            recipient=opponent,
             subject=subject,
             body=message,
             skip_notification=False
         )
         return HttpResponse('success')
+
+
+@require_POST
+@login_required()
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+def accept_game_request_ajax(request):
+    """accept a game request from calendar ajax post."""
+    user = request.user
+    pk = int(request.POST.get('pk'))
+    game_request = get_object_or_404(GameRequestEvent, pk=pk)
+    sender = game_request.sender
+    game_appointment = GameAppointmentEvent(
+        start=game_request.start,
+        end=game_request.end
+    )
+    game_appointment.save()
+    game_appointment.users.add(user, sender)
+    game_request.delete()
+    # send a message
+    subject = user.username + ' has accepted your game request.'
+    plaintext = loader.get_template('fullcalendar/messages/game_request_accepted.txt')
+    context = {
+        'user': user,
+        'date': game_appointment.start
+    }
+    message = plaintext.render(context)
+    pm_write(
+        sender=user,
+        recipient=sender,
+        subject=subject,
+        body=message,
+        skip_notification=False
+    )
+    return HttpResponse('success')
 
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
@@ -382,59 +383,60 @@ def reject_game_request_ajax(request):
         return HttpResponse('error')
 
 
+@require_POST
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def cancel_game_request_ajax(request):
     """Cancel a game request from calendar ajax post."""
     user = request.user
-    if request.method == 'POST':
-        pk = int(request.POST.get('pk'))
-        game_request = get_object_or_404(GameRequestEvent, pk=pk)
-        # A user should only cancel his own game requests
-        if game_request.sender == user:
-            game_request.delete()
-            return HttpResponse('success')
-        else:
-            return HttpResponse('error')
+    pk = int(request.POST.get('pk'))
+    game_request = get_object_or_404(GameRequestEvent, pk=pk)
+    # A user should only cancel his own game requests
+    if game_request.sender == user:
+        game_request.delete()
+        return HttpResponse('success')
+    else:
+        return HttpResponse('error')
 
+
+@require_POST
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def create_game_request(request):
     """Create a game request from calendar ajax post."""
     sender = request.user
     tz = sender.get_timezone()
-    if request.method == 'POST':
-        users_list = json.loads(request.POST.get('users'))
-        date = datetime.strptime(request.POST.get('date'), '%Y-%m-%dT%H:%M:%S')
-        date = make_aware(date, tz)
-        receivers = User.objects.filter(username__in=users_list)
+    users_list = json.loads(request.POST.get('users'))
+    date = datetime.strptime(request.POST.get('date'), '%Y-%m-%dT%H:%M:%S')
+    date = make_aware(date, tz)
+    receivers = User.objects.filter(username__in=users_list)
 
-        # a game request should last 1h30
-        end = date + timedelta(hours=1, minutes=30)
-        # create the instance
-        game_request = GameRequestEvent(start=date, end=end, sender=sender)
-        game_request.save()
-        game_request.receivers.add(*receivers)
-        game_request.save()
+    # a game request should last 1h30
+    end = date + timedelta(hours=1, minutes=30)
+    # create the instance
+    game_request = GameRequestEvent(start=date, end=end, sender=sender)
+    game_request.save()
+    game_request.receivers.add(*receivers)
+    game_request.save()
 
-        # send a message to all receivers
-        subject = 'Game request from ' + sender.username \
-            + ' on ' + date.strftime('%d %b')
-        plaintext = loader.get_template('fullcalendar/messages/game_request.txt')
-        context = {
-            'sender': sender,
-            'date': date
-        }
-        message = plaintext.render(context)
-        pm_broadcast(
-            sender=sender,
-            recipients=list(receivers),
-            subject=subject,
-            body=message,
-            skip_notification=False
-        )
+    # send a message to all receivers
+    subject = 'Game request from ' + sender.username \
+        + ' on ' + date.strftime('%d %b')
+    plaintext = loader.get_template('fullcalendar/messages/game_request.txt')
+    context = {
+        'sender': sender,
+        'date': date
+    }
+    message = plaintext.render(context)
+    pm_broadcast(
+        sender=sender,
+        recipients=list(receivers),
+        subject=subject,
+        body=message,
+        skip_notification=False
+    )
 
-        return HttpResponse('success')
+    return HttpResponse('success')
 
 
 @login_required()

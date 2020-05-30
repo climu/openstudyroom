@@ -1,4 +1,4 @@
-astroid==1.5.3
+astroid==2.3.0
 beautifulsoup4==4.6.0
 bs4==0.0.1
 certifi==2017.7.27.1
@@ -45,8 +45,8 @@ Pillow==6.2.2
 psycopg2-binary==2.7.5
 puput==1.1.0
 pybbm==0.18.4
-pylint==1.7.6
-pylint-django==0.7.2
+pylint==2.4.4
+pylint-django==2.0.13
 pyparsing==2.1.10
 python-dateutil==2.8.1
 python3-openid==3.0.10

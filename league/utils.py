@@ -57,6 +57,7 @@ def check_byoyomi(s):
         t = int(s[a + 1:b])
     return n >= 3 and t >= 30
 
+
 def get_byoyomi(s):
     '''Parse a string '3x30 byo-yomi' and return a couple (3,30)'''
     if s.find('byo-yomi') == -1:
@@ -67,6 +68,7 @@ def get_byoyomi(s):
         b = s.find(' ')
         t = int(s[a + 1:b])
     return {'n': n, 't': t}
+
 
 def extract_players_from_url(url):
     '''get players name from a kgs archive url
@@ -90,6 +92,7 @@ def extract_players_from_url(url):
                 black = url[w_end + 1: b_end]
 
         return {'white': white, 'black': black}  # if unproper url, black is not define
+    return None
 
 
 def ask_kgs(kgs_username, year, month):

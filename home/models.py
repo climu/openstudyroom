@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
-
 import random
+
+import requests
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
@@ -12,7 +13,6 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils import timezone
 from django import forms
 from django.urls import reverse
-
 from wagtail.core.models import Page
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.snippets.models import register_snippet
@@ -25,11 +25,10 @@ from wagtail.contrib.table_block.blocks import TableBlock
 from wagtail.core.signals import page_published
 from wagtailmenus.models import MenuPage
 from puput.models import EntryPage, BlogPage
-from league.models import Registry, Sgf, LeagueEvent
-import requests
 from machina.core.db.models import get_model
+
+from league.models import Registry, Sgf, LeagueEvent
 ForumPost = get_model('forum_conversation', 'Post')
-#from fullcalendar.models import AvailableEvent, GameRequestEvent
 
 
 @register_snippet

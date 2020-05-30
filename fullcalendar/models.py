@@ -1,13 +1,13 @@
+import requests
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+from pytz import utc
 
 from league.models import User
-from pytz import utc
-import requests
+
 
 class CalEvent(models.Model):
-
     start = models.DateTimeField()
     end = models.DateTimeField()
 
@@ -122,7 +122,7 @@ class AvailableEvent(CalEvent):
                     events.append({
                         'start': time,
                         'end': change['time'],
-                        'users': [u for u in list_users]
+                        'users': list_users,
                     })
                     time = change['time']
                     if change['type'] == 0:  # new user available

@@ -4,20 +4,19 @@ import json
 from operator import attrgetter
 import time
 
+import pytz
+import requests
 from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
 from django.db import models
 from django.db.models import Q, Prefetch
 from django.utils import timezone
-
+from django_countries.fields import CountryField
 from machina.core import validators
 from machina.models.fields import MarkupTextField
-import pytz
-import requests
 
 from community.models import Community
 from discord_bind.models import DiscordUser
-from django_countries.fields import CountryField
 from . import utils
 from .ogs import get_user_rank
 
@@ -441,7 +440,7 @@ class Sgf(models.Model):
         Does NOT save sgf to db to allow previews of changes
         """
         if self.p_status == 0:
-            return
+            return None
         if self.p_status == 1:  # we only have the urlto and need a server request
             r = requests.get(self.urlto)
             if r.status_code == 403:
@@ -1223,7 +1222,7 @@ class Division(models.Model):
                     if opponent is opponent_player.pk:
                         real_opponent = opponent_player
                 for list_item in info:
-                    if list_item.get('r') is 1:
+                    if list_item.get('r') == 1:
                         player.sodos += real_opponent.n_win
                     player.sos += real_opponent.n_win
 
