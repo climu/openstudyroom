@@ -342,11 +342,10 @@ def sgf_text():
 
 @pytest.fixture(scope="session")
 def ogs_response():
-    return r'''
-    {
+    return {
         "count": 95,
-        "next": null,
-        "previous": null,
+        "next": None,
+        "previous": None,
         "results": [
             {
                 "related": {
@@ -367,7 +366,7 @@ def ogs_response():
                             }
                         },
                         "ranking": 20,
-                        "professional": false,
+                        "professional": False,
                         "ui_class": ""
                     },
                     "white": {
@@ -384,7 +383,7 @@ def ogs_response():
                             }
                         },
                         "ranking": 17,
-                        "professional": false,
+                        "professional": False,
                         "ui_class": "supporter"
                     }
                 },
@@ -398,7 +397,7 @@ def ogs_response():
                 "width": 19,
                 "height": 19,
                 "rules": "japanese",
-                "ranked": true,
+                "ranked": True,
                 "handicap": 0,
                 "komi": "6.50",
                 "time_control": "simple",
@@ -408,18 +407,18 @@ def ogs_response():
                 "white_player_rating": "854.912",
                 "time_per_move": 89280,
                 "time_control_parameters": "{\"time_control\": \"fischer\", \"initial_time\": 259200, \"pause_on_weekends\": true, \"max_time\": 259200, \"time_increment\": 86400}",
-                "disable_analysis": false,
+                "disable_analysis": False,
                 "tournament": 37872,
                 "tournament_round": 2,
-                "ladder": null,
-                "pause_on_weekends": true,
+                "ladder": None,
+                "pause_on_weekends": True,
                 "outcome": "Resignation",
-                "black_lost": false,
-                "white_lost": true,
-                "annulled": false,
+                "black_lost": False,
+                "white_lost": True,
+                "annulled": False,
                 "started": "2019-01-11T03:46:34.078273-05:00",
                 "ended": "2019-04-30T14:41:18.183258-04:00",
-                "sgf_filename": null,
+                "sgf_filename": None,
                 "historical_ratings": {
                     "black": {
                         "id": 531928,
@@ -433,7 +432,7 @@ def ogs_response():
                         "username": "Naxe",
                         "country": "Naxe",
                         "ranking": 20,
-                        "professional": false,
+                        "professional": False,
                         "icon": "https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/8b76b3356a7f05669ea9fbeb28b2a05d-32.png",
                         "ui_class": ""
                     },
@@ -449,7 +448,7 @@ def ogs_response():
                         "username": "raylu",
                         "country": "raylu",
                         "ranking": 17,
-                        "professional": false,
+                        "professional": False,
                         "icon": "https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/2b733fc955a2883ef8a7093ff10563f5-32.png",
                         "ui_class": "supporter"
                     }
@@ -474,7 +473,7 @@ def ogs_response():
                             }
                         },
                         "ranking": 18,
-                        "professional": false,
+                        "professional": False,
                         "ui_class": ""
                     },
                     "white": {
@@ -491,7 +490,7 @@ def ogs_response():
                             }
                         },
                         "ranking": 17,
-                        "professional": false,
+                        "professional": False,
                         "ui_class": "supporter"
                     }
                 },
@@ -505,7 +504,7 @@ def ogs_response():
                 "width": 19,
                 "height": 19,
                 "rules": "japanese",
-                "ranked": true,
+                "ranked": True,
                 "handicap": 0,
                 "komi": "6.50",
                 "time_control": "fischer",
@@ -515,18 +514,18 @@ def ogs_response():
                 "white_player_rating": "915.978",
                 "time_per_move": 89280,
                 "time_control_parameters": "{\"system\": \"fischer\", \"pause_on_weekends\": true, \"time_control\": \"fischer\", \"initial_time\": 259200, \"max_time\": 432000, \"time_increment\": 86400, \"speed\": \"correspondence\"}",
-                "disable_analysis": true,
-                "tournament": null,
+                "disable_analysis": True,
+                "tournament": None,
                 "tournament_round": 0,
-                "ladder": null,
-                "pause_on_weekends": true,
+                "ladder": None,
+                "pause_on_weekends": True,
                 "outcome": "Resignation",
-                "black_lost": false,
-                "white_lost": true,
-                "annulled": false,
+                "black_lost": False,
+                "white_lost": True,
+                "annulled": False,
                 "started": "2019-03-12T16:19:12.801090-04:00",
                 "ended": "2019-04-23T13:42:39.151854-04:00",
-                "sgf_filename": null,
+                "sgf_filename": None,
                 "historical_ratings": {
                     "black": {
                         "id": 610746,
@@ -540,7 +539,7 @@ def ogs_response():
                         "username": "stonemuncher",
                         "country": "stonemuncher",
                         "ranking": 18,
-                        "professional": false,
+                        "professional": False,
                         "icon": "https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/c8ec4f3f96c64417c12e6e7b7c57a63d-32.png",
                         "ui_class": ""
                     },
@@ -556,7 +555,7 @@ def ogs_response():
                         "username": "raylu",
                         "country": "raylu",
                         "ranking": 17,
-                        "professional": false,
+                        "professional": False,
                         "icon": "https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/2b733fc955a2883ef8a7093ff10563f5-32.png",
                         "ui_class": "supporter"
                     }
@@ -564,4 +563,3 @@ def ogs_response():
             }
         ]
     }
-    '''
