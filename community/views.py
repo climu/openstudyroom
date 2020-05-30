@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
 from django.db.models import Q
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_POST
 
 from league.models import User, LeagueEvent, Sgf
 from league.views import LeagueEventCreate, LeagueEventUpdate
@@ -237,7 +237,7 @@ def admin_user_list(request, pk):
     )
 
 
-@require_http_methods(["POST"])
+@require_POST
 @login_required()
 def admin_invite_user(request, pk):
     """Invite a user in a community."""
