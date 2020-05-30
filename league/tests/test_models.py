@@ -31,7 +31,7 @@ class TestSgfModel:
 @pytest.mark.django_db
 class TestUserModel:
     def test_check_ogs(self, cho_chikun, requests_mock, ogs_response):
-        expected_url = f"https://online-go.com/api/v1/players/{cho_chikun.profile.ogs_id}/games/"
+        expected_url = "https://online-go.com/api/v1/players/{}/games/".format(cho_chikun.profile.ogs_id)
         requests_mock.get(expected_url, json=ogs_response)
         cho_chikun.check_ogs([])
         assert requests_mock.called
