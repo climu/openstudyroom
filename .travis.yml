@@ -4,7 +4,7 @@ dist: bionic
 sudo: false
 
 python:
-  - '3.5'
+  # TODO: Make sure 3.6 is what is running on the servers
   - '3.6'
 
 cache: pip
