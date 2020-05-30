@@ -48,7 +48,7 @@ pybbm==0.18.4
 pylint==1.7.6
 pylint-django==0.7.2
 pyparsing==2.1.10
-python-dateutil==2.6.1
+python-dateutil==2.8.1
 python3-openid==3.0.10
 pytz==2018.5
 raven==6.4.0
