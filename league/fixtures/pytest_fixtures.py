@@ -26,6 +26,7 @@ def cho_chikun():
         username="cho_chikun",
     )
     models.Profile.objects.create(
+        ogs_id=11,
         user=user,
     )
     return user
@@ -37,6 +38,7 @@ def kobayashi_koichi():
         username="kobayashi_koichi",
     )
     models.Profile.objects.create(
+        ogs_id=22,
         user=user,
     )
     return user
