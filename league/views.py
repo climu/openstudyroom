@@ -939,6 +939,7 @@ def upload_sgf(request):  # pylint: disable=inconsistent-return-statements
                 'errors': errors
             }
             template = loader.get_template('league/admin/upload_sgf.html')
+            return HttpResponse(template.render(context, request))
         else:
             raise Http404("What are you doing here ?")
 
