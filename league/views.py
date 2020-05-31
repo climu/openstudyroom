@@ -660,7 +660,7 @@ def game_api(request, sgf_id, event_id=None):
         {'sgf': sgf, 'event': event}
     )
     data = {}
-    data['sgf'] = sgf.sgf_text.replace(';B[]', "").replace(';W[]', "").replace(';)', '').replace(':/', "")
+    data['sgf'] = sgf.sgf_text.replace(';B[]', "").replace(';W[]', "").replace(';)', '').replace(':/', "").replace(';-)', '')
     data['permalink'] = '/league/games/' + str(sgf.pk) + '/'
     data['game_infos'] = html
     data['white'] = sgf.white.username

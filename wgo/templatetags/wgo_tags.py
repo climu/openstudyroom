@@ -5,7 +5,7 @@ register = template.Library()
 
 @register.filter
 def prepare_sgf(sgf):
-    sgf = sgf.replace(';B[]', "").replace(';W[]', "").replace(';)', '').replace(':/', "")
+    sgf = sgf.replace(';B[]', "").replace(';W[]', "").replace(';)', '').replace(':/', "").replace(';-)', '')
     return sgf
 
 @register.filter
