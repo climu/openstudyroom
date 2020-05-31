@@ -7,7 +7,7 @@ function load_calendar_member(timezone, locale, start_time_range, end_time_range
         center: 'title',
         right: ''
     },
-    weekNumbers: true,
+    weekNumbers: false,
     navLinks: false, // can click day/week names to navigate views
     editable: false,
     allDaySlot:false,
@@ -17,7 +17,19 @@ function load_calendar_member(timezone, locale, start_time_range, end_time_range
     minTime: start_time_range + ":00:00",
     maxTime: end_time_range + ":00:00",
     height: 'auto',
-    defaultView: 'agendaWeek',
+    views: {
+      timeGridFourDay: {
+        type: 'agenda',
+        duration: { days: 5 },
+        visibleRange: function(currentDate) {
+          return {
+            start: currentDate.clone().subtract(1, 'days'),
+            end: currentDate.clone().add(4, 'days') // exclusive end, so 3
+          };
+        }
+      }
+    },
+    defaultView: 'timeGridFourDay',
     slotDuration :'02:00:00',
 
     ///////////////////////////////////////////////////////////////
