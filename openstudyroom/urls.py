@@ -22,6 +22,8 @@ urlpatterns = [
 
     url(r'^league/', include('league.urls', namespace="league")),
     url(r'^stats/', include('stats.urls', namespace="stats")),
+    url(r'^wgo/', include('wgo.urls', namespace="wgo")),
+
 
 #    url(r'^wgo/', include('wgo.urls', namespace="wgo")),
 #    url(r'^accounts/login/$',LoginView.as_view(), name="auth_login"),
