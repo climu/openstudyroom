@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
 from django.db.models import Q
+from django.views.decorators.http import require_POST
 
 from league.models import User, LeagueEvent, Sgf
 from league.views import LeagueEventCreate, LeagueEventUpdate
@@ -36,7 +37,7 @@ def admin_community_create(request):
             return HttpResponseRedirect(reverse('community:admin_community_list'))
     else:
         form = AdminCommunityForm
-        return render(request, 'community/admin/community_create.html', {'form': form})
+    return render(request, 'community/admin/community_create.html', {'form': form})
 
 
 class AdminCommunityUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -235,29 +236,30 @@ def admin_user_list(request, pk):
         {'community': community, 'community_users': community_users}
     )
 
+
+@require_POST
 @login_required()
 def admin_invite_user(request, pk):
     """Invite a user in a community."""
     community = get_object_or_404(Community, pk=pk)
     if not community.is_admin(request.user):
         raise Http404('what are you doing here')
-    if request.method == 'POST':
-        form = CommunytyUserForm(request.POST)
-        if form.is_valid():
-            user = User.objects.get(username__iexact=form.cleaned_data['username'])
-            user.groups.add(community.user_group)
-            user.groups.remove(community.new_user_group)
-            # group = Group.objects.get(name='league_member')/
-            # user.groups.add(group)
-            message = user.username +" is now a member of your community."
-            messages.success(request, message)
-        else:
-            message = "We don't have such a user."
-            messages.success(request, message)
-        return HttpResponseRedirect(reverse(
-            'community:community_page',
-            kwargs={'slug': community.slug}
-        ))
+    form = CommunytyUserForm(request.POST)
+    if form.is_valid():
+        user = User.objects.get(username__iexact=form.cleaned_data['username'])
+        user.groups.add(community.user_group)
+        user.groups.remove(community.new_user_group)
+        # group = Group.objects.get(name='league_member')/
+        # user.groups.add(group)
+        message = user.username +" is now a member of your community."
+        messages.success(request, message)
+    else:
+        message = "We don't have such a user."
+        messages.success(request, message)
+    return HttpResponseRedirect(reverse(
+        'community:community_page',
+        kwargs={'slug': community.slug}
+    ))
 
 
 @login_required()

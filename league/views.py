@@ -1,15 +1,22 @@
-from collections import OrderedDict
 import json
 import datetime
 import io
+from collections import OrderedDict
 from time import sleep
 from zipfile import ZipFile
 
+import pytz
+import requests
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.template.defaultfilters import slugify
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import (
+    HttpResponse,
+    HttpResponseRedirect,
+    Http404,
+    JsonResponse,
+)
 from django.urls import reverse
 from django.db.models import Count, Case, IntegerField, When, Q, Prefetch
 from django.contrib.auth.decorators import login_required
@@ -23,13 +30,12 @@ from django.template.defaultfilters import date as _date, time as _time
 from django.utils import timezone
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.functions import TruncMonth
+from django.views.decorators.http import require_POST
 from machina.core.db.models import get_model
 from postman.api import pm_write
-from tournament.models import Tournament
-import pytz
-import requests
-from discord_bind.models import DiscordUser
 
+from discord_bind.models import DiscordUser
+from tournament.models import Tournament
 from . import utils
 from . import ogs
 from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
@@ -208,24 +214,25 @@ def download_all_sgf(request, user_id):
 
     return response
 
+
 def games_datatable_api(request):
     """
     Feed datatable with games infos as JSON.
     https://datatables.net/manual/server-side
     """
-    league_id = request.GET.get('league', '')
+    league_id = request.GET.get('league')
     base_sgfs_queryset = Sgf.objects.all()
     if league_id:
         league = get_object_or_404(LeagueEvent, pk=league_id)
         base_sgfs_queryset = base_sgfs_queryset.filter(events=league)
     sgfs = Sgf.fetch_and_get_context(base_sgfs_queryset)
     out = {
-        'draw': request.GET.get('draw', 0),
+        'draw': int(request.GET.get('draw', 0)),
         'recordsTotal': len(sgfs),
-        'data':sgfs
+        'data': sgfs,
     }
-    out_json = json.dumps(out)
-    return HttpResponse(out_json, content_type="application/json")
+    return JsonResponse(out)
+
 
 def list_games(request, event_id=None, sgf_id=None):
     """List all games and allow to show one with wgo."""
@@ -295,6 +302,7 @@ def meijin(request):
         kwargs={'event_id': league.pk})
     )
 
+
 def ladder(request):
     """A simple view that redirects to the last open ladder league."""
     league = LeagueEvent.objects.filter(
@@ -306,6 +314,7 @@ def ladder(request):
         'league:results',
         kwargs={'event_id': league.pk})
     )
+
 
 def ddk(request):
     """A simple view that redirects to the last open ddk league."""
@@ -496,34 +505,32 @@ def join_event(request, event_id, user_id):
     return HttpResponseRedirect('/')
 
 
+@require_POST
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
-def quit_league(request, event_id, user_id=None):
+def quit_league(request, event_id, user_id=None):  # pylint: disable=inconsistent-return-statements
     """Allow a user to quit a league if he didn't play a game in it yet."""
-    if request.method == 'POST':
-        form = ActionForm(request.POST)
-        if form.is_valid():
-            league = get_object_or_404(LeagueEvent, pk=event_id)
-            if user_id is None:
-                user = request.user
-            else:
-                user = get_object_or_404(User, pk=user_id)
-            # member can quit for them but admins can quit anyone
-            if not (user == request.user or request.user.is_league_admin()):
-                raise Http404('What are you doing here?1')
-            if league.can_quit(user):
-                player = LeaguePlayer.objects.filter(user=user, event=league).first()
-                message = "Succesfully deleted the player " + user.username +\
-                    " from " + league.name
-                messages.success(request, message)
-                player.delete()
-                return HttpResponseRedirect(form.cleaned_data['next'])
-            else:
-                message = "A player canot quit a league once he have played games in it."
-                messages.success(request, message)
-                return HttpResponseRedirect(form.cleaned_data['next'])
-    else:
-        raise Http404('What are you doing here?')
+    form = ActionForm(request.POST)
+    if form.is_valid():
+        league = get_object_or_404(LeagueEvent, pk=event_id)
+        if user_id is None:
+            user = request.user
+        else:
+            user = get_object_or_404(User, pk=user_id)
+        # member can quit for them but admins can quit anyone
+        if not (user == request.user or request.user.is_league_admin()):
+            raise Http404('What are you doing here?1')
+        if league.can_quit(user):
+            player = LeaguePlayer.objects.filter(user=user, event=league).first()
+            message = "Succesfully deleted the player " + user.username +\
+                " from " + league.name
+            messages.success(request, message)
+            player.delete()
+            return HttpResponseRedirect(form.cleaned_data['next'])
+        else:
+            message = "A player canot quit a league once he have played games in it."
+            messages.success(request, message)
+            return HttpResponseRedirect(form.cleaned_data['next'])
 
 
 def account(request, user_name=None):
@@ -553,7 +560,7 @@ def account(request, user_name=None):
             + user.black_sgf.filter(winner=request.user).count()
         user_won_games = num_total_games - user_lost_games
 
-        if num_total_games is not 0:
+        if num_total_games != 0:
             won_perc = user_lost_games / num_total_games * 100
             lost_perc = user_won_games / num_total_games * 100
         else:
@@ -660,7 +667,7 @@ def game_api(request, sgf_id, event_id=None):
     data['black'] = sgf.black.username
     data['id'] = str(sgf.pk)
 
-    return HttpResponse(json.dumps(data), content_type="application/json")
+    return JsonResponse(data)
 
 
 def scrap_list(request):
@@ -728,7 +735,7 @@ def discord_api(request):
                 'ogs_id': u.user.profile.ogs_id,
             })
 
-    return HttpResponse(json.dumps(out), content_type="application/json")
+    return JsonResponse(out)
 
 #################################################################
 ####    ADMINS views    #########################################
@@ -816,18 +823,18 @@ def admin(request):
         return HttpResponse(template.render(context, request))
 
 
+@require_POST
 @login_required()
 @user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def admin_set_meijin(request):
     """Set one user to be meijin. Calls user.set_meijin methods."""
-    if request.method == 'POST':
-        form = ActionForm(request.POST)
-        if form.is_valid():
-            user = get_object_or_404(User, pk=form.cleaned_data['user_id'])
-            user.set_meijin()
-            message = user.username + " is now the new Meijin !"
-            messages.success(request, message)
-        return HttpResponseRedirect(reverse('league:admin_users_list'))
+    form = ActionForm(request.POST)
+    if form.is_valid():
+        user = get_object_or_404(User, pk=form.cleaned_data['user_id'])
+        user.set_meijin()
+        message = user.username + " is now the new Meijin !"
+        messages.success(request, message)
+    return HttpResponseRedirect(reverse('league:admin_users_list'))
 
 
 @login_required()
@@ -892,7 +899,7 @@ def create_sgf(request):
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
-def upload_sgf(request):
+def upload_sgf(request):  # pylint: disable=inconsistent-return-statements
     """THis view allow user to preview sgf with wgo along with valid status of the sgf.
         Can call save_sgf from it.
     """
@@ -973,7 +980,7 @@ def admin_delete_sgf(request, sgf_id):
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
-def admin_edit_sgf(request, sgf_id):
+def admin_edit_sgf(request, sgf_id):  # pylint: disable=inconsistent-return-statements
     """Show sgf preview in wgo and test if sgf is valid.
         Allow user to change raw sgf data in text field.
         Admin can call delete_sgf or save_sgf after preview.
@@ -1025,12 +1032,12 @@ class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         return reverse('league:admin_events')
 
-
     def get_context_data(self, **kwargs):
         context = super(LeagueEventUpdate, self).get_context_data(**kwargs)
         league = self.get_object()
         context['other_events'] = league.get_other_events
         return context
+
 
 class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     """Create a league"""
@@ -1306,8 +1313,7 @@ def populate(request, to_event_id, from_event_id=None):
     if request.method == 'POST':
         if from_event_id is None:
             raise Http404("What are you doing here ?")
-        else:
-            from_event = get_object_or_404(LeagueEvent, pk=from_event_id)
+        from_event = get_object_or_404(LeagueEvent, pk=from_event_id)
 
         form = LeaguePopulateForm(from_event, to_event, request.POST)
         if form.is_valid():
@@ -1396,7 +1402,7 @@ def proceed_populate(request, from_event_id, to_event_id):
 
 @login_required()
 @user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
-def admin_user_send_mail(request, user_id):
+def admin_user_send_mail(request, user_id):  # pylint: disable=inconsistent-return-statements
     """Send an email to a user."""
     user = get_object_or_404(User, pk=user_id)
 

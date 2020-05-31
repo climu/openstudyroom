@@ -1,0 +1,9 @@
+-r requirements.txt
+astroid==2.3.0
+freezegun==0.3.15
+pylint==2.4.4
+pylint-django==2.0.13
+pytest==5.4.2
+pytest-django==3.9.0
+snapshottest==0.5.1
+requests-mock==1.8.0
