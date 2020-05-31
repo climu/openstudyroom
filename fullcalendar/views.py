@@ -166,7 +166,7 @@ def json_feed_other(request, user_id):
             'sender': user.username
         }
         data.append(dict)
-    return JsonResponse(data)
+    return JsonResponse(data, safe=False)
 
 
 def json_feed(request):
@@ -289,7 +289,7 @@ def json_feed(request):
                     'sender': event.sender.username
                 }
                 data.append(dict)
-    return JsonResponse(data)
+    return JsonResponse(data, safe=False)
 
 
 @require_POST
