@@ -36,6 +36,7 @@ from postman.api import pm_write
 
 from discord_bind.models import DiscordUser
 from tournament.models import Tournament
+from community.models import Community
 from . import utils
 from . import ogs
 from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
@@ -844,6 +845,61 @@ def admin_sgf_list(request):
     sgfs = Sgf.objects.defer('sgf_text').all()
     context = {'sgfs': sgfs}
     return render(request, 'league/admin/sgf_list.html', context)
+
+
+@login_required()
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+def user_leagues_manage(request, user_id):
+    """Allows admins to manage users leagues using ajax request.
+        Mind that quit_league and join_league are still here for users
+    """
+    # first set up global vars
+    user = get_object_or_404(User, pk=user_id)
+    # on get we feed one user info
+    if request.method == 'GET':
+        leagues = LeagueEvent.objects.filter(is_open=True)
+        # if community is provided, we filter community leagues only
+        community_pk = request.GET.get('community', None)
+        if community_pk is not None:
+            community = Community.objects.get(pk=community_pk)
+            leagues = leagues.filter(community=community)
+        else:
+            leagues = leagues.filter(community=None)
+        leagues_list = []
+        for league in leagues:
+            leagues_list.append({
+            'name': league.name,
+            'pk': league.pk,
+            'can_join': league.can_join(user),
+            'can_quit': league.can_quit(user),
+            'is_in': LeaguePlayer.objects.filter(user=user, event=league).exists()
+            })
+        out = {
+            'user_pk': user.pk,
+            'username': user.username,
+            'leagues': leagues_list
+        }
+        return JsonResponse(out)
+    else: # POST
+        leagues_list = request.POST.get('leaguesList')
+        if leagues_list is not None:
+            leagues_list = json.loads(leagues_list)
+        #    [{ 'leagueId':... , 'is_in': ...}, {...}, ...]
+        for item in leagues_list:
+            league = get_object_or_404(LeagueEvent, pk=item['leagueId'])
+            if not request.user.is_league_admin(league):
+                continue
+            if item['is_in']:
+                if league.can_join(user):
+                    user.join_event(league)
+            elif league.can_quit(user):
+                player = LeaguePlayer.objects.filter(user=user, event=league).first()
+                player.delete()
+
+        return HttpResponse('success')
+
+
+
 
 
 # Next 3 views handle sgf upload.

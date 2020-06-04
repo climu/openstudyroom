@@ -1,4 +1,22 @@
 {% load league_tags bootstrap3 i18n %}
+<div class="modal" tabindex="-1" role="dialog" id="userLeagueModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="userLeagueModalTitle"></h4>
+      </div>
+      <div id="userLeagueModalBody" class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="userLeagueModalSave">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <table id="members-table" class="table">
   <thead>
@@ -6,8 +24,9 @@
     <th>OGS {% trans "username" %}</th>
 	<th>KGS username</th>
 	{% if admin %}
-    <th>{% trans "kick out" %}</th>
-	<th>admin</th>
+  <th>{% trans "leagues" %}</th>
+  <th>{% trans "kick out" %}</th>
+  <th>admin</th>
 	{% endif %}
   </thead>
   <tbody>
@@ -18,7 +37,10 @@
   <td>{{user.profile.ogs_username}}</td>
   <td>{{user.profile.kgs_username}}</td>
   {% if admin %}
+    <td>
+      <button type="button" class="btn btn-primary" onclick="get_modal_datas({{user.pk}}, {{community.pk}})"><i class="fas fa-cog"></i></button>
 
+    </td>
   <td>  <form action=" {% url 'community:community_quit' community.pk user.pk %}" method="post" >
       {% csrf_token %}
       <div class="form-group">

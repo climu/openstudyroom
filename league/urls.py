@@ -121,5 +121,7 @@ urlpatterns = [
         name='profile_update'
     ),
     url(r'discord-api/$', views.discord_api, name='discord_api'),
-    url(r'games-api/$', views.games_datatable_api, name='games_api')
+    url(r'games-api/$', views.games_datatable_api, name='games_api'),
+    url(r'user-leagues-manage/(?P<user_id>[0-9]+)/$', views.user_leagues_manage, name='user_leagues_manage'),
+
 ]

@@ -182,6 +182,12 @@ return false;};
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/locale/{{LANGUAGE_CODE}}.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
+{% if admin %}
+  <script src={%static 'league/js/manage_league_user.js'%}></script>
+    <script>
+{% include 'league/includes/ajax_setup.html' %}
+  </script>
+{% endif %}
 
 <script type="text/javascript">
 $(document).ready(function() {

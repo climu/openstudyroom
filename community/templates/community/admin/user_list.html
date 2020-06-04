@@ -33,6 +33,7 @@
     <th>{% trans "username" %}</th>
     <th>KGS {% trans "username" %}</th>
     <th>{% trans "kick out" %}</th>
+    <th>{% trans "leagues" %}</th>
   </thead>
   <tbody>
 {% for user in community_users %}
@@ -49,6 +50,9 @@
       </button>
       </div>
       </form>
+    </td>
+    <td>
+      <i class="fas fa-cog"></i>
     </td>
 </tr>
 {% endfor %}
