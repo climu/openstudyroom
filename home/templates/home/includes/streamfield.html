@@ -40,6 +40,8 @@
                     </div>
                 {% endif %}
             </div>
+        {% elif child.block_type == 'poll' %}
+          {% include_block child %}
         {% else %}
             {{ child }}
         {% endif %}

@@ -16,6 +16,7 @@ from django.urls import reverse
 from wagtail.core.models import Page
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.snippets.models import register_snippet
+from wagtail.snippets.blocks import SnippetChooserBlock
 from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel
 from wagtail.core.blocks import TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, \
     RichTextBlock, RawHTMLBlock, IntegerBlock
@@ -27,9 +28,14 @@ from wagtailmenus.models import MenuPage
 from puput.models import EntryPage, BlogPage
 from machina.core.db.models import get_model
 
+
+TopicPoll = get_model('forum_polls', 'TopicPoll')
+
 from league.models import Registry, Sgf, LeagueEvent
 ForumPost = get_model('forum_conversation', 'Post')
 
+
+register_snippet(TopicPoll)
 
 @register_snippet
 @python_2_unicode_compatible  # provide equivalent __unicode__ and __str__ methods on Python 2
@@ -130,6 +136,7 @@ class MyStreamBlock(StreamBlock):
     document = DocumentChooserBlock(icon="doc-full-inverse")
     wgo = WgoBlock(label="wgo")
     table = TableBlock()
+    poll = SnippetChooserBlock(TopicPoll, template="home/includes/poll.html")
 
 
 class HomePage(Page):
