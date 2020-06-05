@@ -1,7 +1,7 @@
 import os
 import random
-from openstudyroom.settings.base import BASE_DIR
 from django.http import HttpResponse
+from openstudyroom.settings.base import BASE_DIR
 
 def tsumego_api(request):
     """
@@ -13,7 +13,7 @@ def tsumego_api(request):
     - 4 hatsuyoron
     """
     set = random.choice(['cho-1-elementary', 'cho-2-intermediate', 'cho-3-advanced', 'gokyoshumyo', 'hatsuyoron'])
-    sgf_file =  open(os.path.join(BASE_DIR,'wgo/tsumegos/' + set + '.sgf'), 'r')
+    sgf_file = open(os.path.join(BASE_DIR, 'wgo/tsumegos/' + set + '.sgf'), 'r')
     tsumego = random.choice(sgf_file.readlines())
     sgf_file.close()
     return HttpResponse(tsumego, content_type="text/plain")
