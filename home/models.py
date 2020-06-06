@@ -27,9 +27,9 @@ from wagtail.core.signals import page_published
 from wagtailmenus.models import MenuPage
 from puput.models import EntryPage, BlogPage
 from machina.core.db.models import get_model
+from machina.apps.forum_conversation.forum_polls.models import TopicPoll
 from league.models import Registry, Sgf, LeagueEvent
 
-TopicPoll = get_model('forum_polls', 'TopicPoll')
 
 ForumPost = get_model('forum_conversation', 'Post')
 
