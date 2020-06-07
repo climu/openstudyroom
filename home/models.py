@@ -32,7 +32,7 @@ from league.models import Registry, Sgf, LeagueEvent
 
 
 ForumPost = get_model('forum_conversation', 'Post')
-
+TopicPoll.__module__ = "machina.apps.forum_conversation.forum_polls.models"
 
 register_snippet(TopicPoll)
 
