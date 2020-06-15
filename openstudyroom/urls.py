@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.views.i18n import JavaScriptCatalog
 from machina.app import board
 from puput import urls as puput_urls
 from wagtail.admin import urls as wagtailadmin_urls
@@ -16,6 +17,8 @@ urlpatterns = [
 
     url(r'^admin/', include(wagtailadmin_urls)),
     url(r'^documents/', include(wagtaildocs_urls)),
+    url(r'^comments/', include('django_comments_xtd.urls')),
+    url(r'jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     url(r'^search-api/', include('fancysearch.urls', namespace="fancysearch")),
 
     url(r'^search/$', search_views.search, name='search'),
