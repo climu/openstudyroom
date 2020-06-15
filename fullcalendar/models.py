@@ -122,7 +122,7 @@ class AvailableEvent(CalEvent):
                     events.append({
                         'start': time,
                         'end': change['time'],
-                        'users': [u for u in list_users],
+                        'users': list(list_users),
                     })
                     time = change['time']
                     if change['type'] == 0:  # new user available
