@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static i18n wagtailcore_tags wagtailimages_tags puput_tags compress wagtailroutablepage_tags league_tags osr_tags tz%}
+{% load comments static i18n wagtailcore_tags wagtailimages_tags puput_tags compress wagtailroutablepage_tags league_tags osr_tags tz%}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/puput.css' %}"/>
@@ -106,6 +106,10 @@
             <li>
                 <i class="fa fa-calendar"></i>
                 {{ entry.date|date:"DATE_FORMAT" }}
+            </li>
+            {% get_comment_count for entry as comment_count %}
+            <li>
+              <i class="fas fa-comments"></i> {{ comment_count }}.
             </li>
           </ul>
           {% if entry.header_image %}

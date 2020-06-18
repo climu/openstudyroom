@@ -32,6 +32,7 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 INSTALLED_APPS = [
     'home',
     'search',
+    'rest_framework',
 
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
@@ -55,6 +56,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_comments_xtd',
+    'django_comments',
 
     #for django-user-account and puput and forum...
     'django.contrib.sites',
@@ -316,4 +319,20 @@ BOOTSTRAP3 = {
 
     # Include jQuery with Bootstrap JavaScript (affects django-bootstrap3 template tags)
     'include_jquery': False,
+}
+
+COMMENTS_APP = 'django_comments_xtd'
+COMMENTS_XTD_MAX_THREAD_LEVEL = 2
+COMMENTS_XTD_CONFIRM_EMAIL = True
+#  To help obfuscating comments before they are sent for confirmation.
+COMMENTS_XTD_SALT = (b"Timendi causa est nescire. "
+                     b"Aequam memento rebus in arduis servare mentem.")
+PUPUT_COMMENTS_PROVIDER = 'puput.comments.DjangoCommentsProvider'
+COMMENTS_XTD_LIST_ORDER = ('-thread_id', 'order')  # default is ('thread_id', 'order')
+COMMENTS_XTD_APP_MODEL_OPTIONS = {
+    'puput.entrypage': {
+        'allow_flagging': True,
+        'allow_feedback': True,
+        'show_feedback': True,
+    }
 }

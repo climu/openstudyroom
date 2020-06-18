@@ -682,6 +682,11 @@ class User(AbstractUser):
         self.n_win = None
         self.n_games = None
 
+    def get_full_name(self):
+        """required for django_comments_xtd"""
+        return self.username
+
+
     def join_event(self, event, division=None):
         if not event.can_join(self):
             return False
