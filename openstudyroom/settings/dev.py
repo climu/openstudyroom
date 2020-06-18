@@ -12,7 +12,7 @@ with open('/etc/db_pass.txt') as f:
 DATABASES = {
     'default': {
         'ENGINE' : 'django.db.backends.postgresql_psycopg2',
-        'NAME' : 'openstudyroom',
+        'NAME' : 'osr_dev',
         'USER': 'osr',
         'PASSWORD' : DB_PASS,
         'HOST': 'localhost',
@@ -20,7 +20,7 @@ DATABASES = {
     }
 }
 
-ALLOWED_HOSTS = ['openstudyroom.org']
+ALLOWED_HOSTS = ['dev.openstudyroom.org']
 
 DJANGO_CRON_DELETE_LOGS_OLDER_THAN = 7
 
