@@ -36,10 +36,10 @@
                      <i class="fa fa-calendar"></i>
                      {{ self.date|date:"DATE_FORMAT" }}
                  </li>
-    {% get_comment_count for self as comment_count %}
-    <li>
-      <i class="fas fa-comments"></i> {{ comment_count }} comment{{ comment_count|pluralize }}.
-    </li>
+                 {% get_comment_count for self as comment_count %}
+                 <li>
+                   <i class="fas fa-comments"></i> {{ comment_count }} comment{{ comment_count|pluralize }}.
+                 </li>
                </ul>
 
 

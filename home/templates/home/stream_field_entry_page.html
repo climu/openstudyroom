@@ -1,7 +1,7 @@
 
 {% extends "puput/base.html" %}
-{% load wagtailcore_tags wagtailroutablepage_tags wagtailimages_tags puput_tags %}
-
+{% load static wagtailcore_tags wagtailroutablepage_tags wagtailimages_tags puput_tags %}
+{% load comments comments_xtd %}
 {% block title %}{{ self.title }} | {{ blog_page.title }}{% endblock title %}
 {% block meta_title %}{% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}{% endblock meta_title %}
 {% block meta_description %}{% if self.search_description %}{{ self.search_description }}{% else %}{{ self.body|striptags|truncatewords:20 }}{% endif %}{% endblock meta_description %}
@@ -36,6 +36,10 @@
                      <i class="fa fa-calendar"></i>
                      {{ self.date|date:"DATE_FORMAT" }}
                  </li>
+                 {% get_comment_count for self as comment_count %}
+                 <li>
+                   <i class="fas fa-comments"></i> {{ comment_count }} comment{{ comment_count|pluralize }}.
+                 </li>
                </ul>
         {% if self.header_image %}
             <section>
@@ -45,11 +49,12 @@
                 </span>
             </section>
         {% endif %}
-	<section>
-            {{ self.body|richtext}}
-            {% include "home/includes/streamfield.html" with content=self.streamfield %}
+        <section>
+          {{ self.body|richtext}}
+          {% include "home/includes/streamfield.html" with content=self.streamfield %}
         </section>
-        {% show_comments %}
+        <div id="comments"></div>
+
     </article>
 {% endblock content %}
 
@@ -58,3 +63,21 @@
         {% include 'puput/related_entries.html' with entry=self %}
     {% endif %}
 {% endblock extra_content %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+  window.comments_props = {% get_commentbox_props for self %};
+  window.comments_props_override = {
+    allow_comments: true,
+    allow_feedback: true,
+    show_feedback: true,
+    allow_flagging: true,
+    polling_interval: 10000  // In milliseconds.
+  };
+</script>
+<script type="text/javascript"
+        src="{% url 'javascript-catalog' %}"></script>
+<script src="{% static 'django_comments_xtd/js/vendor-2.2.1.js' %}"></script>
+<script src="{% static 'django_comments_xtd/js/plugin-2.2.1.js' %}"></script>
+{% endblock %}
