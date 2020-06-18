@@ -334,5 +334,10 @@ COMMENTS_XTD_APP_MODEL_OPTIONS = {
         'allow_flagging': True,
         'allow_feedback': True,
         'show_feedback': True,
+    },
+    'home.streamfieldentrypage':{
+        'allow_flagging': True,
+        'allow_feedback': True,
+        'show_feedback': True,
     }
 }
