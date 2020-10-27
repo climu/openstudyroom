@@ -341,3 +341,5 @@ COMMENTS_XTD_APP_MODEL_OPTIONS = {
         'show_feedback': True,
     }
 }
+
+PUPUT_USERNAME_REGEX = r'[A-Za-z0-9-]+'
