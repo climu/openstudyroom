@@ -300,7 +300,6 @@ def division_results(request, event_id=None, division_id=None):
         kwargs={'event_id': ladder.pk})
     )
 
-
 def meijin(request):
     """A simple view that redirects to the last open meijin league."""
     league = LeagueEvent.objects.filter(
