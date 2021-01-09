@@ -150,7 +150,7 @@ class HomePage(Page):
             quote = random.choice(Quote.objects.all())
             context['quote'] = quote
         context['discord_presence_count'] = Registry.get_discord_presence_count()
-        first_of_the_month = timezone.now().replace(day=1, hour=0, minute=0, second=0)
+        first_of_the_month = timezone.now().date().replace(day=1)
         games = Sgf.objects\
             .exclude(date__isnull=True)\
             .defer('sgf_text')\
@@ -175,7 +175,7 @@ class HomePage(Page):
         if games:
             context['games'] = games[0]
         else:
-            context['games'] = None
+            context['games'] = {"total":0}
         n_leagues = LeagueEvent.objects.filter(is_open=True, is_public=True, community__isnull=True).count()
         context['n_leagues'] = n_leagues
 #        user = request.user
