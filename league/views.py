@@ -258,8 +258,8 @@ def list_games(request, event_id=None, sgf_id=None):
     return HttpResponse(template.render(context, request))
 
 def division_results(request, event_id=None, division_id=None):
-        """A simple view that redirects to the last open ladder league to circumvent bugs with primary league setting turned off."""
-        ladder = LeagueEvent.objects.filter(
+    """A simple view that redirects to the last open ladder league to circumvent bugs with primary league setting turned off."""
+    ladder = LeagueEvent.objects.filter(
         event_type='ladder',
         is_open=True,
         community__isnull=True
