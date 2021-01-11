@@ -258,12 +258,6 @@ def list_games(request, event_id=None, sgf_id=None):
     return HttpResponse(template.render(context, request))
 
 def division_results(request, event_id=None, division_id=None):
-    """A simple view that redirects to the last open ladder league to circumvent bugs with primary league setting turned off."""
-    ladder = LeagueEvent.objects.filter(
-        event_type='ladder',
-        is_open=True,
-        community__isnull=True
-    ).order_by('end_time').first()
     """Show the results of a division."""
     open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
     if event_id is None:
@@ -294,11 +288,7 @@ def division_results(request, event_id=None, division_id=None):
         'number_players': number_players,
         'can_quit': can_quit
     }
-    """return HttpResponse(template.render(context, request))"""
-    return HttpResponseRedirect(reverse(
-        'ladder:results',
-        kwargs={'event_id': ladder.pk})
-    )
+    return HttpResponse(template.render(context, request))
 
 def meijin(request):
     """A simple view that redirects to the last open meijin league."""
