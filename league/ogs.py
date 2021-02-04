@@ -4,7 +4,7 @@ import requests
 
 def rating2rank(ogs_rating):
     """Return a human readable go rank from a OGS rating number"""
-    total = ceil(30 - (log(ogs_rating / 850) / 0.032))
+    total = ceil(30 - (log(ogs_rating / 525) * 23.15)) # https://forums.online-go.com/t/2021-rating-and-rank-adjustments/33389
     if total <= 0:
         return str(abs(total - 1)) + "d"
     else:
