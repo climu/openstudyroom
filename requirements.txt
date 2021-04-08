@@ -3,7 +3,7 @@ bs4==0.0.1
 certifi==2017.7.27.1
 chardet==3.0.4
 defusedxml==0.4.1
-Django==2.2.18
+Django==2.2.20
 django-comments-xtd==2.2.1
 django-allauth==0.38.0
 django-annoying==0.10.3
