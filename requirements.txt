@@ -1,4 +1,4 @@
-beautifulsoup4==4.6.0
+beautifulsoup4==4.8
 bs4==0.0.1
 certifi==2017.7.27.1
 chardet==3.0.4
@@ -43,12 +43,12 @@ olefile==0.44
 packaging==16.8
 Pillow==6.2.2
 psycopg2-binary==2.7.5
-puput==1.1.0
+puput==1.1.1
 pybbm==0.18.4
 pyparsing==2.1.10
 python-dateutil==2.8.1
 python3-openid==3.0.10
-pytz==2018.5
+pytz==2020.1
 raven==6.4.0
 rcssmin==1.0.6
 requests==2.20.0
@@ -60,7 +60,7 @@ sqlparse==0.2.3
 Unidecode==0.4.21
 urllib3==1.24.2
 vobject==0.9.5
-wagtail==2.7.2
+wagtail==2.9.3
 wagtailmenus==3.0
 webencodings==0.5.1
 Willow==1.3
