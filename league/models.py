@@ -227,7 +227,6 @@ class LeagueEvent(models.Model):
         white_sgfs = user.white_sgf.get_queryset().filter(events=self).exists()
         if black_sgfs or white_sgfs:
             return False
-
         if actor is None:# user is trying to quit himself
             if not self.self_join:
                 return False
@@ -235,6 +234,27 @@ class LeagueEvent(models.Model):
         elif not(actor.is_league_admin(self)):
             return False
         return True
+
+    def assign(self, user, division, actor):
+        """ Assign a user to a division
+        We do no permissions check.
+
+        If user have played games already we do nothing and return false.
+        Else we create a player or change the player division
+        """
+        player = LeaguePlayer.objects.filter(user=user, event=self).first()
+        if player is None: # no player, we join
+            return user.join_event(self, division, actor)
+        black_sgfs = user.black_sgf.get_queryset().filter(events=self).exists()
+        white_sgfs = user.white_sgf.get_queryset().filter(events=self).exists()
+        if black_sgfs or white_sgfs:
+            return False
+        # Here we have a player that didn't played any game yet.
+        # We change their division
+        player.division = division
+        player.save()
+        return True
+
 
     def remaining_sec(self):
         """return the number of milliseconds before the league ends."""
@@ -623,7 +643,6 @@ class Sgf(models.Model):
             if not event_errors:
                 valid_events.append(event)
             errors_list.append({'league': event, 'errors': event_errors})
-        print(valid_events)
         self.league_valid = len(valid_events) > 0
         return valid_events, errors_list
 
@@ -706,8 +725,8 @@ class User(AbstractUser):
         return self.username
 
 
-    def join_event(self, event, division=None):
-        if not event.can_join(self):
+    def join_event(self, event, division=None, actor=None):
+        if not event.can_join(self, actor):
             return False
         if division is None:
             division = event.last_division()

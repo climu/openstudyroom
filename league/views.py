@@ -851,7 +851,7 @@ def admin_sgf_list(request):
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def user_leagues_manage(request, user_id):
     """Allows admins to manage users leagues using ajax request.
-        Mind that quit_league and join_league are still here for users
+        Mind that quit_league and join_league are still here for users if the league is open
     """
     # first set up global vars
     user = get_object_or_404(User, pk=user_id)
@@ -867,12 +867,28 @@ def user_leagues_manage(request, user_id):
             leagues = leagues.filter(community=None)
         leagues_list = []
         for league in leagues:
+            divisions = league.division_set.all()
+            player = LeaguePlayer.objects.filter(user=user, event=league).first()
+            if player is not None:
+                player_division = player.division
+            else:
+                player_division = None
+
+            divisions_list = []
+            for division in divisions:
+                divisions_list.append({
+                'pk': division.pk,
+                'name': division.name,
+                'is_in': division == player_division
+                })
+
             leagues_list.append({
             'name': league.name,
             'pk': league.pk,
-            'can_join': league.can_join(user),
-            'can_quit': league.can_quit(user),
-            'is_in': LeaguePlayer.objects.filter(user=user, event=league).exists()
+            'can_join': league.can_join(user, request.user),
+            'can_quit': league.can_quit(user, request.user),
+            'is_in': player_division is not None,
+            'divisions': divisions_list
             })
         out = {
             'user_pk': user.pk,
@@ -884,15 +900,19 @@ def user_leagues_manage(request, user_id):
         leagues_list = request.POST.get('leaguesList')
         if leagues_list is not None:
             leagues_list = json.loads(leagues_list)
-        #    [{ 'leagueId':... , 'is_in': ...}, {...}, ...]
+        #    [{ 'leagueId':... , 'divisionID': ...}, {...}, ...]
         for item in leagues_list:
             league = get_object_or_404(LeagueEvent, pk=item['leagueId'])
+            # We check if request.user is league admin and don't touch league if not.
+
             if not request.user.is_league_admin(league):
                 continue
-            if item['is_in']:
-                if league.can_join(user):
-                    user.join_event(league)
-            elif league.can_quit(user):
+            if item['divisionId'] != "0":
+                division = league.division_set.filter(pk=item['divisionId']).first()
+                if division is not None:
+                    if league.assign(user, division, request.user):
+                        HttpResponse('success')
+            elif league.can_quit(user, request.user):
                 player = LeaguePlayer.objects.filter(user=user, event=league).first()
                 player.delete()
 

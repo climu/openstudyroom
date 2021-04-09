@@ -19,13 +19,20 @@ var renderModal = function(data){
     if ((league.is_in && !(league.can_quit)) || (!(league.is_in) && !(league.can_join))){
       disabled = 'disabled'
     }
-    content += '<div class="checkbox' + disabled + '"> <label><input type="checkbox" value="'
-    content += league.pk + '"' + disabled
-    if (league.is_in) {
-      content += " checked "
-    }
-    content += '>' + league.name + '</label></div>'
+    content += '<form><div class="form-row form-group"><div class="col-md-6">'
+    content += '<label>' + league.name + '</label></div></div>'
 
+    // select division
+    content += '<div class="col-md-6"><select data-league="' + league.pk + '"class="form-control"' +  disabled + '>'
+    content += '<option value="0"></option>'
+    league.divisions.forEach((division, i) => {
+      content += '<option value="' + division.pk + '"'
+      if (division.is_in){
+        content += ' selected '
+      }
+      content += '>' + division.name + '</option>'
+    });
+    content += '</select></div></div></form>'
   });
   $('#userLeagueModalBody').html(content)
   $('#userLeagueModal').modal()
@@ -35,10 +42,10 @@ var renderModal = function(data){
 
 var postUserLeague = function(userId){
   leaguesList = []
-  $('#userLeagueModalBody').find("input[type='checkbox']").each(function( index ) {
+  $('#userLeagueModalBody').find("select").each(function( index ) {
     leaguesList.push({
-      'leagueId': $( this )[0].value,
-      'is_in': $( this )[0].checked
+      'leagueId': $( this ).data('league'),
+      'divisionId': $( this ).find('option:selected')[0].value
     })
   });
   $.ajax({
