@@ -93,7 +93,7 @@ def scraper():
     #finally discord
     #first we set everyone to offline
     DiscordUser.objects.all().update(status='offline')
-    discord_json = requests.get('https://discordapp.com/api/guilds/287487891003932672/widget.json').json()
+    discord_json = requests.get('https://discordapp.com/api/guilds/287487891003932672/widget.json', timeout=10).json()
     Registry.set_discord_presence_count(discord_json['presence_count'])
     discord_users = discord_json['members']
     for user in discord_users:

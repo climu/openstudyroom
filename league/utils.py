@@ -28,7 +28,7 @@ def kgs_connect():
     }
     formatted_message = json.dumps(message)
     for _ in range(10):
-        response = requests.post(url, formatted_message)
+        response = requests.post(url, formatted_message, timeout=10)
         time.sleep(3)
         if response.status_code == 200:
             break
@@ -36,13 +36,13 @@ def kgs_connect():
         return False
     cookies = response.cookies
     for _ in range(10):
-        r = requests.get(url, cookies=cookies)
+        r = requests.get(url, cookies=cookies, timeout=10)
         time.sleep(3)
         if r.status_code == 200:
             break
     if response.status_code != 200:
         return False
-    requests.post(url, json.dumps({"type": "LOGOUT"}), cookies=cookies)
+    requests.post(url, json.dumps({"type": "LOGOUT"}), cookies=cookies, timeout=10)
     return r
 
 def check_byoyomi(s):

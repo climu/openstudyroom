@@ -16,7 +16,7 @@ def get_user_rank(id_number):
     if not id_number:
         return None
     url = 'https://online-go.com/api/v1/players/?id=' + str(id_number)
-    request = requests.get(url).json()
+    request = requests.get(url, timeout=10).json()
     # Test if id exists at OGS.
     if request['count'] == 1:
         rating = request['results'][0]['ratings']["overall"]["rating"]
@@ -40,5 +40,5 @@ def get_user_id(username):
 
 def get_online_users():
     url = 'https://online-go.com/termination-api/chat/group-1843/users'
-    request = requests.get(url).json()
+    request = requests.get(url, timeout=10).json()
     return request
