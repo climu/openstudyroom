@@ -60,6 +60,8 @@ class LeagueEvent(models.Model):
     # A non public league can only be seen by
     is_public = models.BooleanField(default=False)
     # A primary league will automatically be joined when joining other leagues
+    self_join = models.BooleanField(default=True)
+    # If true, people can join the league themself. Otherwise admins have to do it.
     is_primary = models.BooleanField(default=False)
     event_type = models.CharField(  # ladder, tournament, league
         max_length=10,
@@ -183,25 +185,36 @@ class LeagueEvent(models.Model):
         delta = self.end_time - self.begin_time
         return round(delta.total_seconds() / 2678400)
 
-    def can_join(self, user):
+    def can_join(self, user, actor=None):
         """Return a boolean saying if user can join this league.
 
         Note that user is not necessarily authenticated
+        Actor is the one performing the action
         """
-        if self.is_open and \
+
+        if not(self.is_open and \
                 user.is_authenticated and \
                 user.is_league_member() and \
                 self.division_set.exists() and \
-                not LeaguePlayer.objects.filter(user=user, event=self).exists():
-            if self.community is None:
-                return True
-            else:
-                return self.community.is_member(user)
-        else:
+                not LeaguePlayer.objects.filter(user=user, event=self).exists()):
             return False
 
-    def can_quit(self, user):
-        """return a boolean being true if a user can quit a league"""
+        if actor is None:# user is trying to join himself
+            if not self.self_join:
+                return False
+        # Else actor is joining user. We check if actor is league admin
+        elif not(actor.is_league_admin(self)):
+            return False
+
+        if self.community is None:
+            return True
+        else:
+            return self.community.is_member(user)
+
+    def can_quit(self, user, actor=None):
+        """return a boolean being true if a user can quit a league
+        Actor is the one performing the action
+        """
         if not user.is_authenticated:
             return False
         player = LeaguePlayer.objects.filter(user=user, event=self).first()
@@ -214,8 +227,14 @@ class LeagueEvent(models.Model):
         white_sgfs = user.white_sgf.get_queryset().filter(events=self).exists()
         if black_sgfs or white_sgfs:
             return False
-        else:
-            return True
+
+        if actor is None:# user is trying to quit himself
+            if not self.self_join:
+                return False
+        # Else actor is quitting user. We check if actor is league admin
+        elif not(actor.is_league_admin(self)):
+            return False
+        return True
 
     def remaining_sec(self):
         """return the number of milliseconds before the league ends."""
