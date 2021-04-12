@@ -39,7 +39,7 @@
   {% if event.rules_type %}
   <li>{% blocktrans with rules=event.get_rules_type_display %}Game must be played with the <b>{{rules}} rules</b>{% endblocktrans %}.</li>
   {% endif %}
-  <li>{% trans "Game must be played either on the KGS or on the OGS go server" %}.</li>
+  <li>{% trans "Game must be played on one of the following Go server:" %} {{ event.get_servers_list|join:", "}}.</li>
   <li>{% trans "Game must be <b>public</b>." %}</li>
   {% if event.max_handicap == 0 %}
     <li>{% trans "Games must be played with <b>no handicap</b>" %}</li>

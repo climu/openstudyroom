@@ -163,7 +163,8 @@ class LeagueEventForm(forms.ModelForm):
             'description',
             'prizes',
             'additional_informations',
-            'community'
+            'community',
+            'servers'
         ]
         # Customise year list to show 2 years in the past/future
         #EVENT_YEAR_CHOICES = range(datetime.date.today().year - 2, datetime.date.today().year + 3)
@@ -188,8 +189,8 @@ class LeagueEventForm(forms.ModelForm):
             'komi': 'Valid komi for even games of the league. For handicap games, the valid komi is always 0.5',
             'max_handicap': 'Games handicap must be lower or equal.',
             'min_handicap': 'Games handicap must be greater or equal.',
-            'additional_informations': 'This will be shown in the infos tab of the league.'
-
+            'additional_informations': 'This will be shown in the infos tab of the league.',
+            'servers': 'Comma seperated list of Go servers where games can be played. Valid Go servers are "KGS", "OGS" and "Goquest".'
         }
 
     def clean(self):

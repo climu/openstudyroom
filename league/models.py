@@ -88,13 +88,15 @@ class LeagueEvent(models.Model):
     additional_time = models.PositiveSmallIntegerField(default=30)
 
     board_size = models.PositiveSmallIntegerField(default=19)
-
+    # rules: aga, chinese, ...
     rules_type = models.CharField(
         max_length=15,
         choices=RULES_TYPE_CHOICES,
         null=True,
         blank=True
         )
+    # servers allowed for this league. Comma seperated value of "KGS" "OGS" "Goquest"
+    servers = models.CharField(max_length=20, null=True, blank=True, default="KGS,OGS")
 
     # if the league is a community league
     community = models.ForeignKey(Community, blank=True, null=True, on_delete=models.CASCADE)
@@ -117,6 +119,10 @@ class LeagueEvent(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_servers_list(self):
+        """return a list of go servers where games can be played"""
+        return self.servers.replace(' ', '').split(',')
 
     def get_main_time_min(self):
         return self.main_time / 60
@@ -599,6 +605,16 @@ class Sgf(models.Model):
         # We check the rules (AGA, japanese, chinese, aga, or new_zealand)
         if event.rules_type and self.rules.lower() != event.rules_type:
             errors.append('rules')
+        # check the server
+        if event.servers:
+            if self.place.startswith('OGS'):
+                server = 'ogs'
+            elif self.place.startswith('The KGS'):
+                server = 'kgs'
+            elif self.place.startswith('GOQUEST'):
+                server = 'goquest'
+            if server not in event.servers.lower().replace(' ', '').split(','):
+                errors.append('server')
         return errors
 
     def check_global_settings(self):
