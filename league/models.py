@@ -42,6 +42,13 @@ class LeagueEvent(models.Model):
         ('byoyomi', 'byoyomi'),
         ('fisher', 'fisher'),
     )
+    RULES_TYPE_CHOICES = (
+        ('aga', 'AGA'),
+        ('chinese', 'Chinese'),
+        ('japanese', 'Japanese'),
+        ('korean', 'Korean'),
+        ('new_zealand', 'New Zealand'),
+    )
     # start and end of the league
     begin_time = models.DateTimeField(blank=True)
     end_time = models.DateTimeField(blank=True)
@@ -81,6 +88,13 @@ class LeagueEvent(models.Model):
     additional_time = models.PositiveSmallIntegerField(default=30)
 
     board_size = models.PositiveSmallIntegerField(default=19)
+
+    rules_type = models.CharField(
+        max_length=15,
+        choices=RULES_TYPE_CHOICES,
+        null=True,
+        blank=True
+        )
 
     # if the league is a community league
     community = models.ForeignKey(Community, blank=True, null=True, on_delete=models.CASCADE)
@@ -361,6 +375,7 @@ class Sgf(models.Model):
     byo = models.CharField(max_length=20, default='sgf')
     time = models.PositiveIntegerField(default=19)
     game_type = models.CharField(max_length=20, default='Free')
+    rules = models.CharField(max_length=20, blank=True)
     # message will not be used anymore. We render a dict of messages leagues dependants
     message = models.CharField(max_length=100, default='nothing', blank=True)
     number_moves = models.SmallIntegerField(default=100)
@@ -535,7 +550,7 @@ class Sgf(models.Model):
     def check_event_settings(self, event):
         """Check sgf settings for a given event.
 
-        tag , timesetting
+        tag , timesetting, rules, komi,...
         We don't preform check on players. This will be done at check_players
         we don't touch the sgf but return  a list strings of errors.
         The sgf is valid is the returned errors list is empty.
@@ -581,7 +596,9 @@ class Sgf(models.Model):
         if event.begin_time > timezone.make_aware(self.date, pytz.utc) or\
           timezone.make_aware(self.date, pytz.utc) > event.end_time:
             errors.append('date')
-
+        # We check the rules (AGA, japanese, chinese, aga, or new_zealand)
+        if event.rules_type and self.rules.lower() != event.rules_type:
+            errors.append('rules')
         return errors
 
     def check_global_settings(self):

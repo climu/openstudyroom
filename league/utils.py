@@ -150,7 +150,8 @@ def parse_sgf_string(sgf_string):
         'SZ': 'board_size',
         'TM': 'time',
         'OT': 'byo',
-        'PC': 'place'
+        'PC': 'place',
+        'RU':'rules'
     }
     # default values:
     out = {

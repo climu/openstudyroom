@@ -152,6 +152,7 @@ class LeagueEventForm(forms.ModelForm):
             'komi',
             'max_handicap',
             'min_handicap',
+            'rules_type',
             'clock_type',
             'main_time',
             'additional_time',
