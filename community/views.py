@@ -245,17 +245,16 @@ def admin_invite_user(request, pk):
     if not community.is_admin(request.user):
         raise Http404('what are you doing here')
     form = CommunytyUserForm(request.POST)
+    message = "Oups! Something went wrong."
     if form.is_valid():
         user = User.objects.get(username__iexact=form.cleaned_data['username'])
-        user.groups.add(community.user_group)
-        user.groups.remove(community.new_user_group)
-        # group = Group.objects.get(name='league_member')/
-        # user.groups.add(group)
-        message = user.username +" is now a member of your community."
-        messages.success(request, message)
-    else:
-        message = "We don't have such a user."
-        messages.success(request, message)
+        if user.is_league_member():
+            user.groups.add(community.user_group)
+            user.groups.remove(community.new_user_group)
+            # group = Group.objects.get(name='league_member')/
+            # user.groups.add(group)
+            message = user.username +" is now a member of your community."
+    messages.success(request, message)
     return HttpResponseRedirect(reverse(
         'community:community_page',
         kwargs={'slug': community.slug}
@@ -276,8 +275,11 @@ def manage_admins(request, pk):
                 group.user_set.remove(user)
                 message = "Succesfully removed " + user.username + " from community admins."
             elif form.cleaned_data['action'] == "add":
-                group.user_set.add(user)
-                message = "Succesfully added " + user.username + " to community admins."
+                if user.is_league_member():
+                    group.user_set.add(user)
+                    message = "Succesfully added " + user.username + " to community admins."
+                else:
+                    message = user.username + "account has nor been validated yet"
             messages.success(request, message)
     return HttpResponseRedirect(reverse(
         'community:community_page',
