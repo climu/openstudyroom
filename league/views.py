@@ -292,7 +292,6 @@ def division_results(request, event_id=None, division_id=None):
 
 def division_results_iframe(request, event_id=None, division_id=None):
     """Show the results of a division through an iframe."""
-    open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
     if event_id is None:
         event = Registry.get_primary_event()
     else:
@@ -301,8 +300,6 @@ def division_results_iframe(request, event_id=None, division_id=None):
         division = Division.objects.filter(league_event=event).first()
     else:
         division = get_object_or_404(Division, pk=division_id)
-    can_join = event.can_join(request.user)
-    can_quit = event.can_quit(request.user)
     if division is None:
         results = None
     else:
@@ -316,10 +313,7 @@ def division_results_iframe(request, event_id=None, division_id=None):
         'event': event,
         'division': division,
         'results': results,
-        'open_events': open_events,
-        'can_join': can_join,
         'number_players': number_players,
-        'can_quit': can_quit
     }
     return HttpResponse(template.render(context, request))
 
