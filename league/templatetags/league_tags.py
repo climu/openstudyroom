@@ -45,7 +45,7 @@ def sgf_result(sgf):
     return mark_safe(html)
 
 @register.simple_tag(takes_context=True)
-def html_one_result(context):
+def html_one_result(context, _blank=False):
     # note the use of takes_context = true.
     # this filter only works called from a context where player an opponent exists
     player = context['player']
@@ -61,8 +61,8 @@ def html_one_result(context):
     result = player.results[opponent_pk]
     for game in result:
         # here, game['id'] would get you the id of the game to add a link
-        html += '<a href="/league/' + event + 'games/' + str(game['id']) + '" \
-                data-toggle="tooltip" title="' + player.user.username + ' vs ' + \
+        html += '<a data-toggle="tooltip" target="' + ("_blank" if _blank is True else "_self")  + '" href="/league/' + event + 'games/' + str(game['id']) + '" \
+                title="' + player.user.username + ' vs ' + \
                 opponent.user.username + '">'
         if game['r'] == 1:
             html += '<i class="fa fa-check" aria-hidden="true" style="color:green"></i></a>'
