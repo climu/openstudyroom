@@ -290,6 +290,38 @@ def division_results(request, event_id=None, division_id=None):
     }
     return HttpResponse(template.render(context, request))
 
+def division_results_iframe(request, event_id=None, division_id=None):
+    """Show the results of a division through an iframe."""
+    open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
+    if event_id is None:
+        event = Registry.get_primary_event()
+    else:
+        event = get_object_or_404(LeagueEvent, pk=event_id)
+    if division_id is None:
+        division = Division.objects.filter(league_event=event).first()
+    else:
+        division = get_object_or_404(Division, pk=division_id)
+    can_join = event.can_join(request.user)
+    can_quit = event.can_quit(request.user)
+    if division is None:
+        results = None
+    else:
+        results = division.get_results()
+    if results is None:
+        number_players = 0
+    else:
+        number_players = len(results)
+    template = loader.get_template('league/results_iframe.html')
+    context = {
+        'event': event,
+        'division': division,
+        'results': results,
+        'open_events': open_events,
+        'can_join': can_join,
+        'number_players': number_players,
+        'can_quit': can_quit
+    }
+    return HttpResponse(template.render(context, request))
 
 def meijin(request):
     """A simple view that redirects to the last open meijin league."""
