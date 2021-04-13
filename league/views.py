@@ -26,6 +26,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.core.mail import send_mail
 from django.views.generic.edit import CreateView, UpdateView
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.template.defaultfilters import date as _date, time as _time
 from django.utils import timezone
 from django.core.serializers.json import DjangoJSONEncoder
@@ -290,6 +291,7 @@ def division_results(request, event_id=None, division_id=None):
     }
     return HttpResponse(template.render(context, request))
 
+@xframe_options_exempt
 def division_results_iframe(request, event_id=None, division_id=None):
     """Show the results of a division through an iframe."""
     if event_id is None:
