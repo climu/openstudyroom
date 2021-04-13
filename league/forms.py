@@ -10,7 +10,7 @@ from community.models import Community
 from community.widget import Community_select
 from .models import Division, LeagueEvent, Profile
 from .ogs import get_user_id, get_user_rank
-
+from .go_federations import get_egf_rank
 
 
 class SgfAdminForm(forms.Form):
@@ -27,6 +27,8 @@ class ActionForm(forms.Form):
 class LeagueSignupForm(forms.Form):
     kgs_username = forms.CharField(max_length=10, required=False)
     ogs_username = forms.CharField(max_length=40, required=False)
+    egf_id = forms.IntegerField(label='European Go Federation ID (optional)', required=False)
+    ffg_id = forms.IntegerField(label='FFG id', required=False)
     timezone = forms.ChoiceField(
         label='Time Zone (optional)',
         choices=[(t, t) for t in pytz.common_timezones],
@@ -44,6 +46,17 @@ class LeagueSignupForm(forms.Form):
             required=False,
             widget=Community_select
         )
+
+    def clean_egf_id(self):
+        if not self.cleaned_data['egf_id']:
+            return ''
+        egf_id = self.cleaned_data['egf_id']
+        if Profile.objects.filter(egf_id=egf_id).exists():
+            self.add_error('egf_id', "This EGF ID is already used by one of our member. You should contact us.")
+        egf_rank = get_egf_rank(egf_id)
+        if egf_rank is None:
+            self.add_error('egf_id', 'This EGF ID seems invalid.')
+        return egf_id
 
     def clean_kgs_username(self):
         if not self.cleaned_data['kgs_username']:
@@ -90,11 +103,13 @@ class LeagueSignupForm(forms.Form):
             profile.kgs_username = self.cleaned_data['kgs_username']
         if self.cleaned_data['ogs_username']:
             profile.ogs_username = self.cleaned_data['ogs_username']
-            id = get_user_id(self.cleaned_data['ogs_username'])
+            id = get_user_id(self.cleaned_data['ogs_username']) # we do an extra request after clean. We should store.
             profile.ogs_id = id
-            id = get_user_id(self.cleaned_data['ogs_username'])
             if id > 0:
                 profile.ogs_rank = get_user_rank(id)
+        if self.cleaned_data['egf_id']:
+            profile.egf_id = self.cleaned_data['egf_id']
+            profile.egf_rank = get_egf_rank(self.cleaned_data['egf_id'])
         profile.save()
 
 
