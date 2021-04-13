@@ -54,7 +54,7 @@
     {% if event.number_divisions > 1 %}
     <ul class="nav nav-pills justify-content-center">
         {% for div in event.get_divisions %}
-        <li class="p-4 nav-item {% if div == division %} active{%endif%}" >{{div|division_link}}</li>
+        <li class="p-4 nav-item {% if div == division %} active{%endif%}" >{{div|division_link_iframe}}</li>
         {% endfor %}
     </ul>
     {% endif %}

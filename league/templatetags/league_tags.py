@@ -177,6 +177,12 @@ def division_link(division):
         '/results/' + str(division.pk) + '">' + str(division.name) + '</a>'
     return mark_safe(html)
 
+@register.filter
+def division_link_iframe(division):
+    html = '<a href="/league/' + str(division.league_event.pk) + \
+        '/iframe/' + str(division.pk) + '">' + str(division.name) + '</a>'
+    return mark_safe(html)
+
 
 @register.filter(name='player_field')
 def player_field(form, player_id):

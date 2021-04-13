@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^(?P<event_id>[0-9]+)/$', views.division_results, name='results'),
     url(r'^(?P<event_id>[0-9]+)/infos/$', views.infos, name='event'),
     url(r'^(?P<event_id>[0-9]+)/iframe/$', views.division_results_iframe, name='results_iframe'),
+    url(r'^(?P<event_id>[0-9]+)/iframe/(?P<division_id>[0-9]+)/$', views.division_results_iframe, name='results'),
 
     url(r'^games/$', views.list_games, name='games'),
     url(r'^games/(?P<sgf_id>[0-9]+)/$', views.list_games, name='game'),
