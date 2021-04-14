@@ -14,9 +14,10 @@ It will take a while to set up all of the dependencies, but when it finishes, yo
 You'll find more information [here](/docs/docker.md). If you have trouble, don't hesitate to ask for help in the #dev_room channel on [discord](https://discord.gg/7sbMHyC).
 
 ## Manually
-Tested on Ubuntu 14.04 with Python 3.4, Ubuntu 16.04 and Python 3.5, and Archlinux.
 
-Updated and tested the 12 September 2017.
+This should work on any UNIX with python 3.7.
+
+Updated and tested on April 2021.
 
 First you need to fork this github repository. Just click the fork buton on github.
 
@@ -25,30 +26,23 @@ Be sure you have git and python3-dev and libpq-dev installed. If not, run
 sudo apt-get install git-core python3-dev libpq-dev
 ```
 
-You also need virtualenv installed.
-```bash
-sudo pip3 install virtualenv
-```
+Create a working directory: `mkdir osr`
 
-create a working directory: `mkdir osr`
+Go inside: `cd osr/`
 
-go inside: `cd osr/`
+Create a virtual environment: `python3.7 -m venv venv`
 
-create a virtual environment: `virtualenv -p python3 venv`
+Activate it: `source venv/bin/activate`
 
-activate it: `source venv/bin/activate`
+Clone your git repo: `git clone https://github.com/YOURUSERNAME/openstudyroom.git`
 
-clone your git repo: `git clone https://github.com/YOURUSERNAME/openstudyroom.git`
+Go to project folder: `cd openstudyroom/`
 
-go to project folder: `cd openstudyroom/`
+Change branch to dev: `git checkout dev`
 
-change branch to dev: `git checkout dev`
+Install development dependencies: `pip install -r requirements_dev.txt`
 
-install depedency: `pip install -r requirements.txt`
-
-Rename machina local folder to fix the [url issue](https://github.com/climu/openstudyroom/issues/267). Mind the python version: `mv ../venv/lib/python3.?/site-packages/machina/locale/ ../venv/lib/python3.?/site-packages/machina/locale.back/`
-
-run migrations and migrate:
+Run migrations and migrate:
 
 `./manage.py makemigrations`
 
@@ -57,7 +51,7 @@ run migrations and migrate:
 Load initial datas:
 `./manage.py loaddata fixtures/initial_data.json `
 
-run the server:
+Run the server:
 `./manage.py runserver`
 
 The server should now be running on your computer at [http://127.0.0.1:8000](http://127.0.0.1:8000). You can connect with user `admin` and pass `admin`
