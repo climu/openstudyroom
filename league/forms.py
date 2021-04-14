@@ -190,7 +190,7 @@ class LeagueEventForm(forms.ModelForm):
             'max_handicap': 'Games handicap must be lower or equal.',
             'min_handicap': 'Games handicap must be greater or equal.',
             'additional_informations': 'This will be shown in the infos tab of the league.',
-            'servers': 'Comma seperated list of Go servers where games can be played. Valid Go servers are "KGS", "OGS" and "Goquest".'
+            'servers': 'Comma seperated list of Go servers from "KGS", "OGS" and "Goquest".'
         }
 
     def clean(self):

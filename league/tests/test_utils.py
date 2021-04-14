@@ -19,6 +19,7 @@ class TestUtils:
             'number_moves': 268,
             'check_code': '20161119climunomenestmnhnimcf11',
             'handicap': 1,
+            'rules': 'Japanese',
         }
         assert parsed == expected
 

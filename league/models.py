@@ -223,7 +223,7 @@ class LeagueEvent(models.Model):
             if not self.self_join:
                 return False
         # Else actor is joining user. We check if actor is league admin
-        elif not(actor.is_league_admin(self)):
+        elif not actor.is_league_admin(self):
             return False
 
         if self.community is None:
@@ -251,7 +251,7 @@ class LeagueEvent(models.Model):
             if not self.self_join:
                 return False
         # Else actor is quitting user. We check if actor is league admin
-        elif not(actor.is_league_admin(self)):
+        elif not actor.is_league_admin(self):
             return False
         return True
 
