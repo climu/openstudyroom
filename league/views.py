@@ -26,6 +26,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.core.mail import send_mail
 from django.views.generic.edit import CreateView, UpdateView
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.template.defaultfilters import date as _date, time as _time
 from django.utils import timezone
 from django.core.serializers.json import DjangoJSONEncoder
@@ -290,6 +291,33 @@ def division_results(request, event_id=None, division_id=None):
     }
     return HttpResponse(template.render(context, request))
 
+@xframe_options_exempt
+def division_results_iframe(request, event_id=None, division_id=None):
+    """Show the results of a division through an iframe."""
+    if event_id is None:
+        event = Registry.get_primary_event()
+    else:
+        event = get_object_or_404(LeagueEvent, pk=event_id)
+    if division_id is None:
+        division = Division.objects.filter(league_event=event).first()
+    else:
+        division = get_object_or_404(Division, pk=division_id)
+    if division is None:
+        results = None
+    else:
+        results = division.get_results()
+    if results is None:
+        number_players = 0
+    else:
+        number_players = len(results)
+    template = loader.get_template('league/results_iframe.html')
+    context = {
+        'event': event,
+        'division': division,
+        'results': results,
+        'number_players': number_players,
+    }
+    return HttpResponse(template.render(context, request))
 
 def meijin(request):
     """A simple view that redirects to the last open meijin league."""

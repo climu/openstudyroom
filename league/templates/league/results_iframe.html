@@ -1,0 +1,169 @@
+{% load static wagtailuserbar compress puput_tags  %}
+{% load tz static league_tags bootstrap3 i18n %}
+{% load league_tags %}
+{% get_meijin as meijin %}
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- image for socials -->
+  
+  <title>    
+    {% block title %}{{event}}- {% trans "results" %}{% endblock %}
+  </title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <script src="https://kit.fontawesome.com/0fe78b4c78.js" crossorigin="anonymous"></script>
+  
+  <style type="text/css"> 
+    .iframe {
+      background-color: #000;
+    }    
+    .iframe a {
+      color: #2ea3f2;
+    }  
+    .iframe .nav a {
+      font-size: 2rem;
+    }
+    .iframe .active {
+      text-decoration: underline;
+    }
+    .iframe .disabled {
+      background-color: #1A1E22;
+    }
+    .iframe table a {
+      margin-right: 0.5rem;    
+    }
+  </style>
+
+</head>
+
+  <body class="iframe">
+
+  {% block content %}
+
+    {% if event.number_divisions > 1 %}
+    <ul class="nav nav-pills justify-content-center">
+        {% for div in event.get_divisions %}
+        <li class="p-4 nav-item {% if div == division %} active{%endif%}" >{{div|division_link_iframe}}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if division %}
+
+      <div class='mt-4 table-responsive table-dark'>
+        <table id='league-table' class='m-0 table table-bordered' >
+
+        {% if number_players > 20 %}
+
+          <thead >
+            <tr>
+                <th>player</th>
+                <th>score</th>
+                <th>wins</th>
+                <th>loss</th>
+                <th>games</th>
+                <th>Results</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for player in results %}
+            <tr {%if not player.is_active %}class="inactive"{%endif%}>                
+              <td>
+                <a 
+                  target="_blank" 
+                  href="/league/account/{{player.user.username}}">
+                  {{player.user.username}}
+                </a>              
+              </td>
+              <td>{{ player.score }}</td>
+              <td>{{ player.n_win }} </td>
+              <td>{{ player.n_loss }}</td>
+              <td>{{ player.n_games }}</td>
+              <td>
+                {% for opponent in results %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                {% else %}
+                {% html_one_result True %}
+                {% endif %}
+                {% endfor %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+
+        {% else %} {%if number_players > 0 %}
+
+          <thead class='table-league-highlight'>
+            <tr>
+              <th scope="col">player</th>
+              <th scope="col">score</th>
+              {% for player in results %}
+              <th scope="col"><div class="kgs_username">{{player.user}}</div></th>
+              {% endfor %}
+            </tr>
+          </thead>          
+          <tbody>
+            {% for player in results %}
+            <tr class="{% cycle 'even-row' 'odd-row' %}">
+              <td>
+                <a 
+                  target="_blank" 
+                  href="/league/account/{{player.user.username}}">
+                  {{player.user.username}}
+                </a>        
+              </td>
+              <td class='table-league-score-highlight'>{{ player.score }}</td>
+              {% for opponent in results %}
+              {% if forloop.counter == forloop.parentloop.counter %}
+                <td class="table-league-highlight disabled {% cycle 'even-column' 'odd-column' %}"></td>
+              {% else %}
+                <td class="{% cycle 'even-column' 'odd-column' %}">{% html_one_result True %}</td>
+              {% endif %}
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>        
+
+        {% else %}
+          <div class="well text-center">{% trans "This league is empty !" %}</div>        
+        {% endif %}
+
+        </table>
+      </div>
+
+      {% endif %}
+
+      {% else %}
+        <div class="well">
+          {% trans "This league is empty !" %}
+        </div>
+
+    {% endif %}
+    
+  {% endblock %}
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  
+  <script>
+
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+
+  </script>
+  
+  </body>
+</html>
