@@ -247,6 +247,8 @@ class ProfileForm(ModelForm):
             'bio',
             'ogs_username',
             'kgs_username',
+            'egf_id',
+            'egf_rank',
             'country',
             'go_quest_username'
         ]
@@ -302,8 +304,30 @@ class ProfileForm(ModelForm):
                 open_players.update(go_quest_username=go_quest_username)
         return go_quest_username
 
+    def clean_egf_id(self):
+        if not self.cleaned_data['egf_id']:
+            return None
+        egf_id = self.cleaned_data['egf_id']
+        # Check if this ID is already used
+        if Profile.objects.filter(egf_id=egf_id).exclude(pk=self.instance.pk).exists():
+            self.add_error(
+                'egf_id',
+                "This EGF ID is already used by one of our member. You should contact us."
+            )
+        # check if ID is valid and get rank
+        egf_rank = get_egf_rank(egf_id)
+        if egf_rank is None:
+            self.add_error('egf_id', 'This EGF ID seems invalid.')
+        else:
+            # store egf_rank to avoid extra api call later
+            self.egf_rank_cache = egf_rank
+        return egf_id
+
+
     def clean(self):
         super(ProfileForm, self).clean()
+        if self.egf_rank_cache:
+            self.cleaned_data['egf_rank'] = self.egf_rank_cache
         if not (self.cleaned_data['kgs_username'] or self.cleaned_data['ogs_username']):
             self.add_error('kgs_username', '')
             self.add_error('ogs_username', '')
