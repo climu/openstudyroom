@@ -28,7 +28,6 @@ class LeagueSignupForm(forms.Form):
     kgs_username = forms.CharField(max_length=10, required=False)
     ogs_username = forms.CharField(max_length=40, required=False)
     egf_id = forms.IntegerField(label='European Go Federation ID (optional)', required=False)
-    ffg_id = forms.IntegerField(label='FFG id', required=False)
     timezone = forms.ChoiceField(
         label='Time Zone (optional)',
         choices=[(t, t) for t in pytz.common_timezones],
