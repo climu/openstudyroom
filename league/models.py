@@ -1163,6 +1163,12 @@ class Profile(models.Model):
     ogs_rank = models.CharField(max_length=40, blank=True)
     # ogs_id is set in ogs.get_user_id
     ogs_id = models.PositiveIntegerField(default=0, blank=True, null=True)
+    # Europeen Go Fédération id and ranks
+    egf_id = models.PositiveIntegerField(default=0, blank=True, null=True)
+    egf_rank =  models.CharField(max_length=40, blank=True)
+    # French Go Fédération licence number and ranks
+    ffg_licence_number = models.PositiveIntegerField(default=0, blank=True, null=True)
+    ffg_rank = models.CharField(max_length=40, blank=True)
     # User can write what he wants in bio
     bio = MarkupTextField(
         blank=True, null=True,

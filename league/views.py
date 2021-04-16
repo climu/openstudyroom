@@ -1654,7 +1654,6 @@ class ProfileUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def form_valid(self, form):
         # pylint: disable=attribute-defined-outside-init
         self.object = form.save()
-        # do something with self.object
         return HttpResponseRedirect(self.get_success_url())
 
 

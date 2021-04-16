@@ -55,9 +55,12 @@
                 {%bootstrap_field form.email show_label=False addon_before="<span class='glyphicon glyphicon-envelope'></span>  " %}
                 {%bootstrap_field form.password1 show_label=False addon_before="<span class='glyphicon glyphicon-lock'></span>  " %}
                 {%bootstrap_field form.password2 show_label=False addon_before="<span class='glyphicon glyphicon-lock'></span>  " %}
+                <div class="control-label"> {% trans "Go servers usernames" %}</div>
                 <div class="help-block">{% trans "We ask at least one valid username from KGS or OGS" %}.</div>
                 {%bootstrap_field form.kgs_username show_label=False addon_before="<span class='small'>KGS</span>" %}
                 {%bootstrap_field form.ogs_username show_label=False addon_before="<span class='small'>OGS</span>" %}
+                {%bootstrap_field form.egf_id show_label=True addon_before="<span class='small'>EGF</span>" %}
+
 
                 {%bootstrap_field form.timezone show_label=True addon_before="<span class='glyphicon glyphicon-globe'></span>  " %}
                 {%bootstrap_field form.communities show_label=True addon_before="<span class='glyphicon glyphicon-globe'></span>  " %}
