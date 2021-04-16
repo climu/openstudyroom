@@ -61,7 +61,8 @@ def html_one_result(context, _blank=False):
     result = player.results[opponent_pk]
     for game in result:
         # here, game['id'] would get you the id of the game to add a link
-        html += '<a data-toggle="tooltip" target="' + ("_blank" if _blank is True else "_self")  + '" href="/league/' + event + 'games/' + str(game['id']) + '" \
+        html += '<a data-toggle="tooltip" target="' + ("_blank" if _blank is True else "_self")  + \
+                '" href="/league/' + event + 'games/' + str(game['id']) + '" \
                 title="' + player.user.username + ' vs ' + \
                 opponent.user.username + '">'
         if game['r'] == 1:
