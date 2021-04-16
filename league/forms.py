@@ -254,6 +254,12 @@ class ProfileForm(ModelForm):
         ]
         widgets = {'country': CountrySelectWidget()}
 
+    def __init__(self, *args, **kwargs):
+        super(ProfileForm, self).__init__(*args, **kwargs)
+        # prevent user from updating their EGF id if it's allready set
+        if Profile.objects.get(pk=self.instance.pk).egf_id:
+            self.fields['egf_id'].disabled = True
+
     def clean_kgs_username(self):
         if not self.cleaned_data['kgs_username']:
             return ''
@@ -326,7 +332,7 @@ class ProfileForm(ModelForm):
 
     def clean(self):
         super(ProfileForm, self).clean()
-        if self.egf_rank_cache:
+        if hasattr(self, 'egf_rank_cache'):
             self.cleaned_data['egf_rank'] = self.egf_rank_cache
         if not (self.cleaned_data['kgs_username'] or self.cleaned_data['ogs_username']):
             self.add_error('kgs_username', '')
