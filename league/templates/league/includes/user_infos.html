@@ -43,6 +43,9 @@
     {% endif %}
 
     {% if user.profile.egf_id %}
-    <p><a href="https://www.europeangodatabase.eu/EGD/Player_Card.php?key={{user.profile.egf_id}}">EGF {{user.profile.egf_rank}}</p>
+    <p><a href="https://www.europeangodatabase.eu/EGD/Player_Card.php?key={{user.profile.egf_id}}">EGF {{user.profile.egf_rank}}</a></p>
+    {% endif %}
+    {% if user.profile.ffg_licence_number %}
+    <p>FFG {{user.profile.ffg_rank}}</p>
     {% endif %}
 </div>

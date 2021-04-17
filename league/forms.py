@@ -10,7 +10,7 @@ from community.models import Community
 from community.widget import Community_select
 from .models import Division, LeagueEvent, Profile
 from .ogs import get_user_id, get_user_rank
-from .go_federations import get_egf_rank
+from .go_federations import get_egf_rank, get_ffg_rank
 
 
 class SgfAdminForm(forms.Form):
@@ -248,6 +248,8 @@ class ProfileForm(ModelForm):
             'kgs_username',
             'egf_id',
             'egf_rank',
+            'ffg_licence_number',
+            'ffg_rank',
             'country',
             'go_quest_username'
         ]
@@ -258,6 +260,8 @@ class ProfileForm(ModelForm):
         # prevent user from updating their EGF id if it's allready set
         if Profile.objects.get(pk=self.instance.pk).egf_id:
             self.fields['egf_id'].disabled = True
+        if Profile.objects.get(pk=self.instance.pk).ffg_licence_number:
+            self.fields['ffg_licence_number'].disabled = True
 
     def clean_kgs_username(self):
         if not self.cleaned_data['kgs_username']:
@@ -324,15 +328,34 @@ class ProfileForm(ModelForm):
         if egf_rank is None:
             self.add_error('egf_id', 'This EGF ID seems invalid.')
         else:
-            # store egf_rank to avoid extra api call later
+            # store egf_rank to avoid extra api call later at clean
             self.egf_rank_cache = egf_rank
         return egf_id
 
+    def clean_ffg_licence_number(self):
+        if not self.cleaned_data['ffg_licence_number']:
+            return None
+        ffg_licence_number = self.cleaned_data['ffg_licence_number']
+        if Profile.objects.filter(ffg_licence_number=ffg_licence_number).exclude(pk=self.instance.pk).exists():
+            self.add_error(
+                'ffg_licence_number',
+                "This FFG Licence number is already used by one of our member. You should contact us."
+            )
+        # check if ID is valid and get rank
+        ffg_rank = get_ffg_rank(ffg_licence_number)
+        if ffg_rank is None:
+            self.add_error('ffg_licence_number', 'This FFG licence number seems invalid')
+        else:
+            # store egf_rank to avoid extra api call later at clean
+            self.ffg_rank_cache = ffg_rank
+        return ffg_licence_number
 
     def clean(self):
         super(ProfileForm, self).clean()
         if hasattr(self, 'egf_rank_cache'):
             self.cleaned_data['egf_rank'] = self.egf_rank_cache
+        if hasattr(self, 'ffg_rank_cache'):
+            self.cleaned_data['ffg_rank'] = self.ffg_rank_cache
         if not (self.cleaned_data['kgs_username'] or self.cleaned_data['ogs_username']):
             self.add_error('kgs_username', '')
             self.add_error('ogs_username', '')
