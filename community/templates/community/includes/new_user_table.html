@@ -17,8 +17,15 @@
       {% for user in new_members %}
         <tr>
           <td>{{user.username}}</td>
-          <td>{{user.profile.ogs_username}}</td>
-          <td>{{user.profile.kgs_username}}</td>
+          <td>
+            {% if user.profile.kgs_username %}
+            <a href="https://www.gokgs.com/gameArchives.jsp?user={{user.profile.kgs_username}}" target="_blank">{{user.profile.kgs_username}}</a>
+            {% endif %}
+          </td>
+          <td>
+            {% if user.profile.ogs_id > 0 %}
+               <a href="https://online-go.com/player/{{user.profile.ogs_id}}">{{user.profile.ogs_username}}</a>
+            {% endif %}
           <td>
                 <form action=" {% url 'community:community_quit' community.pk user.pk %}" method="post" >
                 {% csrf_token %}
