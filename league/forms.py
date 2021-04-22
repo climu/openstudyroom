@@ -262,7 +262,8 @@ class ProfileForm(ModelForm):
         # prevent user from updating their EGF id if it's allready set
         if Profile.objects.get(pk=self.instance.pk).egf_id:
             self.fields['egf_id'].disabled = True
-        if Profile.objects.get(pk=self.instance.pk).ffg_licence_number:
+        if Profile.objects.get(pk=self.instance.pk).ffg_licence_number and \
+            Profile.objects.get(pk=self.instance.pk).ffg_licence_number != "0":
             self.fields['ffg_licence_number'].disabled = True
 
     def clean_kgs_username(self):
