@@ -55,7 +55,7 @@ def ffg_user_infos(ffg_licence_number, echelle_ffg):
     # we skip 3 first lines that are headers
     line = None
     for l in echelle_ffg.splitlines()[3:]:
-        if l.split(' ')[0] == str(ffg_licence_number):
+        if l.split(' ')[0] == ffg_licence_number:
             line = l
             break
     if line is None:
@@ -68,7 +68,8 @@ def ffg_user_infos(ffg_licence_number, echelle_ffg):
         }
 
 
-def format_ffg_tou(division, location=None, comment=None):
+
+def format_ffg_tou(league, location=None, comment=None):
     """
     format a division results in tou format for the French Go fédération.
     https://ffg.jeudego.org/echelle/format_res.php
@@ -91,8 +92,8 @@ def format_ffg_tou(division, location=None, comment=None):
     ;komi=7.5
     """
     # Create the header
-    tou = f';name={division.name} - {division.league_event.name}\n'
-    date = division.league_event.end_time.strftime("%d/%m/%Y")
+    tou = f';name={league.name}\n'
+    date = league.end_time.strftime("%d/%m/%Y")
     tou += f';date={date}\n'
     if location:
         tou += f';vill={location}\n'
@@ -108,8 +109,8 @@ def format_ffg_tou(division, location=None, comment=None):
         return None
     echelle_ffg = request.text
 
-    sgfs = division.sgf_set.defer('sgf_text').select_related('winner', 'white', 'black').all()
-    players = LeaguePlayer.objects.filter(division=division).prefetch_related('user__profile')
+    sgfs = league.sgf_set.defer('sgf_text').select_related('winner', 'white', 'black').all()
+    players = league.leagueplayer_set.all().prefetch_related('user__profile')
 
     # First add extra fields to players
     for idx, player in enumerate(players):
@@ -118,7 +119,6 @@ def format_ffg_tou(division, location=None, comment=None):
         if licence_number is None or licence_number == 0:
             return None
         infos = ffg_user_infos(licence_number, echelle_ffg)
-
         player.num = idx + 1
         player.name = infos["name"]
         player.rank = ffg_rating2rank(infos['rating'])
@@ -168,7 +168,7 @@ def format_ffg_tou(division, location=None, comment=None):
         tou += f'{player.num:>4} {player.name:24} {player.rank:>3} {player.licence_number}'
         tou += f' {player.club:4}{player.results}\n'
     # add the footer
-    tou += f';size={division.league_event.board_size}\n'
-    tou += f';time={division.league_event.main_time/60}\n'
-    tou +=  f';komi={division.league_event.komi}'
+    tou += f';size={league.board_size}\n'
+    tou += f';time={league.main_time/60}\n'
+    tou +=  f';komi={league.komi}'
     return tou
