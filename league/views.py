@@ -44,7 +44,7 @@ from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
     Profile
 from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm,\
     LeagueEventForm, EmailForm, TimezoneForm, ProfileForm
-
+from .go_federations import format_ffg_tou
 
 ForumProfile = get_model('forum_member', 'ForumProfile')
 discord_url_file = "/etc/discord_url.txt"
@@ -1677,3 +1677,21 @@ def update_all_profile_ogs(request):
             return HttpResponseRedirect(reverse('league:admin'))
     else:
         return render(request, 'league/admin/update_all_profile_ogs.html')
+
+@login_required()
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+def download_ffg_tou(request, league_id):
+    league = get_object_or_404(LeagueEvent, pk=league_id)
+    if not request.user.is_league_admin(league):
+        return Http404()
+    tou = format_ffg_tou(league)
+
+    if tou is None:
+        message = "Something went wrong. Probably a player without a FFG licence number"
+        messages.success(request, message)
+        return HttpResponseRedirect('/')
+
+    filename = f'OSR-league-{timezone.now().strftime("%m/%Y")}.tou'
+    response = HttpResponse(tou, content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
+    return response

@@ -117,6 +117,7 @@ urlpatterns = [
         name='update_all_profile_ogs'
     ),
     url(r'^admin/set-meijin/$', views.admin_set_meijin, name='set_meijin'),
+    url(r'^admin/download-ffg-tou/(?P<league_id>[0-9]+)/$', views.download_ffg_tou, name='download_ffg_tou'),
     url(
         r'^profile/(?P<pk>[0-9]+)/update$',
         views.ProfileUpdate.as_view(),
@@ -125,5 +126,4 @@ urlpatterns = [
     url(r'discord-api/$', views.discord_api, name='discord_api'),
     url(r'games-api/$', views.games_datatable_api, name='games_api'),
     url(r'user-leagues-manage/(?P<user_id>[0-9]+)/$', views.user_leagues_manage, name='user_leagues_manage'),
-
 ]

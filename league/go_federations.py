@@ -170,5 +170,6 @@ def format_ffg_tou(league, location=None, comment=None):
     # add the footer
     tou += f';size={league.board_size}\n'
     tou += f';time={league.main_time/60}\n'
-    tou +=  f';komi={league.komi}'
+    tou += f';komi={league.komi}\n'
+    tou += ';prog=https://github.com/climu/openstudyroom/'
     return tou
