@@ -1,8 +1,6 @@
 """ Get data from go Federations"""
-from math import log, ceil
-from league.models import Sgf, Division, LeaguePlayer
+from math import ceil
 import requests
-import csv
 
 def get_egf_rank(egf_id):
     """
@@ -22,7 +20,7 @@ def ffg_rating2rank(rating):
     if rating == "NC":
         return rating
     else:
-        return str(ceil(abs(int(rating)/100))) + ('D' if int(rating) > 0 else 'K' )
+        return str(ceil(abs(int(rating)/100))) + ('D' if int(rating) > 0 else 'K')
 
 def get_ffg_rank(ffg_licence_number):
     """
@@ -129,7 +127,7 @@ def format_ffg_tou(league, location=None, comment=None):
     # we create a list of round.
     # We will put the sgfs inside each round so a player can only play one game per round.
     # rounds = [{"users": [list of users who played this round], "sgfs": [list of sgfs]}]
-    rounds = [{'users':[],'sgfs':[]}]
+    rounds = [{'users':[], 'sgfs':[]}]
     for sgf in sgfs:
         # we put the sgf in the first round where both player have not played yet
         in_round = False

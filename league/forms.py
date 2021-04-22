@@ -257,6 +257,8 @@ class ProfileForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ProfileForm, self).__init__(*args, **kwargs)
+        self.egf_rank_cache = None
+        self.ffg_rank_cache = None
         # prevent user from updating their EGF id if it's allready set
         if Profile.objects.get(pk=self.instance.pk).egf_id:
             self.fields['egf_id'].disabled = True
@@ -352,9 +354,9 @@ class ProfileForm(ModelForm):
 
     def clean(self):
         super(ProfileForm, self).clean()
-        if hasattr(self, 'egf_rank_cache'):
+        if self.egf_rank_cache is not None:
             self.cleaned_data['egf_rank'] = self.egf_rank_cache
-        if hasattr(self, 'ffg_rank_cache'):
+        if self.ffg_rank_cache is not None:
             self.cleaned_data['ffg_rank'] = self.ffg_rank_cache
         if not (self.cleaned_data['kgs_username'] or self.cleaned_data['ogs_username']):
             self.add_error('kgs_username', '')

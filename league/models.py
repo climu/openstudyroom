@@ -1165,7 +1165,7 @@ class Profile(models.Model):
     ogs_id = models.PositiveIntegerField(default=0, blank=True, null=True)
     # Europeen Go Fédération id and ranks
     egf_id = models.PositiveIntegerField(default=0, blank=True, null=True)
-    egf_rank =  models.CharField(max_length=40, blank=True)
+    egf_rank = models.CharField(max_length=40, blank=True)
     # French Go Fédération licence number and ranks
     ffg_licence_number = models.CharField(max_length=10, blank=True, null=True)
     ffg_rank = models.CharField(max_length=40, blank=True)
