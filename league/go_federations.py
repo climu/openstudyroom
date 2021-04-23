@@ -117,6 +117,8 @@ def format_ffg_tou(league, location=None, comment=None):
         if licence_number is None or licence_number == 0:
             return None
         infos = ffg_user_infos(licence_number, echelle_ffg)
+        if infos is None:
+            return None
         player.num = idx + 1
         player.name = infos["name"]
         player.rank = ffg_rating2rank(infos['rating'])
