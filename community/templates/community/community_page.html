@@ -216,7 +216,32 @@ $(document).ready(function() {
       "order": [[ 1, "desc" ]]
     });
 
-    $('#members-table').DataTable()
+    var memberTable = $('#members-table').DataTable({
+      "bAutoWidth": false,
+    "columnDefs": [
+            {
+                "targets": [ 3 ],
+                "visible": false,
+            },
+            {
+                "targets": [ 4 ],
+                "visible": false
+            },
+            {
+                "targets": [ 5 ],
+                "visible": false,
+            },]}
+    )
+    {% if admin %}
+    $('.toggle-column').on( 'click', function (e) {
+
+        // Get the column API object
+        var column = memberTable.column( $(this).attr('data-column') );
+
+        // Toggle the visibility
+        column.visible( ! column.visible() );
+    } );
+    {% endif %}
 } );
 </script>
 

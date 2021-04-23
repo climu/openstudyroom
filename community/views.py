@@ -121,13 +121,14 @@ def community_page(request, slug):
     new_members = User.objects.\
         filter(groups=community.new_user_group).\
         filter(groups__name='league_member').\
-        select_related('profile')
+        select_related('profile').\
+        prefetch_related('discord_user')
 
     # get game records
     sgfs = Sgf.objects.defer('sgf_text').\
         filter(league_valid=True, events__in=leagues).\
-        prefetch_related('white', 'black', 'winner').\
-        select_related('white__profile', 'black__profile').\
+        select_related('white', 'white__profile', 'black', 'black__profile', 'winner').\
+        prefetch_related("white__discord_user", "black__discord_user").\
         distinct().\
         order_by('-date')
     context = {

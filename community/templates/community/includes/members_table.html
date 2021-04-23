@@ -19,26 +19,59 @@
     </div>
   </div>
 </div>
-
+{% if admin %}
+<div>
+  <input type="checkbox" id="OGS-toggle" class="form-check-input toggle-column" checked data-column="1">
+  <label class="form-check-label" for="OGS-toggle">OGS</label>
+  <input type="checkbox" id="KGS-toggle" class="form-check-input toggle-column" checked data-column="2">
+  <label class="form-check-label" for="KGS-toggle">KGS</label>
+  <input type="checkbox" id="EGF-toggle" class="form-check-input toggle-column" data-column="3">
+  <label class="form-check-label" for="EGF-toggle">EGF</label>
+  <input type="checkbox" id="FFG-toggle" class="form-check-input toggle-column" data-column="4">
+  <label class="form-check-label" for="FFG-toggle">FFG</label>
+  <input type="checkbox" id="discord-toggle" class="form-check-input toggle-column" data-column="5">
+  <label class="form-check-label" for="discord-toggle">discord</label>
+</div>
+{% endif %}
 <table id="members-table" class="table">
   <thead>
     <th>{% trans "username" %}</th>
     <th>OGS {% trans "username" %}</th>
-	<th>KGS username</th>
-	{% if admin %}
-  <th>{% trans "leagues" %}</th>
-  <th>{% trans "kick out" %}</th>
-  <th>admin</th>
-	{% endif %}
+	  <th>KGS {% trans "username" %} </th>
+  	{% if admin %}
+      <th> EGF ID </th>
+      <th> FFG ID </th>
+      <th> Discord </th>
+      <th>{% trans "leagues" %}</th>
+      <th>{% trans "kick out" %}</th>
+      <th>admin</th>
+  	{% endif %}
   </thead>
   <tbody>
 {% for user in members %}
 
 <tr {% if user in admins %} class="info"{% endif %}>
   <td>{{user|user_link}}</td>
-  <td>{{user.profile.ogs_username}}</td>
-  <td>{{user.profile.kgs_username}}</td>
+  <td> {% if user.profile.ogs_id > 0 %}
+        <a href="https://online-go.com/player/{{user.profile.ogs_id}}">{{user.profile.ogs_username}}</a>
+      {% endif %}
+  </td>
+  <td> {% if user.profile.kgs_username %}
+        <a href="https://www.gokgs.com/gameArchives.jsp?user={{user.profile.kgs_username}}" target="_blank">{{user.profile.kgs_username}}</a>
+      {% endif %}
+  </td>
   {% if admin %}
+    <td> {% if user.profile.egf_id %}
+          <a href="https://www.europeangodatabase.eu/EGD/Player_Card.php?key={{user.profile.egf_id}}">EGF {{user.profile.egf_rank}}</a>
+         {% endif %}
+    </td>
+    <td>{{user.profile.ffg_licence_number}}</td>
+    <td>{% if user.discord_user.username %}
+      <img class="widget-member-avatar" src="https://cdn.discordapp.com/avatars/{{discord_user.uid}}/{{discord_user.avatar}}">
+      <span class="{{user.discord_user.status}}">{{user.discord_user.username}} ({{user.discord_user.discriminator}})</span>
+      {% endif %}
+    </td>
+
     <td>
       <button type="button" class="btn btn-primary" onclick="get_modal_datas({{user.pk}}, {{community.pk}})"><i class="fas fa-cog"></i></button>
 
