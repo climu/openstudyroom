@@ -1659,16 +1659,15 @@ class ProfileUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 @login_required()
 @user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
-def update_all_profile_ogs(request):
-    """Update all profiles OGS ids. Should be removed now"""
+def update_all_profiles(request):
+    """Update all profiles. We use this view to fix datas from time to time"""
     if request.method == 'POST':
         form = ActionForm(request.POST)
         if form.is_valid():
-            profiles = Profile.objects.filter(ogs_id__gt=0)
-            for profile in profiles:
-                open_players = profile.user.leagueplayer_set.filter(event__is_open=True)
-                open_players.update(ogs_username=profile.ogs_username)
-            message = "Successfully updated " + str(profiles.count()) + " sgfs."
+            # replace all FFG "0" by empty string
+            profiles = Profile.objects.filter(ffg_licence_number="0")
+            profiles.update(ffg_licence_number="")
+            message = "Successfully updated " + str(profiles.count()) + " profiles."
             messages.success(request, message)
             return HttpResponseRedirect(reverse('league:admin'))
         else:
@@ -1676,7 +1675,7 @@ def update_all_profile_ogs(request):
             messages.success(request, message)
             return HttpResponseRedirect(reverse('league:admin'))
     else:
-        return render(request, 'league/admin/update_all_profile_ogs.html')
+        return render(request, 'league/admin/update_all_profiles.html')
 
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)

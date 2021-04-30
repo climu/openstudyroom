@@ -112,9 +112,9 @@ urlpatterns = [
     url(r'^admin/update-all-sgf-check-code/$',
         views.update_all_sgf_check_code, name='update_all_sgf_check_code'),
     url(
-        r'^admin/update_all_profile_ogs/$',
-        views.update_all_profile_ogs,
-        name='update_all_profile_ogs'
+        r'^admin/update_all_profiles/$',
+        views.update_all_profiles,
+        name='update_all_profiles'
     ),
     url(r'^admin/set-meijin/$', views.admin_set_meijin, name='set_meijin'),
     url(r'^admin/download-ffg-tou/(?P<league_id>[0-9]+)/$', views.download_ffg_tou, name='download_ffg_tou'),
