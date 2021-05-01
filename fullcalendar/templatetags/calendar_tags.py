@@ -9,15 +9,12 @@ register = template.Library()
 def public_events(context):
     request = context['request']
     user = request.user
-    if user.is_authenticated and user.is_league_admin():
+    events = list(PublicEvent.objects.all().order_by('-start')[:5])
+    if user.is_authenticated and user.is_league_member():
         my_games = list(GameAppointmentEvent.get_future_games(user))
-        public_events = list(PublicEvent.objects.order_by('-start').all()[:5])
-        cal_events = my_games + public_events
-        cal_events = sorted(cal_events, key=lambda k: k.start, reverse=True)[:5]
-        return cal_events
-    else:
-        public_events = PublicEvent.objects.all().order_by('-start')[:5]
-        return public_events
+        events = my_games + events
+        events = sorted(events, key=lambda k: k.start, reverse=True)[:5]
+    return public_events
 
 
 @register.simple_tag()

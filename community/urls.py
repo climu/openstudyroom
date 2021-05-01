@@ -90,4 +90,9 @@ urlpatterns = [
         views.CommunityTournamentCreate.as_view(),
         name='create_tournament'
     ),
+    url(
+        r'^(?P<community_pk>[0-9]+)/calendar/create-event/$',
+        views.CommunityEventCreate.as_view(),
+        name='create_event'
+    ),
 ]

@@ -1,7 +1,24 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 league_tags static forum_markup_tags i18n%}
+{% load bootstrap3 league_tags static forum_markup_tags i18n tz%}
 {% block title %}OSR - {{community.name}}{% endblock %}
 {% block extra_head_js %}
+<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css' />
+<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/calendar.css'%}"/>
+<link rel='stylesheet' type="text/css" href="{%static 'css/sidemenu.css'%}"/>
+
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/qtip2/3.0.3/basic/jquery.qtip.min.css'/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.8.1/css/bootstrap-slider.min.css" />
+<script
+    src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+    integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+    crossorigin="anonymous">
+</script>
+<script src='https://cdn.jsdelivr.net/qtip2/3.0.3/basic/jquery.qtip.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.8.1/bootstrap-slider.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.6.1/locale-all.js'></script>
+
 <script type="text/javascript">
 function load_game(game_id) {
     $.ajax({
@@ -23,8 +40,10 @@ function processData(data)
 
 };
 return false;};
+
 </script>
 {% endblock %}
+
 {% block heading %}
 <div class="page-header">
     <h1> {{community.name}}  </h1>
@@ -79,11 +98,11 @@ return false;};
 {% endif %}
 
 
-
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#leagues">{% trans "Leagues" %}</a></li>
   <li><a data-toggle="tab" href="#tournaments">{% trans "tournaments" %}</a></li>
   <li><a data-toggle="tab" href="#members">{% trans "Members" %}</a></li>
+  <li><a data-toggle="tab" href="#calendar-tab">{% trans "Calendar" %}</a></li>
 </ul>
 
 <div class="tab-content">
@@ -149,7 +168,29 @@ return false;};
 
 {% include "community/includes/members_table.html" with members=members%}
 </div>
+
+
+<div id="calendar-tab" class="panel panel-default tab-pane fade">
+{% if can_quit %}
+    <div class="row">
+      <div class="col-md-2">
+        {% include 'fullcalendar/includes/game-planer-nav.html' %}
+      </div>
+      <div class="col-md-1">
+      </div>
+      <div class="col-md-9">
+      <div id="info-well" class="text-center alert well">
+      Browse all your OSR events.
+      </div>
+        <div id='calendar'></div>
+      </div>
+    </div>
+{% else %}
+  <div id='calendar'></div>
+{% endif %}
 </div>
+
+
 
 
 
@@ -176,6 +217,8 @@ return false;};
 {% endblock %}
 
 {% block extra_js %}
+
+{% get_current_timezone as TIME_ZONE %}
 {% get_current_language as LANGUAGE_CODE %}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
@@ -184,11 +227,13 @@ return false;};
 <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
 {% if admin %}
   <script src={%static 'league/js/manage_league_user.js'%}></script>
-    <script>
-{% include 'league/includes/ajax_setup.html' %}
-  </script>
 {% endif %}
-
+<script>
+{% include 'league/includes/ajax_setup.html' %}
+</script>
+{% if can_quit %}
+  <script src={%static 'fullcalendar/calendar_member.js'%}></script>
+{% endif %}
 <script type="text/javascript">
 $(document).ready(function() {
   $('#game-table').DataTable({"bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
@@ -242,6 +287,11 @@ $(document).ready(function() {
         column.visible( ! column.visible() );
     } );
     {% endif %}
+
+  {% if can_quit %}
+    	load_calendar_member('{{TIME_ZONE}}', '{{LANGUAGE_CODE}}', {{start_time_range}}, {{end_time_range}});
+  {% else %}
+  {% endif %}
 } );
 </script>
 

@@ -5,7 +5,7 @@ from django.conf import settings
 from pytz import utc
 
 from league.models import User
-
+from community.models import Community
 
 class CalEvent(models.Model):
     start = models.DateTimeField()
@@ -19,9 +19,13 @@ class PublicEvent(CalEvent):
     title = models.CharField(max_length=30)
     description = models.TextField(blank=True)
     url = models.URLField(blank=True)
+    community = models.ForeignKey(Community, blank=True, null=True, on_delete=models.CASCADE)
 
     def can_edit(self, user):
-        return user.is_authenticated and user.is_osr_admin()
+        if self.community is None:
+            return user.is_authenticated and user.is_osr_admin()
+        else:
+            return self.community.is_admin(user)
 
 
     @staticmethod
@@ -53,6 +57,7 @@ class PublicEvent(CalEvent):
                 dict['url'] = event.url
             data.append(dict)
         return data
+
 
 class AvailableEvent(CalEvent):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

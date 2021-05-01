@@ -12,6 +12,7 @@ from league.models import User, LeagueEvent, Sgf
 from league.views import LeagueEventCreate, LeagueEventUpdate
 from league.forms import ActionForm
 from tournament.views import TournamentCreate
+from fullcalendar.views import PublicEventCreate
 from .models import Community
 from .forms import CommunityForm, AdminCommunityForm, CommunytyUserForm
 
@@ -131,6 +132,7 @@ def community_page(request, slug):
         prefetch_related("white__discord_user", "black__discord_user").\
         distinct().\
         order_by('-date')
+
     context = {
         'community': community,
         'leagues': leagues,
@@ -141,7 +143,9 @@ def community_page(request, slug):
         'can_quit': community.user_group in request.user.groups.all(),
         'members': members,
         'admins': admins,
-        'new_members': new_members
+        'new_members': new_members,
+        'start_time_range': request.user.profile.start_cal if request.user.is_authenticated else 0,
+        'end_time_range':  request.user.profile.end_cal if request.user.is_authenticated else 0,
     }
     return render(request, 'community/community_page.html', context)
 
@@ -316,7 +320,6 @@ class CommunityLeagueEventCreate(LeagueEventCreate):
 
 class CommunityLeagueEventUpdate(LeagueEventUpdate):
     def get_success_url(self):
-        print("here")
         return reverse(
             'community:community_page',
             kwargs={'slug': self.get_object().community.slug}
@@ -345,6 +348,28 @@ class CommunityTournamentCreate(TournamentCreate):
         )
     def form_valid(self, form):
         response = super(CommunityTournamentCreate, self).form_valid(form)
+        community_pk = self.kwargs.get('community_pk')
+        community = get_object_or_404(Community, pk=community_pk)
+        self.object.community = community
+        self.object.save()
+        return response
+
+
+class CommunityEventCreate(PublicEventCreate):
+    def test_func(self):
+        community_pk = self.kwargs.get('community_pk')
+        community = get_object_or_404(Community, pk=community_pk)
+        return community.is_admin(self.request.user)
+
+    def get_success_url(self):
+        community_pk = self.kwargs.get('community_pk')
+        community = get_object_or_404(Community, pk=community_pk)
+        return reverse(
+            'community:community_page',
+            kwargs={'slug': community.slug}
+        )
+    def form_valid(self, form):
+        response = super(CommunityEventCreate, self).form_valid(form)
         community_pk = self.kwargs.get('community_pk')
         community = get_object_or_404(Community, pk=community_pk)
         self.object.community = community
