@@ -109,6 +109,9 @@ return false;};
   <li><a data-toggle="tab" href="#tournaments">{% trans "tournaments" %}</a></li>
   <li><a data-toggle="tab" href="#members">{% trans "Members" %}</a></li>
   <li><a id="cal-tab-button" data-toggle="tab" href="#calendar-tab">{% trans "Calendar" %}</a></li>
+  {% if admin %}
+  <li><a data-toggle="tab" href="#events">{% trans "Events" %}</a></li>
+  {% endif %}
 </ul>
 
 <div class="tab-content">
@@ -199,6 +202,20 @@ return false;};
 {% endif %}
 </div>
 
+{% if admin %}
+  <div id="events" class="panel panel-default tab-pane fade in active">
+    <div class="panel-heading clearfix">
+      <h3>{{community.name}} {% trans "events" %}
+    </div>
+    <a  href="{%url 'community:create_event' community.pk%}">
+      <button class="btn btn-success pull-right clearfix">
+        {%bootstrap_icon 'plus'%} Create a new event
+      </button>
+    </a>
+    {% include 'fullcalendar/includes/admin_event_table.html' %}
+
+  </div>
+{% endif %}
 
 
 
@@ -291,6 +308,15 @@ $(document).ready(function() {
           }
     )
     {% if admin %}
+    $('#cal-event-table').DataTable({
+      "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
+      "columnDefs": [ {
+        targets: 1,
+        render: $.fn.dataTable.render.moment( 'MMM DD, YYYY HH:mm','MMM DD, YYYY HH:mm' )
+      } ],
+      "order": [[ 1, "desc" ]]
+    });
+
     $('.toggle-column').on( 'click', function (e) {
 
         // Get the column API object

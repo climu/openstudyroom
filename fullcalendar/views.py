@@ -6,7 +6,6 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic.edit import UpdateView, CreateView
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse
-from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.utils.timezone import make_aware
 from django.utils import timezone
@@ -31,6 +30,9 @@ class PublicEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def get_login_url(self):
         return '/'
+
+    def get_success_url(self):
+        return self.get_object().get_redirect_url()
 
 
 class PublicEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -510,7 +512,7 @@ def save(request):
 @login_required()
 @user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def admin_cal_event_list(request):
-    public_events = PublicEvent.objects.all().order_by('-end')
+    public_events = PublicEvent.objects.filter(community=None).order_by('-end')
     return render(
         request,
         'fullcalendar/admin_cal_event_list.html',
@@ -519,17 +521,14 @@ def admin_cal_event_list(request):
 
 
 @login_required()
-@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def admin_delete_event(request, pk):
     if request.method == 'POST':
+        event = get_object_or_404(PublicEvent, pk=pk)
         form = ActionForm(request.POST)
-        if form.is_valid():
-            event = get_object_or_404(PublicEvent, pk=pk)
+        if form.is_valid() and event.can_edit(request.user):
+            url = event.get_redirect_url()
             event.delete()
-            if 'next' in form.cleaned_data:
-                url = form.cleaned_data['next']
-            else:
-                url = reverse('calendar:admin_cal_event_list')
             return HttpResponseRedirect(url)
     raise Http404("What are you doing here ?")
 

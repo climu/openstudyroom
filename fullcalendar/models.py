@@ -2,6 +2,8 @@ import requests
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+from django.urls import reverse
+
 from pytz import utc
 
 from league.models import User
@@ -28,6 +30,18 @@ class PublicEvent(CalEvent):
             return self.community.is_admin(user)
 
 
+    def get_redirect_url(self):
+        """
+        Get the url to redirect with after editing or deleting the event
+        """
+        if self.community is None:
+            return reverse('calendar:admin_cal_event_list')
+        else:
+            return reverse(
+                'community:community_page',
+                kwargs={'slug':self.community.slug}
+            )
+
     @staticmethod
     def get_future_public_events():
         """return a query of all future public events to a user."""
@@ -36,14 +50,14 @@ class PublicEvent(CalEvent):
         return public_events
 
     @staticmethod
-    def get_formated_public_event(start, end, tz, community_pk):
+    def get_formated_public_event(start, end, tz, community_pk=None):
         """ return a dict of publics events between start and end formated for json."""
         public_events = PublicEvent.objects.filter(end__gte=start, start__lte=end)
-        if int(community_pk) > 0:
-            community = Community.objects.get(pk=community_pk)
-            public_events = public_events.filter(community=community)
-        else:
+        if community_pk is None:
             public_events = public_events.filter(community=None)
+        else:
+            community = Community.objects.get(pk=int(community_pk))
+            public_events = public_events.filter(community=community)
         data = []
         for event in public_events:
             dict = {

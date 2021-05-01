@@ -146,6 +146,7 @@ def community_page(request, slug):
         'new_members': new_members,
         'start_time_range': request.user.profile.start_cal if request.user.is_authenticated else 0,
         'end_time_range':  request.user.profile.end_cal if request.user.is_authenticated else 0,
+        'public_events': community.publicevent_set.all()
     }
     return render(request, 'community/community_page.html', context)
 
