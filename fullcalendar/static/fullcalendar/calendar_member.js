@@ -613,4 +613,5 @@ $('#cal-pill').click(function() {
     $('#calendar').fullCalendar('changeView', 'month');
     $('#calendar').fullCalendar( 'refetchEvents' );
 });
+
 }

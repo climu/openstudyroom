@@ -1,4 +1,4 @@
-function load_calendar(locale, feed_url) {
+function load_calendar(locale, community=0) {
 
   $('#calendar').fullCalendar({
     locale: locale,
@@ -19,14 +19,15 @@ function load_calendar(locale, feed_url) {
     allDaySlot: false,
     timeFormat: 'H:mm',
     events: {
-      url: feed_url,
+      url: '/calendar/json-feed/',
       data: function() { // a function that returns an object
         var div_list = $('.check-div:checkbox:checked').map(function() {
           return this.value;
         }).get();
         json = JSON.stringify(div_list);
         return ({
-          'divs': json
+          'divs': json,
+          'community': community,
         });
       }
     },

@@ -2,6 +2,7 @@
 {% load bootstrap3 league_tags static forum_markup_tags i18n tz%}
 {% block title %}OSR - {{community.name}}{% endblock %}
 {% block extra_head_js %}
+{% get_current_language as LANGUAGE_CODE %}
 <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css' />
 <link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/calendar.css'%}"/>
 <link rel='stylesheet' type="text/css" href="{%static 'css/sidemenu.css'%}"/>
@@ -13,8 +14,12 @@
     integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
     crossorigin="anonymous">
 </script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/locale/{{LANGUAGE_CODE}}.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
 <script src='https://cdn.jsdelivr.net/qtip2/3.0.3/basic/jquery.qtip.min.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js'></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.8.1/bootstrap-slider.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.6.1/locale-all.js'></script>
@@ -50,6 +55,7 @@ return false;};
 </div>
 {%endblock%}
 {% block content %}
+{% get_current_timezone as TIME_ZONE %}
 <div class="panel panel-default">
 <div class="panel-heading clearfix">
   <h3> {{community.name}} ({{community.slug}})
@@ -102,7 +108,7 @@ return false;};
   <li class="active"><a data-toggle="tab" href="#leagues">{% trans "Leagues" %}</a></li>
   <li><a data-toggle="tab" href="#tournaments">{% trans "tournaments" %}</a></li>
   <li><a data-toggle="tab" href="#members">{% trans "Members" %}</a></li>
-  <li><a data-toggle="tab" href="#calendar-tab">{% trans "Calendar" %}</a></li>
+  <li><a id="cal-tab-button" data-toggle="tab" href="#calendar-tab">{% trans "Calendar" %}</a></li>
 </ul>
 
 <div class="tab-content">
@@ -171,6 +177,9 @@ return false;};
 
 
 <div id="calendar-tab" class="panel panel-default tab-pane fade">
+  <div class="panel-heading clearfix">
+    <h3>{{community.name}} {% trans 'calendar' %} ({{TIME_ZONE}})</h3>
+  </div>
 {% if can_quit %}
     <div class="row">
       <div class="col-md-2">
@@ -214,17 +223,14 @@ return false;};
 </div>
 </div>
 </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
-
 {% get_current_timezone as TIME_ZONE %}
 {% get_current_language as LANGUAGE_CODE %}
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/locale/{{LANGUAGE_CODE}}.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
+
 {% if admin %}
   <script src={%static 'league/js/manage_league_user.js'%}></script>
 {% endif %}
@@ -233,8 +239,12 @@ return false;};
 </script>
 {% if can_quit %}
   <script src={%static 'fullcalendar/calendar_member.js'%}></script>
+{% else %}
+  <script src={%static 'fullcalendar/calendar_non_member.js'%}></script>
 {% endif %}
+
 <script type="text/javascript">
+
 $(document).ready(function() {
   $('#game-table').DataTable({"bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
   "columnDefs": [ {
@@ -263,6 +273,7 @@ $(document).ready(function() {
 
     var memberTable = $('#members-table').DataTable({
       "bAutoWidth": false,
+      {% if admin %}
     "columnDefs": [
             {
                 "targets": [ 3 ],
@@ -275,7 +286,9 @@ $(document).ready(function() {
             {
                 "targets": [ 5 ],
                 "visible": false,
-            },]}
+            },]
+      {% endif %}
+          }
     )
     {% if admin %}
     $('.toggle-column').on( 'click', function (e) {
@@ -288,11 +301,22 @@ $(document).ready(function() {
     } );
     {% endif %}
 
-  {% if can_quit %}
-    	load_calendar_member('{{TIME_ZONE}}', '{{LANGUAGE_CODE}}', {{start_time_range}}, {{end_time_range}}, {{community.pk}});
-  {% else %}
-  {% endif %}
-} );
+    {% if can_quit %}
+        load_calendar_member('{{TIME_ZONE}}', '{{LANGUAGE_CODE}}', {{start_time_range}}, {{end_time_range}}, {{community.pk}});
+    {% else %}
+        load_calendar('{{LANGUAGE_CODE}}', {{community.pk}});
+    {% endif %}
+
+
+  $('#cal-tab-button').click(function(){
+    // we need a timeout for bootstrap tab transition
+    setTimeout(() => {
+      $('#calendar').fullCalendar( 'render');
+    }
+     , 170);
+})
+
+});
 </script>
 
 {% endblock %}
