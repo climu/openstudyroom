@@ -289,7 +289,7 @@ $(document).ready(function() {
     {% endif %}
 
   {% if can_quit %}
-    	load_calendar_member('{{TIME_ZONE}}', '{{LANGUAGE_CODE}}', {{start_time_range}}, {{end_time_range}});
+    	load_calendar_member('{{TIME_ZONE}}', '{{LANGUAGE_CODE}}', {{start_time_range}}, {{end_time_range}}, {{community.pk}});
   {% else %}
   {% endif %}
 } );

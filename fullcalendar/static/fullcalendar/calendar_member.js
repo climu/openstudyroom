@@ -1,5 +1,5 @@
 
-function load_calendar_member(timezone, locale, start_time_range, end_time_range){
+function load_calendar_member(timezone, locale, start_time_range, end_time_range, community=0){
   $('#calendar').fullCalendar({
     locale:locale,
     customButtons: {
@@ -102,7 +102,8 @@ function load_calendar_member(timezone, locale, start_time_range, end_time_range
                 'servers':server_list,
                 'me-av':!($('#cal-pill').hasClass('active')),
                 'other-av':($('#other-av-pill').hasClass('active')),
-                'game-request':!($('#me-av-pill').hasClass('active'))
+                'game-request':!($('#me-av-pill').hasClass('active')),
+                'community': community,
             });
         }
     },

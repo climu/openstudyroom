@@ -184,8 +184,10 @@ def json_feed(request):
     end = datetime.strptime(request.GET.get('end'), '%Y-%m-%d')
     end = make_aware(end, tz)
 
+    community_pk = request.GET.get('community', 0)
+
     # get public events for everyone
-    data = PublicEvent.get_formated_public_event(start, end, tz)
+    data = PublicEvent.get_formated_public_event(start, end, tz, community_pk)
 
     # get user related available events and game requests
     if user.is_authenticated and user.is_league_member():

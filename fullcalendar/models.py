@@ -36,11 +36,14 @@ class PublicEvent(CalEvent):
         return public_events
 
     @staticmethod
-    def get_formated_public_event(start, end, tz):
+    def get_formated_public_event(start, end, tz, community_pk):
         """ return a dict of publics events between start and end formated for json."""
-
         public_events = PublicEvent.objects.filter(end__gte=start, start__lte=end)
-
+        if int(community_pk) > 0:
+            community = Community.objects.get(pk=community_pk)
+            public_events = public_events.filter(community=community)
+        else:
+            public_events = public_events.filter(community=None)
         data = []
         for event in public_events:
             dict = {
