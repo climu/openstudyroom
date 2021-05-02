@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
 from django.db.models import Q
 from django.views.decorators.http import require_POST
-
+from django.views.decorators.clickjacking import xframe_options_exempt
 from league.models import User, LeagueEvent, Sgf
 from league.views import LeagueEventCreate, LeagueEventUpdate
 from league.forms import ActionForm
@@ -403,3 +403,15 @@ class CommunityCategoryCreate(CategoryCreate):
         self.object.community = community
         self.object.save()
         return response
+
+@xframe_options_exempt
+def calendar_iframe(request, slug):
+    community = get_object_or_404(Community, slug=slug)
+
+    if community.private and not community.is_member(request.user):
+        raise Http404('What are you doing here?')
+    return render(
+        request,
+        'community/calendar_iframe.html',
+        {'community': community}
+    )

@@ -1,0 +1,46 @@
+{% load static i18n tz %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_timezone as TIME_ZONE %}
+
+<html class="no-js" lang="{{LANGUAGE_CODE}}">
+
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- image for socials -->
+
+  <title>
+    {{community.name}} calendar
+  </title>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="  crossorigin="anonymous"></script>
+  <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css' />
+  <link rel='stylesheet' type="text/css" href="{% static 'fullcalendar/calendar.css' %}" />
+  <link rel='stylesheet' href='https://cdn.jsdelivr.net/qtip2/3.0.3/basic/jquery.qtip.min.css' />
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous">
+  </script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/locale/{{LANGUAGE_CODE}}.js"></script>
+  <script src='https://cdn.jsdelivr.net/qtip2/3.0.3/basic/jquery.qtip.min.js'></script>
+  <script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.6.1/locale-all.js'></script>
+  <script src={%static 'fullcalendar/calendar_non_member.js'%}></script>
+
+</head>
+
+<body>
+
+  <div id="calendar"></div>
+</body>
+
+<script type="text/javascript">
+  load_calendar('{{LANGUAGE_CODE}}', {{community.pk}});
+</script>
+
+</html>

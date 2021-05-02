@@ -100,4 +100,9 @@ urlpatterns = [
         views.CommunityCategoryCreate.as_view(),
         name='create_category'
     ),
+    url(
+        r'^(?P<slug>[\w.@+-]+)/calendar/iframe/$',
+        views.calendar_iframe,
+        name='calendar_iframe'
+    ),
 ]
