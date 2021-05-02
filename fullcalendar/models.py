@@ -98,6 +98,7 @@ class PublicEvent(CalEvent):
                 'is_new': False,
                 'editable': False,
                 'type': 'public',
+                'color': str(event.category.color) if event.category else "#3a87ad"
             }
             if event.url:
                 dict['url'] = event.url
