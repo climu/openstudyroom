@@ -31,6 +31,21 @@ urlpatterns = [
         views.PublicEventCreate.as_view(success_url='/calendar/admin/event-list/'),
         name='create_cal_event'
     ),
+    url(
+        r'^category/create/$',
+        views.CategoryCreate.as_view(success_url='/calendar/admin/event-list/'),
+        name='create_category'
+    ),
+    url(
+        r'^category/delete/(?P<pk>[0-9]+)/$',
+        views.admin_delete_category,
+        name='admin_delete_category'
+    ),
+    url(
+        r'^category/update/(?P<pk>[0-9]+)/$',
+        views.CategoryUpdate.as_view(success_url='/calendar/admin/event-list/'),
+        name='admin_update_category'
+    ),
     url(r'^$', views.calendar_view, name='calendar_view'),
     url(
         r'^(?P<user_id>[0-9]+)/$',

@@ -376,3 +376,8 @@ class CommunityEventCreate(PublicEventCreate):
         self.object.community = community
         self.object.save()
         return response
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(CommunityEventCreate, self).get_form_kwargs(*args, **kwargs)
+        kwargs['community_pk'] = self.kwargs.get('community_pk', None)
+        return kwargs

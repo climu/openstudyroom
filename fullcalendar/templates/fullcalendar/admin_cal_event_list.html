@@ -8,11 +8,26 @@
 {%endblock%}
 
 {% block content %}
-<a  href="{%url 'calendar:create_cal_event'%}">
-  <button class="btn btn-success pull-right clearfix">
-    {%bootstrap_icon 'plus'%} Create a new event
-  </button>
-</a>
+<legend>
+  Categories
+  <a  href="{%url 'calendar:create_category'%}">
+    <button class="btn btn-xs btn-success pull-right clearfix">
+      {%bootstrap_icon 'plus'%} Create a new category
+    </button>
+  </a>
+  </legend>
+
+{% include 'fullcalendar/includes/admin_category_table.html' %}
+
+<legend>
+  Events
+  <a  href="{%url 'calendar:create_cal_event'%}">
+    <button class="btn btn-xs btn-success pull-right clearfix">
+      {%bootstrap_icon 'plus'%} Create a new event
+    </button>
+  </a>
+  </legend>
+
 {% include 'fullcalendar/includes/admin_event_table.html' %}
 {%endblock%}
 

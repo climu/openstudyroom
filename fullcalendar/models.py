@@ -3,11 +3,38 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 from django.urls import reverse
-
+from colorful.fields import RGBColorField
 from pytz import utc
 
 from league.models import User
 from community.models import Community
+
+class Category(models.Model):
+    name = models.CharField(max_length=20)
+    color = RGBColorField(null=True)
+    community = models.ForeignKey(Community, blank=True, null=True, on_delete=models.CASCADE)
+
+    def can_edit(self, user):
+        if self.community is None:
+            return user.is_authenticated and user.is_osr_admin()
+        else:
+            return self.community.is_admin(user)
+
+    def __str__(self):
+        return self.name
+
+    def get_redirect_url(self):
+        """
+        Get the url to redirect with after editing or deleting the event
+        """
+        if self.community is None:
+            return reverse('calendar:admin_cal_event_list')
+        else:
+            return reverse(
+                'community:community_page',
+                kwargs={'slug':self.community.slug}
+            )
+
 
 class CalEvent(models.Model):
     start = models.DateTimeField()
@@ -17,10 +44,12 @@ class CalEvent(models.Model):
         abstract = True
 
 
+
 class PublicEvent(CalEvent):
     title = models.CharField(max_length=30)
     description = models.TextField(blank=True)
     url = models.URLField(blank=True)
+    category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.SET_NULL)
     community = models.ForeignKey(Community, blank=True, null=True, on_delete=models.CASCADE)
 
     def can_edit(self, user):

@@ -8,6 +8,7 @@
    <th>Title</th>
    <th>Begin Time (UTC/24h)</th>
    <th>End Time (UTC/24h)</th>
+   <th>Category</th>
    <th> Edit</th>
    <th>Delete</th>
  </thead>
@@ -19,7 +20,7 @@
 
     <td>{{event.start |date:'M d, Y H:i'}}</td>
     <td>{{event.end |date:'M d, Y H:i'}}</td>
-
+    <td style="color:{{event.category.color}}">{{event.category.name}}</td>
     <td>
       <a href="{% url 'calendar:update_cal_event' event.pk%}">
         {% bootstrap_icon 'wrench' %}

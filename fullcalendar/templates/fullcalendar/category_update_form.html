@@ -1,0 +1,20 @@
+{% extends 'league/admin/base.html' %}
+{% load bootstrap3 %}
+{% block title %}OSR league admin - Edit a Category{% endblock %}
+
+{% block heading %}
+<div class="page-header">
+    <h1>Edit {{object.name}} category</h1>
+</div>
+{%endblock%}
+{% block content %}
+<div class="row">
+<div class="col-md-4">
+<form action="" method="POST">{% csrf_token %}
+{%bootstrap_form form %}
+	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
+</form>
+
+</div>
+</div>
+{% endblock %}

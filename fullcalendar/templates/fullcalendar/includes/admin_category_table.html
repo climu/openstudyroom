@@ -1,0 +1,28 @@
+{% load bootstrap3 %}
+<table class="table" id="category-table">
+ <thead>
+   <th>Name</th>
+   <th>Color</th>
+   <th> Edit</th>
+   <th>Delete</th>
+ </thead>
+
+<tbody>
+  {% for category in categories %}
+  <tr style="color:{{category.color}}">
+    <td style="color:{{category.color}}">{{category.name}}</td>
+    <td>{{category.color}}</td>
+    <td><a href="{% url 'calendar:admin_update_category' category.pk %}">{% bootstrap_icon 'wrench' %}</a></td>
+    <td>
+      <form action="{% url 'calendar:admin_delete_category' category.pk %}" method="POST">
+        {% csrf_token %}
+            <input type="hidden" name="action" value="delete_category" />
+            <button type="submit" class="btn btn-danger btn-xs "  onclick="return confirm('Are you sure you want to delete this category?')">
+            {% bootstrap_icon 'remove-circle' %} Delete
+            </button>
+          </form>
+    </td>
+    </tr>
+  {% endfor %}
+</tbody>
+</table>

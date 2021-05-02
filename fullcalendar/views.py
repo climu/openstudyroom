@@ -16,9 +16,34 @@ from pytz import utc
 
 from league.models import User
 from league.forms import ActionForm
-from .forms import UTCPublicEventForm
-from .models import PublicEvent, AvailableEvent, GameRequestEvent, GameAppointmentEvent
+from .forms import UTCPublicEventForm, CategoryForm
+from .models import PublicEvent, AvailableEvent, GameRequestEvent, GameAppointmentEvent, Category
 
+
+class CategoryCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    form_class = CategoryForm
+    model = Category
+    template_name_suffix = '_create_form'
+
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.is_osr_admin()
+
+    def get_login_url(self):
+        return '/'
+
+class CategoryUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    form_class = CategoryForm
+    model = Category
+    template_name_suffix = '_update_form'
+
+    def test_func(self):
+        return self.get_object().can_edit(self.request.user)
+
+    def get_login_url(self):
+        return '/'
+
+    def get_success_url(self):
+        return self.get_object().get_redirect_url()
 
 class PublicEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     form_class = UTCPublicEventForm
@@ -522,12 +547,24 @@ def save(request):
 @user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def admin_cal_event_list(request):
     public_events = PublicEvent.objects.filter(community=None).order_by('-end')
+    categories = Category.objects.filter(community=None)
     return render(
         request,
         'fullcalendar/admin_cal_event_list.html',
-        {'public_events': public_events, }
+        {'public_events': public_events, 'categories': categories}
     )
 
+@login_required()
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+def admin_delete_category(request, pk):
+    if request.method == 'POST':
+        event = get_object_or_404(Category, pk=pk)
+        form = ActionForm(request.POST)
+        if form.is_valid() and event.can_edit(request.user):
+            url = event.get_redirect_url()
+            event.delete()
+            return HttpResponseRedirect(url)
+    raise Http404("What are you doing here ?")
 
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
