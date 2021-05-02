@@ -1,5 +1,5 @@
 
-function load_calendar_member(timezone, locale, start_time_range, end_time_range, community=0){
+function load_calendar_member(timezone, locale, start_time_range, end_time_range, community=null){
   $('#calendar').fullCalendar({
     locale:locale,
     customButtons: {

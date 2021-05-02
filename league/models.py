@@ -285,7 +285,7 @@ class LeagueEvent(models.Model):
     def get_events(user):
         """Return all the leagues one user can see/join/play in."""
         if user.is_authenticated:
-            communitys = user.get_communitys()
+            communitys = user.get_communities()
             events = LeagueEvent.objects.filter(
                 Q(community__isnull=True) | Q(community__in=communitys) | Q(community__promote=True)
             )
@@ -753,6 +753,7 @@ class User(AbstractUser):
         self.n_win = None
         self.n_games = None
 
+
     def get_full_name(self):
         """required for django_comments_xtd"""
         return self.username
@@ -1105,11 +1106,11 @@ class User(AbstractUser):
         r.save()
         return True
 
-    def get_communitys(self):
+    def get_communities(self):
         """Get all communities a user is in"""
-        communitys = self.groups.filter(name__endswith='community_member')
-        communitys = list(Community.objects.filter(user_group__in=communitys))
-        return communitys
+        communities = self.groups.filter(name__endswith='community_member')
+        communities = list(Community.objects.filter(user_group__in=communities))
+        return communities
 
     def build_context(self, winner=None, meijin=None):
         """Build a context for a user to be used in templates.

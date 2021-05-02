@@ -1,4 +1,4 @@
-function load_calendar(locale, community=0) {
+function load_calendar(locale, community=null) {
 
   $('#calendar').fullCalendar({
     locale: locale,
