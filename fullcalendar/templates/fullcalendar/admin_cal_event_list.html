@@ -1,26 +1,22 @@
 {% extends 'league/admin/base.html' %}
 {% load bootstrap3 league_tags static tz%}
 {% block title %}OSR league admin - Events list{% endblock %}
-{% load l10n i18n %}
 {% block heading %}
 <div class="page-header">
     <h1>Events list</h1>
 </div>
 {%endblock%}
-{% localize off %}
+
 {% block content %}
-{% language 'en' %}
 <a  href="{%url 'calendar:create_cal_event'%}">
   <button class="btn btn-success pull-right clearfix">
     {%bootstrap_icon 'plus'%} Create a new event
   </button>
 </a>
 {% include 'fullcalendar/includes/admin_event_table.html' %}
-{% endlanguage %}
 {%endblock%}
-{% endlocalize %}
-{% block extra_js %}
 
+{% block extra_js %}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>

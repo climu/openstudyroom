@@ -1,7 +1,8 @@
 {% load bootstrap3 league_tags static tz%}
-
+{% load l10n i18n %}
+{% localize off %}
 {% timezone "UTC" %}
-
+{% language 'en' %}
 <table class="table" id="cal-event-table">
  <thead>
    <th>Title</th>
@@ -39,4 +40,6 @@
 </tbody>
 
 </table>
+{% endlanguage %}
 {% endtimezone %}
+{% endlocalize %}
