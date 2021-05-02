@@ -204,14 +204,24 @@ return false;};
 
 {% if admin %}
   <div id="events" class="panel panel-default tab-pane fade in active">
-    <div class="panel-heading clearfix">
-      <h3>{{community.name}} {% trans "events" %}
-    </div>
-    <a  href="{%url 'community:create_event' community.pk%}">
-      <button class="btn btn-success pull-right clearfix">
-        {%bootstrap_icon 'plus'%} Create a new event
-      </button>
-    </a>
+    <legend>
+      Categories
+      <a  href="{%url 'community:create_category' community.pk %}">
+        <button class="btn btn-xs btn-success pull-right clearfix">
+          {%bootstrap_icon 'plus'%} Create a new category
+        </button>
+      </a>
+      </legend>
+    {% include 'fullcalendar/includes/admin_category_table.html' %}
+
+    <legend>
+      Events
+      <a  href="{%url 'community:create_event' community.pk %}">
+        <button class="btn btn-xs btn-success pull-right clearfix">
+          {%bootstrap_icon 'plus'%} Create a new event
+        </button>
+      </a>
+      </legend>
     {% include 'fullcalendar/includes/admin_event_table.html' %}
 
   </div>

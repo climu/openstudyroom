@@ -12,7 +12,7 @@ from league.models import User, LeagueEvent, Sgf
 from league.views import LeagueEventCreate, LeagueEventUpdate
 from league.forms import ActionForm
 from tournament.views import TournamentCreate
-from fullcalendar.views import PublicEventCreate
+from fullcalendar.views import PublicEventCreate, CategoryCreate
 from .models import Community
 from .forms import CommunityForm, AdminCommunityForm, CommunytyUserForm
 
@@ -146,7 +146,8 @@ def community_page(request, slug):
         'new_members': new_members,
         'start_time_range': request.user.profile.start_cal if request.user.is_authenticated else 0,
         'end_time_range':  request.user.profile.end_cal if request.user.is_authenticated else 0,
-        'public_events': community.publicevent_set.all()
+        'public_events': community.publicevent_set.all(),
+        'categories': community.category_set.all()
     }
     return render(request, 'community/community_page.html', context)
 
@@ -381,3 +382,24 @@ class CommunityEventCreate(PublicEventCreate):
         kwargs = super(CommunityEventCreate, self).get_form_kwargs(*args, **kwargs)
         kwargs['community_pk'] = self.kwargs.get('community_pk', None)
         return kwargs
+
+class CommunityCategoryCreate(CategoryCreate):
+    def test_func(self):
+        community_pk = self.kwargs.get('community_pk')
+        community = get_object_or_404(Community, pk=community_pk)
+        return community.is_admin(self.request.user)
+
+    def get_success_url(self):
+        community_pk = self.kwargs.get('community_pk')
+        community = get_object_or_404(Community, pk=community_pk)
+        return reverse(
+            'community:community_page',
+            kwargs={'slug': community.slug}
+        )
+    def form_valid(self, form):
+        response = super(CommunityCategoryCreate, self).form_valid(form)
+        community_pk = self.kwargs.get('community_pk')
+        community = get_object_or_404(Community, pk=community_pk)
+        self.object.community = community
+        self.object.save()
+        return response

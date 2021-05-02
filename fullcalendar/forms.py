@@ -24,16 +24,17 @@ class UTCPublicEventForm(ModelForm):
         """
         Init categories choices depending on community in kwargs
         """
+        community_pk = kwargs.pop('community_pk', None)
         super(UTCPublicEventForm, self).__init__(*args, **kwargs)
         if self.instance.pk is None:
-            community_pk = kwargs.pop('community_pk', None)
+            # if we create new event, we check if community_pk was in kwargs
             if community_pk is None:
                 categories = Category.objects.filter(community=None)
             else:
                 categories = Category.objects.filter(community__pk=community_pk)
         else:
             categories = Category.objects.filter(community=self.instance.community)
-        self.fields["category"].queriset = categories
+        self.fields["category"].queryset = categories
 
 
 class CategoryForm(ModelForm):
