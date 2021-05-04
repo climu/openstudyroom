@@ -1656,6 +1656,12 @@ class ProfileUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
 
+    def get_object(self, queryset=None):
+        if 'pk' in self.kwargs:
+            return super().get_object(queryset)
+        else:
+            return self.model.objects.get(pk=self.request.user.profile.pk)
+
 
 @login_required()
 @user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
