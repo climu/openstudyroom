@@ -20,6 +20,21 @@ urlpatterns = [
     url(r'^documents/', include(wagtaildocs_urls)),
     url(r'^comments/', include('django_comments_xtd.urls')),
     url(r'jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+
+    # For anything not caught by a more specific rule above, hand over to
+    # Wagtail's page serving mechanism. This should be the last pattern in
+    # the list:
+    # url(r'', include(wagtail_urls)),
+
+    # Alternatively, if you want Wagtail pages to be served from a subpath
+    # of your site, rather than the site root:
+    #    url(r'^pages/', include(wagtail_urls)),
+]
+
+
+# Translatable URLs
+# These will be available under a language code prefix. For example /en/search/
+urlpatterns += i18n_patterns(
     url(r'^search-api/', include('fancysearch.urls', namespace="fancysearch")),
 
 
@@ -43,20 +58,6 @@ urlpatterns = [
 
     url(r'^messages/', include('postman.urls', namespace='postman')),
     url(r'^community/', include('community.urls', namespace='community')),
-    # For anything not caught by a more specific rule above, hand over to
-    # Wagtail's page serving mechanism. This should be the last pattern in
-    # the list:
-    # url(r'', include(wagtail_urls)),
-
-    # Alternatively, if you want Wagtail pages to be served from a subpath
-    # of your site, rather than the site root:
-    #    url(r'^pages/', include(wagtail_urls)),
-]
-
-
-# Translatable URLs
-# These will be available under a language code prefix. For example /en/search/
-urlpatterns += i18n_patterns(
     url(r'^search/$', search_views.search, name='search'),
     url(r'', include(puput_urls)),
     url(r'', include(wagtail_urls)),
