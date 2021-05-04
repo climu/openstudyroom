@@ -287,7 +287,8 @@ def division_results(request, event_id=None, division_id=None):
         'open_events': open_events,
         'can_join': can_join,
         'number_players': number_players,
-        'can_quit': can_quit
+        'can_quit': can_quit,
+        'admin': request.user.is_authenticated and request.user.is_league_admin(event)
     }
     return HttpResponse(template.render(context, request))
 
@@ -1141,6 +1142,26 @@ class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         league = self.get_object()
         context['other_events'] = league.get_other_events
         return context
+
+class DivisionUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """ Update a division"""
+    form_class = DivisionForm
+    model = Division
+    template_name_suffix = '_update_form'
+
+    def test_func(self):
+        user = self.request.user
+        return user.is_authenticated and user.is_league_admin(self.get_object().league_event)
+
+    def get_login_url(self):
+        return '/accounts/login/'
+
+    def get_success_url(self):
+        return reverse('league:results', kwargs={
+            'event_id': self.get_object().league_event.pk,
+            'division_id': self.get_object().pk
+        })
+
 
 
 class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):

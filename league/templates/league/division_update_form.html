@@ -1,0 +1,23 @@
+{% extends 'full_width.html' %}
+{% load bootstrap3 league_tags %}
+
+{% block title %} {{object.name}} edit {% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1> Edit the {{object.name}} division from {{object.league_event.name}} league</h1>
+</div>
+{%endblock%}
+{% block content %}
+<form action="" method="POST">{% csrf_token %}
+{%bootstrap_form form %}
+	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
+</form>
+
+{% endblock %}
+{% block extra_css %}
+    {{ form.media.css }}
+{% endblock extra_css %}
+
+{% block extra_js %}
+{{ form.media.js }}
+{% endblock extra_js %}

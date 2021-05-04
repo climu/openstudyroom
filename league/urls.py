@@ -30,7 +30,7 @@ urlpatterns = [
     url(r'^(?P<event_id>[0-9]+)/$', views.division_results, name='results'),
     url(r'^(?P<event_id>[0-9]+)/infos/$', views.infos, name='event'),
     url(r'^(?P<event_id>[0-9]+)/iframe/$', views.division_results_iframe, name='results_iframe'),
-    url(r'^(?P<event_id>[0-9]+)/iframe/(?P<division_id>[0-9]+)/$', views.division_results_iframe, name='results'),
+    url(r'^(?P<event_id>[0-9]+)/iframe/(?P<division_id>[0-9]+)/$', views.division_results_iframe, name='results_iframe'),
 
     url(r'^games/$', views.list_games, name='games'),
     url(r'^games/(?P<sgf_id>[0-9]+)/$', views.list_games, name='game'),
@@ -82,6 +82,11 @@ urlpatterns = [
     url(r'^admin/sgf/$', views.admin_sgf_list, name='admin_sgf'),
     url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/save/$', views.admin_save_sgf, name='save_sgf'),
     url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/delete/$', views.admin_delete_sgf, name='delete_sgf'),
+    url(
+        r'^admin/division/(?P<pk>[0-9]+)/update/$',
+        views.DivisionUpdate.as_view(),
+        name='admin_division_update'
+    ),
     url(r'^admin/events/(?P<event_id>[0-9]+)/create-division/$',
         views.admin_create_division, name='admin_create_division'),
     url(r'^admin/division/(?P<division_id>[0-9]+)/delete-division/$',

@@ -1,5 +1,5 @@
 {% extends "league/base.html" %}
-{% load tz static league_tags bootstrap3 i18n %}
+{% load tz static league_tags bootstrap3 i18n forum_markup_tags %}
 {% block title %}{{event}}- {% trans "results" %}{% endblock %}
 
 
@@ -54,7 +54,12 @@
   {% trans "This league is empty !" %}
 </div>
 {% endif %}
-
+{% if admin %}
+<p><a href="/league/admin/division/{{division.pk}}/update/"><button class="btn btn-default ">{% bootstrap_icon 'wrench' %} Add or edit division informations</button></a></p>
+{% endif %}
+{% if division.informations %}
+<div>{{division.informations|safe|rendered}}</div>
+{% endif %}
 {% endblock %}
 
 {% timezone "UTC" %}

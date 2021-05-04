@@ -5,6 +5,7 @@ from django.contrib.auth.models import Group
 from django.forms import ModelForm
 from django.utils.timezone import make_aware
 from django_countries.widgets import CountrySelectWidget
+from machina.models.fields import MarkupTextFieldWidget
 import pytz
 from community.models import Community
 from community.widget import Community_select
@@ -135,8 +136,11 @@ class DivisionForm(ModelForm):
     next = forms.CharField(label='next', widget=forms.HiddenInput(), required=False)
     class Meta:
         model = Division
-        fields = ['name', 'next']
-
+        fields = ['name', 'next', 'informations']
+        widgets = {
+            'name':forms.TextInput(),
+            'informations': MarkupTextFieldWidget(attrs={'placeholder': 'Will be shown below results table'}),
+        }
 
 class LeagueEventForm(forms.ModelForm):
     begin_time = forms.DateField(

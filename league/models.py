@@ -1208,6 +1208,10 @@ class Division(models.Model):
         related_name="won_division",
         on_delete=models.CASCADE,
     )
+    informations = MarkupTextField(
+        blank=True, null=True,
+        validators=[validators.NullableMaxLengthValidator(2000)]
+    )
 
     class Meta:
         unique_together = ('league_event', 'order',)
