@@ -33,6 +33,9 @@ INSTALLED_APPS = [
     'home',
     'search',
     'rest_framework',
+    # https://www.wagtail-localize.org/
+    "wagtail_localize",
+    "wagtail_localize.locales",  # This replaces "wagtail.locales"
 
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',

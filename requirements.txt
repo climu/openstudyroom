@@ -62,6 +62,7 @@ urllib3==1.24.2
 vobject==0.9.5
 wagtail==2.11.6
 wagtailmenus==3.0
+wagtail-localize==0.9.5
 webencodings==0.5.1
 Willow==1.4
 wrapt==1.10.11
