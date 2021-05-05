@@ -15,7 +15,7 @@ def get_egf_rank(egf_id):
         if gor > 20:
             return f'{gor - 20}d'
         else:
-            return f'{20 - gor + 1}k'
+            return f'{21 - gor}k'
     return None
 
 def ffg_rating2rank(rating):
