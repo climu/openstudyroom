@@ -6,11 +6,16 @@ def get_egf_rank(egf_id):
     """
     Check if an EGF id is valid and get its rank.
     We return the rank (a string) or None if it's not valid
+    https://senseis.xmp.net/?EGFRatingSystem
     """
     url = "https://www.europeangodatabase.eu/EGD/GetPlayerDataByPIN.php?pin=" + str(egf_id)
     request = requests.get(url, timeout=10).json()
     if request['retcode'] == "Ok":
-        return request['Grade']
+        gor = int(round(int(request['Gor']), -2)/100)
+        if gor > 20:
+            return f'{gor - 20}d'
+        else:
+            return f'{20 - gor + 1}k'
     return None
 
 def ffg_rating2rank(rating):
