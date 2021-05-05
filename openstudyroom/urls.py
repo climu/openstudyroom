@@ -4,7 +4,6 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.i18n import JavaScriptCatalog
-from django.conf.urls.i18n import i18n_patterns
 from machina.app import board
 from puput import urls as puput_urls
 from wagtail.admin import urls as wagtailadmin_urls
@@ -20,23 +19,9 @@ urlpatterns = [
     url(r'^documents/', include(wagtaildocs_urls)),
     url(r'^comments/', include('django_comments_xtd.urls')),
     url(r'jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-
-    # For anything not caught by a more specific rule above, hand over to
-    # Wagtail's page serving mechanism. This should be the last pattern in
-    # the list:
-    # url(r'', include(wagtail_urls)),
-
-    # Alternatively, if you want Wagtail pages to be served from a subpath
-    # of your site, rather than the site root:
-    #    url(r'^pages/', include(wagtail_urls)),
-]
-
-
-# Translatable URLs
-# These will be available under a language code prefix. For example /en/search/
-urlpatterns += i18n_patterns(
     url(r'^search-api/', include('fancysearch.urls', namespace="fancysearch")),
 
+    url(r'^search/$', search_views.search, name='search'),
 
     url(r'^league/', include('league.urls', namespace="league")),
     url(r'^stats/', include('stats.urls', namespace="stats")),
@@ -58,10 +43,16 @@ urlpatterns += i18n_patterns(
 
     url(r'^messages/', include('postman.urls', namespace='postman')),
     url(r'^community/', include('community.urls', namespace='community')),
-    url(r'^search/$', search_views.search, name='search'),
     url(r'', include(puput_urls)),
+    # For anything not caught by a more specific rule above, hand over to
+    # Wagtail's page serving mechanism. This should be the last pattern in
+    # the list:
     url(r'', include(wagtail_urls)),
-)
+
+    # Alternatively, if you want Wagtail pages to be served from a subpath
+    # of your site, rather than the site root:
+    #    url(r'^pages/', include(wagtail_urls)),
+]
 if settings.DEBUG:
     # pylint: disable=ungrouped-imports
     import debug_toolbar
