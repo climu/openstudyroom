@@ -25,4 +25,4 @@ class osr_renderer(mistune.Renderer):
 def osr_markdown(string, *args, **kwargs):
     renderer = osr_renderer()
     markdown = mistune.Markdown(renderer=renderer)
-    return markdown(string)
+    return markdown(mistune.escape(string))
