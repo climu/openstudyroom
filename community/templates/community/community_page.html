@@ -196,6 +196,8 @@ return false;};
       </div>
         <div id='calendar'></div>
       </div>
+      {% include 'fullcalendar/includes/cal-modal.html' %}
+
     </div>
 {% else %}
   <div id='calendar'></div>
@@ -349,7 +351,7 @@ $(document).ready(function() {
     setTimeout(() => {
       $('#calendar').fullCalendar( 'render');
     }
-     , 170);
+     , 200);
 })
 
 });
