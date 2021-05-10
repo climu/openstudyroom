@@ -385,19 +385,8 @@ $(document).ready(function() {
 
     // handle the send game request click
     $('#send-game-request').click(function(){
-        // get the list of selected users
-        var selected_users = $('.user-select:checked').map(function(){
-            return this.value;
-        }).get();
-        // This list shouldn't be empty
-        if (selected_users.length == 0 ) {
-            $('#modal-message').text('You should select at least one user.');
-            $('#modal-message').addClass("alert alert-warning");
-            $('#modal-message').show()
-            return;
-        }
         var date = $('#modal-body').attr('data-date');
-        json = JSON.stringify(selected_users);
+        json = JSON.stringify(['{{user.username}}']);
         $.ajax({
             type:"POST",
             url:"{% url 'calendar:create_game_request'%}",

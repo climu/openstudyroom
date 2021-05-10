@@ -448,7 +448,8 @@ def create_game_request(request):
     date = datetime.strptime(request.POST.get('date'), '%Y-%m-%dT%H:%M:%S')
     date = make_aware(date, tz)
     receivers = User.objects.filter(username__in=users_list)
-
+    if not receivers:
+        return HttpResponse('error')
     # a game request should last 1h30
     end = date + timedelta(hours=1, minutes=30)
     # create the instance
