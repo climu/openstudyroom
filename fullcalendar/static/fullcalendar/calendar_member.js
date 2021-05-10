@@ -361,7 +361,7 @@ $('#cancel-game').click(function(){
     var pk = $('#modal-body').attr('data-pk');
     $.ajax({
         type:"POST",
-        url:"/calendar/cancel-game-request-ajax/",
+        url:"/calendar/cancel-game-ajax/",
         data: {'pk': pk},
         error:function(){
           alert("Something went wrong. For some reason we couldn't cancel this game request. Please try again and if the issue remain, report to climu this code: cm4")
