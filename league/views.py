@@ -1145,13 +1145,16 @@ class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class DivisionUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """ Update a division"""
-    form_class = DivisionForm
     model = Division
+    fields = ['informations']
     template_name_suffix = '_update_form'
 
     def test_func(self):
         user = self.request.user
-        return user.is_authenticated and user.is_league_admin(self.get_object().league_event)
+        return user.is_authenticated and (
+            user.leagueplayer_set.filter(division=self.get_object()).exists()
+            or user.is_league_admin(self.get_object().league_event)
+            )
 
     def get_login_url(self):
         return '/accounts/login/'
