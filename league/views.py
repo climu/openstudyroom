@@ -270,11 +270,11 @@ def division_results(request, event_id=None, division_id=None):
     else:
         division = get_object_or_404(Division, pk=division_id)
     can_join = event.can_join(request.user)
-    can_quit = event.can_quit(request.user)
-    can_edit_division_infos = request.user.is_in_division(division)
+    can_quit = event.can_quit(request.user)    
     if division is None:
         results = None
     else:
+        can_edit_division_infos = request.user.is_in_division(division)
         results = division.get_results()
     if results is None:
         number_players = 0
