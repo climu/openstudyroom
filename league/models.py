@@ -805,7 +805,7 @@ class User(AbstractUser):
 
     def is_in_event(self, event):
         return LeaguePlayer.objects.filter(user=self, event=event).exists()
-    
+
     def is_in_division(self, division):
         return division.get_players().filter(user=self).exists()
 
