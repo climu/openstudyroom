@@ -806,6 +806,9 @@ class User(AbstractUser):
     def is_in_event(self, event):
         return LeaguePlayer.objects.filter(user=self, event=event).exists()
 
+    def is_in_division(self, division):
+        return division.get_players().filter(user=self).exists()
+
     def get_primary_event_player(self):
         event = Registry.get_primary_event()
         return LeaguePlayer.objects.filter(user=self, event=event).first()

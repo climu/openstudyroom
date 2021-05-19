@@ -54,7 +54,7 @@
   {% trans "This league is empty !" %}
 </div>
 {% endif %}
-{% if can_quit or admin %}
+{% if can_edit_division_infos or admin %}
 <p><a href="{% url 'league:division_update_infos' division.pk %}"><button class="btn btn-default ">{% bootstrap_icon 'wrench' %}Add or edit division {{division.name}} informations</button></a></p>
 {% endif %}
 {% if division.informations %}
