@@ -1,20 +1,19 @@
-table#example{
-    margin-top:2rem;
+.table-responsive {
+    margin-top: 4rem;
 }
-
-.table-responsive{
+table#example {
+    width:auto;
     overflow-x: visible;
+} 
+table#example th{
+    text-align: center;
+    min-width: 4rem;
 }
-table#example td, table#example th{
-    padding: 1rem;
-    width: 4rem;
-}   
-tr.even-row,
-td.even-column{
+table#example th, table#example td{
+    padding: 0.75rem;
+} 
+.even-row {
     background-color:#f8f8f8;
-}
-td.table-league-highlight {
-    background-color: LightGray;
 }
 .kgs_username{
     transform: rotate(-60deg);
@@ -22,14 +21,11 @@ td.table-league-highlight {
     position: absolute;
     margin-top: -10px;
 }
-.table-league-score-highlight{
-    text-align: center;
-}
 .inactive{
     background-color: #ececec;
     color: #b9b9b9;
 }
-.inactive>a{
+.inactive > a {
     color:#76b9f3;
 }
 .disabled {

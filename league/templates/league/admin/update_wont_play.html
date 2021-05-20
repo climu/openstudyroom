@@ -55,7 +55,7 @@
             el.addEventListener('click', function(evt) {
                 if (evt.target.checked) {
                     if (count + 1 > 2) {
-                        return e.preventDefault();
+                        return evt.preventDefault();
                     }      
                     if (++count == 2) {
                         submit.removeAttribute('disabled')  

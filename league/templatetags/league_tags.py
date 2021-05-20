@@ -82,11 +82,11 @@ def html_one_result_2(context, _tr_idx, _td_idx, _blank=False):
     event = str(context['event'].pk) + '/' if 'event' in context else ''
     html = ''
 
+    class_name = ('even-col' if (_td_idx % 2) == 0 else 'odd-col')
+
     # gray self opponent's cell
     if _tr_idx == _td_idx:
-        class_name = 'disabled'
-    else:
-        class_name = ('even-col' if (_td_idx % 2) == 0 else 'odd-col')
+        class_name += ' disabled'
 
     if not opponent.pk in player.results:
         html += '<td class="' + class_name + '"></td>'

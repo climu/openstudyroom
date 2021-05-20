@@ -758,8 +758,6 @@ class Sgf(models.Model):
             sgf.events.add(event)
             sgf.divisions.add(division)
             return sgf
-        else:
-            return None
 
 class User(AbstractUser):
     """User used for auth in all project."""
@@ -1306,27 +1304,43 @@ class Division(models.Model):
             player.sodos = 0
             results.append(player)
         for sgf in sgfs:
-            if sgf.winner == sgf.white:
+            """Case: Wont Play result"""
+            wontplay = {'id': sgf.pk, 'r': 0, 'p': sgf.result}
+            if sgf.result is None:
                 loser = next(player for player in results if player.user == sgf.black)
                 winner = next(player for player in results if player.user == sgf.white)
+                winner.results[loser.pk].append(wontplay)
+                loser.results[winner.pk].append(wontplay)
+                if loser.pk in winner.results:
+                    winner.results[loser.pk].append(wontplay)
+                else:
+                    winner.results[loser.pk] = [wontplay]
+                if winner.pk in loser.results:
+                    loser.results[winner.pk].append(wontplay)
+                else:
+                    loser.results[winner.pk] = [wontplay]
+
             else:
-                loser = next(player for player in results if player.user == sgf.white)
-                winner = next(player for player in results if player.user == sgf.black)
-            if sgf.result != 'WontPlay':
+                if sgf.winner == sgf.white:
+                    loser = next(player for player in results if player.user == sgf.black)
+                    winner = next(player for player in results if player.user == sgf.white)
+                else:
+                    loser = next(player for player in results if player.user == sgf.white)
+                    winner = next(player for player in results if player.user == sgf.black)                
                 winner.n_win += 1
                 winner.n_games += 1
                 winner.score += self.league_event.ppwin
                 loser.n_loss += 1
                 loser.n_games += 1
                 loser.score += self.league_event.pploss
-            if loser.pk in winner.results:
-                winner.results[loser.pk].append({'id': sgf.pk, 'r': 1, 'p': sgf.result})
-            else:
-                winner.results[loser.pk] = [{'id': sgf.pk, 'r': 1, 'p': sgf.result}]
-            if winner.pk in loser.results:
-                loser.results[winner.pk].append({'id': sgf.pk, 'r': 0, 'p': sgf.result})
-            else:
-                loser.results[winner.pk] = [{'id': sgf.pk, 'r': 0, 'p': sgf.result}]
+                if loser.pk in winner.results:
+                    winner.results[loser.pk].append({'id': sgf.pk, 'r': 1, 'p': sgf.result})
+                else:
+                    winner.results[loser.pk] = [{'id': sgf.pk, 'r': 1, 'p': sgf.result}]
+                if winner.pk in loser.results:
+                    loser.results[winner.pk].append({'id': sgf.pk, 'r': 0, 'p': sgf.result})
+                else:
+                    loser.results[winner.pk] = [{'id': sgf.pk, 'r': 0, 'p': sgf.result}]
 
         # now let's set the active flag
         min_matchs = self.league_event.min_matchs
