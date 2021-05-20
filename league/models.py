@@ -741,6 +741,25 @@ class Sgf(models.Model):
         )
         return Sgf.get_context(sgfs)
 
+    @staticmethod
+    def create_wont_play(event, division, users):
+        """Creates and returns an sgf with WontPlay result"""
+        if not division.sgf_set.filter(result = 'WontPlay', black__in=users, white__in=users).exists():
+            sgf = Sgf()
+            sgf.winner = None
+            sgf.black = users[0]
+            sgf.white = users[1]
+            sgf.result = 'WontPlay'
+            sgf.p_status = 0
+            sgf.bplayer = users[0].username
+            sgf.wplayer = users[1].username
+            sgf.league_valid = True
+            sgf.save()
+            sgf.events.add(event)
+            sgf.divisions.add(division)
+            return sgf
+        else:
+            return None
 
 class User(AbstractUser):
     """User used for auth in all project."""
@@ -1226,6 +1245,9 @@ class Division(models.Model):
     def number_games(self):
         return self.sgf_set.distinct().count()
 
+    def has_user(self, user):
+        return  self.leagueplayer_set.filter(user = user).exists()
+
     def get_players(self):
         return self.leagueplayer_set.all()
 
@@ -1235,6 +1257,12 @@ class Division(models.Model):
     def possible_games(self):
         n = self.number_players()
         return int(n * (n - 1) * self.league_event.nb_matchs / 2)
+
+    def get_wont_play_results(self):
+        return self.sgf_set.filter(result='WontPlay')
+
+    def has_wont_play_results(self):
+        return self.get_wont_play_results().exists()
 
     def is_first(self):
         """return a boolean being True if the division is the first of the league."""
@@ -1284,12 +1312,13 @@ class Division(models.Model):
             else:
                 loser = next(player for player in results if player.user == sgf.white)
                 winner = next(player for player in results if player.user == sgf.black)
-            winner.n_win += 1
-            winner.n_games += 1
-            winner.score += self.league_event.ppwin
-            loser.n_loss += 1
-            loser.n_games += 1
-            loser.score += self.league_event.pploss
+            if sgf.result != 'WontPlay':
+                winner.n_win += 1
+                winner.n_games += 1
+                winner.score += self.league_event.ppwin
+                loser.n_loss += 1
+                loser.n_games += 1
+                loser.score += self.league_event.pploss
             if loser.pk in winner.results:
                 winner.results[loser.pk].append({'id': sgf.pk, 'r': 1, 'p': sgf.result})
             else:

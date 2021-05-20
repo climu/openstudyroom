@@ -54,9 +54,15 @@
   {% trans "This league is empty !" %}
 </div>
 {% endif %}
+
 {% if can_edit_division_infos or admin %}
-<p><a href="{% url 'league:division_update_infos' division.pk %}"><button class="btn btn-default ">{% bootstrap_icon 'wrench' %}Add or edit division {{division.name}} informations</button></a></p>
+<p><a href="{% url 'league:division_update_infos' division.pk %}"><button class="btn btn-default ">{% bootstrap_icon 'wrench' %} Edit informations</button></a></p>
 {% endif %}
+
+{% if admin %}
+<p><a href="{% url 'league:division_update_wont_play' division.pk %}"><button class="btn btn-default ">{% bootstrap_icon 'wrench' %} Manage WontPlay results</button></a></p>
+{% endif %}
+
 {% if division.informations %}
 <div>{{division.informations|safe|rendered}}</div>
 {% endif %}
