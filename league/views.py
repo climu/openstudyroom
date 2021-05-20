@@ -274,7 +274,7 @@ def division_results(request, event_id=None, division_id=None):
     if division is None:
         results = None
     else:
-        can_edit_division_infos = request.user.is_in_division(division)
+        can_edit_division_infos = request.user.is_authenticated and request.user.is_in_division(division)
         results = division.get_results()
     if results is None:
         number_players = 0
