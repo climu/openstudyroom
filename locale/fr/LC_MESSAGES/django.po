@@ -1,337 +1,336 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-02 14:52+0100\n"
-"PO-Revision-Date: 2019-01-02 14:18+0156\n"
-"Last-Translator: b'  <>'\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: openstudyroom\n"
+"Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Translated-Using: django-rosetta 0.9.0\n"
 
 #: discord_bind/apps.py:33
 msgid "Discord Binding"
-msgstr "Liens discord"
+msgstr "Lien discord"
 
 #: home/templates/home/home_page.html:92
 #: openstudyroom/templates/puput/blog_page.html:53
 msgid "Continue reading"
-msgstr ""
+msgstr "Poursuivre la lecture"
+
+#: league/templates/emails/welcome.txt:2
+msgid "\n"
+"Hello and welcome to the Open Study Room, %(user.username)s!\n"
+"\n"
+"You have just been accepted as an OSR member, and we are glad to have you onboard.\n"
+"\n"
+"After logging in, you should take a look at your profile page, located at openstudyroom.org/profile/\n"
+"There you will be able to manage your e-mail address and passwords.\n"
+"\n"
+"You can now also use our forums and join our Discord server at https://discord.gg/b7meDjX .\n"
+"\n"
+"Looking forward to see you there!\n"
+"\n"
+"openstudyroom.org\n"
+""
+msgstr "\n"
+"Bonjour et bienvenue sur Open Study Room, %(user.username)s!\n"
+"\n"
+"Vous venez d'être accepté en tant que membre d'OSR, et nous sommes heureux de vous avoir à bord.\n"
+"\n"
+"Après vous être connecté, vous devriez jeter un coup d'œil à votre page de profil, située à l'adresse openstudyroom.org/profile/\n"
+"Vous pourrez y gérer votre adresse e-mail et vos mots de passe.\n"
+"\n"
+"Vous pouvez désormais utiliser nos forums et rejoindre notre serveur Discord à https://discord.gg/b7meDjX .\n"
+"\n"
+"Au plaisir de vous y voir !\n"
+"\n"
+"openstudyroom.org\n"
 
 #: league/templates/league/profile.html:4
 #: openstudyroom/templates/forum_member/forum_profile_update.html:4
 #: openstudyroom/templates/forum_member/forum_profile_update.html:19
 msgid "Edit forum profile"
-msgstr ""
+msgstr "Editer votre profil du forum"
 
 #: league/templates/league/profile.html:32
 #: openstudyroom/templates/forum_member/forum_profile_update.html:27
 msgid "(optional)"
-msgstr ""
+msgstr "(optionel)"
 
 #: league/templates/league/profile.html:48
 #: openstudyroom/templates/forum_member/forum_profile_update.html:43
 msgid "Submit"
-msgstr ""
+msgstr "Envoyer"
 
-#: openstudyroom/templates/account/email.html:16
+#: allauth/templates/account/email.html:8
 msgid "E-mail Addresses"
-msgstr ""
+msgstr "Adresses e-mail"
 
-#: openstudyroom/templates/account/email.html:20
+#: allauth/templates/account/email.html:10
 msgid "The following e-mail addresses are associated with your account:"
-msgstr ""
+msgstr "Les adresses e-mail suivantes sont associées à votre compte :"
 
-#: openstudyroom/templates/account/email.html:34
+#: allauth/templates/account/email.html:24
 msgid "Verified"
-msgstr ""
+msgstr "Vérifiée"
 
-#: openstudyroom/templates/account/email.html:36
+#: allauth/templates/account/email.html:26
 msgid "Unverified"
-msgstr ""
+msgstr "Non vérifiée"
 
-#: openstudyroom/templates/account/email.html:38
+#: allauth/templates/account/email.html:28
 msgid "Primary"
-msgstr ""
+msgstr "Principale"
 
-#: openstudyroom/templates/account/email.html:44
+#: allauth/templates/account/email.html:34
 msgid "Make Primary"
-msgstr ""
+msgstr "Rendre Principale"
 
-#: openstudyroom/templates/account/email.html:45
+#: allauth/templates/account/email.html:35
 msgid "Re-send Verification"
-msgstr ""
+msgstr "Renvoyer le message de vérification"
 
-#: openstudyroom/templates/account/email.html:46
+#: allauth/templates/account/email.html:36
+#: allauth/templates/socialaccount/connections.html:35
 msgid "Remove"
-msgstr ""
+msgstr "Retirer"
 
-#: openstudyroom/templates/account/email.html:53
+#: allauth/templates/account/email.html:43
 msgid "Warning:"
-msgstr ""
+msgstr "Attention :"
 
-#: openstudyroom/templates/account/email.html:53
-msgid ""
-"You currently do not have any e-mail address set up. You should really add "
-"an e-mail address so you can receive notifications, reset your password, "
-"etc."
-msgstr ""
+#: allauth/templates/account/email.html:43
+msgid "You currently do not have any e-mail address set up. You should really add an e-mail address so you can receive notifications, reset your password, etc."
+msgstr "Vous n'avez aucune adresse e-mail associée à votre compte. Vous devriez ajouter une adresse e-mail pour pouvoir recevoir des notifications, réinitialiser votre mot de passe, etc."
 
-#: openstudyroom/templates/account/email.html:61
+#: allauth/templates/account/email.html:48
 msgid "Add E-mail Address"
-msgstr ""
+msgstr "Ajouter une adresse e-mail"
 
-#: openstudyroom/templates/account/email.html:68
+#: allauth/templates/account/email.html:53
 msgid "Add E-mail"
-msgstr ""
+msgstr "Ajouter un e-mail"
 
-#: openstudyroom/templates/account/email.html:79
+#: allauth/templates/account/email.html:62
 msgid "Do you really want to remove the selected e-mail address?"
-msgstr ""
+msgstr "Voulez-vous vraiment retirer cette adresse e-mail ?"
 
 #: openstudyroom/templates/account/email/email_confirmation_message.txt:1
-#, python-format
-msgid ""
-"A user on %(site_name)s has created an account using this email address.\n"
+msgid "A user on %(site_name)s has created an account using this email address.\n"
 "\n"
 "To confirm this email address, go to %(activate_url)s\n"
 "\n"
 "If you did not sign up for this site, you can ignore this message.\n"
-msgstr ""
+""
+msgstr "Un utilisateur du site %(site_name)s a créé un compte en utilisant cette adresse électronique.\n"
+"\n"
+"Pour confirmer cette adresse électronique, rendez-vous sur %(activate_url)s\n"
+"\n"
+"Si vous ne vous êtes pas inscrit sur ce site, vous pouvez ignorer ce message.\n"
 
 #: openstudyroom/templates/account/email/email_confirmation_subject.txt:1
-#, python-format
 msgid "Confirm email address for %(site_name)s"
-msgstr ""
+msgstr "Confirmer l'adresse e-mail pour %(site_name)s"
 
 #: openstudyroom/templates/account/email/invite_user.txt:1
-#, python-format
-msgid ""
-"You have been invited to sign up at %(name)s.\n"
+msgid "You have been invited to sign up at %(name)s.\n"
 "\n"
 "%(signup_url)s\n"
-msgstr ""
+""
+msgstr "Vous avez été invité à vous inscrire à %(name)s.\n"
+"\n"
+"%(signup_url)s\n"
 
 #: openstudyroom/templates/account/email/invite_user_subject.txt:1
-#, python-format
 msgid "Create an account on %(name)s"
-msgstr ""
+msgstr "Créer un compte sur %(name)s"
 
 #: openstudyroom/templates/account/email/password_change.txt:1
-#, python-format
-msgid ""
-"This is the email notification to confirm your password has been changed on "
-"%(now)s."
-msgstr ""
+msgid "This is the email notification to confirm your password has been changed on %(now)s."
+msgstr "Il s'agit de l'e-mail de notification pour confirmer que votre mot de passe a été modifié sur %(now)s."
 
 #: openstudyroom/templates/account/email/password_change_subject.txt:1
 msgid "Change password email notification"
-msgstr ""
+msgstr "Notification par email du changement de mot de passe"
 
 #: openstudyroom/templates/account/email/password_reset.txt:1
-#, python-format
-msgid ""
-"You're receiving this email because you or someone else has requested a password for your user account at %(site_name)s.\n"
+msgid "You're receiving this email because you or someone else has requested a password for your user account at %(site_name)s.\n"
 "It can be safely ignored if you did not request a password reset. Click the link below to reset your password.\n"
 "\n"
 "%(password_reset_url)s\n"
-msgstr ""
+""
+msgstr "Vous recevez cet e-mail parce que vous ou quelqu'un d'autre a demandé un mot de passe pour votre compte d'utilisateur sur %(site_name)s.\n"
+"Vous pouvez l'ignorer si vous n'avez pas demandé de réinitialisation de mot de passe. Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe.\n"
+"\n"
+"%(password_reset_url)s\n"
 
 #: openstudyroom/templates/account/email/password_reset_subject.txt:1
-#, python-format
 msgid "[%(site_name)s] Password reset"
-msgstr ""
+msgstr "[%(site_name)s] Réinitialisation du mot de passe"
 
-#: openstudyroom/templates/account/email_confirm.html:12
+#: allauth/templates/account/email_confirm.html:6
+#: allauth/templates/account/email_confirm.html:10
 msgid "Confirm E-mail Address"
-msgstr ""
+msgstr "Confirmer l'adresse e-mail"
 
-#: openstudyroom/templates/account/email_confirm.html:22
-#, python-format
-msgid ""
-"Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
-"address for user %(user_display)s."
-msgstr ""
+#: allauth/templates/account/email_confirm.html:16
+msgid "Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail address for user %(user_display)s."
+msgstr "Merci de confirmer que <a href=\"mailto:%(email)s\">%(email)s</a> est l'adresse e-mail de %(user_display)s."
 
-#: openstudyroom/templates/account/email_confirm.html:26
+#: allauth/templates/account/email_confirm.html:20
 msgid "Confirm"
-msgstr ""
+msgstr "Confirmer"
 
-#: openstudyroom/templates/account/email_confirm.html:33
-#, python-format
-msgid ""
-"This e-mail confirmation link expired or is invalid. Please <a "
-"href=\"%(email_url)s\">issue a new e-mail confirmation request</a>."
-msgstr ""
+#: allauth/templates/account/email_confirm.html:27
+msgid "This e-mail confirmation link expired or is invalid. Please <a href=\"%(email_url)s\">issue a new e-mail confirmation request</a>."
+msgstr "Ce lien de confirmation d'adresse e-mail a expiré ou n'est pas valide. Veuillez lancer <a href=\"%(email_url)s\">une nouvelle demande de confirmation</a>."
 
 #: openstudyroom/templates/account/email_confirmation_sent.html:5
 #: openstudyroom/templates/account/email_confirmation_sent.html:8
 msgid "Confirm your email address"
-msgstr ""
+msgstr "Confirmez votre adresse email"
 
 #: openstudyroom/templates/account/email_confirmation_sent.html:10
-#, python-format
-msgid ""
-"We have sent you an email to <b>%(email)s</b> for verification. Follow the "
-"link provided to finalize the signup process. If you do not receive it "
-"within a few minutes, contact us at <a "
-"href=\"mailto:openstudyroom@gmail.com\">openstudyroom@gmail.com</a>."
-msgstr ""
+msgid "We have sent you an email to <b>%(email)s</b> for verification. Follow the link provided to finalize the signup process. If you do not receive it within a few minutes, contact us at <a href=\"mailto:openstudyroom@gmail.com\">openstudyroom@gmail.com</a>."
+msgstr "Nous vous avons envoyé un email à <b>%(email)s</b> pour vérification. Veuillez suivre le lien fourni pour finaliser le processus d'inscription. Si vous ne le recevez pas dans les minutes qui suivent, contactez-nous à <a href=\"mailto:openstudyroom@gmail.com\">openstudyroom@gmail.com</a>."
 
 #: openstudyroom/templates/account/email_confirmation_sent.html:11
 msgid "Go back"
-msgstr ""
+msgstr "Revenir en arrière"
 
 #: openstudyroom/templates/account/email_confirmed.html:5
 #: openstudyroom/templates/account/email_confirmed.html:8
 msgid "Email confirmed"
-msgstr ""
+msgstr "Email confirmé"
 
 #: openstudyroom/templates/account/email_confirmed.html:9
-#, python-format
 msgid "You have confirmed <b>%(email)s</b>"
-msgstr ""
+msgstr "Vous avez confirmé <b>%(email)s</b>"
 
-#: openstudyroom/templates/account/password_reset_from_key.html:6
-#: openstudyroom/templates/account/password_reset_from_key.html:9
+#: allauth/templates/account/password_change.html:5
+#: allauth/templates/account/password_change.html:8
+#: allauth/templates/account/password_change.html:13
+#: allauth/templates/account/password_reset_from_key.html:4
+#: allauth/templates/account/password_reset_from_key.html:7
+#: allauth/templates/account/password_reset_from_key_done.html:4
+#: allauth/templates/account/password_reset_from_key_done.html:7
 msgid "Change Password"
-msgstr ""
+msgstr "Modifier le mot de passe"
 
-#: openstudyroom/templates/account/password_reset_from_key.html:9
+#: allauth/templates/account/password_reset_from_key.html:7
 msgid "Bad Token"
-msgstr ""
+msgstr "Mauvais jeton d'identification"
 
-#: openstudyroom/templates/account/password_reset_from_key.html:18
-#, python-format
-msgid ""
-"The password reset link was invalid, possibly because it has already been "
-"used.  Please request a <a href=\"%(passwd_reset_url)s\">new password "
-"reset</a>."
-msgstr ""
+#: allauth/templates/account/password_reset_from_key.html:11
+msgid "The password reset link was invalid, possibly because it has already been used.  Please request a <a href=\"%(passwd_reset_url)s\">new password reset</a>."
+msgstr "Le lien de réinitialisation du mot de passe est invalide. Il a peut être déjà été utilisé. Veuillez faire une nouvelle <a href=\"%(passwd_reset_url)s\">demande de réinitialisation de mot de passe</a>."
 
-#: openstudyroom/templates/account/password_reset_from_key.html:25
+#: allauth/templates/account/password_reset_from_key.html:17
 msgid "change password"
-msgstr ""
+msgstr "modifer le mot de passe"
 
-#: openstudyroom/templates/account/password_reset_from_key.html:29
+#: allauth/templates/account/password_reset_from_key.html:20
+#: allauth/templates/account/password_reset_from_key_done.html:8
 msgid "Your password is now changed."
-msgstr ""
+msgstr "Votre mot de passe a été modifié."
 
 #: openstudyroom/templates/board_base.html:40
 msgid "Search..."
-msgstr ""
+msgstr "Recherche..."
 
 #: openstudyroom/templates/board_base.html:47
 msgid "Advanced search"
-msgstr ""
+msgstr "Recherche avancée"
 
 #: openstudyroom/templates/board_base.html:70
 msgid "Subscriptions"
-msgstr ""
+msgstr "Abonnements"
 
 #: openstudyroom/templates/board_base.html:71
 msgid "View my messages"
-msgstr ""
+msgstr "Voir mes messages"
 
 #: openstudyroom/templates/board_base.html:75
 msgid "Moderation queue"
-msgstr ""
+msgstr "File d'attente de modération"
 
+#: community/templates/community/community_page.html:38
 #: openstudyroom/templates/forum_conversation/topic_detail.html:33
 msgid "Edit"
-msgstr ""
+msgstr "Modifier"
 
 #: openstudyroom/templates/forum_conversation/topic_detail.html:37
 #: openstudyroom/templates/postman/base_folder.html:27
 #: openstudyroom/templates/postman/view.html:13
 #: openstudyroom/templates/postman/view.html:41
 msgid "Delete"
-msgstr ""
+msgstr "Supprimer"
 
 #: openstudyroom/templates/forum_conversation/topic_detail.html:52
 #: openstudyroom/templates/forum_member/user_posts_list.html:75
-#, python-format
 msgid "By: <a href=\"%(poster_url)s\">%(username)s</a> on %(creation_date)s"
-msgstr ""
+msgstr "Par: <a href=\"%(poster_url)s\">%(username)s</a> on %(creation_date)s"
 
 #: openstudyroom/templates/forum_conversation/topic_detail.html:56
-#, python-format
 msgid "By: %(poster_username)s on %(creation_date)s"
-msgstr ""
+msgstr "Par: %(poster_username)s on %(creation_date)s"
 
 #: openstudyroom/templates/forum_conversation/topic_detail.html:76
 msgid "Last edited by:"
-msgstr ""
+msgstr "Dernière modification par:"
 
 #: openstudyroom/templates/forum_conversation/topic_detail.html:76
 msgid "Updated"
-msgstr ""
+msgstr "Mise à jour"
 
+#: league/templates/league/event.html:29
 #: openstudyroom/templates/forum_conversation/topic_detail.html:76
 msgid "on"
 msgstr ""
 
 #: openstudyroom/templates/forum_conversation/topic_detail.html:76
-#, python-format
 msgid "edited %(counter)s time in total."
 msgid_plural "edited %(counter)s times in total."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Edité %(counter)s fois au total."
+msgstr[1] "Edité %(counter)s fois au total."
 
 #: openstudyroom/templates/forum_conversation/topic_detail.html:81
 msgid "Reason:"
-msgstr ""
+msgstr "Motif:"
 
 #: openstudyroom/templates/forum_conversation/topic_detail.html:97
 #: openstudyroom/templates/forum_member/user_posts_list.html:94
 msgid "Posts:"
-msgstr ""
+msgstr "Messages"
 
 #: openstudyroom/templates/forum_conversation/topic_detail.html:100
 msgid "Anonymous user"
-msgstr ""
+msgstr "Utilisateur anonyme"
 
 #: openstudyroom/templates/forum_member/forum_profile_detail.html:4
-#, python-format
 msgid "%(username)s profile"
-msgstr ""
+msgstr "%(username)s profil"
 
 #: openstudyroom/templates/forum_member/forum_profile_detail.html:32
 msgid "Edit profile"
-msgstr ""
+msgstr "Modifier le profil"
 
 #: openstudyroom/templates/forum_member/forum_profile_detail.html:40
 msgid "Statistics"
-msgstr ""
+msgstr "Statistiques"
 
 #: openstudyroom/templates/forum_member/forum_profile_detail.html:45
-#, python-format
-msgid ""
-"<h2><strong>%(counter)s</strong></h2>\n"
+msgid "<h2><strong>%(counter)s</strong></h2>\n"
 "                    <p><small>Post</small></p>"
-msgid_plural ""
-"<h2><strong>%(counter)s</strong></h2>\n"
+msgid_plural "<h2><strong>%(counter)s</strong></h2>\n"
 "                    <p><small>Posts</small></p>"
 msgstr[0] ""
 msgstr[1] ""
 
 #: openstudyroom/templates/forum_member/forum_profile_detail.html:50
-#, python-format
-msgid ""
-"<h2><strong>%(counter)s</strong></h2>\n"
+msgid "<h2><strong>%(counter)s</strong></h2>\n"
 "                    <p><small>Topic</small></p>"
-msgid_plural ""
-"<h2><strong>%(counter)s</strong></h2>\n"
+msgid_plural "<h2><strong>%(counter)s</strong></h2>\n"
 "                    <p><small>Topics</small></p>"
 msgstr[0] ""
 msgstr[1] ""
@@ -345,7 +344,6 @@ msgid "View all"
 msgstr ""
 
 #: openstudyroom/templates/forum_member/forum_profile_detail.html:74
-#, python-format
 msgid "On %(creation_date)s"
 msgstr ""
 
@@ -355,7 +353,6 @@ msgid "Topics that you are subscribed to"
 msgstr ""
 
 #: openstudyroom/templates/forum_member/subscription_topic_list.html:17
-#, python-format
 msgid "%(counter)s topic found"
 msgid_plural "%(counter)s topics found"
 msgstr[0] ""
@@ -400,12 +397,10 @@ msgstr ""
 
 #: openstudyroom/templates/forum_member/user_posts_list.html:4
 #: openstudyroom/templates/forum_member/user_posts_list.html:34
-#, python-format
 msgid "%(username)s's posts"
 msgstr ""
 
 #: openstudyroom/templates/forum_member/user_posts_list.html:42
-#, python-format
 msgid "%(counter)s post found"
 msgid_plural "%(counter)s posts found"
 msgstr[0] ""
@@ -420,9 +415,7 @@ msgid "Archived Messages"
 msgstr ""
 
 #: openstudyroom/templates/postman/archives.html:7
-msgid ""
-"Messages in this folder will never be removed. You can use this folder for "
-"long term storage."
+msgid "Messages in this folder will never be removed. You can use this folder for long term storage."
 msgstr ""
 
 #: openstudyroom/templates/postman/archives.html:12
@@ -432,7 +425,7 @@ msgstr ""
 #: openstudyroom/templates/postman/sent.html:13
 #: openstudyroom/templates/postman/trash.html:15
 msgid "Inbox"
-msgstr ""
+msgstr "Boîte de réception"
 
 #: openstudyroom/templates/postman/archives.html:13
 #: openstudyroom/templates/postman/base.html:19
@@ -442,7 +435,7 @@ msgstr ""
 #: openstudyroom/templates/postman/sent.html:14
 #: openstudyroom/templates/postman/trash.html:16
 msgid "Sent Messages"
-msgstr ""
+msgstr "Messages envoyés"
 
 #: openstudyroom/templates/postman/archives.html:14
 #: openstudyroom/templates/postman/base.html:20
@@ -452,8 +445,12 @@ msgstr ""
 #: openstudyroom/templates/postman/trash.html:17
 #: openstudyroom/templates/postman/write.html:3
 msgid "Write"
-msgstr ""
+msgstr "Ecrire"
 
+#: league/templates/league/archives_games.html:34
+#: league/templates/league/event.html:7 league/templates/league/players.html:9
+#: league/templates/league/results.html:8
+#: league/templates/league/scrap_list.html:11
 #: openstudyroom/templates/postman/archives.html:15
 #: openstudyroom/templates/postman/base.html:21
 #: openstudyroom/templates/postman/base_write.html:30
@@ -461,7 +458,7 @@ msgstr ""
 #: openstudyroom/templates/postman/sent.html:16
 #: openstudyroom/templates/postman/trash.html:18
 msgid "Archives"
-msgstr ""
+msgstr "Archives"
 
 #: openstudyroom/templates/postman/archives.html:16
 #: openstudyroom/templates/postman/base.html:22
@@ -470,15 +467,15 @@ msgstr ""
 #: openstudyroom/templates/postman/sent.html:17
 #: openstudyroom/templates/postman/trash.html:19
 msgid "Trash"
-msgstr ""
+msgstr "Poubelle"
 
 #: openstudyroom/templates/postman/base.html:3
 msgid "Messaging"
-msgstr ""
+msgstr "Messagerie"
 
 #: openstudyroom/templates/postman/base_folder.html:14
 msgid "Sorry, this page number is invalid."
-msgstr ""
+msgstr "Désolé, ce numéro de page est invalide."
 
 #: openstudyroom/templates/postman/base_folder.html:19
 msgid "by conversation"
@@ -486,46 +483,46 @@ msgstr ""
 
 #: openstudyroom/templates/postman/base_folder.html:22
 msgid "by message"
-msgstr ""
+msgstr "Par message"
 
 #: openstudyroom/templates/postman/base_folder.html:28
 #: openstudyroom/templates/postman/view.html:15
 #: openstudyroom/templates/postman/view.html:43
 msgid "Archive"
-msgstr ""
+msgstr "Archive"
 
 #: openstudyroom/templates/postman/base_folder.html:29
 msgid "Undelete"
-msgstr ""
+msgstr "Annuler la suppression"
 
 #: openstudyroom/templates/postman/base_folder.html:30
 msgid "Mark as read"
-msgstr ""
+msgstr "Maquer comme lu"
 
 #: openstudyroom/templates/postman/base_folder.html:31
 msgid "Mark as unread"
-msgstr ""
+msgstr "Marquer comme non lu"
 
 #: openstudyroom/templates/postman/base_folder.html:36
 msgid "Action"
-msgstr ""
+msgstr "Action"
 
 #: openstudyroom/templates/postman/base_folder.html:37
 msgid "Sender"
-msgstr ""
+msgstr "Expéditeur"
 
 #: openstudyroom/templates/postman/base_folder.html:38
 #: openstudyroom/templates/postman/reply.html:4
 msgid "Recipient"
-msgstr ""
+msgstr "Destinataire"
 
 #: openstudyroom/templates/postman/base_folder.html:39
 msgid "Subject"
-msgstr ""
+msgstr "Sujet"
 
 #: openstudyroom/templates/postman/base_folder.html:40
 msgid "Date"
-msgstr ""
+msgstr "Date"
 
 #: openstudyroom/templates/postman/base_folder.html:55
 msgid "g:i A,M j,n/j/y"
@@ -533,7 +530,7 @@ msgstr ""
 
 #: openstudyroom/templates/postman/base_folder.html:62
 msgid "No messages."
-msgstr ""
+msgstr "Aucun message."
 
 #: openstudyroom/templates/postman/base_write.html:19
 msgid "Send"
@@ -541,7 +538,6 @@ msgstr ""
 
 #: openstudyroom/templates/postman/email_user.txt:4
 #: openstudyroom/templates/postman/email_visitor.txt:3
-#, python-format
 msgid "On %(date)s, you asked to send a message to the user '%(recipient)s'."
 msgstr ""
 
@@ -556,13 +552,11 @@ msgid ", for the following reason:"
 msgstr ""
 
 #: openstudyroom/templates/postman/email_user.txt:11
-#, python-format
 msgid "You have received a message from the user '%(sender)s'"
 msgstr ""
 
 #: openstudyroom/templates/postman/email_user_subject.txt:1
 #: openstudyroom/templates/postman/email_visitor_subject.txt:1
-#, python-format
 msgid "Message \"%(subject)s\" on the site %(sitename)s"
 msgstr ""
 
@@ -575,7 +569,6 @@ msgid "As a reminder, please find below the content of your message."
 msgstr ""
 
 #: openstudyroom/templates/postman/email_visitor.txt:10
-#, python-format
 msgid "On %(date)s, you sent a message to the user '%(sender)s'."
 msgstr ""
 
@@ -596,8 +589,7 @@ msgid "The site administrator"
 msgstr ""
 
 #: openstudyroom/templates/postman/email_visitor.txt:18
-msgid ""
-"Note: This message is issued by an automated system.\n"
+msgid "Note: This message is issued by an automated system.\n"
 "Do not reply, this would not be taken into account."
 msgstr ""
 
@@ -625,35 +617,33 @@ msgid "Deleted Messages"
 msgstr ""
 
 #: openstudyroom/templates/postman/trash.html:10
-msgid ""
-"Messages in this folder can be removed from time to time. For long term "
-"storage, use instead the archive folder."
+msgid "Messages in this folder can be removed from time to time. For long term storage, use instead the archive folder."
 msgstr ""
 
 #: openstudyroom/templates/postman/view.html:5
 msgid "Conversation"
-msgstr ""
+msgstr "Conversation"
 
 #: openstudyroom/templates/postman/view.html:5
 msgid "Message"
-msgstr ""
+msgstr "Message"
 
 #: openstudyroom/templates/postman/view.html:11
 #: openstudyroom/templates/postman/view.html:39
 msgid "Back"
-msgstr ""
+msgstr "Retour"
 
 #: openstudyroom/templates/postman/view.html:30
 msgid "Rejected"
-msgstr ""
+msgstr "Refusé"
 
 #: openstudyroom/templates/postman/view.html:30
 msgid ":"
-msgstr ""
+msgstr ":"
 
 #: openstudyroom/templates/postman/view.html:49
 msgid "Fast Reply"
-msgstr ""
+msgstr "Réponse rapide"
 
 #: openstudyroom/templates/puput/base.html:30
 msgid "Search OSR blog"
@@ -661,14 +651,1059 @@ msgstr ""
 
 #: openstudyroom/templates/puput/base.html:39
 msgid "Last Entries"
-msgstr ""
+msgstr "Dernières inscriptions"
 
 #: openstudyroom/templates/puput/blog_page.html:6
 #: openstudyroom/templates/puput/blog_page.html:7
 #: openstudyroom/templates/puput/blog_page.html:29
 msgid "Entries for"
-msgstr ""
+msgstr "Inscriptions pour"
 
 #: openstudyroom/templates/puput/blog_page.html:57
 msgid "No results founds."
+msgstr "Aucun résultat trouvé."
+
+#: league/templates/league/archives_games.html:47
+#: league/templates/league/event.html:18
+#: league/templates/league/players.html:29
+#: league/templates/league/results.html:28
+#: league/templates/league/scrap_list.html:3
+#: league/templates/league/scrap_list.html:6
+#: league/templates/league/scrap_list.html:17
+msgid "Scrape list"
+msgstr "Liste de récupération"
+
+#: league/templates/league/event.html:23
+#: league/templates/league/includes/league_nav.html:14
+msgid "Infos"
+msgstr "Infos"
+
+#: league/templates/league/event.html:25
+msgid "This league is a <b>primary league</b>. It means it will be automatically joined when joining another league."
+msgstr "Cette ligue est une <b>ligue primaire</b>. Cela signifie qu'elle sera automatiquement rejointe lorsque vous rejoindrez une autre ligue."
+
+#. Translators: Following words is for the sentence "the league will start/stop on date"
+#: league/templates/league/event.html:29
+msgid "stoped"
+msgstr "arrêté"
+
+#: league/templates/league/event.html:29
+msgid "will stop"
+msgstr "s'arrêtera"
+
+#: league/templates/league/event.html:32
+msgid "Game settings"
+msgstr "Paramètres de la partie"
+
+#: league/templates/league/event.html:34
+msgid "Game must be played either on the KGS or on the OGS go server"
+msgstr "La partie doit être jouée sur les serveurs KGS ou OGS"
+
+#: league/templates/league/event.html:35
+msgid "Game must be <b>public</b>."
+msgstr "La partie doit être <b>public</b>."
+
+#: league/templates/league/event.html:36
+msgid "Games must be played with <b>no handicap</b>"
+msgstr "La partie doit être jouée avec <b>no handicap</b>"
+
+#: league/templates/league/event.html:39
+msgid "The game can be ranked or free to the convenience of the players."
+msgstr "La partie peut être classée ou amicale à la convenance des joueurs."
+
+#: league/templates/league/event.html:41
+msgid "If played on OGS, <b>game analysis should be disabled</b>."
+msgstr "Si elle est joué sur OGS, <b>l'analyse de partie doit être désactivée</b>."
+
+#: league/templates/league/event.html:42
+msgid "Using a bot such as Leela or Crazy Stone during league game is strictly forbidden. The OSR team might check some games from time to time to look for matching with these go engines."
+msgstr "L'utilisation d'un bot tel que Leela ou Crazy Stone pendant une partie de la ligue est strictement interdite. L'équipe OSR peut vérifier certaines parties de temps en temps pour voir si elles correspondent à ces moteurs de jeu."
+
+#: league/templates/league/event.html:44
+msgid "League rules"
+msgstr "Règles de la ligue"
+
+#: league/templates/league/event.html:46
+msgid "within the group"
+msgstr "au sein du groupe"
+
+#: league/templates/league/event.html:50
+msgid "Players are strongly encouraged to review their game afterward. If both players have the same rank, or if your opponent can't help you in reviewing the game, one should feel free to ask stronger players in our kgs room and/or in our discord channel help for the review."
+msgstr "Les joueurs sont fortement encouragés à revoir leur partie une fois terminée. Si les deux joueurs ont le même niveau, ou si votre adversaire ne peut pas vous aider à réviser la partie, n'hésitez pas à demander de l'aide à des joueurs plus forts dans notre salle kgs et/ou dans notre canal discord pour la révision."
+
+#: league/templates/league/event.html:60
+msgid "League ends in"
+msgstr "La ligue se termine dans"
+
+#: league/templates/league/includes/league_nav.html:5
+msgid "Results"
+msgstr "Résultats"
+
+#: league/templates/league/archives_games.html:52
+#: league/templates/league/includes/league_nav.html:8
+#: league/templates/league/players.html:4
+msgid "Players"
+msgstr "Joueurs"
+
+#: community/templates/community/community_page.html:157
+#: league/templates/league/archives_games.html:53
+#: league/templates/league/includes/league_nav.html:11
+msgid "Games"
+msgstr "Parties"
+
+#: league/templates/league/includes/league_nav.html:27
+msgid " You are about to join the %(event)s. Allright? "
+msgstr " Vous êtes sur le point de rejoindre %(event)s. D'accord ? "
+
+#: community/templates/community/community_page.html:49
+#: league/templates/league/includes/league_nav.html:28
+msgid "Join"
+msgstr "Rejoindre"
+
+#: league/templates/league/includes/league_nav.html:38
+msgid "You are about to quit the %(event)s. Allright?"
+msgstr "Vous êtes sur le point de quitter %(event)s. D'accord ?"
+
+#: community/templates/community/community_page.html:61
+#: league/templates/league/includes/league_nav.html:39
+msgid "Quit"
+msgstr "Quitter"
+
+#: openstudyroom/templates/account/signup.html:14
+msgid "Join the Open Study Room"
+msgstr "Rejoindre Open Study Room"
+
+#: openstudyroom/templates/account/signup.html:22
+msgid "The Open Study Room"
+msgstr "Open Study Room"
+
+#: openstudyroom/templates/account/signup.html:24
+msgid "Take chance to join an online go community dedicated to play, teach, learn and study the fascinating game of go"
+msgstr "Saisissez l'occasion de rejoindre une communauté de go en ligne dédiée à la pratique, à l'enseignement, à l'apprentissage et à l'étude du fascinant jeu de go"
+
+#: openstudyroom/templates/account/signup.html:27
+msgid "It's free, community driven, and we welcome everyone from beginers to strong dans"
+msgstr "C'est gratuit, axé sur la communauté, et nous accueillons tout le monde, des débutants aux plus expérimentés"
+
+#: openstudyroom/templates/account/signup.html:30
+msgid "If you are uncertain what OSR is, or have any questions, be sure to read our <a href='/faq/'>FAQ</a>. You can also ask us directly in <a href='https://discord.gg/b7meDjX'>Discord server</a>"
+msgstr "Si vous n'êtes pas sûr de ce qu'est OSR, ou si vous avez des questions, n'hésitez pas à lire notre <a href='/faq/'>FAQ</a>. Vous pouvez également nous joindre directement sur <a href='https://discord.gg/b7meDjX'>Discord server</a>"
+
+#: openstudyroom/templates/account/signup.html:32
+msgid "Register here"
+msgstr "S'inscrire ici"
+
+#: openstudyroom/templates/account/signup.html:34
+msgid "Registering will allow you to participate in our <a href='/league/league_rules'>leagues</a>, use our <a href='/forum/'>forums</a> and our discord server"
+msgstr "S'inscrire vous permettra de participer à nos <a href='/league/league_rules'>leagues</a>, utilisez nos <a href='/forum/'>forums</a> et notre serveur discord"
+
+#: openstudyroom/templates/account/signup.html:37
+msgid "Just fill this form by indicating your <a href='https://www.gokgs.com'>KGS</a> and/or <a href='https://online-go.com'>OGS</a> username so that our automatic game finder can upload your league games to your profile"
 msgstr ""
+
+#: openstudyroom/templates/account/signup.html:39
+msgid "We will check that your OGS/KGS username are valid (at least one game) and that you verify your email before activating your account"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:40
+msgid "Setting your timezone will allow our website to adapt all times to your local time"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:41
+msgid "OSR code of conduct"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:42
+msgid "By creating an account on OSR website, you agree to <a href='/code-conduct/'>OSR code of conduct</a>. Just simple common sense rules so everyone can get along nicely"
+msgstr ""
+
+#: openstudyroom/templates/account/signup.html:48
+#: openstudyroom/templates/account/signup.html:65
+msgid "Sign up"
+msgstr "S'enregistrer"
+
+#: openstudyroom/templates/account/signup.html:62
+msgid "Select the communities you have interest in"
+msgstr "Sélectionnez les communautés qui vous intéressent"
+
+#: openstudyroom/templates/account/signup.html:69
+msgid "Already have an account?"
+msgstr "Vous avez déjà un compte ?"
+
+#: openstudyroom/templates/account/signup.html:69
+msgid "Log in"
+msgstr "Se connecter"
+
+#: league/templates/league/event.html:27
+msgid "The <b>%(name)s</b> started on <b>%(begin_time)s</b> (%(TIME_ZONE)s) and "
+msgstr ""
+
+#: league/templates/league/event.html:30
+msgid "%(number_players)s players played %(number_games)s games in %(number_divisions)s divisions. That is %(percent_game_played)s %% of %(possible_games)s possible games."
+msgstr "%(number_players)s joueurs ont joué %(number_games)s parties dans %(number_divisions)s divisions. Soit %(percent_game_played)s %% des %(possible_games)s parties possibles."
+
+#: league/templates/league/event.html:37
+msgid "Games must use <b>Japanese timesetting</b> with at least <b>%(get_main_time_min)s min main time</b> and <b>3 x %(additional_time)s sec byo-yomi</b>."
+msgstr "Les parties doivent utiliser <b>les réglages de temps japonais</b> avec au moins <b>%(get_main_time_min)s min de temps principal</b> et <b>3 x %(additional_time)s sec byo-yomi</b>."
+
+#: league/templates/league/event.html:38
+msgid "At least one player must tag the game saying <b>%(tag_upper)s</b> or <b>%(tag_lower)s</b>."
+msgstr "Au moins un joueur doit taguer la partie en écrivant <b>%(tag_upper)s</b> ou <b>%(tag_lower)s</b>."
+
+#: league/templates/league/event.html:40
+msgid "Komi must be set to <b>%(komi)s</b>."
+msgstr "Le Komi doit être réglé sur <b>%(komi)s</b>."
+
+#: league/templates/league/event.html:46
+msgid "Players can play up to <b>%(nb_matchs)s games</b> against the same opponent "
+msgstr "Les joueurs peuvent jouer jusqu'à <b>%(nb_matchs)s games</b> contre le même adversaire "
+
+#: league/templates/league/event.html:47
+msgid "A win grants <b>%(ppwin)s points</b> and a loss grants <b>%(pploss)s</b>."
+msgstr "Une victoire accorde <b>%(ppwin)s points</b> et une défaite accorde <b>%(pploss)s</b>."
+
+#: league/templates/league/event.html:48
+msgid "Players who played at least <b>%(min_matchs)s games</b> will be added to the next league, once this one has ended."
+msgstr "Les joueurs ayant joué au moins <b>%(min_matchs)s parties</b> seront ajoutée à la prochaine ligue, une fois celle-ci terminée."
+
+#: community/templates/community/community_page.html:47
+msgid "You are about to join the %(name)s community. Allright? "
+msgstr "Vous êtes sur le point de rejoindre %(name)s communauté. D'accord ? "
+
+#: community/templates/community/community_page.html:84
+#: league/templates/league/archives_games.html:51
+msgid "Leagues"
+msgstr "Ligues"
+
+#: community/templates/community/community_page.html:85
+msgid "tournaments"
+msgstr "Tournois"
+
+#: community/templates/community/community_page.html:86
+msgid "Members"
+msgstr "Membres"
+
+#: community/templates/community/community_page.html:93
+msgid "All %(name)s leagues "
+msgstr ""
+
+#: community/templates/community/community_page.html:98
+msgid "Create new league"
+msgstr "Créer une nouvelle ligue"
+
+#: community/templates/community/community_page.html:103
+msgid "Open leagues are green."
+msgstr ""
+
+#: community/templates/community/community_page.html:112
+msgid "All %(name)s tournaments "
+msgstr ""
+
+#: community/templates/community/community_page.html:117
+msgid "Create new tournament"
+msgstr ""
+
+#: community/templates/community/community_page.html:122
+msgid "Open tournament are green."
+msgstr ""
+
+#: community/templates/community/community_page.html:131
+msgid "All %(name)s members "
+msgstr ""
+
+#: community/templates/community/admin/user_list.html:11
+#: community/templates/community/community_page.html:134
+msgid "Invite a user"
+msgstr "Inviter un utilisateur"
+
+#: community/templates/community/community_page.html:138
+msgid "OSR exact username"
+msgstr ""
+
+#: community/templates/community/admin/user_list.html:20
+#: community/templates/community/community_page.html:140
+msgid "Invite  !"
+msgstr ""
+
+#: community/templates/community/community_page.html:147
+msgid "Community admins are blue."
+msgstr ""
+
+#: community/templates/community/community_page.html:170
+#: league/templates/league/archives_games.html:78
+msgid "Click a game result to see it."
+msgstr ""
+
+#: community/templates/community/admin/user_list.html:5
+msgid "members"
+msgstr "membres"
+
+#: community/templates/community/admin/user_list.html:29
+msgid "All %(community.name)s members "
+msgstr ""
+
+#: community/templates/community/admin/user_list.html:33
+#: community/templates/community/admin/user_list.html:34
+#: community/templates/community/includes/members_table.html:5
+#: community/templates/community/includes/members_table.html:6
+#: community/templates/community/includes/new_user_table.html:9
+#: community/templates/community/includes/new_user_table.html:10
+#: community/templates/community/includes/new_user_table.html:11
+msgid "username"
+msgstr ""
+
+#: community/templates/community/admin/user_list.html:35
+#: community/templates/community/includes/members_table.html:9
+msgid "kick out"
+msgstr ""
+
+#: community/templates/community/admin/user_list.html:48
+#: community/templates/community/includes/members_table.html:29
+msgid "Kick  !"
+msgstr ""
+
+#: allauth/socialaccount/models.py:46
+msgid "name"
+msgstr "nom"
+
+#: community/templates/community/includes/leagues_table.html:8
+msgid "begin"
+msgstr "commencer"
+
+#: community/templates/community/includes/leagues_table.html:9
+msgid "ends"
+msgstr ""
+
+#: community/templates/community/includes/leagues_table.html:10
+msgid "type"
+msgstr ""
+
+#: community/templates/community/includes/leagues_table.html:11
+msgid "divisions"
+msgstr ""
+
+#: community/templates/community/includes/leagues_table.html:12
+msgid "players"
+msgstr ""
+
+#: community/templates/community/includes/leagues_table.html:13
+#: league/templates/league/players.html:90
+msgid "games"
+msgstr ""
+
+#: community/templates/community/includes/leagues_table.html:15
+msgid "edit"
+msgstr ""
+
+#: community/templates/community/includes/members_table.html:28
+#: community/templates/community/includes/new_user_table.html:29
+msgid "You are about to kick %(username)s. Allright?"
+msgstr ""
+
+#: community/templates/community/includes/members_table.html:45
+msgid "You are about to add %(username)s as a community admin?"
+msgstr ""
+
+#: community/templates/community/includes/members_table.html:61
+msgid "You are about to remove %(username)s from community admins?"
+msgstr ""
+
+#: community/templates/community/includes/new_user_table.html:12
+msgid "reject"
+msgstr ""
+
+#: community/templates/community/includes/new_user_table.html:13
+msgid "accept"
+msgstr ""
+
+#: community/templates/community/includes/new_user_table.html:43
+msgid "You are about to add %(username)s as a community member?"
+msgstr ""
+
+#: league/templates/league/results.html:3
+msgid "results"
+msgstr ""
+
+#: league/templates/league/results.html:47
+#: league/templates/league/results.html:54
+msgid "This league is empty !"
+msgstr ""
+
+#: league/templates/league/scrap_list.html:3
+#: league/templates/league/scrap_list.html:6
+msgid "OSR leagues"
+msgstr ""
+
+#: league/templates/league/scrap_list.html:19
+msgid "Every 5 minutes, our system checks whether a player (one player at a time) has played any new games. This table shows the players that are next in line to be checked by the system."
+msgstr ""
+
+#: league/templates/league/scrap_list.html:23
+msgid "If you just played a game, you can move you up this list by clicking this button :"
+msgstr ""
+
+#: league/templates/league/scrap_list.html:27
+msgid "Put me up !"
+msgstr ""
+
+#: league/templates/league/players.html:86
+#: league/templates/league/scrap_list.html:35
+msgid "player"
+msgstr ""
+
+#: league/templates/league/scrap_list.html:36
+msgid "check in (min)"
+msgstr ""
+
+#: league/templates/league/scrap_list.html:38
+msgid "put up"
+msgstr ""
+
+#: community/templates/community/includes/new_user_table.html:4
+msgid "New users"
+msgstr ""
+
+#: community/templates/community/includes/tournaments_table.html:7
+msgid "begin time"
+msgstr ""
+
+#: community/templates/community/includes/tournaments_table.html:8
+msgid "end time"
+msgstr ""
+
+#: community/templates/community/includes/tournaments_table.html:10
+msgid "manage"
+msgstr ""
+
+#: community/templates/community/includes/tournaments_table.html:11
+msgid "delete"
+msgstr ""
+
+#: league/templates/league/includes/games.html:9
+msgid "date"
+msgstr ""
+
+#: league/templates/league/includes/games.html:10
+msgid "white"
+msgstr ""
+
+#: league/templates/league/includes/games.html:11
+msgid "black"
+msgstr ""
+
+#: league/templates/league/includes/games.html:12
+msgid "result"
+msgstr ""
+
+#: league/templates/league/players.html:35
+msgid "This table show all users who"
+msgstr ""
+
+#: league/templates/league/players.html:35
+msgid "played"
+msgstr ""
+
+#: league/templates/league/players.html:35
+msgid "play"
+msgstr ""
+
+#: league/templates/league/players.html:35
+msgid "in the"
+msgstr ""
+
+#: league/templates/league/players.html:42
+msgid "Filter by server (check to only see users who plays on this server)"
+msgstr ""
+
+#: league/templates/league/players.html:64
+msgid "Filter by division (check to see users of this division)"
+msgstr ""
+
+#: league/templates/league/players.html:84
+msgid "division"
+msgstr ""
+
+#: league/templates/league/players.html:85
+msgid "rank"
+msgstr ""
+
+#: league/templates/league/players.html:87
+msgid "score"
+msgstr ""
+
+#: league/templates/league/players.html:88
+msgid "win"
+msgstr ""
+
+#: league/templates/league/players.html:89
+msgid "loss"
+msgstr ""
+
+#: allauth/account/adapter.py:45
+msgid "Username can not be used. Please use other username."
+msgstr "Ce pseudonyme ne peut pas être utilisé. Veuillez en choisir un autre."
+
+#: allauth/account/adapter.py:49
+msgid "Too many failed login attempts. Try again later."
+msgstr "Trop de tentatives de connexion échouées. Veuillez réessayer ultérieurement."
+
+#: allauth/account/adapter.py:51
+msgid "A user is already registered with this e-mail address."
+msgstr "Un autre utilisateur utilise déjà cette adresse e-mail."
+
+#: allauth/account/adapter.py:294
+msgid "Password must be a minimum of {0} characters."
+msgstr "Le mot de passe doit contenir au minimum {0} caractères."
+
+#: allauth/account/apps.py:7
+msgid "Accounts"
+msgstr "Comptes"
+
+#: allauth/account/forms.py:61 allauth/account/forms.py:398
+msgid "You must type the same password each time."
+msgstr "Vous devez saisir deux fois le même mot de passe."
+
+#: allauth/account/forms.py:91 allauth/account/forms.py:365
+#: allauth/account/forms.py:476
+msgid "Password"
+msgstr "Mot de passe"
+
+#: allauth/account/forms.py:92
+msgid "Remember Me"
+msgstr "Se souvenir de moi"
+
+#: allauth/account/forms.py:98
+msgid "This account is currently inactive."
+msgstr "Ce compte est actuellement désactivé."
+
+#: allauth/account/forms.py:101
+msgid "The e-mail address and/or password you specified are not correct."
+msgstr "L’adresse e-mail ou le mot de passe sont incorrects."
+
+#: allauth/account/forms.py:104
+msgid "The username and/or password you specified are not correct."
+msgstr "Le pseudo ou le mot de passe sont incorrects."
+
+#: allauth/account/forms.py:113 allauth/account/forms.py:268
+#: allauth/account/forms.py:426 allauth/account/forms.py:495
+msgid "E-mail address"
+msgstr "Adresse e-mail"
+
+#: allauth/account/forms.py:115 allauth/account/forms.py:301
+#: allauth/account/forms.py:421 allauth/account/forms.py:490
+msgid "E-mail"
+msgstr "E-mail"
+
+#: allauth/account/forms.py:120 allauth/account/forms.py:123
+#: allauth/account/forms.py:260 allauth/account/forms.py:264
+msgid "Username"
+msgstr "Pseudonyme"
+
+#: allauth/account/forms.py:130
+msgid "Username or e-mail"
+msgstr "Pseudonyme ou e-mail"
+
+#: allauth/account/forms.py:133
+msgctxt "field label"
+msgid "Login"
+msgstr "Identifiant"
+
+#: allauth/account/forms.py:292
+#, fuzzy
+msgid "E-mail (again)"
+msgstr "E-mail (facultatif)"
+
+#: allauth/account/forms.py:296
+msgid "E-mail address confirmation"
+msgstr "Confirmation d'adresse e-mail"
+
+#: allauth/account/forms.py:304
+msgid "E-mail (optional)"
+msgstr "E-mail (facultatif)"
+
+#: allauth/account/forms.py:345
+msgid "You must type the same email each time."
+msgstr "Vous devez saisir deux fois le même email."
+
+#: allauth/account/forms.py:368 allauth/account/forms.py:477
+msgid "Password (again)"
+msgstr "Mot de passe (confirmation)"
+
+#: allauth/account/forms.py:432
+msgid "This e-mail address is already associated with this account."
+msgstr "L'adresse e-mail est déjà associée à votre compte."
+
+#: allauth/account/forms.py:434
+msgid "This e-mail address is already associated with another account."
+msgstr "L'adresse e-mail est déjà associée à un autre compte."
+
+#: allauth/account/forms.py:456
+msgid "Current Password"
+msgstr "Mot de passe actuel"
+
+#: allauth/account/forms.py:457 allauth/account/forms.py:546
+msgid "New Password"
+msgstr "Nouveau mot de passe"
+
+#: allauth/account/forms.py:458 allauth/account/forms.py:547
+msgid "New Password (again)"
+msgstr "Nouveau mot de passe (confirmation)"
+
+#: allauth/account/forms.py:466
+msgid "Please type your current password."
+msgstr "Merci d'indiquer votre mot de passe actuel."
+
+#: allauth/account/forms.py:504
+msgid "The e-mail address is not assigned to any user account"
+msgstr "Cette adresse e-mail n'est pas associée à un compte utilisateur"
+
+#: allauth/account/forms.py:568
+msgid "The password reset token was invalid."
+msgstr "Le jeton de réinitialisation de mot de passe est invalide."
+
+#: allauth/account/models.py:23
+msgid "user"
+msgstr "utilisateur"
+
+#: allauth/account/models.py:27 allauth/account/models.py:81
+msgid "e-mail address"
+msgstr "adresse e-mail"
+
+#: allauth/account/models.py:28
+msgid "verified"
+msgstr "vérifié"
+
+#: allauth/account/models.py:29
+msgid "primary"
+msgstr "principale"
+
+#: allauth/account/models.py:34
+msgid "email address"
+msgstr "adresse e-mail"
+
+#: allauth/account/models.py:35
+msgid "email addresses"
+msgstr "adresses e-mail"
+
+#: allauth/account/models.py:83
+msgid "created"
+msgstr "créé"
+
+#: allauth/account/models.py:85
+msgid "sent"
+msgstr "envoyé"
+
+#: allauth/account/models.py:86 allauth/socialaccount/models.py:55
+msgid "key"
+msgstr "clé"
+
+#: allauth/account/models.py:91
+msgid "email confirmation"
+msgstr "confirmation par e-mail"
+
+#: allauth/account/models.py:92
+msgid "email confirmations"
+msgstr "confirmations par e-mail"
+
+#: allauth/socialaccount/adapter.py:26
+msgid "An account already exists with this e-mail address. Please sign in to that account first, then connect your %s account."
+msgstr "Un compte existe déjà avec cette adresse e-mail. Merci de vous connecter au préalable avec ce compte, et ensuite connecter votre compte %s."
+
+#: allauth/socialaccount/adapter.py:131
+msgid "Your account has no password set up."
+msgstr "Vous devez d'abord définir le mot de passe de votre compte."
+
+#: allauth/socialaccount/adapter.py:138
+msgid "Your account has no verified e-mail address."
+msgstr "Vous devez d'abord associer une adresse e-mail à votre compte."
+
+#: allauth/socialaccount/apps.py:7
+msgid "Social Accounts"
+msgstr "Comptes Sociaux"
+
+#: allauth/socialaccount/models.py:43 allauth/socialaccount/models.py:77
+msgid "provider"
+msgstr "fournisseur"
+
+#: allauth/socialaccount/models.py:48
+msgid "client id"
+msgstr "id client"
+
+#: allauth/socialaccount/models.py:50
+msgid "App ID, or consumer key"
+msgstr "ID de l'app ou clé de l'utilisateur"
+
+#: allauth/socialaccount/models.py:51
+msgid "secret key"
+msgstr "clé secrète"
+
+#: allauth/socialaccount/models.py:53
+msgid "API secret, client secret, or consumer secret"
+msgstr "Secret de l'API, secret du client, ou secret de l'utilisateur"
+
+#: allauth/socialaccount/models.py:58
+msgid "Key"
+msgstr "Clé"
+
+#: allauth/socialaccount/models.py:66
+msgid "social application"
+msgstr "application sociale"
+
+#: allauth/socialaccount/models.py:67
+msgid "social applications"
+msgstr "applications sociales"
+
+#: allauth/socialaccount/models.py:96
+msgid "uid"
+msgstr "uid"
+
+#: allauth/socialaccount/models.py:98
+msgid "last login"
+msgstr "dernière identification"
+
+#: allauth/socialaccount/models.py:100
+msgid "date joined"
+msgstr "date d'inscription"
+
+#: allauth/socialaccount/models.py:102
+msgid "extra data"
+msgstr "données supplémentaires"
+
+#: allauth/socialaccount/models.py:106
+msgid "social account"
+msgstr "compte social"
+
+#: allauth/socialaccount/models.py:107
+msgid "social accounts"
+msgstr "comptes sociaux"
+
+#: allauth/socialaccount/models.py:133
+msgid "token"
+msgstr "jeton"
+
+#: allauth/socialaccount/models.py:135
+msgid "\"oauth_token\" (OAuth1) or access token (OAuth2)"
+msgstr "\"oauth_token\" (OAuth1) ou jeton d'accès (OAuth2)"
+
+#: allauth/socialaccount/models.py:138
+msgid "token secret"
+msgstr "jeton secret"
+
+#: allauth/socialaccount/models.py:140
+msgid "\"oauth_token_secret\" (OAuth1) or refresh token (OAuth2)"
+msgstr "\"oauth_token_secret\" (OAuth1) ou jeton d'actualisation (OAuth2)"
+
+#: allauth/socialaccount/models.py:142
+msgid "expires at"
+msgstr "expire le"
+
+#: allauth/socialaccount/models.py:146
+msgid "social application token"
+msgstr "jeton de l'application sociale"
+
+#: allauth/socialaccount/models.py:147
+msgid "social application tokens"
+msgstr "jetons de l'application sociale"
+
+#: allauth/socialaccount/providers/douban/views.py:36
+msgid "Invalid profile data"
+msgstr ""
+
+#: allauth/socialaccount/providers/oauth/client.py:78
+msgid "Invalid response while obtaining request token from \"%s\"."
+msgstr "Réponse invalide lors de l'obtention du jeton de requête de \"%s\"."
+
+#: allauth/socialaccount/providers/oauth/client.py:109
+msgid "Invalid response while obtaining access token from \"%s\"."
+msgstr "Réponse invalide lors de l'obtention du jeton d'accès depuis \"%s\"."
+
+#: allauth/socialaccount/providers/oauth/client.py:128
+msgid "No request token saved for \"%s\"."
+msgstr "Aucun jeton de requête sauvegardé pour \"%s\"."
+
+#: allauth/socialaccount/providers/oauth/client.py:177
+msgid "No access token saved for \"%s\"."
+msgstr "Aucun jeton d'accès sauvegardé pour \"%s\"."
+
+#: allauth/socialaccount/providers/oauth/client.py:197
+msgid "No access to private resources at \"%s\"."
+msgstr "Impossible d'accéder aux ressources privées de \"%s\"."
+
+#: allauth/templates/account/account_inactive.html:5
+#: allauth/templates/account/account_inactive.html:8
+msgid "Account Inactive"
+msgstr "Compte inactif"
+
+#: allauth/templates/account/account_inactive.html:10
+msgid "This account is inactive."
+msgstr "Ce compte est inactif."
+
+#: allauth/templates/account/email.html:5
+msgid "Account"
+msgstr "Compte"
+
+#: allauth/templates/account/email/email_confirmation_message.txt:1
+#, fuzzy
+msgid "Hello from %(site_name)s!\n"
+"\n"
+"You're receiving this e-mail because user %(user_display)s has given yours as an e-mail address to connect their account.\n"
+"\n"
+"To confirm this is correct, go to %(activate_url)s\n"
+""
+msgstr "L'utilisateur %(user_display)s du site %(site_name)s (%(site_domain)s) nous a indiqué posséder cette adresse e-mail.\n"
+"\n"
+"Pour confirmer que vous êtes bien le propriétaire, allez à %(activate_url)s\n"
+""
+
+#: allauth/templates/account/email/email_confirmation_message.txt:7
+msgid "Thank you from %(site_name)s!\n"
+"%(site_domain)s"
+msgstr "Merci, de la part de %(site_name)s!\n"
+"%(site_domain)s"
+
+#: allauth/templates/account/email/email_confirmation_subject.txt:3
+msgid "Please Confirm Your E-mail Address"
+msgstr "Confirmez votre adresse e-mail"
+
+#: allauth/templates/account/email/password_reset_key_message.txt:1
+#, fuzzy
+msgid "Hello from %(site_name)s!\n"
+"\n"
+"You're receiving this e-mail because you or someone else has requested a password for your user account.\n"
+"It can be safely ignored if you did not request a password reset. Click the link below to reset your password."
+msgstr "Vous recevez cet e-mail car vous ou quelqu'un d'autre a demandé un mot de passe pour votre compte utilisateur du site %(site_name)s (%(site_domain)s).\n"
+"Vous pouvez simplement ignorer ce message si vous n'êtes pas à l'origine de cette demande. Sinon, cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe."
+
+#: allauth/templates/account/email/password_reset_key_message.txt:8
+msgid "In case you forgot, your username is %(username)s."
+msgstr "Au cas où vous l'auriez oublié, votre nom d'utilisateur est %(username)s."
+
+#: allauth/templates/account/email/password_reset_key_message.txt:10
+msgid "Thank you for using %(site_name)s!\n"
+"%(site_domain)s"
+msgstr "Merci d'utiliser %(site_name)s !\n"
+"%(site_domain)s"
+
+#: allauth/templates/account/email/password_reset_key_subject.txt:3
+msgid "Password Reset E-mail"
+msgstr "E-mail de réinitialisation de mot de passe"
+
+#: allauth/templates/account/login.html:6
+#: allauth/templates/account/login.html:10
+#: allauth/templates/account/login.html:43
+msgid "Sign In"
+msgstr "Connexion"
+
+#: allauth/templates/account/login.html:15
+msgid "Please sign in with one\n"
+"of your existing third party accounts. Or, <a href=\"%(signup_url)s\">sign up</a>\n"
+"for a %(site_name)s account and sign in below:"
+msgstr "Merci d'ouvrir une session avec l'un de vos comptes sociaux. Vous pouvez aussi <a href=\"%(signup_url)s\">ouvrir un compte</a> %(site_name)s puis vous connecter ci-dessous :"
+
+#: allauth/templates/account/login.html:25
+msgid "or"
+msgstr "ou"
+
+#: allauth/templates/account/login.html:32
+msgid "If you have not created an account yet, then please\n"
+"<a href=\"%(signup_url)s\">sign up</a> first."
+msgstr "Si vous n'avez pas encore créé de compte, merci de vous <a href=\"%(signup_url)s\">enregistrer</a> au préalable."
+
+#: allauth/templates/account/login.html:42
+msgid "Forgot Password?"
+msgstr "Mot de passe oublié ?"
+
+#: allauth/templates/account/logout.html:5
+#: allauth/templates/account/logout.html:8
+#: allauth/templates/account/logout.html:17
+msgid "Sign Out"
+msgstr "Se Déconnecter"
+
+#: allauth/templates/account/logout.html:10
+msgid "Are you sure you want to sign out?"
+msgstr "Etes-vous sûr(e) de vouloir vous déconnecter ?"
+
+#: allauth/templates/account/messages/cannot_delete_primary_email.txt:2
+msgid "You cannot remove your primary e-mail address (%(email)s)."
+msgstr "Vous ne pouvez pas supprimer votre adresse e-mail principale (%(email)s)."
+
+#: allauth/templates/account/messages/email_confirmation_sent.txt:2
+msgid "Confirmation e-mail sent to %(email)s."
+msgstr "E-mail de confirmation envoyé à %(email)s."
+
+#: allauth/templates/account/messages/email_confirmed.txt:2
+msgid "You have confirmed %(email)s."
+msgstr "Vous avez confirmé %(email)s."
+
+#: allauth/templates/account/messages/email_deleted.txt:2
+msgid "Removed e-mail address %(email)s."
+msgstr "Adresse e-mail %(email)s supprimée."
+
+#: allauth/templates/account/messages/logged_in.txt:4
+msgid "Successfully signed in as %(name)s."
+msgstr "Connexion avec %(name)s réussie."
+
+#: allauth/templates/account/messages/logged_out.txt:2
+msgid "You have signed out."
+msgstr "Vous êtes déconnecté."
+
+#: allauth/templates/account/messages/password_changed.txt:2
+msgid "Password successfully changed."
+msgstr "Mot de passe modifié."
+
+#: allauth/templates/account/messages/password_set.txt:2
+msgid "Password successfully set."
+msgstr "Mot de passe défini."
+
+#: allauth/templates/account/messages/primary_email_set.txt:2
+msgid "Primary e-mail address set."
+msgstr "Adresse e-mail principale enregistrée."
+
+#: allauth/templates/account/messages/unverified_primary_email.txt:2
+msgid "Your primary e-mail address must be verified."
+msgstr "Votre adresse e-mail principale doit être vérifiée."
+
+#: allauth/templates/account/password_reset.html:6
+#: allauth/templates/account/password_reset.html:10
+#: allauth/templates/account/password_reset_done.html:6
+#: allauth/templates/account/password_reset_done.html:9
+msgid "Password Reset"
+msgstr "Réinitialisation du mot de passe"
+
+#: allauth/templates/account/password_reset.html:15
+msgid "Forgotten your password? Enter your e-mail address below, and we'll send you an e-mail allowing you to reset it."
+msgstr "Mot de passe oublié ? Indiquez votre adresse e-mail ci-dessous et nous vous enverrons un e-mail pour le réinitialiser."
+
+#: allauth/templates/account/password_reset.html:20
+msgid "Reset My Password"
+msgstr "Réinitialiser mon mot de passe"
+
+#: allauth/templates/account/password_reset.html:23
+msgid "Please contact us if you have any trouble resetting your password."
+msgstr "Merci de nous contacter si vous ne parvenez pas à réinitialiser votre mot de passe."
+
+#: allauth/templates/account/password_reset_done.html:15
+msgid "We have sent you an e-mail. Please contact us if you do not receive it within a few minutes."
+msgstr "Nous vous avons envoyé un e-mail. Merci de nous contacter si vous ne le recevez pas d'ici quelques minutes."
+
+#: allauth/templates/account/password_set.html:5
+#: allauth/templates/account/password_set.html:8
+#: allauth/templates/account/password_set.html:13
+msgid "Set Password"
+msgstr "Définir un mot de passe"
+
+#: allauth/templates/account/signup.html:5
+#: allauth/templates/socialaccount/signup.html:5
+msgid "Signup"
+msgstr "Inscription"
+
+#: allauth/templates/account/signup.html:8
+#: allauth/templates/account/signup.html:18
+#: allauth/templates/socialaccount/signup.html:8
+#: allauth/templates/socialaccount/signup.html:19
+msgid "Sign Up"
+msgstr "Création de compte"
+
+#: allauth/templates/account/signup.html:10
+msgid "Already have an account? Then please <a href=\"%(login_url)s\">sign in</a>."
+msgstr "Vous avez déjà un compte ? Vous pouvez donc <a href=\"%(login_url)s\">vous connecter</a>."
+
+#: allauth/templates/account/signup_closed.html:5
+#: allauth/templates/account/signup_closed.html:8
+msgid "Sign Up Closed"
+msgstr "Inscriptions Fermées"
+
+#: allauth/templates/account/signup_closed.html:10
+msgid "We are sorry, but the sign up is currently closed."
+msgstr "Nous sommes désolés, mais les inscriptions sont actuellement fermées."
+
+#: allauth/templates/account/snippets/already_logged_in.html:5
+msgid "Note"
+msgstr "Remarque"
+
+#: allauth/templates/account/snippets/already_logged_in.html:5
+msgid "you are already logged in as %(user_display)s."
+msgstr "vous êtes déjà connecté en tant que %(user_display)s."
+
+#: allauth/templates/account/verification_sent.html:5
+#: allauth/templates/account/verification_sent.html:8
+#: allauth/templates/account/verified_email_required.html:5
+#: allauth/templates/account/verified_email_required.html:8
+msgid "Verify Your E-mail Address"
+msgstr "Vérifiez votre adresse e-mail"
+
+#: allauth/templates/account/verification_sent.html:10
+msgid "We have sent an e-mail to you for verification. Follow the link provided to finalize the signup process. Please contact us if you do not receive it within a few minutes."
+msgstr "Nous vous avons envoyé un e-mail pour validation. Cliquez sur le lien fourni dans l'e-mail pour terminer l'inscription. Merci de nous contacter si vous ne le recevez pas d'ici quelques minutes."
+
+#: allauth/templates/account/verified_email_required.html:12
+msgid "This part of the site requires us to verify that\n"
+"you are who you claim to be. For this purpose, we require that you\n"
+"verify ownership of your e-mail address. "
+msgstr "Pour accéder à cette partie du site, il faut d'abord que nous ayons vérifié que vous êtes bien le propriétaire de l'adresse e-mail que vous nous avez indiquée."
+
+#: allauth/templates/account/verified_email_required.html:16
+msgid "We have sent an e-mail to you for\n"
+"verification. Please click on the link inside this e-mail. Please\n"
+"contact us if you do not receive it within a few minutes."
+msgstr "Nous vous avons envoyé un e-mail de vérification. Merci de cliquer sur le lien inclus dans ce courriel. Contactez-nous si vous ne l'avez pas reçu d'ici quelques minutes."
+
+#: allauth/templates/account/verified_email_required.html:20
+msgid "<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your e-mail address</a>."
+msgstr "<strong>Remarque :</strong> vous pouvez toujours <a href=\"%(email_url)s\">changer votre adresse e-mail</a>."
+
+#: allauth/templates/openid/login.html:9
+msgid "OpenID Sign In"
+msgstr "Connexion OpenID"
+
+#: allauth/templates/socialaccount/authentication_error.html:5
+#: allauth/templates/socialaccount/authentication_error.html:8
+msgid "Social Network Login Failure"
+msgstr "Echec de la connexion au réseau social"
+
+#: allauth/templates/socialaccount/authentication_error.html:10
+msgid "An error occurred while attempting to login via your social network account."
+msgstr "Une erreur est survenue lors de la tentative de connexion à votre compte de réseau social."
+
+#: allauth/templates/socialaccount/connections.html:5
+#: allauth/templates/socialaccount/connections.html:8
+msgid "Account Connections"
+msgstr "Comptes associés"
+
+#: allauth/templates/socialaccount/connections.html:11
+msgid "You can sign in to your account using any of the following third party accounts:"
+msgstr "Vous pouvez ouvrir une session en utilisant l'un de ces réseaux sociaux :"
+
+#: allauth/templates/socialaccount/connections.html:43
+msgid "You currently have no social network accounts connected to this account."
+msgstr "Aucun compte de réseau social n'est actuellement associé à ce compte."
+
+#: allauth/templates/socialaccount/connections.html:46
+msgid "Add a 3rd Party Account"
+msgstr "Ajouter un compte de réseau social"
+
+#: allauth/templates/socialaccount/login_cancelled.html:5
+#: allauth/templates/socialaccount/login_cancelled.html:9
+msgid "Login Cancelled"
+msgstr "Ouverture de session annulée"
+
+#: allauth/templates/socialaccount/login_cancelled.html:13
+msgid "You decided to cancel logging in to our site using one of your existing accounts. If this was a mistake, please proceed to <a href=\"%(login_url)s\">sign in</a>."
+msgstr "Vous avez annulé la connexion à notre site depuis l'un de vos comptes de réseau social. S'il s'agit d'une erreur, merci de <a href=\"%(login_url)s\">connecter</a>."
+
+#: allauth/templates/socialaccount/messages/account_connected.txt:2
+msgid "The social account has been connected."
+msgstr "Le compte social a bien été connecté."
+
+#: allauth/templates/socialaccount/messages/account_connected_other.txt:2
+msgid "The social account is already connected to a different account."
+msgstr "Ce compte social est déjà connecté à un autre compte."
+
+#: allauth/templates/socialaccount/messages/account_disconnected.txt:2
+msgid "The social account has been disconnected."
+msgstr "Le compte social a été déconnecté."
+
+#: allauth/templates/socialaccount/signup.html:10
+msgid "You are about to use your %(provider_name)s account to login to\n"
+"%(site_name)s. As a final step, please complete the following form:"
+msgstr "Vous êtes sur le point de vous connecter via votre compte %(provider_name)s au site %(site_name)s. Merci de compléter le formulaire suivant pour confirmer la connexion."
