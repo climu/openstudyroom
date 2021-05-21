@@ -1,39 +1,39 @@
-    table#example{
-        width:auto;
-        margin-top:60px;
-    }
-    .table-responsive{
-        overflow-x: visible;
-    }
-    table#example th{
-        text-align: center;
-        min-width:30px;
-    }
-    table#example th:nth-of-type(1),
-    table#example th:nth-of-type(2){
-        text-align: left;
-    }
-    tr.even-row,
-    td.even-column{
-        background-color:#f8f8f8;
-    }
-    td.table-league-highlight {
-        background-color: LightGray;
-    }
-    .kgs_username{
-        transform: rotate(-60deg);
-        transform-origin: 0 0;
-        position: absolute;
-        margin-top: -10px;
-    }
-    .table-league-score-highlight{
-        text-align: center;
-    }
-    .inactive{
-        background-color: #ececec;
-        color: #b9b9b9;
-    }
-    .inactive>a{
-            color:#76b9f3;
-
-    }
+.table-responsive {
+    margin-top: 4rem;
+}
+table#example {
+    width:auto;
+    overflow-x: visible;
+} 
+table#example th{
+    text-align: center;
+    min-width: 4rem;
+}
+table#example th, table#example td{
+    padding: 0.75rem;
+} 
+.even-row {
+    background-color:#f8f8f8;
+}
+.kgs_username{
+    transform: rotate(-60deg);
+    transform-origin: 0 0;
+    position: absolute;
+    margin-top: -10px;
+}
+.inactive{
+    background-color: #ececec;
+    color: #b9b9b9;
+}
+.inactive > a {
+    color:#76b9f3;
+}
+.disabled {
+    background-color: #cccccc;
+}
+.bold {
+    font-weight: 600;
+}
+.even-col, .odd-col {
+    text-align: center;
+}

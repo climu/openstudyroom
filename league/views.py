@@ -42,7 +42,7 @@ from . import utils
 from . import ogs
 from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
     Profile
-from .forms import SgfAdminForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm,\
+from .forms import SgfAdminForm, AddWontPlayForm, RemoveWontPlayForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm,\
     LeagueEventForm, EmailForm, TimezoneForm, ProfileForm
 from .go_federations import format_ffg_tou
 
@@ -215,7 +215,6 @@ def download_all_sgf(request, user_id):
     response.write(in_memory.read())
 
     return response
-
 
 def games_datatable_api(request):
     """
@@ -1422,6 +1421,45 @@ def division_set_winner(request, division_id):
             return HttpResponseRedirect(form.cleaned_data['next'])
     raise Http404("What are you doing here ?")
 
+@login_required()
+def division_create_wont_play(request, division_id):
+    division = get_object_or_404(Division, pk=division_id)
+    event = division.league_event
+    if not request.user.is_league_admin(event):
+        raise Http404("What are you doing here ?")
+    form = AddWontPlayForm(request.POST)
+    if form.is_valid():
+        try:
+            users = [User.objects.get(pk=pk) for pk in form.cleaned_data['players']]
+            if all([division.has_user(user) for user in users]):
+                Sgf.create_wont_play(event, division, users)
+        except: pass
+    return division_update_wont_play(request, division.pk)
+
+@login_required()
+def division_remove_wont_play(request, division_id):
+    division = get_object_or_404(Division, pk=division_id)
+    event = division.league_event
+    if not request.user.is_league_admin(event):
+        raise Http404("What are you doing here ?")
+    form = RemoveWontPlayForm(request.POST)
+    if form.is_valid():
+        for pk in form.cleaned_data['sgfs']:
+            Sgf.objects.filter(pk=pk).delete()
+    return division_update_wont_play(request, division.pk)
+
+@login_required()
+def division_update_wont_play(request, division_id):
+    division = get_object_or_404(Division, pk=division_id)
+    event = division.league_event
+    if not request.user.is_league_admin(event):
+        raise Http404("What are you doing here ?")
+    context = {
+        'event_pk': event.pk,
+        'division': division,
+    }
+    print(event.pk)
+    return render(request, 'league/admin/update_wont_play.html', context)
 
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)

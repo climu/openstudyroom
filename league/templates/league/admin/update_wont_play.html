@@ -1,0 +1,72 @@
+{% extends 'full_width.html' %}
+{% load bootstrap3 league_tags %}
+{% block title %} {{division.name}} edit {% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1> Manage {{division.name}} division WontPlay results</h1>   
+    <p>
+        When two users are not allowed to play together, we can create a "WontPlay" result.      
+        Consequently, all hypothetic games between them will be hidden in the result page.
+        Keep in mind that this is currently only for aesthetic purpose (games between them can still be saved).
+    </p>
+    <a href="{% url 'league:results' event_pk division.pk %}">Go back to division's page</a>
+</div>
+{%endblock%}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-2">
+        <form action="{% url 'league:division_create_wont_play' division.pk %}" method="POST">{% csrf_token %}
+            {% for player in division.get_results %}
+                <div class="form-group">
+                    <input class="player_selector" type="checkbox" id="player-{{player.user}}" value="{{player.user.pk}}" name="players">
+                    <label class="bold" for="player-{{player.user}}">{{player.user}}</label>
+                </div>
+            {% endfor %}    
+            <button id="player_submit" class="btn btn-primary" type="submit" disabled>Create</button>
+        </form>
+    </div>
+    {% if division.has_wont_play_results %}
+    <div class="col-md-10">
+        <form action="{% url 'league:division_remove_wont_play' division.pk %}" method="POST">{% csrf_token %}
+            {% for sgf in division.get_wont_play_results %}
+                <div class="form-group">
+                    <input type="checkbox" id="wontplay-{{sgf.pk}}" value="{{sgf.pk}}" name="sgfs">
+                    <label class="bold" for="wontplay-{{sgf.pk}}">{{sgf.wplayer}} vs {{sgf.bplayer}}</label>
+                </div>
+            {% endfor %}  
+            <button class="btn btn-danger" type="submit">Remove</button>
+        </form>
+    </div>
+    {% endif %} 
+</div>
+
+{% endblock %}
+{% block extra_css %}
+{% endblock extra_css %}
+
+{% block extra_js %}
+{{ form.media.js }}
+<script>
+    function checkSelectors(className, count = 0) {
+        const selectors = document.getElementsByClassName('player_selector')
+        const submit = document.getElementById('player_submit')
+        for (el of selectors) {
+            el.addEventListener('click', function(evt) {
+                if (evt.target.checked) {
+                    if (count + 1 > 2) {
+                        return evt.preventDefault();
+                    }      
+                    if (++count == 2) {
+                        submit.removeAttribute('disabled')  
+                    } 
+                } else {                 
+                    count--  
+                    submit.setAttribute('disabled', true)                  
+                }      
+            })
+        }
+    }
+    checkSelectors();    
+</script>
+{% endblock extra_js %}

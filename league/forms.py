@@ -5,6 +5,7 @@ from django.contrib.auth.models import Group
 from django.forms import ModelForm
 from django.utils.timezone import make_aware
 from django_countries.widgets import CountrySelectWidget
+from django.core.exceptions import ValidationError
 import pytz
 from community.models import Community
 from community.widget import Community_select
@@ -12,11 +13,35 @@ from .models import Division, LeagueEvent, Profile
 from .ogs import get_user_id, get_user_rank
 from .go_federations import get_egf_rank, get_ffg_rank
 
+class MultipleValueWidget(forms.TextInput):
+    def value_from_datadict(self, data, files, name):
+        return data.getlist(name)
+
+class MultipleIntField(forms.Field):
+    widget = MultipleValueWidget
+    def __init__(self, length=None):
+        super().__init__()
+        self.length = length
+    def clean_int(self, x):
+        try:
+            return int(x)
+        except:
+            raise ValidationError("Cannot convert to integer: {}".format(repr(x)))
+    def clean(self, value):
+        if self.length is len(value) or self.length is None:
+            return [self.clean_int(x) for x in value]
+        else:
+            raise ValidationError("List integer must be of length: {}".format(repr(self.length)))
 
 class SgfAdminForm(forms.Form):
     sgf = forms.CharField(label='sgf data', widget=forms.Textarea(attrs={'cols': 60, 'rows': 20}))
     url = forms.CharField(label="KGS archive link", required=False)
 
+class AddWontPlayForm(forms.Form):
+    players = MultipleIntField(2)
+
+class RemoveWontPlayForm(forms.Form):
+    sgfs = MultipleIntField()
 
 class ActionForm(forms.Form):
     action = forms.CharField(label='action', widget=forms.HiddenInput(), required=False)
