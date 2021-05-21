@@ -223,7 +223,7 @@ def games_datatable_api(request):
     https://datatables.net/manual/server-side
     """
     league_id = request.GET.get('league')
-    base_sgfs_queryset = Sgf.objects.all()
+    base_sgfs_queryset = Sgf.objects.exclude(winner__isnull=True)
     if league_id:
         league = get_object_or_404(LeagueEvent, pk=league_id)
         base_sgfs_queryset = base_sgfs_queryset.filter(events=league)
@@ -433,11 +433,11 @@ def list_players(request, event_id=None, division_id=None):
                 ),
                 Prefetch(
                     'black_sgf',
-                    queryset=Sgf.objects.defer('sgf_text').all()
+                    queryset=Sgf.objects.defer('sgf_text').exclude(winner__isnull=True)
                 ),
                 Prefetch(
                     'white_sgf',
-                    queryset=Sgf.objects.defer('sgf_text').all()
+                    queryset=Sgf.objects.defer('sgf_text').exclude(winner__isnull=True)
                 ),
                 'profile', 'discord_user')
         users = [user.get_stats for user in users]
@@ -599,8 +599,14 @@ def account(request, user_name=None):
             won_perc = -1
             lost_perc = -1
 
-        sgfs_links_w = Sgf.objects.filter(wplayer=user.username).filter(bplayer=request.user.username)
-        sgfs_links_b = Sgf.objects.filter(bplayer=user.username).filter(wplayer=request.user.username)
+        sgfs_links_w = Sgf.objects.\
+            exclude(winner__isnull=True).\
+            filter(wplayer=user.username).\
+            filter(bplayer=request.user.username)
+        sgfs_links_b = Sgf.objects.\
+            exclude(winner__isnull=True).\
+            filter(bplayer=user.username).\
+            filter(wplayer=request.user.username)
         sgfs_links = sgfs_links_b.union(sgfs_links_w)
 
         context.update({
@@ -609,7 +615,6 @@ def account(request, user_name=None):
             'sgfs_links': sgfs_links,
             'won_perc': won_perc,
             'lost_perc': lost_perc,
-
         })
 
     open_events = LeagueEvent.get_events(request.user)\
