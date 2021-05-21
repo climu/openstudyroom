@@ -1305,23 +1305,20 @@ class Division(models.Model):
             player.sodos = 0
             results.append(player)
         for sgf in sgfs:
-            # Case: Wont Play result
-            wontplay = {'id': sgf.pk, 'r': 0, 'p': sgf.result}
-            if sgf.result is None:
-                loser = next(player for player in results if player.user == sgf.black)
-                winner = next(player for player in results if player.user == sgf.white)
-                winner.results[loser.pk].append(wontplay)
-                loser.results[winner.pk].append(wontplay)
-                if loser.pk in winner.results:
-                    winner.results[loser.pk].append(wontplay)
+            if sgf.winner is None: # An sgf without a winner.
+                wontplay = {'id': sgf.pk, 'r': -1, 'p': sgf.result}
+                black = next(player for player in results if player.user == sgf.black)
+                white = next(player for player in results if player.user == sgf.white)
+                if black.pk in white.results:
+                    white.results[black.pk].append(wontplay)
                 else:
-                    winner.results[loser.pk] = [wontplay]
-                if winner.pk in loser.results:
-                    loser.results[winner.pk].append(wontplay)
+                    white.results[black.pk] = [wontplay]
+                if white.pk in black.results:
+                    black.results[white.pk].append(wontplay)
                 else:
-                    loser.results[winner.pk] = [wontplay]
+                    black.results[white.pk] = [wontplay]
 
-            else:
+            else: # a Proper sgf
                 if sgf.winner == sgf.white:
                     loser = next(player for player in results if player.user == sgf.black)
                     winner = next(player for player in results if player.user == sgf.white)
