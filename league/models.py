@@ -744,7 +744,7 @@ class Sgf(models.Model):
     @staticmethod
     def create_wont_play(event, division, users):
         """Creates and returns an sgf with WontPlay result"""
-        if not division.sgf_set.filter(result = 'WontPlay', black__in=users, white__in=users).exists():
+        if not division.sgf_set.filter(result='WontPlay', black__in=users, white__in=users).exists():
             sgf = Sgf()
             sgf.winner = None
             sgf.black = users[0]
@@ -758,6 +758,7 @@ class Sgf(models.Model):
             sgf.events.add(event)
             sgf.divisions.add(division)
             return sgf
+        return None
 
 class User(AbstractUser):
     """User used for auth in all project."""
@@ -1244,7 +1245,7 @@ class Division(models.Model):
         return self.sgf_set.distinct().count()
 
     def has_user(self, user):
-        return  self.leagueplayer_set.filter(user = user).exists()
+        return  self.leagueplayer_set.filter(user=user).exists()
 
     def get_players(self):
         return self.leagueplayer_set.all()
@@ -1304,7 +1305,7 @@ class Division(models.Model):
             player.sodos = 0
             results.append(player)
         for sgf in sgfs:
-            """Case: Wont Play result"""
+            # Case: Wont Play result
             wontplay = {'id': sgf.pk, 'r': 0, 'p': sgf.result}
             if sgf.result is None:
                 loser = next(player for player in results if player.user == sgf.black)
@@ -1326,7 +1327,7 @@ class Division(models.Model):
                     winner = next(player for player in results if player.user == sgf.white)
                 else:
                     loser = next(player for player in results if player.user == sgf.white)
-                    winner = next(player for player in results if player.user == sgf.black)                
+                    winner = next(player for player in results if player.user == sgf.black)
                 winner.n_win += 1
                 winner.n_games += 1
                 winner.score += self.league_event.ppwin

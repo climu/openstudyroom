@@ -42,7 +42,8 @@ from . import utils
 from . import ogs
 from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
     Profile
-from .forms import SgfAdminForm, AddWontPlayForm, RemoveWontPlayForm, ActionForm, LeaguePopulateForm, UploadFileForm, DivisionForm,\
+from .forms import SgfAdminForm, AddWontPlayForm, RemoveWontPlayForm, ActionForm,\
+    LeaguePopulateForm, UploadFileForm, DivisionForm,\
     LeagueEventForm, EmailForm, TimezoneForm, ProfileForm
 from .go_federations import format_ffg_tou
 
@@ -1433,7 +1434,8 @@ def division_create_wont_play(request, division_id):
             users = [User.objects.get(pk=pk) for pk in form.cleaned_data['players']]
             if all([division.has_user(user) for user in users]):
                 Sgf.create_wont_play(event, division, users)
-        except: pass
+        except:
+            pass
     return division_update_wont_play(request, division.pk)
 
 @login_required()

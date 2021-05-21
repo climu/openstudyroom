@@ -4,8 +4,8 @@ from django import forms
 from django.contrib.auth.models import Group
 from django.forms import ModelForm
 from django.utils.timezone import make_aware
-from django_countries.widgets import CountrySelectWidget
 from django.core.exceptions import ValidationError
+from django_countries.widgets import CountrySelectWidget
 import pytz
 from community.models import Community
 from community.widget import Community_select

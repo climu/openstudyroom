@@ -82,7 +82,7 @@ urlpatterns = [
     url(r'^admin/sgf/$', views.admin_sgf_list, name='admin_sgf'),
     url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/save/$', views.admin_save_sgf, name='save_sgf'),
     url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/delete/$', views.admin_delete_sgf, name='delete_sgf'),
-    url(r'^division/(?P<pk>[0-9]+)/informations/$', 
+    url(r'^division/(?P<pk>[0-9]+)/informations/$',
         views.DivisionUpdate.as_view(), name='division_update_infos'),
     url(r'^division/(?P<division_id>[0-9]+)/wont-play/$',
         views.division_update_wont_play, name='division_update_wont_play'),
