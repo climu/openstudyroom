@@ -128,6 +128,7 @@ def community_page(request, slug):
     # get game records
     sgfs = Sgf.objects.defer('sgf_text').\
         filter(league_valid=True, events__in=leagues).\
+        exclude(winner__isnull=True).\
         select_related('white', 'white__profile', 'black', 'black__profile', 'winner').\
         prefetch_related("white__discord_user", "black__discord_user").\
         distinct().\
