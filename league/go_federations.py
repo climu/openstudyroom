@@ -33,9 +33,10 @@ def get_ffg_rank(ffg_licence_number):
     We return the rank (a string) or None if it's not valid
     """
     url = "https://ffg.jeudego.org/echelle/echtxt/echelle.txt"
-    request = requests.get(url, timeout=10)
+    url2 = "https://ffg.jeudego.org/echelle/echtxt/ech_ffg_V3.txt"
+    request = requests.get(url2, timeout=10)
     if request.status_code == 200:
-        infos = ffg_user_infos(ffg_licence_number, request.text)
+        infos = ffg_user_infos_alternative(ffg_licence_number, request.text)
         if infos is not None:
             return ffg_rating2rank(infos['rating'])
     return None
@@ -70,6 +71,35 @@ def ffg_user_infos(ffg_licence_number, echelle_ffg):
             'club': line[45:49].lstrip()
         }
 
+def ffg_user_infos_alternative(ffg_licence_number, echelle_ffg):
+    """because
+    https://ffg.jeudego.org/echelle/echtxt/ech_ffg_V3.txt
+    seems to be more frequently updated,
+    We might just remove
+    https://ffg.jeudego.org/echelle/echtxt/echelle.txt
+    in the future.
+
+    echelle_ffg is formated as such :
+    AAIJ René                               243 e ------- xxxx NL
+    AAKERBLOM Charlie                       433 e ------- xxxx SE
+    ABAD Jahin                            -3000 - 2000205 38GJ FR
+    ABADIA Mickaël                        -1400 - 9728205 94MJ FR
+    ABADIE Yves                           -1500 - 0452000 31To FR
+    """
+    # we skip first line that is header
+    line = None
+    for l in echelle_ffg.splitlines()[1:]:
+        if l[46:53] == ffg_licence_number:
+            line = l
+            break
+    if line is None:
+        return None
+    else:
+        return {
+            'name': line[:38].rstrip(),
+            'rating': line[38:43].lstrip(),
+            'club': line[54:58]
+        }
 
 
 def format_ffg_tou(league, location=None, comment=None):
@@ -106,7 +136,7 @@ def format_ffg_tou(league, location=None, comment=None):
     tou += ';Num Nom Prénom               Niv Licence Club\n'
 
     # get the last FFG information
-    url = "https://ffg.jeudego.org/echelle/echtxt/echelle.txt"
+    url = "https://ffg.jeudego.org/echelle/echtxt/ech_ffg_V3.txt"
     request = requests.get(url, timeout=10)
     if request.status_code != 200:
         return None
@@ -121,7 +151,7 @@ def format_ffg_tou(league, location=None, comment=None):
         licence_number = player.user.profile.ffg_licence_number
         if licence_number is None or licence_number == 0:
             return None
-        infos = ffg_user_infos(licence_number, echelle_ffg)
+        infos = ffg_user_infos_alternative(licence_number, echelle_ffg)
         if infos is None:
             return None
         player.num = idx + 1
