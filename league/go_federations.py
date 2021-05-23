@@ -32,9 +32,9 @@ def get_ffg_rank(ffg_licence_number):
     Check if a FFG licence number is valid and get its rank.
     We return the rank (a string) or None if it's not valid
     """
-    url = "https://ffg.jeudego.org/echelle/echtxt/echelle.txt"
-    url2 = "https://ffg.jeudego.org/echelle/echtxt/ech_ffg_V3.txt"
-    request = requests.get(url2, timeout=10)
+    # url = "https://ffg.jeudego.org/echelle/echtxt/echelle.txt"
+    url = "https://ffg.jeudego.org/echelle/echtxt/ech_ffg_V3.txt"
+    request = requests.get(url, timeout=10)
     if request.status_code == 200:
         infos = ffg_user_infos_alternative(ffg_licence_number, request.text)
         if infos is not None:
