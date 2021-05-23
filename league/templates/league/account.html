@@ -140,56 +140,57 @@ return false;};
   </div>
   {% for event in open_events %}
   {% if event.is_in %}
-{% with player=event.this_player %}
-  <div id="{{event.pk}}" class="tab-pane fade ">
-    <table id='{{event.pk}}-opponents-table' class=' table table-hover table-condensed'  >
-       <thead>
-         <tr>
-           <th>Rank</th>
-           <th>Player</th>
-           <th>score</th>
-           <th> {{user.profile.kgs_username}}'s results</th>
+  {% with player=event.this_player %}
+    <div id="{{event.pk}}" class="tab-pane fade ">
+      <table id='{{event.pk}}-opponents-table' class=' table table-hover table-condensed'  >
+        <thead>
+            <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>score</th>
+            <th> {{user.profile.kgs_username}}'s results</th>
+            </tr>
         </thead>
         <tbody>
-      {% with player.get_results as results %}
-      {% for opponent in event.results %}
-      {% if opponent == player %}
-      <tr class="info">
-        {%else%}
-        <tr>
-            {%endif%}
-        <td>{{forloop.counter}}</td>
-        <td>{{opponent.user | user_link:meijin}}</td>
-        <td>{{opponent.score}}
-        <td>
-          {% if opponent.user.pk in results %}
-          {% html_one_player_result%}
-          {% endif %}
-          </td>
-
-      </tr>
-{%endfor%}
-      {% endwith %}
-      {% endwith %}
-  </tbody>
-  </table>
-  </div>
+        {% with player.get_results as results %}
+        {% for opponent in event.results %}
+          {% if opponent == player %}
+          <tr class="info">
+          {%else%}
+          <tr>
+          {%endif%}
+            <td>{{forloop.counter}}</td>
+            <td>{{opponent.user | user_link:meijin}}</td>
+            <td>{{opponent.score}}
+            <td>
+              {% if opponent.user.pk in results %}
+              {% html_one_player_result%}
+              {% endif %}
+            </td>
+          </tr>
+        {%endfor%}
+        {% endwith %}
+        </tbody>
+      </table>
+    </div>
+  {% endwith %}
   {%endif%}
-    {%endfor%}
+  {%endfor%}
 </div>
 </div>
+
 <div class="col-md-6">
   <div style="max-height:50%;">
-  <canvas id="gamesChart" height="100%" ></canvas>
-</div>
-<hr />
-<div style="max-height:50%;">
-{% if request.user.is_authenticated %}
-  {% include 'league/includes/vs.html' %}
-  {% endif %}
+    <canvas id="gamesChart" height="100%" ></canvas>
+  </div>
+  <hr />
+  <div style="max-height:50%;">
+    {% if request.user.is_authenticated %}
+    {% include 'league/includes/vs.html' %}
+    {% endif %}
+  </div>
 </div>
 
-</div>
 </div>
 </div>
 
@@ -197,35 +198,29 @@ return false;};
 
 
 <div class="panel panel-default">
-<div class="panel-heading clearfix"><h3>{{user}} Games
-
-  <a href= "\league\all_sgf\{{user.pk}}">
-    <button class="btn btn-default btn-sm pull-right">Download all games</button>
-  </a>
-
-</h3>
-</div>
-  {% if sgfs is None %}
-  <div class="panel-body">
-    {{user}} didn't play any league game yet.
-  {% else %}
-<div class ="row">
-<div class="col-md-4">
-{% include "league/includes/games.html" with sgfs=sgfs %}
-</div>
-
-<div class="col-md-8">
-  <div id ="game_infos">
-</div>
-    <div id="player">
-      <div class="alert alert-info">
-      Click a game result to see it.
-    </div>
+  <div class="panel-heading clearfix"><h3>{{user}} Games
+    <a href= "\league\all_sgf\{{user.pk}}">
+      <button class="btn btn-default btn-sm pull-right">Download all games</button>
+    </a>
   </div>
-</div>
-</div>
-{%endif%}
-</div>
+  {% if sgfs is None %}
+    <div class="panel-body">
+      {{user}} didn't play any league game yet.
+    </div>
+  {% else %}
+    <div class ="row">
+    <div class="col-md-4">
+    {% include "league/includes/games.html" with sgfs=sgfs %}
+    </div>
+    <div class="col-md-8">
+      <div id ="game_infos"></div>
+      <div id="player">
+        <div class="alert alert-info">
+          Click a game result to see it.
+        </div>
+      </div>
+    </div>
+  {%endif%}
 </div>
 
 
