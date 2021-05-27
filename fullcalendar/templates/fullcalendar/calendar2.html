@@ -1,0 +1,88 @@
+{% extends "full_width.html" %}
+{% load tz static i18n calendar_tags %}
+
+{% block extra_head_js %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.7.0/main.min.css">
+<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/calendar2.css'%}"/>
+<script src='https://cdn.jsdelivr.net/npm/moment@2.27.0/min/moment.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.7.0/main.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.7.0/locales-all.min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/moment@5.5.0/main.global.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+{% endblock %}
+
+{% block title %}Calendar{% endblock %}
+
+{% block heading %}
+{% get_current_timezone as TIME_ZONE %}
+<div class="page-header">
+  <h1>Calendar ({{TIME_ZONE}})</h1>
+</div>
+{%endblock%}
+
+{% block content %}
+<div class="row">
+
+  <!-- Calendar filtering menu -->
+
+  {% if user.is_authenticated %}
+  <div id="calendar-menu-wrapper" class="col-md-3">
+    <div id="community-panel" class="panel panel-default">
+      <div class="panel-heading">
+        {% checkbox label='Public events' id='public-event-filter' %}
+      </div>
+      <div class="panel-body">
+        {% checkbox label='Open Study Room' id='osr-event-filter' %}
+        {% for com in communities %}
+        {% checkbox label=com.name className='community-event-filter' value=com.pk %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        {% checkbox label='League events' id='game-event-filter' %}
+      </div>
+      <div class="panel-body">
+        {% for div in divisions %}
+        {% checkbox label=div.league_event.name className='league-event-filter' value=div.pk %}
+        {% endfor %}
+        <hr>
+        {% checkbox label='Requests' id='request-event-filter' %}
+        {% checkbox label='Appointments' id='appointment-event-filter' %}
+        <ul>
+          {% checkbox label='Only mine' id='only-user-filter' checked=False %}
+        </ul>
+        <hr>
+        {% checkbox label='My availabilities' id='user-av-event-filter' checked=False %}
+        {% checkbox label='Others availabilities' id='opponents-av-event-filter' %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Calendar column -->
+
+  <div id="calendar-wrapper" class="col-md-{% if user.is_authenticated %}9{% else %}12{% endif %}">
+    <div id="time-range-selector-wrapper" class="panel panel-default">
+      <div class="panel-body">
+        <input
+          type="text"
+          id="time-range-selector"
+          class="hidden"
+          data-from="{{ start_time_range }}"
+          data-to="{{ end_time_range }}"/>
+      </div>
+    </div>
+    <div id="calendar" data-user-authenticated="{{user.is_authenticated}}"></div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% get_current_language as LANGUAGE_CODE %}
+{% block extra_js %}
+<script src={% static 'fullcalendar/calendar2.js' %}></script>
+{% endblock %}

@@ -74,7 +74,6 @@ class PublicEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     def get_login_url(self):
         return '/'
 
-
 def calendar_view(request, user_id=None):
     if user_id is None:
         user = request.user
@@ -195,6 +194,153 @@ def json_feed_other(request, user_id):
         data.append(dict)
     return JsonResponse(data, safe=False)
 
+def parseFCalendarDate(str, tz):
+    date = datetime.strptime(str, '%Y-%m-%dT%H:%M:%SZ')
+    date = make_aware(date, tz)
+    return date
+
+def calendar_main_view(request, user_id = None):
+    if user_id is None:
+        user = request.user
+    else:
+        user = get_object_or_404(User, pk=user_id)
+    if user.is_authenticated:
+        start_time_range = user.profile.start_cal
+        end_time_range = user.profile.end_cal
+        communities = user.get_communities()
+        divisions = user.get_open_divisions()
+    else:
+        start_time_range = 0
+        end_time_range = 24
+        communities = []
+        divisions = []
+    context = {
+        'user': user,
+        'start_time_range': start_time_range,
+        'end_time_range': end_time_range,
+        'communities': communities,
+        'divisions': divisions
+    }
+    template = 'fullcalendar/calendar2.html'
+    return render(request, template, context)
+
+def get_public_events(request):
+    user = request.user
+    tz = user.get_timezone() if user.is_authenticated else utc
+    start = parseFCalendarDate(request.GET.get('start'), tz)
+    end = parseFCalendarDate(request.GET.get('end'), tz)
+    events = PublicEvent.get_formated_events(start, end, tz)
+    return JsonResponse(events, safe=False)
+
+def get_user_available_events(request):
+    user = request.user
+    events = []
+    if user.is_league_member:
+        tz = user.get_timezone()
+        start = parseFCalendarDate(request.GET.get('start'), tz)
+        end = parseFCalendarDate(request.GET.get('end'), tz)
+        events += AvailableEvent.get_formated_user_available_events(user, start, end, tz)
+    return JsonResponse(events, safe=False)
+
+def get_opponent_available_events(request):
+    user = request.user
+    events = []
+    if user.is_league_member:
+        divisions = json.loads(request.GET.get('divisions'))
+        events += AvailableEvent.get_formated_opponent_available_events(user, divisions)
+    return JsonResponse(events, safe=False)
+
+def get_game_request_events(request):
+    user = request.user
+    events = []
+    if user.is_league_member:
+        tz = user.get_timezone()
+        start = parseFCalendarDate(request.GET.get('start'), tz)
+        end = parseFCalendarDate(request.GET.get('end'), tz)
+        divisions = json.loads(request.GET.get('divisions'))
+        events += GameRequestEvent.get_formated_game_request_events(user, divisions, start, end, tz)
+    return JsonResponse(events, safe=False)
+
+def get_game_appointment_events(request):
+    user = request.user
+    events = []
+    if user.is_league_member:
+        tz = user.get_timezone()
+        start = parseFCalendarDate(request.GET.get('start'), tz)
+        end = parseFCalendarDate(request.GET.get('end'), tz)
+        divisions = json.loads(request.GET.get('divisions'))
+        only_user = request.GET.get('only_user') == 'true'
+        events += GameAppointmentEvent.format_game_appointments(user, divisions, only_user, tz)
+
+    return JsonResponse(events, safe=False)
+
+def create_available_event(request):
+    user = request.user
+    if user.is_league_member:
+        now = timezone.now()
+        tz = user.get_timezone()
+        start = parseFCalendarDate(request.POST.get('start'), tz)
+        end = parseFCalendarDate(request.POST.get('end'), tz)
+        user_availabilities = AvailableEvent.objects.filter(
+            user=user,
+            end__gte=timezone.now(),
+            start__lte=end
+        )
+
+        # merge overlapping events
+        startTimes = [start]
+        endTimes = [end]
+        for event in user_availabilities:
+            if start < event.end and event.start < end:
+                startTimes.append(event.start)
+                endTimes.append(event.end)
+                event.delete()
+
+        new_event = AvailableEvent.objects.create(
+            start=min(startTimes),
+            end=max(endTimes),
+            user=user
+        )
+
+        # TODO : check if borns are equals with other event in
+        # user_availabilities (basically the ones not deleted)
+        new_event.save()
+
+    return HttpResponse('success')
+
+def update_available_event(request):
+    user = request.user
+    if user.is_league_member:
+        pk = request.POST.get('pk')
+        updatedEvent = get_object_or_404(AvailableEvent, user=user, pk=pk)
+        now = timezone.now()
+        tz = user.get_timezone()
+        start = parseFCalendarDate(request.POST.get('start'), tz)
+        end = parseFCalendarDate(request.POST.get('end'), tz)
+        user_availabilities = AvailableEvent.objects.filter(user=user).exclude(pk=pk)
+
+        # merge overlapping events
+        startTimes = [start]
+        endTimes = [end]
+        for event in user_availabilities:
+            if start < event.end and event.start < end:
+                startTimes.append(event.start)
+                endTimes.append(event.end)
+                event.delete()
+
+        updatedEvent.start = min(startTimes)
+        updatedEvent.end = max(endTimes)
+        updatedEvent.save()
+
+    return HttpResponse('success')
+
+def delete_available_event(request):
+    user = request.user
+    if user.is_league_member:
+        pk = request.POST.get('pk')
+        ev = get_object_or_404(AvailableEvent, user=user, pk=pk)
+        ev.delete()
+    return HttpResponse('success')
 
 def json_feed(request):
     """get all events for one user and serve a json."""
