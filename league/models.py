@@ -1383,6 +1383,13 @@ class LeaguePlayer(models.Model):
     def __str__(self):
         return str(self.pk) + ": " + self.user.username + ", " + self.event.name
 
+    def get_sgfs(self):
+        """Return a queryset of all valid player SGF"""
+        user = self.user
+        event = self.event
+        return event.sgf_set.exclude(winner__isnull=True).filter(
+            Q(black=user) | Q(white=user))
+
     def get_results(self):
         """Return a player results.
 
@@ -1414,37 +1421,13 @@ class LeaguePlayer(models.Model):
         return resultsDict
 
     def nb_win(self):
-        user = self.user
-        event = self.event
-        return event.sgf_set.filter(
-            Q(black=user) | Q(white=user)).filter(winner=user).count()
+        return self.get_sgfs().filter(winner=self.user).count()
 
     def nb_loss(self):
-        user = self.user
-        event = self.event
-        return event.sgf_set.filter(
-            Q(black=user) | Q(white=user)).exclude(winner=user).count()
+        return self.get_sgfs().exclude(winner=self.user).count()
 
     def nb_games(self):
-        user = self.user
-        event = self.event
-        return event.sgf_set.filter(Q(black=user) | Q(white=user)).count()
-
-    def score_win(self):
-        self.score += self.event.ppwin
-        self.save()
-
-    def score_loss(self):
-        self.score += self.event.pploss
-        self.save()
-
-    def unscore_win(self):
-        self.score -= self.event.ppwin
-        self.save()
-
-    def unscore_loss(self):
-        self.score -= self.event.pploss
-        self.save()
+        return self.get_sgfs().count()
 
     def get_opponents(self):
         """return a list of players"""
