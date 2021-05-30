@@ -1,89 +1,186 @@
-const prefix = '/calendar/';
+function hexToRgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
+}
 
-class PublicEventSource {
-  constructor() {
-    this.id = 'public';
-    this.url = prefix + 'get-public-events';
-  }
-  eventDataTransform(e) {
-    e.className = 'public-event';
+/**
+ * Contains data sent by the server.
+ * { user, communitites, divisions }
+ */
+class Context {
+  constructor(){
+    const ctxData = JSON.parse(document.getElementById('context-data').textContent);
+    this.communities = ctxData.communities;
+    this.leagues = ctxData.leagues;
+    this.user = ctxData.user ? new User(ctxData) : null;
   }
 }
 
-class UserAvailableEventSource {
-  constructor() {
-    this.id = 'user-available';
-    this.url = prefix + 'get-user-available-events';
+class User {
+  constructor(ctxData) {
+    Object.assign(this, ctxData.user);
   }
+  inLeague = ({value}) => {
+    return !!this.divisions.filter(div =>
+      div.league.pk === parseInt(value)).length;
+  }
+  inCommunity = ({value}) => {
+    return !!this.communities.filter(com =>
+      com.pk === parseInt(value)).length;
+  }
+  shareDivision = (user) => {
+
+  }
+}
+
+/**
+ * Each source hold a specific ajax request
+ * that feeds the calendar. Miam !
+ *
+ * eventUpdate method is called is time the
+ * filtering context changes.
+ *
+ * eventDataTransform method is called each time
+ * a update event is sent by the server.
+ */
+class EventSource {
+  static objects = new Map();
+
+  constructor(ctx, calendar, id, url) {
+    EventSource.objects.set(id, this);
+    this.id = id;
+    this.url = '/calendar/' + url + '/';
+    this.ctx = ctx;
+    this.calendar = calendar;
+  }
+
+  eventUpdate(e) {}
+
   eventDataTransform(e) {
+    return {...e, className: `${e.type}-event`};
+  }
+}
+
+class PublicEventSource extends EventSource {
+  static id = 'public';
+  constructor(ctx, calendar) {
+    super(ctx, calendar, PublicEventSource.id, 'get-public-events');
+  }
+  visible({community}) {
+    return Input.public.checked
+      ? community
+        ? Input.values(Input.communities).includes(community.pk)
+        : Input.osr.checked
+      : false;
+  }
+  eventDataTransform = (e) => {
+    e = super.eventDataTransform(e);
+    e.display = this.visible(e) ? 'block' : 'none';
+    const {r, g, b} = hexToRgb(e.color || '#3788d8');
+    e.backgroundColor = `rgba(${r}, ${g}, ${b}, 0.8)`;
+    return e;
+  }
+  eventUpdate = (e) => {
+    const visible = this.visible(e.extendedProps);
+    e.setProp('display', visible ? 'block' : 'none');
+  }
+}
+
+class UserAvailableEventSource extends EventSource {
+  static id = 'user-available';
+  constructor(ctx, calendar) {
+    super(ctx, calendar, UserAvailableEventSource.id, 'get-user-available-events');
+  }
+  get visible() {
+    return Input.userAvailable.checked && Input.available.checked;
+  }
+  get display() {
+    return Input.available.checked
+      ? Input.userAvailable.checked
+        ? 'block'
+        : 'background'
+      : 'none';
+  }
+  eventDataTransform = (e) => {
+    e = super.eventDataTransform(e);
     e.editable = true;
-    e.title = `I'm available`;
-    e.className = e.type;
-    e.display = $('#user-av-event-filter').is(':checked') ? 'block' : 'none';
+    e.display = this.display;
+    return e;
+  }
+  eventUpdate = (e) => {
+    e.setProp('display', this.display);
   }
 }
 
-class OpponentAvailableEventSource {
-  constructor() {
-    this.id = 'opponent-available';
-    this.url = prefix + 'get-opponent-available-events';
+class AvailableEventSource extends EventSource {
+  static id = 'available';
+  constructor(ctx, calendar) {
+    super(ctx, calendar, AvailableEventSource.id, 'get-available-events');
     this.extraParams = () => ({
-      divisions: JSON.stringify(getDivisionList())
+      leagues: JSON.stringify(Input.values(Input.leagues))
     });
   }
-  eventDataTransform(e) {
-    e.title = e.opponents.join(', ');
-    e.className = 'opponent-available-event';
-    e.display = $('#opponents-av-event-filter').is(':checked') ? 'block' : 'none';
+  visible() {
+    return Input.available.checked;
+  }
+  eventDataTransform = (e) => {
+    e = super.eventDataTransform(e);
+    e.title = e.users.map(user => user.name).join(', ');
+    e.display = this.visible() ? 'background' : 'none';
+    return e;
+  }
+  eventUpdate = (e) => {
+    const visible = this.visible();
+    e.setProp('display', visible ? 'background' : 'none');
   }
 }
 
-class RequestEventSource {
-  constructor() {
-    this.id = 'request';
-    this.url = prefix + 'get-game-request-events';
-    this.extraParams = () => ({
-      divisions: JSON.stringify(getDivisionList())
-    });
+class RequestEventSource extends EventSource {
+  static id = 'game-request';
+  constructor(ctx, calendar) {
+    super(ctx, calendar, RequestEventSource.id, 'get-game-request-events');
   }
-  eventDataTransform(e) {
-    console.log(e.type)
-    if (e.type === 'user-game-request') {
-      e.title = `Me vs ${e.receivers.join(', ')}`;
-    } else {
-      e.title = `Me vs ${e.sender}`;
-    }
-    e.className = e.type;
-    e.display = $('#request-event-filter').is(':checked') ? 'block' : 'none';
+  visible({divisions}) {
+    return Input.gameRequest.checked;
   }
-}
-
-class AppointmentsEventSource {
-  constructor() {
-    this.id = 'appointment';
-    this.url = prefix + 'get-game-appointment-events';
-    this.extraParams = () => ({
-      divisions: JSON.stringify(getDivisionList()),
-      only_user: $('#only-user-filter').is(':checked')
-    });
+  eventDataTransform = (e) => {
+    e = super.eventDataTransform(e);
+    e.isUser = this.ctx.user.name === e.sender.name;
+    e.className += e.isUser ? '-user' : '';
+    e.title = `${e.sender.name} vs ` + e.receivers.map(({name}) => name).join(', ');
+    e.display = this.visible(e) ? 'block' : 'none';
+    return e;
   }
-  eventDataTransform(e) {
-    if (e.type === 'user-game-appointment') {
-      e.title = `Me vs ${e.opponent}`;
-      e.display = $('#appointment-event-filter').is(':checked') ? 'block' : 'none';
-    } else {
-      e.title = `${e.users[0]} vs ${e.users[1]}`;
-      e.display = $('#appointment-event-filter').is(':checked') && !$('#only-user-filter').is(':checked') ? 'block' : 'none';
-    }
-    e.className = e.type;
-
+  eventUpdate = (e) => {
+    const visible = this.visible(e.extendedProps);
+    e.setProp('display', visible ? 'block' : 'none');
   }
 }
 
+class AppointmentsEventSource extends EventSource {
+  static id = 'appointment';
+  constructor(ctx, calendar) {
+    super(ctx, calendar, AppointmentsEventSource.id, 'get-game-appointment-events');
+  }
+  eventDataTransform = (e) => {
+    e = super.eventDataTransform(e);
+    e.title = `${e.users[0]} vs ${e.users[1]}`;
+    return e;
+  }
+}
+
+/**
+ * Just a basic wrapper for FullCalendar
+ */
 class Calendar extends FullCalendar.Calendar {
-  constructor(id) {
-    const container = document.getElementById(id);
+  constructor(ctx, modal) {
+    const container = document.getElementById('calendar');
     super(container, {
+      //themeSystem: 'bootstrap',
       height: 'auto',
       expandRows: false,
       allDaySlot: false,
@@ -92,77 +189,394 @@ class Calendar extends FullCalendar.Calendar {
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',
-        right: 'dayGridMonth,timeGridWeek'
+        right: 'dayGridMonth,timeGridWeek,listWeek'
       },
-      selectable: true,
       selectMirror: true,
       timeZone: 'UTC',
-
     });
+    this.ctx = ctx;
+    this.modal = modal;
+    this.setOption('select', this.createEvent);
+    this.setOption('eventDrop', this.saveEvent);
+    this.setOption('eventResize', this.saveEvent);
+    this.setOption('eventClick', this.handleEventClick);
+    this.setOption('dateClick', this.handleDateClick);
     this.render();
+    this.initializeSources();
+  }
+
+  cancelGameRequest = (e) => {
+    this.modal.show(CancelGameRequestForm);
+  }
+
+  updateGameRequest = (e) => {
+    this.modal.show(UpdateGameRequestForm);
+  }
+
+  createEvent = (info) => {
+    const min = this.getOption('slotMinTime');
+    const max = this.getOption('slotMaxTime');
+    let start = info.startStr;
+    let end = info.endStr;
+    if (info.view.type === 'dayGridMonth') {
+      end = start;
+      start += `T${min}Z`;
+      end += `T${max}Z`;
+    }
+    start = FullCalendarMoment.toMoment(start, this).format()
+    end = FullCalendarMoment.toMoment(end, this).format()
+    $.post('/calendar/create-available-event/', { start, end },
+      () => this.getEventSourceById(UserAvailableEventSource.id).refetch());
+    this.unselect();
+  }
+
+  deleteEvent = ({event}) => {
+    const pk = event.extendedProps.pk
+    $.post('/calendar/delete-available-event/', { pk },
+      () => this.getEventSourceById('user-available').refetch());
+  }
+
+  saveEvent = ({event}) => {
+    let start = event.startStr;
+    let end = event.endStr;
+    let pk = event.extendedProps.pk;
+    $.post('/calendar/update-available-event/', { pk, start, end },
+      () => this.getEventSourceById(UserAvailableEventSource.id).refetch());
+  }
+
+  handleDateClick = (info) => {
+    // Calendar.selectable state is set by Input.userAvailable
+    // this.modal = null is the same as ctx.user = null
+    if (!this.getOption('selectable') && this.modal && !(info.date < Date.now())) {
+      const formated = FullCalendar.formatDate(info.dateStr, {
+        month: 'long',
+        year: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        timeZone: 'UTC',
+      });
+      this.modal.createGameReqForm.setDate(info.dateStr);
+      this.modal.show(CreateGameRequestForm, formated);
+    }
+  }
+
+  handleEventClick = ({event}) => {
+    switch (event.extendedProps.type) {
+      case 'user-available':
+        this.deleteEvent({event});
+        break;
+      case 'game-request':
+        event.extendedProps.isUser
+          ? this.cancelGameRequest(event)
+          : this.updateGameRequest(event)
+        break;
+      }
+  }
+
+  updateEvents = () => {
+    this.getEvents().forEach(e => {
+      EventSource.objects
+        .get(e.extendedProps.type)
+        .eventUpdate(e);
+    });
+  }
+
+  setTimeRange = ({from, to}) => {
+    const a = from.toString().padStart(2, '0');
+    const b = to.toString().padStart(2, '0');
+    calendar.setOption('slotMinTime', `${a}:00:00`);
+    calendar.setOption('slotMaxTime', `${b}:00:00`);
+  }
+
+  updateTimeRange = ({from, to}) => {
+    this.setTimeRange({from, to});
+    $.post('/calendar/update-time-range-ajax/', {
+      'start': from,
+      'end': to
+    });
+  }
+
+  initializeSources = () => {
+    this.addEventSource(new PublicEventSource(this.ctx, this));
+    if (this.ctx.user) {
+      this.addEventSource(new AvailableEventSource(this.ctx, this));
+      this.addEventSource(new UserAvailableEventSource(this.ctx, this));
+      this.addEventSource(new RequestEventSource(this.ctx, this));
+    }
   }
 }
 
-function getDivisionList() {
-  const elements = Array.from(document.getElementsByClassName('league-event-filter'));
-  return elements.filter(e => e.checked).map(e => e.value);
+/**
+ * Utilities for handling input changes
+ */
+class Input {
+
+  // returns values of a checkbox's group
+  static values(elements) {
+    return elements.filter(el => !el.disabled && el.checked).map(el => parseInt(el.value));
+  }
+
+  static get onlyUser() {
+    return document.getElementById('only-user-filter');
+  }
+
+  static get osr() {
+    return document.getElementById('osr-filter');
+  }
+
+  static get communities() {
+    return Array.from(document.getElementsByClassName('community-filter'));
+  }
+
+  static get leagues() {
+    return Array.from(document.getElementsByClassName('league-filter'));
+  }
+
+  static get public() {
+    return document.getElementById('public-filter');
+  }
+
+  static get appointment() {
+    return document.getElementById('appointment-filter');
+  }
+
+  static get gameRequest() {
+    return document.getElementById('game-request-filter');
+  }
+
+  static get available() {
+    return document.getElementById('av-event-filter');
+  }
+
+  static get userAvailable() {
+    return document.getElementById('user-av-event-filter');
+  }
+
 }
 
-const calendar = new Calendar('calendar');
-calendar.addEventSource(new PublicEventSource());
-calendar.addEventSource(new OpponentAvailableEventSource());
-calendar.addEventSource(new RequestEventSource());
-calendar.addEventSource(new UserAvailableEventSource());
-calendar.addEventSource(new AppointmentsEventSource());
+class ModalManager {
+  constructor(ctx) {
+    MicroModal.init();
+    this.createGameReqForm = new CreateGameRequestForm(ctx, this);
+    this.cancelGameReqForm = new CancelGameRequestForm(ctx, this);
+    this.updateGameReqForm = new UpdateGameRequestForm(ctx, this);
+  }
+  static get title() {
+    return document.getElementById('modal-title');
+  }
+  changeType = (e) => {
+    //ModalForm[this.event].classList.add('hidden');
+    //ModalForm[e.target.value].classList.remove('hidden');
+    this.event = e.target.value;
+  }
+  show = (Form, title) => {
+    CreateGameRequestForm.form.classList.toggle(
+      'hidden', Form != CreateGameRequestForm);
+    CancelGameRequestForm.form.classList.toggle(
+      'hidden', Form != CancelGameRequestForm);
+    UpdateGameRequestForm.form.classList.toggle(
+      'hidden', Form != UpdateGameRequestForm);
+    ModalManager.title.textContent = Form.form.dataset.title;
+    CreateGameRequestForm.date.textContent = title;
+    MicroModal.show('cal-modal');
+  }
+  close = () => {
+    MicroModal.close('cal-modal');
+  }
+}
 
-$('.league-event-filter').change((e) => {
-  calendar.getEventSourceById('opponent-available').refetch();
-  calendar.getEventSourceById('request').refetch();
-});
+class CancelGameRequestForm {
+  static type = 'cancel';
+  constructor(ctx, modal) {
+    this.ctx = ctx;
+    this.modal = modal;
+    CancelGameRequestForm.form.onsubmit = this.handleSubmit;
+  }
 
-$('#user-av-event-filter').change((e) => {
-  calendar.getEvents().filter(e =>
-    e.extendedProps.type === 'user-available').forEach(e => {
-    e.setProp('display',
-      $('#user-av-event-filter').is(':checked') ? 'block' : 'none');
-  });
-});
+  static get form() {
+    return document.getElementById('modal-cancel-game-request');
+  }
 
-$('#opponents-av-event-filter').change((e) => {
-  calendar.getEvents().filter(e =>
-    e.extendedProps.type === 'opponents-available').forEach(e => {
-    e.setProp('display',
-      $('#opponents-av-event-filter').is(':checked') ? 'block' : 'none');
-  });
-});
+  handleSubmit = (e) => {
+    e.preventDefault(e);
+    // Delete GameRequest
+  }
+}
 
-$('#request-event-filter').change((e) => {
-  calendar.getEvents().filter(e =>
-    e.extendedProps.type === 'user-game-request' ||
-    e.extendedProps.type === 'opponent-game-request').forEach(e => {
-    e.setProp('display',
-      $('#request-event-filter').is(':checked') ? 'block' : 'none');
-  });
-});
+class UpdateGameRequestForm {
+  static type = 'accept';
+  constructor(ctx, modal) {
+    this.ctx = ctx;
+    this.modal = modal;
+    UpdateGameRequestForm.confirm.onclick = this.handleClick;
+    UpdateGameRequestForm.reject.onclick = this.handleClick;
+  }
 
-$('#appointment-event-filter').change((e) => {
-  calendar.getEvents().filter(e =>
-    e.extendedProps.type === 'user-game-appointment').forEach(e => {
-    e.setProp('display',
-      $('#appointment-event-filter').is(':checked') ? 'block' : 'none');
-  });
-  calendar.getEvents().filter(e =>
-    e.extendedProps.type === 'others-game-appointment').forEach(e => {
-    e.setProp('display',
-      $('#appointment-event-filter').is(':checked') &&
-      !$('#only-user-filter').is(':checked') ? 'block' : 'none');
-  });
-});
+  static get confirm() {
+    return document.getElementById('modal-accept-confirm');
+  }
 
-$('#only-user-filter').change((e) => {
-  calendar.getEvents().filter(e =>
-    e.extendedProps.type === 'others-game-appointment').forEach(e => {
-    e.setProp('display',
-      $('#only-user-filter').is(':checked') ? 'none' : 'block');
+  static get reject() {
+    return document.getElementById('modal-accept-reject');
+  }
+
+  static get form() {
+    return document.getElementById('modal-accept-game-request');
+  }
+
+  handleClick = (e) => {
+    e.preventDefault(e);
+    this.value = e.target.id === "modal-accept-confirm";
+    // Update GameRequest
+  }
+}
+
+class CreateGameRequestForm {
+  static type = 'create';
+  constructor(ctx, modal) {
+    this.ctx = ctx;
+    this.modal = modal;
+    ctx.user.opponents.forEach(CreateGameRequestForm.addPlayer)
+    CreateGameRequestForm.playerSelect.onchange = this.handlePlayerChange;
+    CreateGameRequestForm.form.onsubmit = this.handleSubmit;
+    this.date = null;
+  }
+
+  static get form() {
+    return document.getElementById('modal-create-game-request');
+  }
+
+  static get date() {
+    return document.getElementById('modal-date');
+  }
+
+  static get playerSelect() {
+    return document.getElementById('modal-player');
+  }
+
+  static get divisionSelect() {
+    return document.getElementById('modal-divisions-select');
+  }
+
+  static get privateEl() {
+    return document.getElementById('modal-private');
+  }
+
+  static get divisions() {
+    return Array.from(document.getElementsByClassName('modal-division'))
+      .filter(el => el.selected)
+      .map(el => el.value);
+  }
+
+  static addPlayer(user) {
+    const el = document.createElement('option')
+    el.value = user.pk;
+    el.innerHTML = user.name;
+    CreateGameRequestForm.playerSelect.appendChild(el);
+  }
+
+  static addDivision(division) {
+    const el = document.createElement('option');
+    el.value = division.pk;
+    el.className = 'modal-division';
+    el.innerHTML = division.name;
+    CreateGameRequestForm.divisionSelect.appendChild(el);
+  }
+
+  setDate = (date) => {
+    this.date = date;
+    CreateGameRequestForm.date.textContent = this.date;
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const date = this.date;
+    const receiver = CreateGameRequestForm.playerSelect.value;
+    const divisions = JSON.stringify(CreateGameRequestForm.divisions);
+    const isprivate = CreateGameRequestForm.privateEl.checked;
+    $.post('/calendar/create-game-request2/',
+    {
+      date,
+      receiver,
+      divisions,
+      private: isprivate
+    }, () => {
+      this.modal.close();
+      CreateGameRequestForm.form.reset();
+      CreateGameRequestForm.divisionSelect.textContent = '';
+    });
+  }
+
+  handlePlayerChange = (e) => {
+    CreateGameRequestForm.divisionSelect.textContent = '';
+    const pk = parseInt(e.target.value);
+    const opponent = ctx.user.opponents.find(el => el.pk === pk);
+    const divs = Array.from(ctx.user.divisions)
+      .filter(div => div.players
+      .includes(opponent.name))
+      .forEach(CreateGameRequestForm.addDivision);
+    //GameRequestForm.divisionSelect.classList.toggle(
+      //'hidden', !GameRequestForm.divisionSelect.childElementCount);
+  }
+}
+
+function initializeTimeRangeSlider() {
+  $(".fc-view-harness").first().before($("#time-range-selector-wrapper"));
+  const from = $("#time-range-selector").attr('data-from');
+  const to = $("#time-range-selector").attr('data-to');
+  $("#time-range-selector").ionRangeSlider({
+    type: "double",
+    min: 0,
+    max: 24,
+    skin: "sharp",
+    from, to,
+    drag_interval: true,
+    postfix: "h00",
+    onStart: calendar.setTimeRange,
+    onFinish: calendar.updateTimeRange
   });
-});
+}
+
+// Make a class of it
+function initializeInputs(calendar, ctx) {
+  function handleOnlyUserChanged(e) {
+    const inputs = [
+      ..._.reject(Input.communities, ctx.user.inCommunity),
+      ..._.reject(Input.leagues, ctx.user.inLeague)];
+    inputs.forEach(el => el.disabled = e.target.checked);
+    calendar.updateEvents();
+  }
+
+  Input.communities.forEach(el => el.onchange = calendar.updateEvents);
+  Input.leagues.forEach(el => el.onchange = () => {
+    calendar.getEventSourceById(AvailableEventSource.id).refetch()
+  });
+
+  if (ctx.user) {
+    Input.onlyUser.onchange = handleOnlyUserChanged;
+    Input.gameRequest.onchange = calendar.updateEvents;
+    Input.available.onchange = calendar.updateEvents;
+    Input.userAvailable.onchange = (e) => {
+      calendar.setOption('selectable', e.target.checked);
+      calendar.updateEvents();
+    }
+  }
+
+  Input.osr.onchange = calendar.updateEvents;
+  Input.public.onchange = calendar.updateEvents;
+}
+
+// serve data from server
+const ctx = new Context();
+
+// disable crud operations for anonym user
+const modal = ctx.user ? new ModalManager(ctx) : null;
+
+// initialize calendar
+const calendar = new Calendar(ctx, modal);
+
+initializeInputs(calendar, ctx);
+initializeTimeRangeSlider();
+
+console.log(ctx)

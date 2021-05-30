@@ -6,7 +6,7 @@ from django.urls import reverse
 from colorful.fields import RGBColorField
 from pytz import utc
 
-from league.models import User
+from league.models import User, Division
 from community.models import Community
 
 class Category(models.Model):
@@ -63,7 +63,7 @@ class PublicEvent(CalEvent):
         event['description'] = self.description
         event['url'] = self.url
         event['color'] = self.category.color if self.category else ''
-        event['community'] = self.community.name if self.community else ''
+        event['community'] = self.community.format() if self.community else ''
         return event
 
     def can_edit(self, user):
@@ -71,7 +71,6 @@ class PublicEvent(CalEvent):
             return user.is_authenticated and user.is_osr_admin()
         else:
             return self.community.is_admin(user)
-
 
     def get_redirect_url(self):
         """
@@ -84,6 +83,14 @@ class PublicEvent(CalEvent):
                 'community:community_page',
                 kwargs={'slug':self.community.slug}
             )
+
+    @staticmethod
+    def get_formated(start, end, tz):
+        """
+        Returns all public events that occurs in a range period.
+        """
+        events = PublicEvent.objects.filter(end__gte=start, start__lte=end)
+        return [event.format(tz) for event in events]
 
     @staticmethod
     def get_future_public_events():
@@ -119,41 +126,33 @@ class PublicEvent(CalEvent):
             data.append(dict)
         return data
 
-    @staticmethod
-    def get_formated_events(start, end, tz):
-        events = PublicEvent.objects.filter(
-            end__gte=start,
-            start__lte=end)
-        return [event.format(tz) for event in events]
-
 class AvailableEvent(CalEvent):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def format(self, tz):
-        return super().format('user-available', tz)
+        event = super().format('user-available', tz)
+        event['user'] = self.user.format()
+        return event
 
     @staticmethod
-    def get_formated_user_available_events(user, start, end, tz):
-        events = AvailableEvent.objects.filter(
-            user=user,
-            end__gte=timezone.now(),
-            start__lte=end)
+    def get_formated_opponents(user, end, leagues):
+        """
+        The calendar sends a list of leagues.
+        We get all related divisions then all user's opponents.
+
+        """
+        divisions = Division.objects.filter(league_event__in=leagues)
+        events = AvailableEvent.get_formated_other_available_dict(user, divisions, end)
+        return [event for event in events]
+
+    @staticmethod
+    def get_formated_user(user, end, tz):
+        """
+        Returns a list of all formated available events of the user.
+        """
+        now = timezone.now()
+        events = AvailableEvent.objects.filter(user=user, end__gte=now, start__lte=end)
         return [event.format(tz) for event in events]
-
-    @staticmethod
-    def get_formated_opponent_available_events(user, divisions):
-        tz = user.get_timezone()
-        result = []
-        events = AvailableEvent.get_formated_other_available(user, divisions)
-        for event in events:
-            formated = {
-                'start': event['start'].astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
-                'end': event['end'].astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
-                'type': 'opponents-available',
-                'opponents': event['users'],
-            }
-            result.append(formated)
-        return result
 
     @staticmethod
     def get_formated_other_available(user, division_list=None, server_list=None):
@@ -230,6 +229,73 @@ class AvailableEvent(CalEvent):
         return events
 
     @staticmethod
+    def get_formated_other_available_dict(user, divisions, end):
+        """
+        get_formated_other_available_dict is the same function as
+        get_formated_other_available but it returns a
+        dict instead of str username. The old function will be removed as
+        soon as the new calendar version works fine.
+        """
+        tz = user.get_timezone()
+        now = timezone.now()
+        opponents = user.get_opponents(divisions)
+        availables = AvailableEvent.objects.filter(
+            start__lte=end,
+            end__gte=now,
+            user__in=opponents
+        )
+        changes = []
+        for event in availables:
+            change = {
+                'time': event.start,
+                'user': event.user.format(),
+                'type': 1  # means the user becomes available
+            }
+            changes.append(change)
+            change = {
+                'time': event.end,
+                'user': event.user.format(),
+                'type': 0  # means the user becomes unavailable
+            }
+            changes.append(change)
+        changes = sorted(changes, key=lambda k: k['time'])
+
+        events = []
+        for idx, change in enumerate(changes):
+            if idx == 0:
+                time = change['time']
+                opponents = [change['user']]
+                continue
+
+            if time == change['time']:
+                # another change at the same moment.
+                # We just add or remove a player
+                if change['type'] == 1:  # user becomes available
+                    opponents.append(change['user'])
+                else:
+                    opponents.remove(change['user'])
+            else:
+                if len(opponents) == 0:
+                    if change['type'] == 1:
+                        # we need to start a new event
+                        time = change['time']
+                        opponents.append(change['user'])
+                else:
+                    # we add the event to the events list
+                    events.append({
+                        'start': time.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+                        'end': change['time'].astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
+                        'users': list(opponents),
+                        'type': 'available',
+                    })
+                    time = change['time']
+                    if change['type'] == 0:  # new user available
+                        opponents.remove(change['user'])
+                    else:
+                        opponents.append(change['user'])
+        return events
+
+    @staticmethod
     def format_me_availables(events, background, tz):
         formated_events = []
 
@@ -291,6 +357,9 @@ class AvailableEvent(CalEvent):
 
 
 class GameRequestEvent(CalEvent):
+    """
+    We will add private field and divisions field
+    """
     sender = models.ForeignKey(
         User,
         related_name="%(app_label)s_%(class)s_related_sender",
@@ -303,38 +372,32 @@ class GameRequestEvent(CalEvent):
         related_query_name="%(app_label)s_%(class)ss_receiver",
     )
 
-    def format_sender(self, tz):
-        event = super().format('user-game-request', tz)
-        event['receivers'] = [user.username for user in self.receivers.all()],
-        return event
-
-    def format_receiver(self, tz):
-        event = super().format('opponent-game-request', tz)
-        event['sender'] = self.sender.username,
+    def format(self, tz):
+        event = super().format('game-request', tz)
+        event['sender'] = self.sender.format()
+        event['divisions'] = 'will be linked to divisions'
+        event['private'] = ''
+        event['receivers'] = [{'pk': user.pk, 'name': user.username} for user in self.receivers.all()]
         return event
 
     @staticmethod
-    def get_formated_game_request_events(user, divisions, start, end, tz):
+    def get_formated(user, start, end, tz):
+        """
+        Returns all game request events related to a user.
+        """
         formated_events = []
         now = timezone.now()
-        opponents = user.get_opponents(divisions)
-        user_requests = GameRequestEvent.objects.filter(
-            sender=user,
-            receivers__in=opponents,
-            start__lte=end,
-            end__gte=now,
-        )
-        opponent_requests = GameRequestEvent.objects.filter(
-            sender__in=opponents,
-            receivers=user,
-            start__lte=end,
-            end__gte=now,
-        )
-        formated_events += [event.format_sender(tz) for event in user_requests]
-        formated_events += [event.format_receiver(tz) for event in opponent_requests]
+        events = GameRequestEvent.objects.filter(start__lte=end, end__gte=now)
+        user_as_sender = events.filter(sender=user)
+        user_as_receiver = events.filter(receivers=user)
+        formated_events += [event.format(tz) for event in user_as_sender]
+        formated_events += [event.format(tz) for event in user_as_receiver]
         return formated_events
 
 class GameAppointmentEvent(CalEvent):
+    """
+    We will add private field and divisions field
+    """
     users = models.ManyToManyField(
         User,
         related_name="%(app_label)s_%(class)s_related",
@@ -343,6 +406,13 @@ class GameAppointmentEvent(CalEvent):
 
     def __str__(self):
         return self.start.strftime("%x") + self.title()
+
+    def format(self, tz):
+        event = super().format('game-appointment', tz)
+        event['division'] = 'g-appointment can be linked to division'
+        event['private'] = ''
+        event['users'] = [user.username for user in self.users.all()]
+        return event
 
     def title(self):
         users = self.users.all()
@@ -359,6 +429,16 @@ class GameAppointmentEvent(CalEvent):
         return user.fullcalendar_gameappointmentevent_related.filter(
             end__gte=now
         )
+
+    @staticmethod
+    def get_formated(tz):
+        """
+        Game appointment are now considered as public event and
+        therefore can be seen by anyone !
+        """
+        now = timezone.now()
+        events = GameAppointmentEvent.objects.filter(end__gte=now)
+        return [event.format(tz) for event in events]
 
     @staticmethod
     def get_formated_game_appointments(user, now, tz):
@@ -382,19 +462,3 @@ class GameAppointmentEvent(CalEvent):
             data.append(dict)
 
         return data
-
-    @staticmethod
-    def format_game_appointments(user, divisions, only_user, tz):
-        formated_events = []
-        now = timezone.now()
-        user_appointments = GameAppointmentEvent.objects.filter(end__gte=now, users=user)
-        for event in user_appointments:
-            dict = {
-                'pk': event.pk,
-                'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
-                'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
-                'opponent': event.opponent(user).username,
-                'type': 'user-game-appointment',
-            }
-            formated_events.append(dict)
-        return formated_events

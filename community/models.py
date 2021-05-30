@@ -37,6 +37,12 @@ class Community(models.Model):
     def __str__(self):
         return self.name
 
+    def format(self):
+        return {
+            'pk': self.pk,
+            'name': self.name,
+        }
+
     @classmethod
     def create(cls, name, slug):
         '''We create the admin and users group before creating the community object'''

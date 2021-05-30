@@ -120,6 +120,12 @@ class LeagueEvent(models.Model):
     def __str__(self):
         return self.name
 
+    def format(self):
+        return {
+            'pk': self.pk,
+            'name': self.name,
+        }
+
     def get_servers_list(self):
         """return a list of go servers where games can be played"""
         return self.servers.replace(' ', '').split(',')
@@ -771,6 +777,22 @@ class User(AbstractUser):
         self.n_win = None
         self.n_games = None
 
+    def format(self):
+        """
+        We substitutes get_open_division by get_active_division.
+        A league which is finished (i.e, end_time < now) have no
+        game that should be played anymore and its irrelevant for the calendar.
+
+        Reason: get_open_division returns divisions that can only be joined,
+        therefore, some divisions are skipped.
+        """
+        return {
+            'pk': self.pk,
+            'name': self.username,
+            'communities': [com.format() for com in self.get_communities()],
+            'divisions': [div.format() for div in self.get_active_divisions()],
+            'opponents': [{'pk': user.pk, 'name': user.username} for user in self.get_opponents()]
+        }
 
     def get_full_name(self):
         """required for django_comments_xtd"""
@@ -887,6 +909,12 @@ class User(AbstractUser):
 
     def get_primary_email(self):
         return self.emailaddress_set.filter(primary=True).first()
+
+    def get_active_divisions(self):
+        """Return all active divisions a user is in."""
+        now = timezone.now()
+        players = self.leagueplayer_set.all()
+        return Division.objects.filter(leagueplayer__in=players, league_event__end_time__gte=now)
 
     def get_open_divisions(self):
         """Return all open division a user is in."""
@@ -1240,6 +1268,14 @@ class Division(models.Model):
 
     def __str__(self):
         return self.name + self.league_event.name
+
+    def format(self):
+        return {
+            'pk': self.pk,
+            'name': self.name,
+            'league': self.league_event.format(),
+            'players': [player.user.username for player in self.get_players()]
+        }
 
     def number_games(self):
         return self.sgf_set.distinct().count()

@@ -2,10 +2,11 @@ from datetime import datetime, timedelta
 import json
 import vobject
 
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.views.generic.edit import UpdateView, CreateView
 from django.contrib.auth.decorators import user_passes_test, login_required
-from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse, HttpResponseForbidden, HttpResponseBadRequest
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.utils.timezone import make_aware
 from django.utils import timezone
@@ -14,7 +15,8 @@ from django.views.decorators.http import require_POST
 from postman.api import pm_broadcast, pm_write
 from pytz import utc
 
-from league.models import User
+from community.models import Community
+from league.models import User, LeagueEvent, Division
 from league.forms import ActionForm
 from .forms import UTCPublicEventForm, CategoryForm
 from .models import PublicEvent, AvailableEvent, GameRequestEvent, GameAppointmentEvent, Category
@@ -199,67 +201,110 @@ def parseFCalendarDate(str, tz):
     date = make_aware(date, tz)
     return date
 
-def calendar_main_view(request, user_id = None):
-    if user_id is None:
-        user = request.user
-    else:
-        user = get_object_or_404(User, pk=user_id)
+def calendar_main_view(request):
+    user = request.user
+    now = timezone.now()
+
+    # Served data for front end application
+    client_context_data = {}
+    context = {}
+
+    # Get all active leagues
+    active_leagues = LeagueEvent.objects.filter(
+        end_time__gte=now)
+
     if user.is_authenticated:
+        client_context_data['user'] = user.format()
         start_time_range = user.profile.start_cal
         end_time_range = user.profile.end_cal
-        communities = user.get_communities()
-        divisions = user.get_open_divisions()
+
+        # Get all public communities and those the user is member of
+        user_communities = user.groups.filter(
+            name__endswith='community_member')
+        communities = Community.objects.filter(
+            Q(private=False) | Q(user_group__in=user_communities))
+
+        # Get all public leagues and those the user is member of
+        user_divisions = user.get_active_divisions()
+        leagues = active_leagues.filter(
+            Q(is_public=True) | Q(division__in=user_divisions)).distinct()
+
+        user_opponents = user.get_opponents()
+        user_divisions = user.get_active_divisions()
+
+        context['user'] = user
+        context['user_divisions'] = [division for division in user_divisions]
+        context['user_opponents'] = [user for user in user_opponents]
+
     else:
         start_time_range = 0
         end_time_range = 24
-        communities = []
-        divisions = []
-    context = {
-        'user': user,
-        'start_time_range': start_time_range,
-        'end_time_range': end_time_range,
-        'communities': communities,
-        'divisions': divisions
-    }
-    template = 'fullcalendar/calendar2.html'
-    return render(request, template, context)
+        communities = Community.objects.filter(private=False)
+        leagues = active_leagues.filter(is_public=True)
+
+    context['communities'] = communities
+    context['leagues'] = leagues
+    context['start_time_range'] = start_time_range
+    context['end_time_range'] = end_time_range
+    context['client_context_data'] = client_context_data
+
+    client_context_data['communities'] = [c.format() for c in communities]
+    client_context_data['leagues'] = [l.format() for l in leagues]
+
+    return render(request, 'fullcalendar/calendar2.html', context)
 
 def get_public_events(request):
+    """
+    Returns all public events inside a range period.
+    If you may ask, community filtering now occurs
+    in client side.
+    """
     user = request.user
     tz = user.get_timezone() if user.is_authenticated else utc
     start = parseFCalendarDate(request.GET.get('start'), tz)
     end = parseFCalendarDate(request.GET.get('end'), tz)
-    events = PublicEvent.get_formated_events(start, end, tz)
+    events = PublicEvent.get_formated(start, end, tz)
     return JsonResponse(events, safe=False)
 
 def get_user_available_events(request):
+    """
+    Returns all available events of the user inside
+    a range period.
+    """
     user = request.user
-    events = []
     if user.is_league_member:
         tz = user.get_timezone()
-        start = parseFCalendarDate(request.GET.get('start'), tz)
         end = parseFCalendarDate(request.GET.get('end'), tz)
-        events += AvailableEvent.get_formated_user_available_events(user, start, end, tz)
-    return JsonResponse(events, safe=False)
+        events = AvailableEvent.get_formated_user(user, end, tz)
+        return JsonResponse(events, safe=False)
+    return HttpResponseForbidden()
 
-def get_opponent_available_events(request):
+def get_available_events(request):
+    """
+    Returns all available events of user's opponents
+    inside a range period.
+    """
     user = request.user
-    events = []
     if user.is_league_member:
-        divisions = json.loads(request.GET.get('divisions'))
-        events += AvailableEvent.get_formated_opponent_available_events(user, divisions)
-    return JsonResponse(events, safe=False)
+        tz = user.get_timezone()
+        end = parseFCalendarDate(request.GET.get('end'), tz)
+        leagues = json.loads(request.GET.get('leagues'))
+        events = AvailableEvent.get_formated_opponents(user, end, leagues)
+        return JsonResponse(events, safe=False)
+    return HttpResponseForbidden()
 
 def get_game_request_events(request):
+    """
+    Returns all users's game requests inside a range period.
+    """
     user = request.user
-    events = []
     if user.is_league_member:
         tz = user.get_timezone()
         start = parseFCalendarDate(request.GET.get('start'), tz)
         end = parseFCalendarDate(request.GET.get('end'), tz)
-        divisions = json.loads(request.GET.get('divisions'))
-        events += GameRequestEvent.get_formated_game_request_events(user, divisions, start, end, tz)
-    return JsonResponse(events, safe=False)
+        events = GameRequestEvent.get_formated(user, start, end, tz)
+        return JsonResponse(events, safe=False)
+    return HttpResponseForbidden()
 
 def get_game_appointment_events(request):
     user = request.user
@@ -277,16 +322,13 @@ def get_game_appointment_events(request):
 def create_available_event(request):
     user = request.user
     if user.is_league_member:
-        now = timezone.now()
         tz = user.get_timezone()
         start = parseFCalendarDate(request.POST.get('start'), tz)
         end = parseFCalendarDate(request.POST.get('end'), tz)
         user_availabilities = AvailableEvent.objects.filter(
             user=user,
             end__gte=timezone.now(),
-            start__lte=end
-        )
-
+            start__lte=end)
         # merge overlapping events
         startTimes = [start]
         endTimes = [end]
@@ -295,30 +337,25 @@ def create_available_event(request):
                 startTimes.append(event.start)
                 endTimes.append(event.end)
                 event.delete()
-
         new_event = AvailableEvent.objects.create(
             start=min(startTimes),
             end=max(endTimes),
-            user=user
-        )
-
+            user=user)
         # TODO : check if borns are equals with other event in
         # user_availabilities (basically the ones not deleted)
         new_event.save()
-
-    return HttpResponse('success')
+        return HttpResponse('success')
+    return HttpResponseForbidden()
 
 def update_available_event(request):
     user = request.user
     if user.is_league_member:
         pk = request.POST.get('pk')
-        updatedEvent = get_object_or_404(AvailableEvent, user=user, pk=pk)
-        now = timezone.now()
+        updatedEvent = get_object_or_404(AvailableEvent, pk=pk)
         tz = user.get_timezone()
         start = parseFCalendarDate(request.POST.get('start'), tz)
         end = parseFCalendarDate(request.POST.get('end'), tz)
         user_availabilities = AvailableEvent.objects.filter(user=user).exclude(pk=pk)
-
         # merge overlapping events
         startTimes = [start]
         endTimes = [end]
@@ -327,12 +364,11 @@ def update_available_event(request):
                 startTimes.append(event.start)
                 endTimes.append(event.end)
                 event.delete()
-
         updatedEvent.start = min(startTimes)
         updatedEvent.end = max(endTimes)
         updatedEvent.save()
-
-    return HttpResponse('success')
+        return HttpResponse('success')
+    return HttpResponseForbidden()
 
 def delete_available_event(request):
     user = request.user
@@ -340,7 +376,8 @@ def delete_available_event(request):
         pk = request.POST.get('pk')
         ev = get_object_or_404(AvailableEvent, user=user, pk=pk)
         ev.delete()
-    return HttpResponse('success')
+        return HttpResponse('success')
+    return HttpResponseForbidden()
 
 def json_feed(request):
     """get all events for one user and serve a json."""
@@ -581,6 +618,57 @@ def cancel_game_request_ajax(request):
         return HttpResponse('success')
     else:
         return HttpResponse('error')
+
+@require_POST
+@login_required()
+@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+def create_game_request2(request):
+    """Create a game request a new game request."""
+    sender = request.user
+    tz = sender.get_timezone()
+    # TODO use django form for validation
+    date = parseFCalendarDate(request.POST.get('date'), tz)
+    receiver = json.loads(request.POST.get('receiver'))
+    divisions = json.loads(request.POST.get('divisions'))
+    private = json.loads(request.POST.get('private'))
+    receiver = User.objects.filter(pk=receiver)
+    divisions = Division.objects.filter(pk__in=divisions)
+    if not receiver:
+        return HttpResponseBadRequest()
+    # a game request should last 1h30
+    end = date + timedelta(hours=1, minutes=30)
+    # create the instance
+    print(private)
+    """
+    game_request = GameRequestEvent(
+        start=date,
+        end=end,
+        sender=sender,
+        private=private
+    )
+    game_request.save()
+    game_request.receivers.add(*receiver)
+    game_request.divisions.add(*divisions)
+    game_request.save()
+
+    # send a message to all receivers
+    subject = 'Game request from ' + sender.username \
+        + ' on ' + date.strftime('%d %b')
+    plaintext = loader.get_template('fullcalendar/messages/game_request.txt')
+    context = {
+        'sender': sender,
+        'date': date
+    }
+    message = plaintext.render(context)
+    pm_broadcast(
+        sender=sender,
+        recipients=list(receiver),
+        subject=subject,
+        body=message,
+        skip_notification=False
+    )
+    """
+    return HttpResponse('success')
 
 
 @require_POST

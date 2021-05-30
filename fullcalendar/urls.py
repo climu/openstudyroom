@@ -70,9 +70,9 @@ urlpatterns = [
         name='get_user_available_events'
     ),
     url(
-        r'^get-opponent-available-events/$',
-        views.get_opponent_available_events,
-        name='get_opponent_available_events'
+        r'^get-available-events/$',
+        views.get_available_events,
+        name='get_available_events'
     ),
     url(
         r'^get-game-request-events/$',
@@ -109,6 +109,11 @@ urlpatterns = [
         r'^create-game-request/$',
         views.create_game_request,
         name='create_game_request'
+    ),
+    url(
+        r'^create-game-request2/$',
+        views.create_game_request2,
+        name='create_game_request2'
     ),
     url(
         r'^cancel-game-request-ajax/$',
