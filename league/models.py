@@ -786,18 +786,24 @@ class User(AbstractUser):
         Reason: get_open_division returns divisions that can only be joined,
         therefore, some divisions are skipped.
         """
-        return {
-            'pk': self.pk,
-            'name': self.username,
-            'communities': [com.format() for com in self.get_communities()],
-            'divisions': [div.format() for div in self.get_active_divisions()],
-            'opponents': [{'pk': user.pk, 'name': user.username} for user in self.get_opponents()]
-        }
+        res = {}
+        res['pk'] = self.pk
+        res['name'] = self.username
+        res['communities'] = [com.format() for com in self.get_communities()]
+        res['divisions'] = [div.format() for div in self.get_active_divisions()]
+        res['opponents'] = []
+        for opponent in self.get_opponents():
+            # we dont use opponent.format because
+            # we need minimal infos
+            res['opponents'].append({
+                'pk': opponent.pk,
+                'name': opponent.username
+            })
+        return res
 
     def get_full_name(self):
         """required for django_comments_xtd"""
         return self.username
-
 
     def join_event(self, event, division=None, actor=None):
         if not event.can_join(self, actor):
@@ -1270,12 +1276,19 @@ class Division(models.Model):
         return self.name + self.league_event.name
 
     def format(self):
-        return {
-            'pk': self.pk,
-            'name': self.name,
-            'league': self.league_event.format(),
-            'players': [player.user.username for player in self.get_players()]
-        }
+        res = {}
+        res['pk'] = self.pk
+        res['name'] = self.name
+        res['league'] = self.league_event.format()
+        res['users'] = []
+        for player in self.get_players():
+            # we dont use player.user.format because
+            # we need minimal infos
+            res['users'].append({
+                'pk': player.user.pk,
+                'name': player.user.username
+            })
+        return res
 
     def number_games(self):
         return self.sgf_set.distinct().count()

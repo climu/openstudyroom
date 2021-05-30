@@ -358,7 +358,9 @@ class AvailableEvent(CalEvent):
 
 class GameRequestEvent(CalEvent):
     """
-    We will add private field and divisions field
+    Added 'private' and 'divisions' fields.
+    Intended to be passed to the future GameAppointment event when
+    receivers accept the request.
     """
     sender = models.ForeignKey(
         User,
@@ -372,11 +374,14 @@ class GameRequestEvent(CalEvent):
         related_query_name="%(app_label)s_%(class)ss_receiver",
     )
 
+    #private = models.BooleanField(default=False)
+    #divisions = models.ManyToManyField('Division', blank=True)
+
     def format(self, tz):
         event = super().format('game-request', tz)
         event['sender'] = self.sender.format()
-        event['divisions'] = 'will be linked to divisions'
-        event['private'] = ''
+        #event['private'] = self.private
+        #event['divisions'] = [{'pk': div.pk, 'name': div.name} for div in self.divisions.all()]
         event['receivers'] = [{'pk': user.pk, 'name': user.username} for user in self.receivers.all()]
         return event
 
@@ -393,6 +398,19 @@ class GameRequestEvent(CalEvent):
         formated_events += [event.format(tz) for event in user_as_sender]
         formated_events += [event.format(tz) for event in user_as_receiver]
         return formated_events
+
+    @staticmethod
+    def create(sender, receiver, divisions, private, start, end):
+        game_request = GameRequestEvent(
+            start=start,
+            end=end,
+            sender=sender,
+            private=private
+        )
+        game_request.save()
+        game_request.receivers.add(*receiver)
+        game_request.divisions.add(*divisions)
+        game_request.save()
 
 class GameAppointmentEvent(CalEvent):
     """
@@ -411,7 +429,14 @@ class GameAppointmentEvent(CalEvent):
         event = super().format('game-appointment', tz)
         event['division'] = 'g-appointment can be linked to division'
         event['private'] = ''
-        event['users'] = [user.username for user in self.users.all()]
+        event['users'] = []
+        for user in self.users.all():
+            # we dont use user.format because
+            # we need minimal infos
+            event['users'].append({
+                'pk': user.pk,
+                'name': user.username
+            })
         return event
 
     def title(self):
@@ -431,11 +456,14 @@ class GameAppointmentEvent(CalEvent):
         )
 
     @staticmethod
-    def get_formated(tz):
+    def get_formated(user, tz):
         """
         Game appointment are now considered as public event and
         therefore can be seen by anyone !
+        They can be private if needed. If the user is authenticated
+        also returns his privates events.
         """
+        # TODO: Filter private game for authenticated user
         now = timezone.now()
         events = GameAppointmentEvent.objects.filter(end__gte=now)
         return [event.format(tz) for event in events]

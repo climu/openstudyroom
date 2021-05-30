@@ -28,8 +28,8 @@ div.available-event {
 
 a.game-request-event-user{
   cursor: pointer;
-  border-color: rgba(35, 76, 129, 0.8) !important;;
-  background-color: rgba(39, 95, 168, 0.6) !important;
+  border-color: rgba(35, 76, 129, 0.4) !important;;
+  background-color: rgba(39, 95, 168, 0.4) !important;
 }
 a:hover.game-request-event-user {
   background-color: rgba(46, 109, 191, 0.6) !important;
@@ -38,13 +38,32 @@ a:hover.game-request-event-user {
 a.game-request-event {
   cursor: pointer;
   border-color: rgba(117, 21, 52, 0.5) !important;
-  background-color: rgba(173, 28, 74, 0.5) !important;
+  background-color: rgba(173, 28, 74, 0.4) !important;
 }
 a:hover.game-request-event {
   background-color: rgba(173, 28, 74, 0.6) !important;
 }
 
 a.game-request-event .fc-event-title,
-a.game-request-event-user .fc-event-title {
+a.game-request-event-user .fc-event-title,
+a.game-appointment-event .fc-event-title,
+a.game-appointment-event-user .fc-event-title {
   font-weight: 600;
+}
+
+a.game-appointment-event {
+  border-color: rgba(189, 83, 117, 1) !important;
+  background-color: rgba(189, 83, 117, 1) !important;
+}
+
+a.game-appointment-event-user {
+  border-color: rgba(21, 140, 186, 1) !important;
+  background-color: rgba(21, 140, 186, 1) !important;
+  cursor: pointer;
+}
+
+a:hover.game-appointment-event-user {
+  border-color: rgba(30, 161, 212, 1) !important;
+  background-color: rgba(30, 161, 212, 1) !important;
+  cursor: pointer;
 }

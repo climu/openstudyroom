@@ -32,8 +32,15 @@ class User {
     return !!this.communities.filter(com =>
       com.pk === parseInt(value)).length;
   }
-  shareDivision = (user) => {
-
+  /**
+   * Used by the CreateGameRequestForm
+   * for feed its select options.
+   */
+   getDivisionsWithOpponent = (user_pk) => {
+    return Array.from(this.divisions)
+      .filter(div => div.users
+        .map(({ pk }) => pk)
+        .includes(user_pk));
   }
 }
 
@@ -46,6 +53,11 @@ class User {
  *
  * eventDataTransform method is called each time
  * a update event is sent by the server.
+ */
+
+/**
+ * TODO: add color attribute to event
+ * for rendering dots in the list view.
  */
 class EventSource {
   static objects = new Map();
@@ -161,15 +173,24 @@ class RequestEventSource extends EventSource {
   }
 }
 
-class AppointmentsEventSource extends EventSource {
-  static id = 'appointment';
+class AppointmentEventSource extends EventSource {
+  static id = 'game-appointment';
   constructor(ctx, calendar) {
-    super(ctx, calendar, AppointmentsEventSource.id, 'get-game-appointment-events');
+    super(ctx, calendar, AppointmentEventSource.id, 'get-game-appointment-events');
+  }
+  visible() {
+    return Input.appointment.checked;
   }
   eventDataTransform = (e) => {
     e = super.eventDataTransform(e);
-    e.title = `${e.users[0]} vs ${e.users[1]}`;
+    e.isUser = e.users.map(({pk}) => pk).includes(this.ctx.user.pk);
+    e.className += e.isUser ? '-user' : '';
+    e.title = `${e.users[0].name} vs ${e.users[1].name}`;
     return e;
+  }
+  eventUpdate = (e) => {
+    const visible = this.visible();
+    e.setProp('display', visible ? 'block' : 'none');
   }
 }
 
@@ -203,13 +224,22 @@ class Calendar extends FullCalendar.Calendar {
     this.setOption('dateClick', this.handleDateClick);
     this.render();
     this.initializeSources();
+    // circular dependencies work arround
+    Calendar.object = this;
+  }
+
+  cancelGameAppointment = (e) => {
+    this.modal.cancelGameAppointmentForm.pk = e.extendedProps.pk;
+    this.modal.show(CancelGameAppointmentForm);
   }
 
   cancelGameRequest = (e) => {
+    this.modal.cancelGameRequestForm.pk = e.extendedProps.pk;
     this.modal.show(CancelGameRequestForm);
   }
 
   updateGameRequest = (e) => {
+    this.modal.updateGameRequestForm.pk = e.extendedProps.pk;
     this.modal.show(UpdateGameRequestForm);
   }
 
@@ -245,9 +275,9 @@ class Calendar extends FullCalendar.Calendar {
   }
 
   handleDateClick = (info) => {
-    // Calendar.selectable state is set by Input.userAvailable
-    // this.modal = null is the same as ctx.user = null
-    if (!this.getOption('selectable') && this.modal && !(info.date < Date.now())) {
+    // a game request cannot be create before the next hour
+    const minTime = Date.now() + 1000 * 60 * 60;
+    if (!this.getOption('selectable') && this.modal && !(info.date < minTime)) {
       const formated = FullCalendar.formatDate(info.dateStr, {
         month: 'long',
         year: 'numeric',
@@ -269,13 +299,19 @@ class Calendar extends FullCalendar.Calendar {
       case 'game-request':
         event.extendedProps.isUser
           ? this.cancelGameRequest(event)
-          : this.updateGameRequest(event)
+          : this.updateGameRequest(event);
+        break;
+      case 'game-appointment':
+        event.extendedProps.isUser
+          ? this.cancelGameAppointment(event)
+          : null;
         break;
       }
   }
 
   updateEvents = () => {
     this.getEvents().forEach(e => {
+      console.log(e.extendedProps.type)
       EventSource.objects
         .get(e.extendedProps.type)
         .eventUpdate(e);
@@ -303,6 +339,7 @@ class Calendar extends FullCalendar.Calendar {
       this.addEventSource(new AvailableEventSource(this.ctx, this));
       this.addEventSource(new UserAvailableEventSource(this.ctx, this));
       this.addEventSource(new RequestEventSource(this.ctx, this));
+      this.addEventSource(new AppointmentEventSource(this.ctx, this));
     }
   }
 }
@@ -358,9 +395,10 @@ class Input {
 class ModalManager {
   constructor(ctx) {
     MicroModal.init();
-    this.createGameReqForm = new CreateGameRequestForm(ctx, this);
-    this.cancelGameReqForm = new CancelGameRequestForm(ctx, this);
-    this.updateGameReqForm = new UpdateGameRequestForm(ctx, this);
+    this.createGameRequestForm = new CreateGameRequestForm(ctx, this);
+    this.cancelGameRequestForm = new CancelGameRequestForm(ctx, this);
+    this.updateGameRequestForm = new UpdateGameRequestForm(ctx, this);
+    this.cancelGameAppointmentForm = new CancelGameAppointmentForm(ctx, this);
   }
   static get title() {
     return document.getElementById('modal-title');
@@ -377,6 +415,8 @@ class ModalManager {
       'hidden', Form != CancelGameRequestForm);
     UpdateGameRequestForm.form.classList.toggle(
       'hidden', Form != UpdateGameRequestForm);
+    CancelGameAppointmentForm.form.classList.toggle(
+      'hidden', Form != CancelGameAppointmentForm);
     ModalManager.title.textContent = Form.form.dataset.title;
     CreateGameRequestForm.date.textContent = title;
     MicroModal.show('cal-modal');
@@ -386,8 +426,27 @@ class ModalManager {
   }
 }
 
+class CancelGameAppointmentForm {
+  static type = 'cancel-appointment';
+  constructor(ctx, modal) {
+    this.ctx = ctx;
+    this.modal = modal;
+    this.pk = null;
+    CancelGameAppointmentForm.form.onsubmit = this.handleSubmit;
+  }
+
+  static get form() {
+    return document.getElementById('modal-cancel-game-appointment');
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault(e);
+    // Delete GameAppointment
+  }
+}
+
 class CancelGameRequestForm {
-  static type = 'cancel';
+  static type = 'cancel-request';
   constructor(ctx, modal) {
     this.ctx = ctx;
     this.modal = modal;
@@ -400,12 +459,15 @@ class CancelGameRequestForm {
 
   handleSubmit = (e) => {
     e.preventDefault(e);
-    // Delete GameRequest
+    $.post('/calendar/cancel-game-request-ajax/', { pk: this.pk }, () => {
+      Calendar.object.getEventSourceById(RequestEventSource.id).refetch();
+      this.modal.close();
+    });
   }
 }
 
 class UpdateGameRequestForm {
-  static type = 'accept';
+  static type = 'update-request';
   constructor(ctx, modal) {
     this.ctx = ctx;
     this.modal = modal;
@@ -427,8 +489,15 @@ class UpdateGameRequestForm {
 
   handleClick = (e) => {
     e.preventDefault(e);
-    this.value = e.target.id === "modal-accept-confirm";
-    // Update GameRequest
+    if (e.target.id === "modal-accept-confirm") {
+      //accept-game-request-ajax
+      // Create game apointment
+    } else {
+      $.post('/calendar/reject-game-request-ajax/', { pk: this.pk,  }, () => {
+        Calendar.object.getEventSourceById(RequestEventSource.id).refetch();
+        this.modal.close();
+      });
+    }
   }
 }
 
@@ -510,11 +579,8 @@ class CreateGameRequestForm {
 
   handlePlayerChange = (e) => {
     CreateGameRequestForm.divisionSelect.textContent = '';
-    const pk = parseInt(e.target.value);
-    const opponent = ctx.user.opponents.find(el => el.pk === pk);
-    const divs = Array.from(ctx.user.divisions)
-      .filter(div => div.players
-      .includes(opponent.name))
+    this.ctx.user
+      .getDivisionsWithOpponent(parseInt(e.target.value))
       .forEach(CreateGameRequestForm.addDivision);
     //GameRequestForm.divisionSelect.classList.toggle(
       //'hidden', !GameRequestForm.divisionSelect.childElementCount);
@@ -563,6 +629,7 @@ function initializeInputs(calendar, ctx) {
     }
   }
 
+  Input.appointment.onchange = calendar.updateEvents;
   Input.osr.onchange = calendar.updateEvents;
   Input.public.onchange = calendar.updateEvents;
 }

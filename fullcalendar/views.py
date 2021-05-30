@@ -308,15 +308,10 @@ def get_game_request_events(request):
 
 def get_game_appointment_events(request):
     user = request.user
-    events = []
-    if user.is_league_member:
-        tz = user.get_timezone()
-        start = parseFCalendarDate(request.GET.get('start'), tz)
-        end = parseFCalendarDate(request.GET.get('end'), tz)
-        divisions = json.loads(request.GET.get('divisions'))
-        only_user = request.GET.get('only_user') == 'true'
-        events += GameAppointmentEvent.format_game_appointments(user, divisions, only_user, tz)
-
+    tz = user.get_timezone() if user.is_authenticated else utc
+    start = parseFCalendarDate(request.GET.get('start'), tz)
+    end = parseFCalendarDate(request.GET.get('end'), tz)
+    events = GameAppointmentEvent.get_formated(user, tz)
     return JsonResponse(events, safe=False)
 
 def create_available_event(request):
@@ -637,19 +632,10 @@ def create_game_request2(request):
         return HttpResponseBadRequest()
     # a game request should last 1h30
     end = date + timedelta(hours=1, minutes=30)
-    # create the instance
     print(private)
     """
-    game_request = GameRequestEvent(
-        start=date,
-        end=end,
-        sender=sender,
-        private=private
-    )
-    game_request.save()
-    game_request.receivers.add(*receiver)
-    game_request.divisions.add(*divisions)
-    game_request.save()
+    # create the instance
+    GameRequestEvent.create(sender, receiver, divisions, private, date, end)
 
     # send a message to all receivers
     subject = 'Game request from ' + sender.username \
