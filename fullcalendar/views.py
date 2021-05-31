@@ -6,7 +6,8 @@ from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.views.generic.edit import UpdateView, CreateView
 from django.contrib.auth.decorators import user_passes_test, login_required
-from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse, HttpResponseForbidden, HttpResponseBadRequest
+from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse, \
+    HttpResponseForbidden, HttpResponseBadRequest
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.utils.timezone import make_aware
 from django.utils import timezone
@@ -231,8 +232,8 @@ def calendar_main_view(request):
 
         user_opponents = user.get_opponents_for_calendar()
         context['user'] = user
-        context['user_divisions'] = [division for division in user_divisions]
-        context['user_opponents'] = [user for user in user_opponents]
+        context['user_divisions'] = user_divisions
+        context['user_opponents'] = user_opponents
 
     else:
         start_time_range = 0
@@ -307,8 +308,6 @@ def get_game_request_events(request):
 def get_game_appointment_events(request):
     user = request.user
     tz = user.get_timezone() if user.is_authenticated else utc
-    start = parseFCalendarDate(request.GET.get('start'), tz)
-    end = parseFCalendarDate(request.GET.get('end'), tz)
     events = GameAppointmentEvent.get_formated(user, tz)
     return JsonResponse(events, safe=False)
 
@@ -334,7 +333,7 @@ def create_available_event(request):
             start=min(startTimes),
             end=max(endTimes),
             user=user)
-        # TODO : check if borns are equals with other event in
+        # check if borns are equals with other event in
         # user_availabilities (basically the ones not deleted)
         new_event.save()
         return HttpResponse('success')
@@ -627,7 +626,7 @@ def create_game_request2(request):
     """Create a game request a new game request."""
     sender = request.user
     tz = sender.get_timezone()
-    # TODO use django form for validation
+    # For the future : use django form for validation
     date = parseFCalendarDate(request.POST.get('date'), tz)
     receiver = json.loads(request.POST.get('receiver'))
     divisions = json.loads(request.POST.get('divisions'))

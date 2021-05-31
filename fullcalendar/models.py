@@ -42,7 +42,7 @@ class CalEvent(models.Model):
     class Meta:
         abstract = True
 
-    def format(self, type, tz):
+    def format(self, tz, type):
         return {
             'pk': self.pk,
             'start': self.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
@@ -57,8 +57,8 @@ class PublicEvent(CalEvent):
     category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.SET_NULL)
     community = models.ForeignKey(Community, blank=True, null=True, on_delete=models.CASCADE)
 
-    def format(self, tz):
-        event = super().format('public', tz)
+    def format(self, tz, type='public'):
+        event = super().format(tz, type)
         event['title'] = self.title
         event['description'] = self.description
         event['url'] = self.url
@@ -129,8 +129,8 @@ class PublicEvent(CalEvent):
 class AvailableEvent(CalEvent):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def format(self, tz):
-        event = super().format('user-available', tz)
+    def format(self, tz, type='user-available'):
+        event = super().format(tz, type)
         event['user'] = self.user.format()
         return event
 
@@ -143,7 +143,7 @@ class AvailableEvent(CalEvent):
         """
         divisions = Division.objects.filter(league_event__in=leagues)
         events = AvailableEvent.get_formated_other_available_dict(user, divisions, end)
-        return [event for event in events]
+        return events
 
     @staticmethod
     def get_formated_user(user, end, tz):
@@ -377,8 +377,8 @@ class GameRequestEvent(CalEvent):
     private = models.BooleanField(default=False)
     divisions = models.ManyToManyField(Division, blank=True)
 
-    def format(self, tz):
-        event = super().format('game-request', tz)
+    def format(self, tz, type='game-request'):
+        event = super().format(tz, type)
         event['sender'] = self.sender.format()
         event['private'] = self.private
         event['divisions'] = [div.format() for div in self.divisions.all()]
@@ -427,8 +427,8 @@ class GameAppointmentEvent(CalEvent):
     def __str__(self):
         return self.start.strftime("%x") + self.title()
 
-    def format(self, tz):
-        event = super().format('game-appointment', tz)
+    def format(self, tz, type='game-appointment'):
+        event = super().format(tz, type)
         event['divisions'] = [div.format() for div in self.divisions.all()]
         event['users'] = []
         for user in self.users.all():
