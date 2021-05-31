@@ -58,6 +58,47 @@ urlpatterns = [
         name='admin_cal_event_list'
     ),
     url(r'^save/$', views.save, name='save'),
+    url(r'^v2$', views.calendar_main_view, name='calendar_main_view'),
+    url(
+        r'^get-public-events/$',
+        views.get_public_events,
+        name='get_public_events'
+    ),
+    url(
+        r'^get-user-available-events/$',
+        views.get_user_available_events,
+        name='get_user_available_events'
+    ),
+    url(
+        r'^get-available-events/$',
+        views.get_available_events,
+        name='get_available_events'
+    ),
+    url(
+        r'^get-game-request-events/$',
+        views.get_game_request_events,
+        name='get_game_request_events'
+    ),
+    url(
+        r'^get-game-appointment-events/$',
+        views.get_game_appointment_events,
+        name='get_game_appointment_events'
+    ),
+    url(
+        r'^create-available-event/$',
+        views.create_available_event,
+        name='create_available_event'
+    ),
+    url(
+        r'^update-available-event/$',
+        views.update_available_event,
+        name='update_available_event'
+    ),
+    url(
+        r'^delete-available-event/$',
+        views.delete_available_event,
+        name='delete_available_event'
+    ),
     url(r'^json-feed/$', views.json_feed, name='json_feed'),
     url(
         r'^json-feed/(?P<user_id>[0-9]+)/$',
@@ -68,6 +109,11 @@ urlpatterns = [
         r'^create-game-request/$',
         views.create_game_request,
         name='create_game_request'
+    ),
+    url(
+        r'^create-game-request2/$',
+        views.create_game_request2,
+        name='create_game_request2'
     ),
     url(
         r'^cancel-game-request-ajax/$',

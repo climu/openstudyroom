@@ -120,6 +120,12 @@ class LeagueEvent(models.Model):
     def __str__(self):
         return self.name
 
+    def format(self):
+        return {
+            'pk': self.pk,
+            'name': self.name,
+        }
+
     def get_servers_list(self):
         """return a list of go servers where games can be played"""
         return self.servers.replace(' ', '').split(',')
@@ -771,11 +777,33 @@ class User(AbstractUser):
         self.n_win = None
         self.n_games = None
 
+    def format(self):
+        """
+        We substitutes get_open_division by get_active_division.
+        A league which is finished (i.e, end_time < now) have no
+        game that should be played anymore and its irrelevant for the calendar.
+
+        Reason: get_open_division returns divisions that can only be joined,
+        therefore, some divisions are skipped.
+        """
+        res = {}
+        res['pk'] = self.pk
+        res['name'] = self.username
+        res['communities'] = [com.format() for com in self.get_communities()]
+        res['divisions'] = [div.format() for div in self.get_active_divisions()]
+        res['opponents'] = []
+        for opponent in self.get_opponents_for_calendar():
+            # we dont use opponent.format because
+            # we need minimal infos
+            res['opponents'].append({
+                'pk': opponent.pk,
+                'name': opponent.username
+            })
+        return res
 
     def get_full_name(self):
         """required for django_comments_xtd"""
         return self.username
-
 
     def join_event(self, event, division=None, actor=None):
         if not event.can_join(self, actor):
@@ -888,10 +916,47 @@ class User(AbstractUser):
     def get_primary_email(self):
         return self.emailaddress_set.filter(primary=True).first()
 
+    def get_active_divisions(self):
+        """
+        Return all active divisions (league end time > now) a user is in.
+        """
+        now = timezone.now()
+        players = self.leagueplayer_set.all()
+        return Division.objects.filter(leagueplayer__in=players, league_event__end_time__gte=now)
+
     def get_open_divisions(self):
         """Return all open division a user is in."""
         players = self.leagueplayer_set.all()
         return Division.objects.filter(leagueplayer__in=players, league_event__is_open=True)
+
+    def get_opponents_for_calendar(self):
+        """
+        Returns a list of all user's opponents.
+        The only difference with get_opponents is that we search
+        in divisions where league has not ended.
+        No reason to plan a game related to a finished event
+
+        Can this division filter remplaces the current one in the whole application ?
+        """
+        players = self.leagueplayer_set.filter(
+            division__league_event__end_time__gte=timezone.now())
+        # For each player, we get related opponents
+        opponents = []
+        for player in players:
+            division = player.division
+            player_opponents = LeaguePlayer.objects.filter(
+                division=division).exclude(pk=player.pk)
+            for opponent in player_opponents:
+                n_black = player.user.black_sgf.get_queryset().filter(
+                    divisions=division,
+                    white=opponent.user).count()
+                n_white = player.user.white_sgf.get_queryset().filter(
+                    divisions=division,
+                    black=opponent.user).count()
+                if n_white + n_black < division.league_event.nb_matchs:
+                    if opponent.user not in opponents:
+                        opponents.append(opponent.user)
+        return opponents
 
     def get_opponents(self, divs_list=None, server_list=None):
         """return a list of all user self can play with.
@@ -1240,6 +1305,21 @@ class Division(models.Model):
 
     def __str__(self):
         return self.name + self.league_event.name
+
+    def format(self):
+        res = {}
+        res['pk'] = self.pk
+        res['name'] = self.name
+        res['league'] = self.league_event.format()
+        res['users'] = []
+        for player in self.get_players():
+            # we dont use player.user.format because
+            # we need minimal infos
+            res['users'].append({
+                'pk': player.user.pk,
+                'name': player.user.username
+            })
+        return res
 
     def number_games(self):
         return self.sgf_set.distinct().count()

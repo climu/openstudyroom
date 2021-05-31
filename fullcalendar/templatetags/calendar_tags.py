@@ -1,5 +1,6 @@
 from django import template
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from fullcalendar.models import PublicEvent, GameAppointmentEvent
 
 register = template.Library()
@@ -29,3 +30,13 @@ def get_now():
 def tz_offset():
     tz = timezone.get_current_timezone()
     return timezone.localtime(timezone.now(), tz).utcoffset().total_seconds()
+
+@register.simple_tag()
+def checkbox(label, id=None, className=None, label_class='', value=None, color=None, checked=True):
+    checked = ' checked' if checked else ''
+    id = ' id="' + id + '" ' if id else ''
+    className = ' class="' + className + '" ' if className else ''
+    value = ' value="' + str(value) + '" ' if value else ''
+    html = '<div class="checkbox"><label class="' + label_class + '"><input type="checkbox"' +\
+        id + className + value  + checked + '><span>' + label + '</span></label></div>'
+    return mark_safe(html)
