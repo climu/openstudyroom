@@ -2,18 +2,17 @@
 {% load tz static i18n calendar_tags %}
 
 {% block extra_head_js %}
+<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/fc-variables.css'%}"/>
 <link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/fullcalendar.css'%}"/>
 <link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/rangeslider.css'%}"/>
 <link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/micromodal.css'%}"/>
+<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/custom.css'%}"/>
+<script src='https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js'></script>
 <script src='https://cdn.jsdelivr.net/npm/moment@2.27.0/min/moment.min.js'></script>
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.7.0/main.min.js'></script>
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.7.0/locales-all.min.js"></script>
 <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/moment@5.5.0/main.global.min.js'></script>
-<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
-<script src="https://unpkg.com/@popperjs/core@2"></script>
 <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
-<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/custom.css'%}"/>
 {% endblock %}
 
 {% block title %}Calendar{% endblock %}
@@ -28,7 +27,6 @@
 <div class="row">
 
   <!-- Calendar filtering menu -->
-
   <div class="col-md-3">
     <div class="panel panel-default">
       {% if user.is_authenticated %}
@@ -58,22 +56,18 @@
       </div>
       <div class="panel-body">
         {% checkbox label='Public' id='public-filter' %}
-        {% checkbox label='Appointments' id='appointment-filter' %}
+        {% checkbox label='Appointments' id='appointment-filter' label_class='appointment-event' %}
         {% if user.is_authenticated %}
-        {% checkbox label='Game requests' id='game-request-filter' %}
+        {% checkbox label='Game requests' id='game-request-filter' label_class='request-event' %}
+        <hr>
         {% checkbox label='Availabilities' id='av-event-filter' %}
+        {% checkbox label='Edit my availabilities' id='user-av-event-filter' checked=False label_class='edit-av-user' %}
         {% endif %}
       </div>
-      {% if user.is_authenticated %}
-      <div class="panel-footer">
-        {% checkbox label='Edit my availabilities' id='user-av-event-filter' checked=False %}
-      </div>
-      {% endif %}
     </div>
   </div>
 
   <!-- Calendar column -->
-
   <div id="calendar-wrapper" class="col-md-9">
     <div id="time-range-selector-wrapper">
       <div >
@@ -90,7 +84,6 @@
 
   <!-- Modal game request panel -->
   {% include 'fullcalendar/includes/cal-modal2.html' %}
-
 </div>
 {% endblock %}
 

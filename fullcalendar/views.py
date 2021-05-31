@@ -229,9 +229,7 @@ def calendar_main_view(request):
         leagues = active_leagues.filter(
             Q(is_public=True) | Q(division__in=user_divisions)).distinct()
 
-        user_opponents = user.get_opponents()
-        user_divisions = user.get_active_divisions()
-
+        user_opponents = user.get_opponents_for_calendar()
         context['user'] = user
         context['user_divisions'] = [division for division in user_divisions]
         context['user_opponents'] = [user for user in user_opponents]
@@ -547,6 +545,7 @@ def cancel_game_ajax(request):  # pylint: disable=inconsistent-return-statements
             skip_notification=False
         )
         return HttpResponse('success')
+    return HttpResponseForbidden()
 
 
 @require_POST
@@ -558,11 +557,16 @@ def accept_game_request_ajax(request):
     pk = int(request.POST.get('pk'))
     game_request = get_object_or_404(GameRequestEvent, pk=pk)
     sender = game_request.sender
+    private = game_request.private
+    divisions = game_request.divisions.all()
     game_appointment = GameAppointmentEvent(
         start=game_request.start,
-        end=game_request.end
+        end=game_request.end,
+        private=private
     )
     game_appointment.save()
+    for div in divisions:
+        game_appointment.divisions.add(div)
     game_appointment.users.add(user, sender)
     game_request.delete()
     # send a message
@@ -580,6 +584,8 @@ def accept_game_request_ajax(request):
         body=message,
         skip_notification=False
     )
+
+
     return HttpResponse('success')
 
 @login_required()
@@ -632,9 +638,6 @@ def create_game_request2(request):
         return HttpResponseBadRequest()
     # a game request should last 1h30
     end = date + timedelta(hours=1, minutes=30)
-    print(private)
-    """
-    # create the instance
     GameRequestEvent.create(sender, receiver, divisions, private, date, end)
 
     # send a message to all receivers
@@ -653,7 +656,6 @@ def create_game_request2(request):
         body=message,
         skip_notification=False
     )
-    """
     return HttpResponse('success')
 
 

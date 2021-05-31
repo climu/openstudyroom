@@ -157,13 +157,19 @@ class RequestEventSource extends EventSource {
     super(ctx, calendar, RequestEventSource.id, 'get-game-request-events');
   }
   visible({divisions}) {
-    return Input.gameRequest.checked;
+    return Input.gameRequest.checked
+      ? divisions.length
+        ? divisions.map(div => div.league.pk).some(pk => Input.values(Input.leagues).includes(pk))
+        : true
+      : false;
   }
   eventDataTransform = (e) => {
     e = super.eventDataTransform(e);
     e.isUser = this.ctx.user.name === e.sender.name;
     e.className += e.isUser ? '-user' : '';
-    e.title = `${e.sender.name} vs ` + e.receivers.map(({name}) => name).join(', ');
+    e.title = `${e.sender.name} vs
+      ${e.receivers.map(({name}) => name).join(', ')}
+      (${e.divisions.map(div => div.name).join(', ')})`
     e.display = this.visible(e) ? 'block' : 'none';
     return e;
   }
@@ -178,18 +184,24 @@ class AppointmentEventSource extends EventSource {
   constructor(ctx, calendar) {
     super(ctx, calendar, AppointmentEventSource.id, 'get-game-appointment-events');
   }
-  visible() {
-    return Input.appointment.checked;
+  visible({divisions}) {
+    return Input.appointment.checked
+      ? divisions.length
+        ? divisions.map(div => div.league.pk).some(pk => Input.values(Input.leagues).includes(pk))
+        : true
+      : false;
   }
   eventDataTransform = (e) => {
     e = super.eventDataTransform(e);
     e.isUser = e.users.map(({pk}) => pk).includes(this.ctx.user.pk);
     e.className += e.isUser ? '-user' : '';
-    e.title = `${e.users[0].name} vs ${e.users[1].name}`;
+    e.title = `${e.users[0].name} vs ${e.users[1].name}
+      (${e.divisions.map(div => div.name).join(', ')})`;
+    e.display = this.visible(e) ? 'block' : 'none';
     return e;
   }
   eventUpdate = (e) => {
-    const visible = this.visible();
+    const visible = this.visible(e.extendedProps);
     e.setProp('display', visible ? 'block' : 'none');
   }
 }
@@ -275,9 +287,9 @@ class Calendar extends FullCalendar.Calendar {
   }
 
   handleDateClick = (info) => {
-    // a game request cannot be create before the next hour
-    const minTime = Date.now() + 1000 * 60 * 60;
-    if (!this.getOption('selectable') && this.modal && !(info.date < minTime)) {
+    // a game request cannot be create before the next two hour
+    const minTime = Date.now() + 1000 * 60 * 60 * 2;
+    if (!this.getOption('selectable') && this.modal && info.date > minTime) {
       const formated = FullCalendar.formatDate(info.dateStr, {
         month: 'long',
         year: 'numeric',
@@ -286,7 +298,7 @@ class Calendar extends FullCalendar.Calendar {
         minute: 'numeric',
         timeZone: 'UTC',
       });
-      this.modal.createGameReqForm.setDate(info.dateStr);
+      this.modal.createGameRequestForm.setDate(info.dateStr);
       this.modal.show(CreateGameRequestForm, formated);
     }
   }
@@ -294,7 +306,9 @@ class Calendar extends FullCalendar.Calendar {
   handleEventClick = ({event}) => {
     switch (event.extendedProps.type) {
       case 'user-available':
-        this.deleteEvent({event});
+        Input.userAvailable.checked
+          ? this.deleteEvent({event})
+          : null;
         break;
       case 'game-request':
         event.extendedProps.isUser
@@ -311,7 +325,6 @@ class Calendar extends FullCalendar.Calendar {
 
   updateEvents = () => {
     this.getEvents().forEach(e => {
-      console.log(e.extendedProps.type)
       EventSource.objects
         .get(e.extendedProps.type)
         .eventUpdate(e);
@@ -441,7 +454,10 @@ class CancelGameAppointmentForm {
 
   handleSubmit = (e) => {
     e.preventDefault(e);
-    // Delete GameAppointment
+    $.post('/calendar/cancel-game-ajax/', { pk: this.pk }, () => {
+      Calendar.object.getEventSourceById(AppointmentEventSource.id).refetch();
+      this.modal.close();
+    });
   }
 }
 
@@ -490,8 +506,11 @@ class UpdateGameRequestForm {
   handleClick = (e) => {
     e.preventDefault(e);
     if (e.target.id === "modal-accept-confirm") {
-      //accept-game-request-ajax
-      // Create game apointment
+      $.post('/calendar/accept-game-request-ajax/', { pk: this.pk,  }, () => {
+        Calendar.object.getEventSourceById(RequestEventSource.id).refetch();
+        Calendar.object.getEventSourceById(AppointmentEventSource.id).refetch();
+        this.modal.close();
+      });
     } else {
       $.post('/calendar/reject-game-request-ajax/', { pk: this.pk,  }, () => {
         Calendar.object.getEventSourceById(RequestEventSource.id).refetch();
@@ -571,9 +590,10 @@ class CreateGameRequestForm {
       divisions,
       private: isprivate
     }, () => {
-      this.modal.close();
-      CreateGameRequestForm.form.reset();
       CreateGameRequestForm.divisionSelect.textContent = '';
+      Calendar.object.getEventSourceById(RequestEventSource.id).refetch();
+      CreateGameRequestForm.form.reset();
+      this.modal.close();
     });
   }
 
@@ -616,15 +636,20 @@ function initializeInputs(calendar, ctx) {
 
   Input.communities.forEach(el => el.onchange = calendar.updateEvents);
   Input.leagues.forEach(el => el.onchange = () => {
-    calendar.getEventSourceById(AvailableEventSource.id).refetch()
+    calendar.getEventSourceById(AvailableEventSource.id).refetch();
+    calendar.updateEvents();
   });
 
   if (ctx.user) {
     Input.onlyUser.onchange = handleOnlyUserChanged;
     Input.gameRequest.onchange = calendar.updateEvents;
-    Input.available.onchange = calendar.updateEvents;
+    Input.available.onchange = (e) => {
+      calendar.setOption('selectable', e.target.checked && Input.userAvailable.checked);
+      Input.userAvailable.disabled = !e.target.checked;
+      calendar.updateEvents();
+    }
     Input.userAvailable.onchange = (e) => {
-      calendar.setOption('selectable', e.target.checked);
+      calendar.setOption('selectable', e.target.checked && Input.available.checked);
       calendar.updateEvents();
     }
   }
@@ -645,5 +670,3 @@ const calendar = new Calendar(ctx, modal);
 
 initializeInputs(calendar, ctx);
 initializeTimeRangeSlider();
-
-console.log(ctx)

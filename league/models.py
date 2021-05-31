@@ -792,7 +792,7 @@ class User(AbstractUser):
         res['communities'] = [com.format() for com in self.get_communities()]
         res['divisions'] = [div.format() for div in self.get_active_divisions()]
         res['opponents'] = []
-        for opponent in self.get_opponents():
+        for opponent in self.get_opponents_for_calendar():
             # we dont use opponent.format because
             # we need minimal infos
             res['opponents'].append({
@@ -917,7 +917,9 @@ class User(AbstractUser):
         return self.emailaddress_set.filter(primary=True).first()
 
     def get_active_divisions(self):
-        """Return all active divisions a user is in."""
+        """
+        Return all active divisions (league end time > now) a user is in.
+        """
         now = timezone.now()
         players = self.leagueplayer_set.all()
         return Division.objects.filter(leagueplayer__in=players, league_event__end_time__gte=now)
@@ -926,6 +928,35 @@ class User(AbstractUser):
         """Return all open division a user is in."""
         players = self.leagueplayer_set.all()
         return Division.objects.filter(leagueplayer__in=players, league_event__is_open=True)
+
+    def get_opponents_for_calendar(self):
+        """
+        Returns a list of all user's opponents.
+        The only difference with get_opponents is that we search
+        in divisions where league has not ended.
+        No reason to plan a game related to a finished event
+
+        Can this division filter remplaces the current one in the whole application ?
+        """
+        players = self.leagueplayer_set.filter(
+            division__league_event__end_time__gte=timezone.now())
+        # For each player, we get related opponents
+        opponents = []
+        for player in players:
+            division = player.division
+            player_opponents = LeaguePlayer.objects.filter(
+                division=division).exclude(pk=player.pk)
+            for opponent in player_opponents:
+                n_black = player.user.black_sgf.get_queryset().filter(
+                    divisions=division,
+                    white=opponent.user).count()
+                n_white = player.user.white_sgf.get_queryset().filter(
+                    divisions=division,
+                    black=opponent.user).count()
+                if n_white + n_black < division.league_event.nb_matchs:
+                    if opponent.user not in opponents:
+                        opponents.append(opponent.user)
+        return opponents
 
     def get_opponents(self, divs_list=None, server_list=None):
         """return a list of all user self can play with.

@@ -374,14 +374,14 @@ class GameRequestEvent(CalEvent):
         related_query_name="%(app_label)s_%(class)ss_receiver",
     )
 
-    #private = models.BooleanField(default=False)
-    #divisions = models.ManyToManyField('Division', blank=True)
+    private = models.BooleanField(default=False)
+    divisions = models.ManyToManyField(Division, blank=True)
 
     def format(self, tz):
         event = super().format('game-request', tz)
         event['sender'] = self.sender.format()
-        #event['private'] = self.private
-        #event['divisions'] = [{'pk': div.pk, 'name': div.name} for div in self.divisions.all()]
+        event['private'] = self.private
+        event['divisions'] = [div.format() for div in self.divisions.all()]
         event['receivers'] = [{'pk': user.pk, 'name': user.username} for user in self.receivers.all()]
         return event
 
@@ -421,14 +421,15 @@ class GameAppointmentEvent(CalEvent):
         related_name="%(app_label)s_%(class)s_related",
         related_query_name="%(app_label)s_%(class)ss",
     )
+    private = models.BooleanField(default=False)
+    divisions = models.ManyToManyField(Division, blank=True)
 
     def __str__(self):
         return self.start.strftime("%x") + self.title()
 
     def format(self, tz):
         event = super().format('game-appointment', tz)
-        event['division'] = 'g-appointment can be linked to division'
-        event['private'] = ''
+        event['divisions'] = [div.format() for div in self.divisions.all()]
         event['users'] = []
         for user in self.users.all():
             # we dont use user.format because
@@ -463,10 +464,14 @@ class GameAppointmentEvent(CalEvent):
         They can be private if needed. If the user is authenticated
         also returns his privates events.
         """
-        # TODO: Filter private game for authenticated user
+        res = []
         now = timezone.now()
         events = GameAppointmentEvent.objects.filter(end__gte=now)
-        return [event.format(tz) for event in events]
+        # get user's private events
+        res += [e.format(tz) for e in events.filter(private=True, users=user)]
+        # get all public events
+        res += [e.format(tz) for e in events.filter(private=False)]
+        return res
 
     @staticmethod
     def get_formated_game_appointments(user, now, tz):

@@ -9,61 +9,71 @@
 }
 
 .fc-event-mirror {
-  border-color: rgba(0, 100, 255, 0.5) !important;
-  background-color: rgba(0, 100, 255, 0.2) !important;
+  background-color: var(--user-available-bg-color) !important;
+  border-color: var(--user-available-border-color) !important;
 }
 
 .user-available-event {
-  background-color: rgba(0, 100, 255, 0.2) !important;
-  border-color: rgba(0, 100, 255, 0.5) !important;
+  background-color: var(--user-available-bg-color) !important;
+  border-color: var(--user-available-border-color) !important;
 }
 a.user-available-event:hover {
-  background-color: rgba(0, 100, 255, 0.3) !important;
+  background-color: var(--user-available-hover-bg-color) !important;
+  border-color: var(--user-available-hover-border-color) !important;
 }
-
 div.available-event {
-  background-color: rgba(225, 0, 255, 0.2) !important;
-  border-bottom: 1px solid #fff;
+  background-color: var(--available-bg-color) !important;
 }
 
 a.game-request-event-user{
   cursor: pointer;
-  border-color: rgba(35, 76, 129, 0.4) !important;;
-  background-color: rgba(39, 95, 168, 0.4) !important;
+  border-color: var(--user-request-border-color) !important;
+  background-color: var(--user-request-bg-color) !important;
 }
 a:hover.game-request-event-user {
-  background-color: rgba(46, 109, 191, 0.6) !important;
+  border-color: var(--user-request-hover-border-color) !important;
+  background-color: var(--user-request-hover-bg-color) !important;
 }
 
 a.game-request-event {
   cursor: pointer;
-  border-color: rgba(117, 21, 52, 0.5) !important;
-  background-color: rgba(173, 28, 74, 0.4) !important;
+  border-color: var(--request-border-color) !important;
+  background-color: var(--request-bg-color) !important;
 }
 a:hover.game-request-event {
-  background-color: rgba(173, 28, 74, 0.6) !important;
+  border-color: var(--request-hover-border-color) !important;
+  background-color: var(--request-hover-bg-color) !important;
+}
+
+a.game-appointment-event {
+  border-color: var(--appointment-border-color) !important;
+  background-color: var(--appointment-bg-color) !important;
+}
+a.game-appointment-event-user {
+  cursor: pointer;
+  border-color: var(--user-appointment-border-color) !important;
+  background-color: var(--user-appointment-bg-color) !important;
+}
+a:hover.game-appointment-event-user {
+  border-color: var(--user-appointment-hover-border-color) !important;
+  background-color: var(--user-appointment-hover-bg-color) !important;
 }
 
 a.game-request-event .fc-event-title,
 a.game-request-event-user .fc-event-title,
 a.game-appointment-event .fc-event-title,
 a.game-appointment-event-user .fc-event-title {
+  font-weight: 400;
+}
+
+.request-event span {
   font-weight: 600;
+  color: var(--request-color);
 }
-
-a.game-appointment-event {
-  border-color: rgba(189, 83, 117, 1) !important;
-  background-color: rgba(189, 83, 117, 1) !important;
+.appointment-event span {
+  font-weight: 600;
+  color: var(--user-appointment-color);
 }
-
-a.game-appointment-event-user {
-  border-color: rgba(21, 140, 186, 1) !important;
-  background-color: rgba(21, 140, 186, 1) !important;
-  cursor: pointer;
-}
-
-a:hover.game-appointment-event-user {
-  border-color: rgba(30, 161, 212, 1) !important;
-  background-color: rgba(30, 161, 212, 1) !important;
-  cursor: pointer;
+.edit-av-user span {
+  font-weight: 600;
 }
