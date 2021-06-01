@@ -58,7 +58,7 @@ six==1.11.0
 sorl-thumbnail==12.3
 sqlparse==0.2.3
 Unidecode==0.4.21
-urllib3==1.24.2
+urllib3==1.26.5
 vobject==0.9.5
 wagtail==2.11.6
 wagtailmenus==3.0
