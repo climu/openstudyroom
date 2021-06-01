@@ -1759,19 +1759,11 @@ def update_all_profiles(request):
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def download_ffg_tou(request, league_id):
 
-    if request.method == 'GET':
-        context = {}
-        league = get_object_or_404(LeagueEvent, pk=league_id)
-        if not request.user.is_league_admin(league):
-            return Http404()
-        players = league.leagueplayer_set.all().prefetch_related('user__profile')
-        context['league'] = league
-        context['users'] = [players.user for players in players]
-        return render(request, 'league/admin/download_ffg_tou.html', context)
+    league = get_object_or_404(LeagueEvent, pk=league_id)
 
     if request.method == 'POST':
-        league = get_object_or_404(LeagueEvent, pk=league_id)
-        licences = {i:request.POST[i] for i in request.POST if i!='csrfmiddlewaretoken'}
+
+        licences = {i:request.POST[i] for i in request.POST if i !='csrfmiddlewaretoken'}
         tou = format_ffg_tou(league, licences)
 
         if tou is None:
@@ -1783,3 +1775,12 @@ def download_ffg_tou(request, league_id):
         response = HttpResponse(tou, content_type='text/plain')
         response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
         return response
+
+    context = {}
+    league = get_object_or_404(LeagueEvent, pk=league_id)
+    if not request.user.is_league_admin(league):
+        return Http404()
+    players = league.leagueplayer_set.all().prefetch_related('user__profile')
+    context['league'] = league
+    context['users'] = [players.user for players in players]
+    return render(request, 'league/admin/download_ffg_tou.html', context)
