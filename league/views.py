@@ -1130,6 +1130,7 @@ def admin_edit_sgf(request, sgf_id):  # pylint: disable=inconsistent-return-stat
 
 class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """ Update a league"""
+
     form_class = LeagueEventForm
     model = LeagueEvent
     template_name_suffix = '_update_form'
@@ -1757,17 +1758,28 @@ def update_all_profiles(request):
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def download_ffg_tou(request, league_id):
-    league = get_object_or_404(LeagueEvent, pk=league_id)
-    if not request.user.is_league_admin(league):
-        return Http404()
-    tou = format_ffg_tou(league)
 
-    if tou is None:
-        message = "Something went wrong. Probably a player without a FFG licence number"
-        messages.success(request, message)
-        return HttpResponseRedirect('/')
+    if request.method == 'GET':
+        context = {}
+        league = get_object_or_404(LeagueEvent, pk=league_id)
+        if not request.user.is_league_admin(league):
+            return Http404()
+        players = league.leagueplayer_set.all().prefetch_related('user__profile')
+        context['league'] = league
+        context['users'] = [players.user for players in players]
+        return render(request, 'league/admin/download_ffg_tou.html', context)
 
-    filename = f'OSR-league-{timezone.now().strftime("%m/%Y")}.tou'
-    response = HttpResponse(tou, content_type='text/plain')
-    response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
-    return response
+    if request.method == 'POST':
+        league = get_object_or_404(LeagueEvent, pk=league_id)
+        licences = {i:request.POST[i] for i in request.POST if i!='csrfmiddlewaretoken'}
+        tou = format_ffg_tou(league, licences)
+
+        if tou is None:
+            message = "Something went wrong. Probably a player with a wrong FFG licence number"
+            messages.success(request, message)
+            return HttpResponseRedirect('/')
+
+        filename = f'OSR-league-{timezone.now().strftime("%m/%Y")}.tou'
+        response = HttpResponse(tou, content_type='text/plain')
+        response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
+        return response

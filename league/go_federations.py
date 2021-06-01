@@ -102,7 +102,7 @@ def ffg_user_infos_alternative(ffg_licence_number, echelle_ffg):
         }
 
 
-def format_ffg_tou(league, location=None, comment=None):
+def format_ffg_tou(league, licences, location=None, comment=None):
     """
     format a division results in tou format for the French Go fédération.
     https://ffg.jeudego.org/echelle/format_res.php
@@ -148,7 +148,7 @@ def format_ffg_tou(league, location=None, comment=None):
     # First add extra fields to players
     for idx, player in enumerate(players):
         # if a player does not have a licence number we return None
-        licence_number = player.user.profile.ffg_licence_number
+        licence_number = licences[player.user.username]
         if licence_number is None or licence_number == 0:
             return None
         infos = ffg_user_infos_alternative(licence_number, echelle_ffg)
