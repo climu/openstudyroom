@@ -1763,7 +1763,7 @@ def download_ffg_tou(request, league_id):
 
     if request.method == 'POST':
 
-        licences = {i:request.POST[i] for i in request.POST if i !='csrfmiddlewaretoken'}
+        licences = {i:request.POST[i] for i in request.POST if i != 'csrfmiddlewaretoken'}
         tou = format_ffg_tou(league, licences)
 
         if tou is None:
