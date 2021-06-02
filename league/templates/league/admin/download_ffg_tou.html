@@ -1,0 +1,64 @@
+{% extends 'league/admin/base.html' %}
+
+{% load bootstrap3 league_tags i18n l10n tz%}
+
+{% block title %}OSR league admin - Leagues{% endblock %}
+
+{% block heading %}
+<div class="page-header">
+    <h1>League "{{ league.name }}" - download FFG .tou</h1>
+</div>
+{%endblock%}
+{% block content %}
+
+{% localize off %}
+{% language 'en' %}
+{% timezone "UTC" %}
+<div class="row">
+
+  <form action="{% url 'league:download_ffg_tou' league.pk %}" method="POST">{% csrf_token %}
+
+    <table class="table">
+    <thead>
+        <tr>
+          <th>Player</th>
+          <th>FFG Licence</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+      <tr>
+        <td>{{ user.username }}</td>
+        <td>
+          <input
+            type="text"
+            value="{{ user.profile.ffg_licence_number|default_if_none:"" }}"
+            name="{{ user.username }}"
+            pattern="[0-9]{7}"
+            {% if user.profile.ffg_licence_number %}
+            readonly="readonly"
+            {% endif %}
+            required>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+
+    {% bootstrap_button "Download" button_type="submit" button_class="btn-primary" %}
+  </form>
+
+</div>
+{% endtimezone %}
+{% endlanguage %}
+{% endlocalize %}
+
+{% endblock %}
+
+{% block extra_css %}
+{{ form.media.css }}
+{% endblock extra_css %}
+
+{% block extra_js %}
+{{ form.media.js }}
+{% endblock extra_js %}
