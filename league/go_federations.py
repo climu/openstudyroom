@@ -22,8 +22,8 @@ def ffg_rating2rank(rating):
     """
     Convert a FFG rating into a Go rank
     """
-    if rating == "NC":
-        return rating
+    if rating in ("NC", "-9999"):
+        return "NC"
     else:
         return str(ceil(abs(int(rating)/100))) + ('D' if int(rating) > 0 else 'K')
 
@@ -126,12 +126,18 @@ def format_ffg_tou(league, licences, location=None, comment=None):
     """
     # Create the header
     tou = f';name={league.name}\n'
-    date = league.end_time.strftime("%d/%m/%Y")
+    date = league.begin_time.strftime("%d/%m/%Y")
     tou += f';date={date}\n'
     if location:
         tou += f';vill={location}\n'
     if comment:
         tou += f';comm={comment}\n'
+    tou += f';size={league.board_size}\n'
+    # clock_type is 'byoyomi' or 'fisher'
+    tou += f';time={league.main_time/60:.0f}+{league.clock_type[0]}\n'
+    tou += f';komi={league.komi}\n'
+    tou += f';vill={league.servers}\n'
+    tou += ';prog=https://github.com/climu/openstudyroom/\n'
     tou += ';\n'
     tou += ';Num Nom Prénom               Niv Licence Club\n'
 
@@ -204,8 +210,5 @@ def format_ffg_tou(league, licences, location=None, comment=None):
         tou += f'{player.num:>4} {player.name:24} {player.rank:>3} {player.licence_number}'
         tou += f' {player.club:4}{player.results}\n'
     # add the footer
-    tou += f';size={league.board_size}\n'
-    tou += f';time={league.main_time/60}\n'
-    tou += f';komi={league.komi}\n'
-    tou += ';prog=https://github.com/climu/openstudyroom/'
+
     return tou
