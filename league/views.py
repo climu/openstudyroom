@@ -1758,11 +1758,17 @@ def update_all_profiles(request):
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def download_ffg_tou(request, league_id):
-
+    """
+    On GET we serve a html that allow admin to add missing FFG licence number.
+    On POST we render and download the tou file for https://ffg.jeudego.org/echelle/format_res.php
+    """
     league = get_object_or_404(LeagueEvent, pk=league_id)
+    if not request.user.is_league_admin(league):
+        return Http404()
 
     if request.method == 'POST':
-
+        # Is it proper? we are reading all POST datas except csrfmiddlewaretoken as licence number.
+        # We should use a django form and check. I think we need to check if form is valid for crsf but I am not sure.
         licences = {i:request.POST[i] for i in request.POST if i != 'csrfmiddlewaretoken'}
         tou = format_ffg_tou(league, licences)
 
@@ -1778,8 +1784,6 @@ def download_ffg_tou(request, league_id):
 
     context = {}
     league = get_object_or_404(LeagueEvent, pk=league_id)
-    if not request.user.is_league_admin(league):
-        return Http404()
     players = league.leagueplayer_set.all().prefetch_related('user__profile')
     context['league'] = league
     context['users'] = [players.user for players in players]
