@@ -142,7 +142,8 @@ def format_ffg_tou(league, licences, location=None, comment=None):
         return None
     echelle_ffg = request.text
 
-    sgfs = league.sgf_set.defer('sgf_text').select_related('winner', 'white', 'black').all()
+    sgfs = league.sgf_set.exclude(winner__isnull=True).\
+        defer('sgf_text').select_related('winner', 'white', 'black').all()
     players = league.leagueplayer_set.all().prefetch_related('user__profile')
 
     # First add extra fields to players

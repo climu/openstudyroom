@@ -1768,7 +1768,6 @@ def download_ffg_tou(request, league_id):
 
     if request.method == 'POST':
         # Is it proper? we are reading all POST datas except csrfmiddlewaretoken as licence number.
-        # We should use a django form and check. I think we need to check if form is valid for crsf but I am not sure.
         licences = {i:request.POST[i] for i in request.POST if i != 'csrfmiddlewaretoken'}
         tou = format_ffg_tou(league, licences)
 
