@@ -33,6 +33,7 @@ class Community(models.Model):
     private_description = MarkupTextField(
         blank=True, null=True,
         validators=[validators.NullableMaxLengthValidator(4000)])
+    discord_webhook_url = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return self.name

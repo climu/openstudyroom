@@ -18,7 +18,8 @@ class AdminCommunityForm(ModelForm):
             'private_description',
             'close',
             'private',
-            'promote'
+            'promote',
+            'discord_webhook_url'
         ]
         widgets = {
             'description': MarkupTextFieldWidget(attrs={'placeholder': 'Public description of the community.'}),
@@ -30,7 +31,8 @@ class AdminCommunityForm(ModelForm):
             'slug': "Short slug to identify the community. URL will be https://openstudyroom.org/community/slug/",
             'close': "If close, it's invitation only community. Otherwise, anyone can join.",
             'private': "If private, only members can see the community.",
-            'promote': "If promoted, it's leagues will be shown to everyone in leagues views (same as OSR leagues)."
+            'promote': "If promoted, it's leagues will be shown to everyone in leagues views (same as OSR leagues).",
+            'discord_webhook_url': 'Discord webhook url to send notifications'
         }
 
 
@@ -41,7 +43,8 @@ class CommunityForm(ModelForm):
             'description',
             'private_description',
             'close',
-            'private'
+            'private',
+            'discord_webhook_url'
         ]
 
         widgets = {
@@ -52,6 +55,7 @@ class CommunityForm(ModelForm):
         help_texts = {
             'close': "If close, it's invitation only community. Otherwise, anyone can join.",
             'private': "If private, only members can see the community.",
+            'discord_webhook_url': 'Discord webhook url to send notifications'
         }
 
 
