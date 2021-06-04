@@ -503,6 +503,19 @@ class GameAppointmentEvent(CalEvent):
                 body=message,
                 skip_notification=False
             )
+        # Get communities both users are in and annonce the event on discord
+        communities = list(set(sender.get_communities()) & set(receiver.get_communities()))
+        for community in communities:
+            if community.discord_webhook_url is not None:
+                values = {
+                    "content": "New game planned!",
+                    "embeds": [{
+                        "title": f'{sender.username} vs {receiver.username} on {self.start:%d-%m-%Y %H:%M} (UTC)',
+                        "description": 'Bring the popcorn!',
+                    }]
+                }
+                r = requests.post(community.discord_webhook_url, json=values)
+                r.raise_for_status()
 
 
     @staticmethod
