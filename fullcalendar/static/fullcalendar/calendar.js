@@ -392,9 +392,11 @@ class AppointmentSource extends EventSource {
   static initialize(locale) {
     Calendar.object = new Calendar(locale);
     Calendar.initializeTimeRangeSlider();
-    tippy('#community-info', {
-      content: "Filter events by community",
-    });
+    tippy('#only-info', {content: "Uncheck all community and league filter of which you are not part of"});
+    tippy('#community-info', {content: "Filter all events by community"});
+    tippy('#league-info', {content: "Filter game requests and appointements by league"});
+    tippy('#event-info', {content: "Filter events by their type"});
+    tippy('#available-info', {content: "When selected, dragging vertically on the calendar now update your availabilities."});
     Filter.initialize();
   }
 
@@ -422,7 +424,7 @@ class AppointmentSource extends EventSource {
       expandRows: false,
       allDaySlot: false,
       eventDisplay: 'block',
-      initialView: 'timeGridWeek',
+      initialView: 'dayGridMonth',
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',

@@ -37,11 +37,11 @@
     <div class="panel panel-default">
       {% if user.is_authenticated %}
       <div class="panel-body">
-        {% checkbox label='Only me related' id='only-user-filter' checked=False %}
+        {% checkbox label='Only me <i id="only-info" class="info glyphicon glyphicon-question-sign"></i>' id='only-user-filter' checked=False %}
       </div>
       {% endif %}
       <div class="panel-heading">
-        <i id="community-info" class="pull-right info glyphicon glyphicon-info-sign"></i><strong> Community</strong>
+        <strong> Community</strong><i id="community-info" class="info glyphicon glyphicon-question-sign"></i>
       </div>
       <div class="panel-body">
         {% checkbox label='Open Study Room' id='osr-filter' %}
@@ -50,7 +50,7 @@
         {% endfor %}
       </div>
       <div class="panel-heading">
-        <strong>League</strong>
+        <strong>League</strong><i id="league-info" class="info glyphicon glyphicon-question-sign"></i>
       </div>
       <div class="panel-body">
         {% for league in leagues %}
@@ -58,7 +58,7 @@
         {% endfor %}
       </div>
        <div class="panel-heading">
-        <strong>Event</strong>
+        <strong>Event</strong><i id="event-info" class="info glyphicon glyphicon-question-sign"></i>
       </div>
       <div class="panel-body">
         {% checkbox label='Public' id='public-filter' %}
@@ -69,7 +69,8 @@
         {% endif %}
         <hr>
         {% if user.is_authenticated %}
-        {% checkbox label='Edit my availabilities' id='user-av-event-filter' checked=False label_class='user-available-label' %}
+        {% checkbox label='Edit my availabilities <i id="available-info" class="info glyphicon glyphicon-question-sign"></i>' id='user-av-event-filter' checked=False label_class='user-available-label' %}
+
         {% endif %}
       </div>
     </div>

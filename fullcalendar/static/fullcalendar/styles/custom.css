@@ -146,6 +146,9 @@ a:hover.game-appointment-event-user {
   color: rgb(212, 101, 78);
 }
 .info {
-  font-size: 1.9rem !important;
-  color: rgb(182, 182, 182);
+  font-size: 1.6rem !important;
+  margin-left: 1rem;
+  color: rgb(196, 195, 195);
+  position: relative;
+  top: 0.3rem;
 }
