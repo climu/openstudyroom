@@ -51,14 +51,14 @@ python3-openid==3.0.10
 pytz==2020.1
 raven==6.4.0
 rcssmin==1.0.6
-requests==2.20.0
+requests==2.25.0
 requests-oauthlib==0.7.0
 rjsmin==1.0.12
 six==1.11.0
 sorl-thumbnail==12.3
 sqlparse==0.2.3
 Unidecode==0.4.21
-urllib3==1.24.2
+urllib3==1.26.5
 vobject==0.9.5
 wagtail==2.11.6
 wagtailmenus==3.0
