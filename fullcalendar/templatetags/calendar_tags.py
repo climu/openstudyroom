@@ -32,7 +32,7 @@ def tz_offset():
     return timezone.localtime(timezone.now(), tz).utcoffset().total_seconds()
 
 @register.simple_tag()
-def checkbox(label, id=None, className=None, label_class='', value=None, color=None, checked=True):
+def checkbox(label, id=None, className=None, label_class='', value=None, checked=True):
     checked = ' checked' if checked else ''
     id = ' id="' + id + '" ' if id else ''
     className = ' class="' + className + '" ' if className else ''

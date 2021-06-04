@@ -1,0 +1,151 @@
+:root {
+
+  --selection-bg-color:rgba(0, 0, 0, 0.1);
+  --selection-border-color:rgba(0, 0, 0, 0);
+
+  --available-color:  rgba(80, 160, 245, 0.2);
+  --user-available-color:rgba(227, 132, 113, 0.2);
+  --hover-user-available-color:rgba(227, 132, 113, 0.308);
+  --user-available-bg-color: var(--user-available-color);
+  --user-available-border-color: var(--user-available-color);
+  --user-available-hover-bg-color: var(--hover-user-available-color);
+  --user-available-hover-border-color:  var(--hover-user-available-color);
+  --available-bg-color: var(--available-color);
+
+
+  --appointment-color: rgb(0, 159, 175);
+  --user-appointment-color: rgb(92, 201, 211);
+  --user-appointment-hover-color: rgb(149, 229, 236);
+  --appointment-border-color: rgb(18, 132, 143);
+  --user-appointment-border-color: rgb(37, 151, 161);
+  --appointment-text-color: rgb(255, 248, 227);
+  --user-appointment-text-color: rgb(27, 132, 141);
+
+
+  --request-color: rgb(223, 139, 71);
+  --request-hover-color: rgb(240, 168, 110);
+  --request-border-color: rgb(192, 119, 42);
+  --user-request-color: rgb(228, 190, 120);
+  --user-request-hover-color: rgb(245, 220, 174);
+  --user-request-border-color: rgba(199, 147, 51, 0.75);
+  --request-text-color: #fff;
+  --user-request-text-color: rgb(167, 103, 35);
+
+}
+
+.fc-timegrid-slots tr {
+  height: 2.5rem;
+}
+.fc-event {
+  padding: 0.25rem;
+  transition: all 0.1s;
+}
+
+.fc-event-title {
+  font-weight: 600;
+}
+
+.fc-event-time {
+  color: #000
+}
+
+/* Availability */
+.user-available-event .fc-event-main,
+.fc-event-mirror .fc-event-main {
+  color: #000;
+}
+.fc-event-mirror {
+  background-color: var(--selection-bg-color) !important;
+  border-color: var(--selection-border-color) !important;
+}
+.user-available-event {
+  background-color: var(--user-available-bg-color) !important;
+  border-color: var(--user-available-border-color) !important;
+}
+a.user-available-event:hover {
+  background-color: var(--user-available-hover-bg-color) !important;
+  border-color: var(--user-available-hover-border-color) !important;
+}
+div.available-event {
+  background-color: var(--available-bg-color) !important;
+  color: rgb(95, 158, 177) !important;
+}
+
+/* Game request */
+a.game-request-event .fc-event-title {
+  color: var(--request-text-color);
+}
+a.game-request-event-user .fc-event-title {
+  color: var(--user-request-text-color);
+}
+a.game-request-event {
+  cursor: pointer;
+  border-color: var(--request-border-color) !important;
+  background-color: var(--request-color) !important;
+}
+a:hover.game-request-event {
+  border-color: var(--request-border-color) !important;
+  background-color: var(--request-hover-color) !important;
+}
+a.game-request-event-user{
+  cursor: pointer;
+  border-color: var(--user-request-border-color) !important;
+  background-color: var(--user-request-color) !important;
+}
+a:hover.game-request-event-user {
+  border-color: var(--user-request-border-color) !important;
+  background-color: var(--user-request-hover-color) !important;
+}
+
+/* Game appointment */
+a.game-appointment-event .fc-event-title {
+  color: var(--appointment-text-color);
+}
+a.game-appointment-event-user .fc-event-title {
+  color: var(--user-appointment-text-color);
+}
+a.game-appointment-event {
+  border-color: var(--appointment-border-color) !important;
+  background-color: var(--appointment-color) !important;
+}
+a.game-appointment-event-user {
+  cursor: pointer;
+  border-color: var(--user-appointment-border-color) !important;
+  background-color: var(--user-appointment-color) !important;
+}
+a:hover.game-appointment-event-user {
+  border-color: var(--user-appointment-border-color) !important;
+  background-color: var(--user-appointment-hover-color) !important;
+}
+
+/* Others */
+.appointment-label span {
+  color: var(--appointment-color);
+}
+.request-label span {
+  color: var(--request-color);
+}
+.user-available-label span {
+  font-weight: 600;
+  color: #000;
+}
+#create-event-table td {
+  padding: 1.5rem;
+  vertical-align: middle;
+}
+.icon-close  {
+  font-size: 1.8rem;
+  color: rgb(231, 161, 147);
+  position: absolute;
+  z-index: 9999;
+  top: 0;
+  right: 0;
+  transition: all 0.2s;
+}
+.icon-close:hover  {
+  color: rgb(212, 101, 78);
+}
+.info {
+  font-size: 1.9rem !important;
+  color: rgb(182, 182, 182);
+}

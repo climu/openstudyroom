@@ -3,7 +3,9 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 from django.urls import reverse
+from django.template import loader
 from colorful.fields import RGBColorField
+from postman.api import pm_broadcast, pm_write
 from pytz import utc
 
 from league.models import User, Division
@@ -385,6 +387,27 @@ class GameRequestEvent(CalEvent):
         event['receivers'] = [{'pk': user.pk, 'name': user.username} for user in self.receivers.all()]
         return event
 
+    def notify_create(self, sender, receiver):
+        """
+        Called once at the creation of the game request.
+        Sends a message to inform the receiver.
+        """
+        subject = 'Game request from ' + sender.username \
+            + ' on ' + self.start.strftime('%d %b')
+        plaintext = loader.get_template('fullcalendar/messages/game_request.txt')
+        context = {
+            'sender': sender,
+            'date': self.start
+        }
+        message = plaintext.render(context)
+        pm_broadcast(
+            sender=sender,
+            recipients=receiver,
+            subject=subject,
+            body=message,
+            skip_notification=False
+        )
+
     @staticmethod
     def get_formated(user, start, end, tz):
         """
@@ -401,16 +424,13 @@ class GameRequestEvent(CalEvent):
 
     @staticmethod
     def create(sender, receiver, divisions, private, start, end):
-        game_request = GameRequestEvent(
-            start=start,
-            end=end,
-            sender=sender,
-            private=private
-        )
+        game_request = GameRequestEvent(start=start, end=end, sender=sender, private=private)
         game_request.save()
-        game_request.receivers.add(*receiver)
+        game_request.receivers.add(receiver)
         game_request.divisions.add(*divisions)
         game_request.save()
+        game_request.notify_create(sender, receiver)
+        return game_request
 
 class GameAppointmentEvent(CalEvent):
     """
@@ -448,6 +468,43 @@ class GameAppointmentEvent(CalEvent):
         """Return the opponent of a game appointment"""
         return self.users.exclude(pk=user.pk).first()
 
+    def notify_create(self, sender, receiver, from_game_request):
+        """
+        Called once at the creation of the game appointment.
+        Sends a message to inform the receiver.
+        """
+        if from_game_request is True:
+            subject = receiver.username + ' has accepted your game request.'
+            plaintext = loader.get_template('fullcalendar/messages/game_request_accepted.txt')
+            context = {
+                'user': receiver,
+                'date': self.start
+            }
+            message = plaintext.render(context)
+            pm_write(
+                sender=receiver,
+                recipient=sender,
+                subject=subject,
+                body=message,
+                skip_notification=False
+            )
+        else:
+            subject = sender.username + ' has planned a game appointment on ' + self.start.strftime('%d %b')
+            plaintext = loader.get_template('fullcalendar/messages/game_appointment.txt')
+            context = {
+                'user': sender,
+                'date': self.start
+            }
+            message = plaintext.render(context)
+            pm_write(
+                sender=sender,
+                recipient=receiver,
+                subject=subject,
+                body=message,
+                skip_notification=False
+            )
+
+
     @staticmethod
     def get_future_games(user):
         """Return all the future game appointments for a user."""
@@ -467,10 +524,11 @@ class GameAppointmentEvent(CalEvent):
         res = []
         now = timezone.now()
         events = GameAppointmentEvent.objects.filter(end__gte=now)
-        # get user's private events
-        res += [e.format(tz) for e in events.filter(private=True, users=user)]
         # get all public events
         res += [e.format(tz) for e in events.filter(private=False)]
+        if user.is_authenticated:
+            # get user's private events
+            res += [e.format(tz) for e in events.filter(private=True, users=user)]
         return res
 
     @staticmethod
@@ -495,3 +553,16 @@ class GameAppointmentEvent(CalEvent):
             data.append(dict)
 
         return data
+
+    @staticmethod
+    def create(sender, receiver, divisions, private, start, end, from_game_request=False):
+        """
+        Creates a new game appointment and send message to the receiver.
+        'from_game_request' is true when the event is created from a game request.
+        """
+        game_appointment = GameAppointmentEvent(start=start, end=end, private=private)
+        game_appointment.save()
+        game_appointment.divisions.add(*divisions)
+        game_appointment.users.add(receiver, sender)
+        game_appointment.notify_create(sender, receiver, from_game_request)
+        return game_appointment

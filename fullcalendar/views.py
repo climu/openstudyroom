@@ -558,33 +558,8 @@ def accept_game_request_ajax(request):
     sender = game_request.sender
     private = game_request.private
     divisions = game_request.divisions.all()
-    game_appointment = GameAppointmentEvent(
-        start=game_request.start,
-        end=game_request.end,
-        private=private
-    )
-    game_appointment.save()
-    for div in divisions:
-        game_appointment.divisions.add(div)
-    game_appointment.users.add(user, sender)
+    GameAppointmentEvent.create(sender, user, divisions, private, game_request.start, game_request.end, True)
     game_request.delete()
-    # send a message
-    subject = user.username + ' has accepted your game request.'
-    plaintext = loader.get_template('fullcalendar/messages/game_request_accepted.txt')
-    context = {
-        'user': user,
-        'date': game_appointment.start
-    }
-    message = plaintext.render(context)
-    pm_write(
-        sender=user,
-        recipient=sender,
-        subject=subject,
-        body=message,
-        skip_notification=False
-    )
-
-
     return HttpResponse('success')
 
 @login_required()
@@ -596,7 +571,6 @@ def reject_game_request_ajax(request):
         pk = int(request.POST.get('pk'))
         game_request = get_object_or_404(GameRequestEvent, pk=pk)
         game_request.receivers.remove(user)
-
         if game_request.receivers.count() == 0:
             game_request.delete()
         return HttpResponse('success')
@@ -622,41 +596,30 @@ def cancel_game_request_ajax(request):
 @require_POST
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
-def create_game_request2(request):
-    """Create a game request a new game request."""
+def create_game(request):
+    """
+    Create a game request/appointment based of request.POST.type.
+    Plan to use Django form validation.
+    """
     sender = request.user
     tz = sender.get_timezone()
-    # For the future : use django form for validation
-    date = parseFCalendarDate(request.POST.get('date'), tz)
+    start = parseFCalendarDate(request.POST.get('date'), tz)
     receiver = json.loads(request.POST.get('receiver'))
     divisions = json.loads(request.POST.get('divisions'))
     private = json.loads(request.POST.get('private'))
-    receiver = User.objects.filter(pk=receiver)
+    type = request.POST.get('type')
+    receiver = User.objects.get(pk=receiver)
     divisions = Division.objects.filter(pk__in=divisions)
-    if not receiver:
-        return HttpResponseBadRequest()
-    # a game request should last 1h30
-    end = date + timedelta(hours=1, minutes=30)
-    GameRequestEvent.create(sender, receiver, divisions, private, date, end)
+    # a game should last 1h30
+    end = start + timedelta(hours=1, minutes=30)
 
-    # send a message to all receivers
-    subject = 'Game request from ' + sender.username \
-        + ' on ' + date.strftime('%d %b')
-    plaintext = loader.get_template('fullcalendar/messages/game_request.txt')
-    context = {
-        'sender': sender,
-        'date': date
-    }
-    message = plaintext.render(context)
-    pm_broadcast(
-        sender=sender,
-        recipients=list(receiver),
-        subject=subject,
-        body=message,
-        skip_notification=False
-    )
+    if type == 'game-request':
+        GameRequestEvent.create(
+            sender, receiver, divisions, private, start, end)
+    else: #type == 'game-appointment':
+        GameAppointmentEvent.create(
+            sender, receiver, divisions, private, start, end)
     return HttpResponse('success')
-
 
 @require_POST
 @login_required()

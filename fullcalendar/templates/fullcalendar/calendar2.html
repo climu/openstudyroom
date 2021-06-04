@@ -2,17 +2,18 @@
 {% load tz static i18n calendar_tags %}
 
 {% block extra_head_js %}
-<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/fc-variables.css'%}"/>
-<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/fullcalendar.css'%}"/>
-<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/rangeslider.css'%}"/>
-<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/micromodal.css'%}"/>
-<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/custom.css'%}"/>
-<script src='https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js'></script>
+<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/styles/fullcalendar.css'%}"/>
+<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/styles/rangeslider.css'%}"/>
+<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/styles/micromodal.css'%}"/>
+<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/styles/custom.css'%}"/>
 <script src='https://cdn.jsdelivr.net/npm/moment@2.27.0/min/moment.min.js'></script>
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.7.0/main.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.7.0/locales-all.min.js'></script>
 <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/moment@5.5.0/main.global.min.js'></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
 <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
 {% endblock %}
 
 {% block title %}Calendar{% endblock %}
@@ -23,7 +24,12 @@
   <h1>Calendar ({{TIME_ZONE}})</h1>
 </div>
 {%endblock%}
+
 {% block content %}
+{% if user.is_authenticated %}
+{% include 'league/includes/user_nav.html' with active='calendar' %}
+{% endif %}
+
 <div class="row">
 
   <!-- Calendar filtering menu -->
@@ -31,11 +37,11 @@
     <div class="panel panel-default">
       {% if user.is_authenticated %}
       <div class="panel-body">
-        {% checkbox label='Only me' id='only-user-filter' checked=False %}
+        {% checkbox label='Only me related' id='only-user-filter' checked=False %}
       </div>
       {% endif %}
       <div class="panel-heading">
-        <strong>Communities</strong>
+        <i id="community-info" class="pull-right info glyphicon glyphicon-info-sign"></i><strong> Community</strong>
       </div>
       <div class="panel-body">
         {% checkbox label='Open Study Room' id='osr-filter' %}
@@ -44,7 +50,7 @@
         {% endfor %}
       </div>
       <div class="panel-heading">
-        <strong>Leagues</strong>
+        <strong>League</strong>
       </div>
       <div class="panel-body">
         {% for league in leagues %}
@@ -52,16 +58,18 @@
         {% endfor %}
       </div>
        <div class="panel-heading">
-        <strong>Events</strong>
+        <strong>Event</strong>
       </div>
       <div class="panel-body">
         {% checkbox label='Public' id='public-filter' %}
-        {% checkbox label='Appointments' id='appointment-filter' label_class='appointment-event' %}
+        {% checkbox label='Appointment' id='appointment-filter' label_class='appointment-label' %}
         {% if user.is_authenticated %}
-        {% checkbox label='Game requests' id='game-request-filter' label_class='request-event' %}
+        {% checkbox label='Game request' id='game-request-filter' label_class='request-label' %}
+        {% checkbox label='Availability' id='av-event-filter' label_class='available-label' %}
+        {% endif %}
         <hr>
-        {% checkbox label='Availabilities' id='av-event-filter' %}
-        {% checkbox label='Edit my availabilities' id='user-av-event-filter' checked=False label_class='edit-av-user' %}
+        {% if user.is_authenticated %}
+        {% checkbox label='Edit my availabilities' id='user-av-event-filter' checked=False label_class='user-available-label' %}
         {% endif %}
       </div>
     </div>
@@ -82,8 +90,9 @@
     <div id="calendar"></div>
   </div>
 
-  <!-- Modal game request panel -->
-  {% include 'fullcalendar/includes/cal-modal2.html' %}
+  <!-- Modal forms -->
+  {% include 'fullcalendar/includes/modal.html' %}
+
 </div>
 {% endblock %}
 
@@ -91,5 +100,10 @@
 {% block extra_js %}
 {{ client_context_data|json_script:"context-data" }}
 <script>{% include 'league/includes/ajax_setup.html' %}</script>
-<script src={% static 'fullcalendar/calendar2.js' %}></script>
+<script src={% static 'fullcalendar/calendar.js' %}></script>
+<script>
+	$(document).ready(function() {
+    Calendar.initialize('{{LANGUAGE_CODE}}');
+  });
+</script>
 {% endblock %}
