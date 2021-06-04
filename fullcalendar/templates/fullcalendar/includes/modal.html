@@ -1,0 +1,91 @@
+{% load calendar_tags %}
+
+<div id="create-event" class="modal micromodal-slide">
+  <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+    <div class="modal__container" role="dialog">
+      <h2 class="modal__title">Create new event</h2>
+      <main class="modal__content">
+        <select id="create-event-type-select" class="form-control" required>
+          <option selected="selected" value="">select a type...</option>
+          <option value="game-request">Game request</option>
+          <option value="game-appointment">Game appointment</option>
+        </select>
+        <table id="create-event-table" class="table">
+          <tr>
+            <td><strong>START :</strong></td>
+            <td id="create-event-start-date"></td>
+          </tr>
+          <tr>
+            <td><strong>END :</strong></td>
+            <td id="create-event-end-date"></td>
+          </tr>
+        </table>
+
+        <form id="create-game-form" class="hidden">
+          <div class="form-group">
+            <select id="modal-player-select" class="form-control" required>
+              <option selected="selected" value="">select a player...</option>
+              {% for opp in user_opponents %}
+              <option value="{{opp.pk}}">{{opp.username}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <select id="modal-division-select" class="form-control" multiple required>
+            <!-- Filled with js -->
+            </select>
+          </div>
+          {% checkbox label='Private' id='modal-private' checked=False %}
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block">Send</button>
+          </div>
+        </form>
+        <button class="btn btn-default btn-block" data-micromodal-close>Cancel</button>
+      </main>
+    </div>
+  </div>
+</div>
+
+<div id="cancel-game-appointment" class="modal micromodal-slide">
+  <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+    <div class="modal__container" role="dialog">
+      <h2 class="modal__title">Cancel appointment ?</h2>
+      <main class="modal__content">
+        <form id="cancel-game-appointment-form" data-title='Cancel game appointment ?'>
+          <button type="submit" class="btn btn-danger btn-block">Yes</button>
+          <button type="reset" class="btn btn-default btn-block" data-micromodal-close>No</button>
+        </form>
+      </main>
+    </div>
+  </div>
+</div>
+
+<div id="cancel-game-request" class="modal micromodal-slide">
+  <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+    <div class="modal__container" role="dialog">
+      <h2 class="modal__title">Cancel game request ?</h2>
+      <main class="modal__content">
+        <form id="cancel-game-request-form">
+          <button type="submit" class="btn btn-danger btn-block">Yes</button>
+          <button type="reset" class="btn btn-block btn-default" data-micromodal-close>No</button>
+        </form>
+      </main>
+    </div>
+  </div>
+</div>
+
+<div id="accept-game-request" class="modal micromodal-slide">
+  <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+    <div class="modal__container" role="dialog">
+      <h2 class="modal__title">Accept game request ?</h2>
+      <main class="modal__content">
+        <form id="accept-game-request-form">
+          <button class="btn btn-block btn-primary" id="modal-accept-confirm">Yes</button>
+          <button class="btn btn-danger btn-block" id="modal-accept-reject">No</button>
+          <button type="reset" class="btn btn-default btn-block" data-micromodal-close>Cancel</button>
+        </form>
+      </main>
+    </div>
+  </div>
+</div>
+

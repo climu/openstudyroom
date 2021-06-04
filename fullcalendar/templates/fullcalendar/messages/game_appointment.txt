@@ -1,0 +1,10 @@
+{% load l10n i18n tz%}
+{% localize off %}
+{% language 'en' %}
+Hello !
+This message was automaticly sent to you to inform you that the user {{user.username}} have
+planned a game appointment with you on the {{date|utc}} UTC.
+
+Thanks for playing in the Open Study Room !
+{% endlanguage %}
+{% endlocalize %}

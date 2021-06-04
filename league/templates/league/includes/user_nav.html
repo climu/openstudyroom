@@ -8,7 +8,7 @@
   {% if user == request.user%}
 <ul class="nav navbar-nav navbar-right active" style="margin-right:5px;">
   <li {% if active == 'calendar' %}class="active"{% endif %}>
-    <a href="{% url "calendar:calendar_view"%}">
+    <a href="{% url "calendar:calendar_main_view"%}">
       <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
       Calendar</a></li>
 
@@ -37,7 +37,7 @@
 {% else %}
 <ul class="nav navbar-nav navbar-right active" style="margin-right:5px;">
     <li {% if active == 'calendar' %}class="active"{% endif %}>
-        <a href="{% url "calendar:calendar_view" user.pk%}">
+        <a href="{% url "calendar:calendar_main_view" user.pk%}">
           <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
           Calendar</a></li>
   <li ><a href="{% url "postman:write" user.username%}">{% bootstrap_icon "envelope" %} Send message</a></li>

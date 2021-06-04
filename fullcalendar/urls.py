@@ -46,9 +46,9 @@ urlpatterns = [
         views.CategoryUpdate.as_view(success_url='/calendar/admin/event-list/'),
         name='admin_update_category'
     ),
-    url(r'^$', views.calendar_view, name='calendar_view'),
+    url(r'^old/$', views.calendar_view, name='calendar_view'),
     url(
-        r'^(?P<user_id>[0-9]+)/$',
+        r'^old/(?P<user_id>[0-9]+)/$',
         views.calendar_view,
         name='calendar_view'
     ),
@@ -58,7 +58,7 @@ urlpatterns = [
         name='admin_cal_event_list'
     ),
     url(r'^save/$', views.save, name='save'),
-    url(r'^v2$', views.calendar_main_view, name='calendar_main_view'),
+    url(r'^$', views.calendar_main_view, name='calendar_main_view'),
     url(
         r'^get-public-events/$',
         views.get_public_events,
@@ -111,9 +111,9 @@ urlpatterns = [
         name='create_game_request'
     ),
     url(
-        r'^create-game-request2/$',
-        views.create_game_request2,
-        name='create_game_request2'
+        r'^create-game/$',
+        views.create_game,
+        name='create_game'
     ),
     url(
         r'^cancel-game-request-ajax/$',

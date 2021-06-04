@@ -121,10 +121,13 @@ class LeagueEvent(models.Model):
         return self.name
 
     def format(self):
-        return {
-            'pk': self.pk,
-            'name': self.name,
-        }
+        res = {}
+        res['pk'] = self.pk
+        res['name'] = self.name
+        res['tag'] = self.tag
+        if self.community:
+            res['community'] = self.community.format()
+        return res
 
     def get_servers_list(self):
         """return a list of go servers where games can be played"""

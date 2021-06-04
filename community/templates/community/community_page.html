@@ -108,7 +108,7 @@ return false;};
   <li class="active"><a data-toggle="tab" href="#leagues">{% trans "Leagues" %}</a></li>
   <li><a data-toggle="tab" href="#tournaments">{% trans "tournaments" %}</a></li>
   <li><a data-toggle="tab" href="#members">{% trans "Members" %}</a></li>
-  <li><a id="cal-tab-button" data-toggle="tab" href="#calendar-tab">{% trans "Calendar" %}</a></li>
+  <!--<li><a id="cal-tab-button" data-toggle="tab" href="#calendar-tab">{% trans "Calendar" %}</a></li>-->
   {% if admin %}
   <li><a data-toggle="tab" href="#events">{% trans "Events" %}</a></li>
   {% endif %}
@@ -266,12 +266,13 @@ return false;};
 <script>
 {% include 'league/includes/ajax_setup.html' %}
 </script>
+<!--
 {% if can_quit %}
   <script src={%static 'fullcalendar/calendar_member.js'%}></script>
 {% else %}
   <script src={%static 'fullcalendar/calendar_non_member.js'%}></script>
 {% endif %}
-
+-->
 <script type="text/javascript">
 
 $(document).ready(function() {
