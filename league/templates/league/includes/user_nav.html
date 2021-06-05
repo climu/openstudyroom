@@ -5,12 +5,12 @@
   <li {% if active == 'forum' %}class="active"{% endif %}><a href="{% url "forum_member:profile" user.pk%}">Forum</a></li>
 </ul>
 {% if request.user.is_authenticated %}
-  {% if user == request.user%}
+{% if user == request.user%}
 <ul class="nav navbar-nav navbar-right active" style="margin-right:5px;">
-  <li {% if active == 'calendar' %}class="active"{% endif %}>
+  <!--<li {% if active == 'calendar' %}class="active"{% endif %}>
     <a href="{% url "calendar:calendar_main_view"%}">
       <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-      Calendar</a></li>
+      Calendar</a></li>-->
 
   <li {% if active == 'messages' %}class="active"{% endif %}>
     <a href="{% url "postman:inbox" %}" >
@@ -36,10 +36,10 @@
 </ul>
 {% else %}
 <ul class="nav navbar-nav navbar-right active" style="margin-right:5px;">
-    <li {% if active == 'calendar' %}class="active"{% endif %}>
+    <!--<li {% if active == 'calendar' %}class="active"{% endif %}>
         <a href="{% url "calendar:calendar_main_view" %}">
           <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-          Calendar</a></li>
+          Calendar</a></li>-->
   <li ><a href="{% url "postman:write" user.username%}">{% bootstrap_icon "envelope" %} Send message</a></li>
 
 </ul>
