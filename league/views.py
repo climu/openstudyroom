@@ -628,6 +628,7 @@ def account(request, user_name=None):
 
     sgfs = Sgf.objects.defer('sgf_text').\
         exclude(date__isnull=True).\
+        exclude(winner__isnull=True).\
         filter(Q(white=user) | Q(black=user)).\
         select_related("white", "white__profile", "black", "black__profile", "winner").\
         prefetch_related("white__discord_user", "black__discord_user")
