@@ -272,6 +272,7 @@ def division_results(request, event_id=None, division_id=None):
     can_join = event.can_join(request.user)
     can_quit = event.can_quit(request.user)
     if division is None:
+        can_edit_division_infos = False
         results = None
     else:
         can_edit_division_infos = request.user.is_authenticated and request.user.is_in_division(division)
