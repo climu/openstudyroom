@@ -1480,8 +1480,8 @@ class LeaguePlayer(models.Model):
         {'opponent1':[{'id':game1.pk, 'r':1/0},{'id':game2.pk, 'r':1/0},...],'opponent2':[...]}
         r: 1 for win, 0 for loss
         """
-        black_sgfs = self.user.black_sgf.get_queryset().filter(divisions=self.division)
-        white_sgfs = self.user.white_sgf.get_queryset().filter(divisions=self.division)
+        black_sgfs = self.user.black_sgf.get_queryset().filter(divisions=self.division).exclude(winner__isnull=True)
+        white_sgfs = self.user.white_sgf.get_queryset().filter(divisions=self.division).exclude(winner__isnull=True)
         resultsDict = defaultdict(list)
 
         for sgf in black_sgfs:
