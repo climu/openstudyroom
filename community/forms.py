@@ -19,6 +19,8 @@ class AdminCommunityForm(ModelForm):
             'close',
             'private',
             'promote',
+            'locale',
+            'timezone',
             'discord_webhook_url'
         ]
         widgets = {
@@ -32,7 +34,9 @@ class AdminCommunityForm(ModelForm):
             'close': "If close, it's invitation only community. Otherwise, anyone can join.",
             'private': "If private, only members can see the community.",
             'promote': "If promoted, it's leagues will be shown to everyone in leagues views (same as OSR leagues).",
-            'discord_webhook_url': 'Discord webhook url to send notifications'
+            'locale': "The language used to send notifications.",
+            'timezone': "Timezone used to format dates in notifications.",
+            'discord_webhook_url': 'Discord webhook url to send notifications.'
         }
 
 

@@ -12,6 +12,10 @@ msgstr ""
 msgid "Discord Binding"
 msgstr "Lien discord"
 
+#: fullcalendar/models/apps.py:474
+msgid "Game Appointment Created Title"
+msgstr "Nouvelle partie programmée"
+
 #: home/templates/home/home_page.html:92
 #: openstudyroom/templates/puput/blog_page.html:53
 msgid "Continue reading"

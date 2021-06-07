@@ -67,10 +67,9 @@
         {% checkbox label='Game request' id='game-request-filter' label_class='request-label' %}
         {% checkbox label='Availability' id='av-event-filter' label_class='available-label' %}
         {% endif %}
-        <hr>
         {% if user.is_authenticated %}
+        <hr>
         {% checkbox label='Edit my availabilities <i id="available-info" class="info glyphicon glyphicon-question-sign"></i>' id='user-av-event-filter' checked=False label_class='user-available-label' %}
-
         {% endif %}
       </div>
     </div>
