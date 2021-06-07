@@ -1,13 +1,13 @@
 import requests
+from pytz import utc
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import activate, deactivate, gettext_lazy as _
 from django.conf import settings
 from django.urls import reverse
 from django.template import loader
 from colorful.fields import RGBColorField
 from postman.api import pm_broadcast, pm_write
-from pytz import utc, common_timezones
-from django.utils.translation import activate, deactivate, check_for_language, gettext_lazy as _
 from league.models import User, Division
 from community.models import Community
 

@@ -1,11 +1,10 @@
-import requests
 import pytz
 from django.db import models
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
+from django.conf.global_settings import LANGUAGES
 from machina.models.fields import MarkupTextField
 from machina.core import validators
-from django.conf.global_settings import LANGUAGES
 
 class Community(models.Model):
 
@@ -88,7 +87,7 @@ class Community(models.Model):
 
     def get_timezone(self):
         """Return the timezone of the community"""
-        if (self.timezone is not None):
+        if self.timezone is not None:
             tz = pytz.timezone(self.timezone)
         else:
             tz = pytz.utc
