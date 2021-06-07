@@ -2,7 +2,7 @@ import requests
 from pytz import utc
 from django.db import models
 from django.utils import timezone
-from django.utils.translation import activate, deactivate, gettext_lazy as _
+from django.utils.translation import activate, deactivate, gettext as _
 from django.conf import settings
 from django.urls import reverse
 from django.template import loader
@@ -471,7 +471,7 @@ class GameAppointmentEvent(CalEvent):
         divisions = []
         if locale:
             activate(locale)
-            title = str(_('Game Appointment Created Title'))
+            title = _('Game Appointment Created Title')
             deactivate()
         for division in self.divisions.all():
             divURI = settings.SITE_URL + f'/league/{division.league_event.pk}/results/{division.pk}'
