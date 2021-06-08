@@ -38,3 +38,7 @@ DISCORD_CLIENT_ID = "xxxxxxxxxxxxxxxxx"
 DISCORD_CLIENT_SECRET = "xxxxxxxxxxxxxxxxxx"
 
 SITE_URL = "http://127.0.0.1:8000"
+
+# Base URL to use when referring to full URLs within the Wagtail admin backend -
+# e.g. in notification emails. Don't include '/admin' or a trailing slash
+BASE_URL = 'http://127.0.0.1:8000'
