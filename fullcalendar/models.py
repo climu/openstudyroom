@@ -474,10 +474,10 @@ class GameAppointmentEvent(CalEvent):
             title = _('Game Appointment Created Title')
             deactivate()
         for division in self.divisions.all():
-            divURI = settings.SITE_URL + f'/league/{division.league_event.pk}/results/{division.pk}'
+            divURI = settings.BASE_URL + f'/league/{division.league_event.pk}/results/{division.pk}'
             divisions.append(f'[{division.league_event.name} - {division.name}]({divURI})')
         leagueInfo = '' if not divisions else ', '.join(divisions)
-        accountURI = settings.SITE_URL + reverse('league:league_account')
+        accountURI = settings.BASE_URL + reverse('league:league_account')
         players = ' vs '.join(f'**[{user.username}]({accountURI + user.username}/)**' for user in self.users.all())
         return {
             "embeds": [{

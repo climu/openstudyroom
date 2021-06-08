@@ -229,10 +229,6 @@ LOCALE_PATHS = (
 
 WAGTAIL_SITE_NAME = "openstudyroom"
 
-# Base URL to use when referring to full URLs within the Wagtail admin backend -
-# e.g. in notification emails. Don't include '/admin' or a trailing slash
-BASE_URL = 'http://openstudyroom.org'
-
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 #do that before migrate
