@@ -10,6 +10,10 @@ msgstr ""
 "X-Generator: POEditor.com\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: fullcalendar/models/apps.py:474
+msgid "Game Appointment Created Title"
+msgstr "Nueva pieza programada"
+
 #: community/templates/community/admin/user_list.html:5
 msgid "members"
 msgstr "miembros"

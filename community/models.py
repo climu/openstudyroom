@@ -1,6 +1,8 @@
+import pytz
 from django.db import models
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
+from django.conf.global_settings import LANGUAGES
 from machina.models.fields import MarkupTextField
 from machina.core import validators
 
@@ -8,6 +10,18 @@ class Community(models.Model):
 
     name = models.CharField(max_length=30, blank=True, unique=True)
     slug = models.CharField(max_length=8, unique=True)
+    timezone = models.CharField(
+        max_length=100,
+        choices=[(t, t) for t in pytz.common_timezones],
+        null=True,
+        blank=True,
+    )
+    locale = models.CharField(
+        max_length=100,
+        choices=[(l[0], l[1]) for l in LANGUAGES],
+        null=True,
+        blank=True,
+    )
     admin_group = models.ForeignKey(
         Group,
         related_name='admin_community',
@@ -70,6 +84,14 @@ class Community(models.Model):
     def get_admins(self):
         User = get_user_model()
         return list(User.objects.filter(groups=self.admin_group))
+
+    def get_timezone(self):
+        """Return the timezone of the community"""
+        if self.timezone is not None:
+            tz = pytz.timezone(self.timezone)
+        else:
+            tz = pytz.utc
+        return tz
 
     def is_admin(self, user):
         return user.is_authenticated and self.admin_group in user.groups.all()

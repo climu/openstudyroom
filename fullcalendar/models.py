@@ -1,13 +1,13 @@
 import requests
+from pytz import utc
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import activate, deactivate, gettext as _
 from django.conf import settings
 from django.urls import reverse
 from django.template import loader
 from colorful.fields import RGBColorField
 from postman.api import pm_broadcast, pm_write
-from pytz import utc
-
 from league.models import User, Division
 from community.models import Community
 
@@ -460,6 +460,35 @@ class GameAppointmentEvent(CalEvent):
             })
         return event
 
+    def format_discord(self, tz=utc, locale=None):
+        """
+        Makes a Discord's embed object from event's data.
+        Optionnal timezone and locale can be used
+
+        """
+        date = timezone.localtime(self.start, tz).strftime('%d-%m-%Y %H:%M')
+        title = 'New game planned !'
+        divisions = []
+        if locale:
+            activate(locale)
+            title = _('Game Appointment Created Title')
+            deactivate()
+        for division in self.divisions.all():
+            divURI = settings.SITE_URL + f'/league/{division.league_event.pk}/results/{division.pk}'
+            divisions.append(f'[{division.league_event.name} - {division.name}]({divURI})')
+        leagueInfo = '' if not divisions else ', '.join(divisions)
+        accountURI = settings.SITE_URL + reverse('league:league_account')
+        players = ' vs '.join(f'**[{user.username}]({accountURI + user.username}/)**' for user in self.users.all())
+        return {
+            "embeds": [{
+                "title": title,
+                "description": f'{leagueInfo} \n\n {players} \n {date} ({tz})',
+                "thumbnail": {
+                    "url": "https://sits-go.org/wp-content/uploads/2021/03/the-shell-16x4-1.jpg"
+                }
+            }]
+        }
+
     def title(self):
         users = self.users.all()
         return 'Game ' + users[0].username + ' vs ' + users[1].username
@@ -503,19 +532,14 @@ class GameAppointmentEvent(CalEvent):
                 body=message,
                 skip_notification=False
             )
-        # Get communities both users are in and annonce the event on discord
-        communities = list(set(sender.get_communities()) & set(receiver.get_communities()))
-        for community in communities:
-            if community.discord_webhook_url is not None:
-                values = {
-                    "content": "New game planned!",
-                    "embeds": [{
-                        "title": f'{sender.username} vs {receiver.username} on {self.start:%d-%m-%Y %H:%M} (UTC)',
-                        "description": 'Bring the popcorn!',
-                    }]
-                }
-                r = requests.post(community.discord_webhook_url, json=values)
-                r.raise_for_status()
+        if self.private is not True:
+            # Get communities both users are in and annonce the event on discord
+            communities = list(set(sender.get_communities()) & set(receiver.get_communities()))
+            for community in communities:
+                if community.discord_webhook_url is not None:
+                    values = self.format_discord(community.get_timezone(), community.locale)
+                    r = requests.post(community.discord_webhook_url, json=values)
+                    r.raise_for_status()
 
 
     @staticmethod
