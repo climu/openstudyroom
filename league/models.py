@@ -1,9 +1,9 @@
 from collections import defaultdict
+from operator import attrgetter
 import datetime
 import json
-from operator import attrgetter
 import time
-
+import re
 import pytz
 import requests
 from django.contrib.auth.models import AbstractUser
@@ -573,7 +573,8 @@ class Sgf(models.Model):
         """
 
         errors = []
-        if event.tag not in self.sgf_text and str.lower(event.tag) not in self.sgf_text:
+
+        if not re.match(event.tag, self.sgf_text, re.IGNORECASE):
             errors.append('Tag missing')
         # check the time settings:
         if int(self.time) < event.main_time:
@@ -1108,6 +1109,7 @@ class User(AbstractUser):
                 else:
                     continue
                 if game_ended < time_limit:
+                    # why not use continue statement ?
                     break
                 # then we check if we have the same  id in db.
                 # Since it's ordered by time, no need to keep going. but we do?
