@@ -574,7 +574,7 @@ class Sgf(models.Model):
 
         errors = []
 
-        if not re.match(event.tag, self.sgf_text, re.IGNORECASE):
+        if not re.search(event.tag, self.sgf_text, re.IGNORECASE):
             errors.append('Tag missing')
         # check the time settings:
         if int(self.time) < event.main_time:
