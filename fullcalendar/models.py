@@ -131,19 +131,18 @@ class PublicEvent(CalEvent):
 class AvailableEvent(CalEvent):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def format(self, tz, type='user-available'):
+    def format(self, tz, type='available'):
         event = super().format(tz, type)
         event['user'] = self.user.format()
         return event
 
     @staticmethod
-    def get_formated_opponents(user, end, leagues):
+    def get_formated_opponents(user, end, leagues=None):
         """
         The calendar sends a list of leagues.
         We get all related divisions then all user's opponents.
-
         """
-        divisions = Division.objects.filter(league_event__in=leagues)
+        divisions = Division.objects.filter(league_event__in=leagues) if leagues else user.get_active_divisions()
         events = AvailableEvent.get_formated_other_available_dict(user, divisions, end)
         return events
 
@@ -288,7 +287,7 @@ class AvailableEvent(CalEvent):
                         'start': time.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
                         'end': change['time'].astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
                         'users': list(opponents),
-                        'type': 'available',
+                        'type': 'opponents-available',
                     })
                     time = change['time']
                     if change['type'] == 0:  # new user available
