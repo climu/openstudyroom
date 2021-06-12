@@ -207,7 +207,7 @@ def calendar_main_view(request):
     now = timezone.now()
 
     # Served data for front end application
-    client_context_data = {}
+    calendar_data = {}
     context = {}
 
     # Get all active leagues
@@ -215,7 +215,7 @@ def calendar_main_view(request):
         end_time__gte=now)
 
     if user.is_authenticated:
-        client_context_data['user'] = user.format()
+        calendar_data['user'] = user.format()
         start_time_range = user.profile.start_cal
         end_time_range = user.profile.end_cal
 
@@ -241,14 +241,14 @@ def calendar_main_view(request):
         communities = Community.objects.filter(private=False)
         leagues = active_leagues.filter(is_public=True)
 
+    calendar_data['communities'] = [c.format() for c in communities]
+    calendar_data['leagues'] = [l.format() for l in leagues]
+
     context['communities'] = communities
     context['leagues'] = leagues
     context['start_time_range'] = start_time_range
     context['end_time_range'] = end_time_range
-    context['client_context_data'] = client_context_data
-
-    client_context_data['communities'] = [c.format() for c in communities]
-    client_context_data['leagues'] = [l.format() for l in leagues]
+    context['calendar_data'] = calendar_data
 
     return render(request, 'fullcalendar/calendar2.html', context)
 

@@ -98,7 +98,7 @@
 
 {% get_current_language as LANGUAGE_CODE %}
 {% block extra_js %}
-{{ client_context_data|json_script:"context-data" }}
+{{ calendar_data|json_script:"context-data" }}
 <script>{% include 'league/includes/ajax_setup.html' %}</script>
 <script src={% static 'fullcalendar/calendar.js' %}></script>
 <script>
