@@ -229,7 +229,6 @@ class UserAvailableSource extends EventSource {
   transform = (e) => {
     e.className = 'user-' + e.className;
     e.title = 'Me available';
-    e.color = getCSSVariable('--user-available-dot-color');
     return e;
   }
 
@@ -275,18 +274,16 @@ class OpponentsAvailableSource extends EventSource {
 
   transform = (e) => {
     e.title = e.users.map(({name}) => name).join(', ');
-    e.color = getCSSVariable('--available-dot-color');
     return e;
   }
 
   didMount(data) {
     const parent = data.el.querySelector('.fc-list-event-title');
     if (parent) {
-      parent.classList.add('available');
-      const el = document.createElement('a');
       const plural = data.event.extendedProps.users.length > 1;
-      el.classList.add('available');
+      const el = document.createElement('a');
       el.textContent = ` ${plural ? 'are' : 'is' } available`;
+      parent.classList.add('available');
       parent.appendChild(el);
     }
   }
@@ -364,10 +361,7 @@ class GameRequestSource extends EventSource {
     e.className += e.fromUser ? '-user' : '';
     e.title = `
       ${e.sender.name} vs
-      ${e.receivers.map(({name}) => name).join(', ')}`
-    e.color = getCSSVariable(e.fromUser
-      ? '--user-request-color'
-      : '--request-color');
+      ${e.receivers.map(({name}) => name).join(', ')}`;
     return e;
   }
 
@@ -412,9 +406,6 @@ class AppointmentSource extends EventSource {
     e.hasUser = Context.user && e.users.map(({pk}) => pk).includes(Context.user.pk);
     e.className += e.hasUser ? '-user' : '';
     e.title = `${e.users[0].name} vs ${e.users[1].name}`;
-    e.color = getCSSVariable(e.hasUser
-      ? '--user-appointment-color'
-      : '--appointment-color');
     return e;
   }
 

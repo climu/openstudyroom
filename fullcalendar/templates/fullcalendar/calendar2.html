@@ -26,10 +26,6 @@
 {%endblock%}
 
 {% block content %}
-{% if user.is_authenticated %}
-{% include 'league/includes/user_nav.html' with active='calendar' %}
-{% endif %}
-
 <div class="row">
 
   <!-- Calendar filtering menu -->

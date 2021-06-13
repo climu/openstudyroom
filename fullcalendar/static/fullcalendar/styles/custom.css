@@ -5,67 +5,31 @@
   --available-color:  rgba(80, 160, 245, 0.2);
   --available-dot-color:  rgba(80, 160, 245, 0.2);
   --available-list-color:  rgba(80, 160, 245, 0.7);
-  --available-bg-color: var(--available-color);
 
   --user-available-color:rgba(227, 132, 113, 0.2);
   --user-available-text-color:rgba(197, 117, 101, 0.644);
   --user-available-dot-color:rgba(227, 132, 113, 0.2);
   --user-available-list-color:rgba(227, 132, 113, 0.568);
   --hover-user-available-color:rgba(227, 132, 113, 0.308);
-  --user-available-bg-color: var(--user-available-color);
-  --user-available-border-color: var(--user-available-color);
-  --user-available-hover-bg-color: var(--hover-user-available-color);
-  --user-available-hover-border-color:  var(--hover-user-available-color);
 
   --appointment-color: rgb(0, 159, 175);
-  --user-appointment-color: rgb(92, 201, 211);
-  --user-appointment-hover-color: rgb(149, 229, 236);
   --appointment-border-color: rgb(18, 132, 143);
-  --user-appointment-border-color: rgb(37, 151, 161);
   --appointment-text-color: rgb(255, 248, 227);
+
+  --user-appointment-color: rgb(92, 201, 211);
+  --user-appointment-border-color: rgb(37, 151, 161);
+  --user-appointment-hover-color: rgb(149, 229, 236);
   --user-appointment-text-color: rgb(22, 111, 119);
 
   --request-color: rgb(223, 139, 71);
-  --request-hover-color: rgb(240, 168, 110);
   --request-border-color: rgb(192, 119, 42);
-  --user-request-color: rgb(228, 190, 120);
-  --user-request-hover-color: rgb(245, 220, 174);
-  --user-request-border-color: rgba(199, 147, 51, 0.75);
+  --request-hover-color: rgb(240, 168, 110);
   --request-text-color: #fff;
+
+  --user-request-color: rgb(228, 190, 120);
+  --user-request-border-color: rgba(199, 147, 51, 0.75);
+  --user-request-hover-color: rgb(245, 220, 174);
   --user-request-text-color: rgb(167, 103, 35);
-}
-
-.fc-timegrid-slots tr {
-  height: 2.5rem;
-}
-
-.fc-event {
-  position: relative;
-  padding: 0.25rem;
-  transition: all 0.1s;
-}
-
-.fc-event-title {
-  font-weight: 600;
-}
-
-.user-available-event .fc-event-title {
-  color: var(--user-available-text-color) !important;
-  font-weight: 400;
-}
-
-.fc-list-event-title:not(.available) a {
-  font-weight: 600;
-  margin-right: 1.5rem;
-}
-
-.fc-list-event-title.available {
-  font-weight: 400;
-  color: var(--available-list-color);
-}
-
-.fc-event-time {
-  color: #000
 }
 
 .game-request-event-user,
@@ -74,42 +38,51 @@
   cursor: pointer !important;
 }
 
-/* Availability */
-.user-available-event .fc-event-main,
-.fc-event-mirror .fc-event-main {
-  color: #000;
-}
 .fc-event-mirror {
   background-color: var(--selection-bg-color) !important;
   border-color: var(--selection-border-color) !important;
 }
-a.user-available-event {
-  background-color: var(--user-available-bg-color) !important;
-  border-color: var(--user-available-border-color) !important;
+.fc-event-mirror .fc-event-main {
+  color: #000;
 }
-a.user-available-event .fc-event-time  {
-  color: #000 !important;
+
+/* Availability */
+.user-available-event:not(tr) {
+  background-color: var(--user-available-color) !important;
+  border-color: var(--user-available-color) !important;
+}
+.user-available-event .fc-list-event-dot {
+  border-color: var(--user-available-dot-color) !important;
+}
+.user-available-event .fc-event-title {
+  color: var(--user-available-text-color) !important;
+}
+.user-available-event .fc-list-event-title {
+  color: var(--user-available-text-color) !important;
 }
 a.user-available-event:hover {
-  background-color: var(--user-available-hover-bg-color) !important;
-  border-color: var(--user-available-hover-border-color) !important;
+  background-color: var(--hover-user-available-color) !important;
+  border-color: var(--hover-user-available-color) !important;
 }
-a.opponents-available-event .fc-event-title, div.opponents-available-event .fc-event-title {
+
+.opponents-available-event .fc-event-title {
   color: rgb(95, 158, 177) !important;
   font-weight: 400;
 }
-div.opponents-available-event {
-  background-color: var(--available-bg-color) !important;
-  color: rgb(95, 158, 177) !important;
+.opponents-available-event:not(tr) {
+  background-color: var(--available-color) !important;
+  border-color: var(--available-color) !important;
 }
-.user-available-event .fc-list-event-title a {
-  font-weight: 400;
-  color: var(--user-available-text-color) !important;
+.opponents-available-event .fc-list-event-title {
+  color: var(--available-list-color);
+}
+.opponents-available-event .fc-list-event-dot {
+  border-color: var(--available-dot-color) !important;
 }
 
 /* Game request */
-.game-request-event-user .fc-event-title {
-  color: var(--user-request-text-color) !important;
+.game-request-event .fc-list-event-dot {
+  border-color: var(--request-color) !important;
 }
 .game-request-event .fc-event-title {
   color: var(--request-text-color) !important;
@@ -117,33 +90,48 @@ div.opponents-available-event {
 .game-request-event .fc-list-event-title a {
   color: var(--user-request-text-color) !important;
 }
-.game-request-event-user .fc-list-event-title a {
-  color: var(--user-request-color) !important;
-}
-
-a.game-request-event {
+.game-request-event:not(tr) {
   border-color: var(--request-border-color) !important;
   background-color: var(--request-color) !important;
 }
-a:hover.game-request-event {
+.game-request-event:hover:not(tr) {
   border-color: var(--request-border-color) !important;
   background-color: var(--request-hover-color) !important;
 }
-a.game-request-event-user{
+.game-request-event-user .fc-event-title {
+  color: var(--user-request-text-color) !important;
+}
+.game-request-event-user .fc-list-event-dot {
+  border-color: var(--user-request-color) !important;
+}
+.game-request-event-user .fc-list-event-title a {
+  color: var(--user-request-color) !important;
+}
+.game-request-event-user:not(tr) {
   border-color: var(--user-request-border-color) !important;
   background-color: var(--user-request-color) !important;
 }
-a.game-request-event-user:hover {
+.game-request-event-user:hover:not(tr) {
   border-color: var(--user-request-border-color) !important;
   background-color: var(--user-request-hover-color) !important;
 }
 
 /* Game appointment */
+.game-appointment-event .fc-list-event-dot {
+  border-color: var(--appointment-color) !important;
+}
 .game-appointment-event .fc-event-title {
   color: var(--appointment-text-color);
 }
 .game-appointment-event .fc-list-event-title a {
   color: var(--appointment-color);
+}
+.game-appointment-event:not(tr) {
+  border-color: var(--appointment-border-color) !important;
+  background-color: var(--appointment-color) !important;
+}
+.game-appointment-event-user .fc-list-event-dot {
+  border-color: var(--user-appointment-color) !important;
 }
 .game-appointment-event-user .fc-event-title {
   color: var(--user-appointment-text-color);
@@ -151,20 +139,31 @@ a.game-request-event-user:hover {
 .game-appointment-event-user .fc-list-event-title a {
   color: var(--user-appointment-color) !important;
 }
-a.game-appointment-event {
-  border-color: var(--appointment-border-color) !important;
-  background-color: var(--appointment-color) !important;
-}
-a.game-appointment-event-user {
+.game-appointment-event-user:not(tr) {
   border-color: var(--user-appointment-border-color) !important;
   background-color: var(--user-appointment-color) !important;
 }
-a:hover.game-appointment-event-user {
+.game-appointment-event-user:hover:not(tr) {
   border-color: var(--user-appointment-border-color) !important;
   background-color: var(--user-appointment-hover-color) !important;
 }
 
 /* Others */
+
+.fc-timegrid-slots tr {
+  height: 2.5rem;
+}
+.fc-event {
+  position: relative;
+  padding: 0.25rem;
+  transition: all 0.1s;
+}
+.fc-list-event-title:not(.available) a {
+  margin-right: 1.5rem;
+}
+.fc-event-time {
+  color: #000 !important;
+}
 .appointment-label span {
   color: var(--appointment-color);
 }
