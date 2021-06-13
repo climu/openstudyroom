@@ -50,6 +50,7 @@ urlpatterns = [
 
     url(r'^account/$', views.account, name='league_account'),
     url(r'^account/(?P<user_name>[\w.@+-]+)/$', views.account, name='league_account'),
+    url(r'^account/(?P<user_name>[\w.@+-]+)/activity/$', views.account_activity, name='league_account_activity'),
     url(r'^scraper/$', views.scraper_view, name='scraper'),
 
     url(r'^admin/$', views.admin, name='admin'),

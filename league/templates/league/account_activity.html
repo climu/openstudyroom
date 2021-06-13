@@ -1,0 +1,39 @@
+{% extends "full_width.html" %}
+{% load tz static i18n calendar_tags %}
+{% load bootstrap3 %}
+{% block extra_head_js %}
+<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/styles/fullcalendar.css'%}"/>
+<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/styles/rangeslider.css'%}"/>
+<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/styles/micromodal.css'%}"/>
+<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/styles/custom.css'%}"/>
+<script src='https://cdn.jsdelivr.net/npm/moment@2.27.0/min/moment.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.7.0/main.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.7.0/locales-all.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/moment@5.5.0/main.global.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
+<script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+{% endblock %}
+
+{% block title %}{{user.username}}'s activity{% endblock %}
+{% block heading %}<div class="page-header"><h1>{{user.username}}'s activity</h1></div>{%endblock%}
+
+{% block content %}
+{% include 'league/includes/user_nav.html' with active='activity' %}
+<div id='calendar'></div>
+<!-- Modal forms -->
+{% include 'fullcalendar/includes/modal.html' %}
+{% endblock %}
+
+{% block extra_js %}
+{% get_current_language as LANGUAGE_CODE %}
+{{ calendar_data|json_script:"context-data" }}
+<script>{% include 'league/includes/ajax_setup.html' %}</script>
+<script src={% static 'fullcalendar/calendar.js' %}></script>
+<script>
+	$(document).ready(function() {
+    Calendar.initialize('{{LANGUAGE_CODE}}');
+  });
+</script>
+{% endblock %}

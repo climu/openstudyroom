@@ -565,6 +565,20 @@ def quit_league(request, event_id, user_id=None):  # pylint: disable=inconsisten
             messages.success(request, message)
             return HttpResponseRedirect(form.cleaned_data['next'])
 
+def account_activity(request, user_name):
+    """
+    Show all user's related events
+    (his game appointments and his shared game requests with request.user)
+    """
+    user = get_object_or_404(User, username=user_name)
+    context = {}
+    calendar_data = {}
+    calendar_data['profil'] = user.format()
+    if request.user.is_authenticated:
+        calendar_data['user'] = request.user.format()
+    context['calendar_data'] = calendar_data
+    context['user'] = user
+    return render(request, 'league/account_activity.html', context)
 
 def account(request, user_name=None):
     """Show a user account.

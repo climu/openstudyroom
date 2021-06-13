@@ -2,6 +2,7 @@
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav navbar-left">
   <li {% if active == 'league' %}class="active"{% endif %}><a href="{% url "league:league_account" user%}">League</a></li>
+  <li {% if active == 'activity' %}class="active"{% endif %}><a href="{% url "league:league_account_activity" user%}">Activity</a></li>
   <li {% if active == 'forum' %}class="active"{% endif %}><a href="{% url "forum_member:profile" user.pk%}">Forum</a></li>
 </ul>
 {% if request.user.is_authenticated %}

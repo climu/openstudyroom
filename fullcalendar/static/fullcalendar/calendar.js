@@ -1,7 +1,3 @@
-function getCSSVariable(name) {
-  return getComputedStyle(document.documentElement).getPropertyValue(name);
-}
-
 /**
  * Converts hexadecimal color in rgba format.
  * Used by public events.
@@ -203,6 +199,46 @@ class EventSource {
    * Overrided by extended classes.
    */
   didMount() {}
+
+  /** Render block by default */
+  display = (e) => 'block';
+}
+
+/**
+ * Public events can be seen by everyone.
+ */
+class PublicSource extends EventSource {
+  static id = 'public';
+  static url = 'get-public-events/';
+
+  constructor() { super(PublicSource); }
+
+  display = ({community}) =>
+    Filter.check.public
+      ? community
+        ? Filter.communities.includes(community.pk)
+          ? 'block' : 'none'
+        : Filter.check.osr
+          ? 'block' : 'none'
+      : 'none';
+
+  transform = (e) => {
+    const {r, g, b, a} = hexToRgba(e.color || '#3788d8', 0.8);
+    e.backgroundColor = `rgba(${r}, ${g}, ${b}, ${a})`;
+    return e;
+  }
+
+  didMount(data) {
+    const content = data.event.extendedProps.description;
+    if (Calendar.object.view.type === 'listWeek') {
+      const parent = data.el.querySelector('.fc-list-event-title');
+      const el = document.createElement('span');
+      el.innerHTML = `${content}`;
+      parent.appendChild(el);
+    } else if (content) {
+      tippy(data.el, {content});
+    }
+  }
 }
 
 /**
@@ -211,10 +247,11 @@ class EventSource {
  */
 class UserAvailableSource extends EventSource {
   static id = 'available';
-  static url = 'get-user-available-events/';
+  static url = 'get-available-events/';
 
   constructor() {
     super(UserAvailableSource);
+    this.url += Context.user.pk + '/'
     this.editable = true;
   }
 
@@ -257,10 +294,11 @@ class UserAvailableSource extends EventSource {
  */
 class OpponentsAvailableSource extends EventSource {
   static id = 'opponents-available';
-  static url = 'get-available-events/';
+  static url = 'get-opponents-available-events/';
 
   constructor() {
     super(OpponentsAvailableSource);
+    this.url += Context.user.pk + '/'
     this.extraParams = () => ({
       leagues: JSON.stringify(Filter.leagues)
     });
@@ -290,39 +328,22 @@ class OpponentsAvailableSource extends EventSource {
 }
 
 /**
- * Public events can be seen by everyone.
+ * Serves profil's available event.
  */
-class PublicSource extends EventSource {
-  static id = 'public';
-  static url = 'get-public-events/';
+ class ProfilAvailableSource extends EventSource {
+  static id = 'profil-available';
+  static url = 'get-available-events/';
 
-  constructor() { super(PublicSource); }
-
-  display = ({community}) =>
-    Filter.check.public
-      ? community
-        ? Filter.communities.includes(community.pk)
-          ? 'block' : 'none'
-        : Filter.check.osr
-          ? 'block' : 'none'
-      : 'none';
-
-  transform = (e) => {
-    const {r, g, b, a} = hexToRgba(e.color || '#3788d8', 0.8);
-    e.backgroundColor = `rgba(${r}, ${g}, ${b}, ${a})`;
-    return e;
+  constructor() {
+    super(ProfilAvailableSource);
+    this.url += Context.profil.pk + '/';
   }
 
-  didMount(data) {
-    const content = data.event.extendedProps.description;
-    if (Calendar.object.view.type === 'listWeek') {
-      const parent = data.el.querySelector('.fc-list-event-title');
-      const el = document.createElement('span');
-      el.innerHTML = `${content}`;
-      parent.appendChild(el);
-    } else if (content) {
-      tippy(data.el, {content});
-    }
+  transform = (e) => {
+    e.className = 'opponents-' + e.className;
+    e.title = e.user.name + ' available';
+    e.type = 'profil-' + e.type;
+    return e;
   }
 }
 
@@ -526,18 +547,17 @@ class AppointmentSource extends EventSource {
 
     if (Context.user) {
       this.addEventSource(new GameRequestSource());
+      this.addEventSource(new OpponentsAvailableSource());
+      this.addEventSource(new UserAvailableSource());
     }
 
-    if (!Context.profil) {
+    if (Context.profil && (!Context.user || Context.user.pk !== Context.profil.pk)) {
+      this.addEventSource(new ProfilAvailableSource());
+    } else {
       this.addEventSource(new PublicSource());
       this.setOption('select', this.createEvent);
       this.setOption('eventDrop', this.updateAvailableEvent);
       this.setOption('eventResize', this.updateAvailableEvent);
-    }
-
-    if (Context.user) {
-      this.addEventSource(new UserAvailableSource());
-      this.addEventSource(new OpponentsAvailableSource());
     }
   }
 

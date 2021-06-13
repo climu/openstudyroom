@@ -64,8 +64,10 @@ class PublicEvent(CalEvent):
         event['title'] = self.title
         event['description'] = self.description
         event['url'] = self.url
-        event['color'] = self.category.color if self.category else ''
-        event['community'] = self.community.format() if self.community else ''
+        if self.category:
+            event['color'] = self.category.color
+        if self.community:
+            event['community'] = self.community.format()
         return event
 
     def can_edit(self, user):
@@ -137,6 +139,15 @@ class AvailableEvent(CalEvent):
         return event
 
     @staticmethod
+    def get_formated_user(user, end, tz):
+        """
+        Returns a list of all formated available events of the user.
+        """
+        now = timezone.now()
+        events = AvailableEvent.objects.filter(user=user, end__gte=now, start__lte=end)
+        return [event.format(tz) for event in events]
+
+    @staticmethod
     def get_formated_opponents(user, end, leagues=None):
         """
         The calendar sends a list of leagues.
@@ -145,15 +156,6 @@ class AvailableEvent(CalEvent):
         divisions = Division.objects.filter(league_event__in=leagues) if leagues else user.get_active_divisions()
         events = AvailableEvent.get_formated_other_available_dict(user, divisions, end)
         return events
-
-    @staticmethod
-    def get_formated_user(user, end, tz):
-        """
-        Returns a list of all formated available events of the user.
-        """
-        now = timezone.now()
-        events = AvailableEvent.objects.filter(user=user, end__gte=now, start__lte=end)
-        return [event.format(tz) for event in events]
 
     @staticmethod
     def get_formated_other_available(user, division_list=None, server_list=None):
@@ -450,6 +452,7 @@ class GameAppointmentEvent(CalEvent):
         event = super().format(tz, type)
         event['divisions'] = [div.format() for div in self.divisions.all()]
         event['users'] = []
+        event['private'] = self.private
         for user in self.users.all():
             # we dont use user.format because
             # we need minimal infos
@@ -550,7 +553,7 @@ class GameAppointmentEvent(CalEvent):
         )
 
     @staticmethod
-    def get_formated(user, tz):
+    def get_formated(tz, user=None):
         """
         Game appointment are now considered as public event and
         therefore can be seen by anyone !
@@ -560,10 +563,8 @@ class GameAppointmentEvent(CalEvent):
         res = []
         now = timezone.now()
         events = GameAppointmentEvent.objects.filter(end__gte=now)
-        # get all public events
         res += [e.format(tz) for e in events.filter(private=False)]
-        if user.is_authenticated:
-            # get user's private events
+        if user:
             res += [e.format(tz) for e in events.filter(private=True, users=user)]
         return res
 
