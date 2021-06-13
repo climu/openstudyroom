@@ -134,6 +134,12 @@ def community_page(request, slug):
         distinct().\
         order_by('-date')
 
+    # get calendar data
+    calendar_data = {}
+    calendar_data['community'] = community.format()
+    if request.user.is_authenticated:
+        calendar_data['user'] = request.user.format()
+
     context = {
         'community': community,
         'leagues': leagues,
@@ -148,7 +154,8 @@ def community_page(request, slug):
         'start_time_range': request.user.profile.start_cal if request.user.is_authenticated else 0,
         'end_time_range':  request.user.profile.end_cal if request.user.is_authenticated else 0,
         'public_events': community.publicevent_set.all(),
-        'categories': community.category_set.all()
+        'categories': community.category_set.all(),
+        'calendar_data': calendar_data,
     }
     return render(request, 'community/community_page.html', context)
 

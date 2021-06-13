@@ -89,11 +89,12 @@ class PublicEvent(CalEvent):
             )
 
     @staticmethod
-    def get_formated(start, end, tz):
+    def get_formated(end, tz):
         """
-        Returns all public events that occurs in a range period.
+        Returns all public futures events.
         """
-        events = PublicEvent.objects.filter(end__gte=start, start__lte=end)
+        now = timezone.now()
+        events = PublicEvent.objects.filter(end__gte=now, start__lte=end)
         return [event.format(tz) for event in events]
 
     @staticmethod

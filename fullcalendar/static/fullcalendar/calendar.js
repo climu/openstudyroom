@@ -58,6 +58,7 @@ class Context {
   static communities = Context.rawData.communities || null;
   static leagues = Context.rawData.leagues || null;
   static profil = Context.rawData.profil || null;
+  static community = Context.rawData.community || null;
   static user = Context.rawData.user ? new User(Context.rawData.user) : null;
 }
 
@@ -214,13 +215,15 @@ class PublicSource extends EventSource {
   constructor() { super(PublicSource); }
 
   display = ({community}) =>
-    Filter.check.public
-      ? community
-        ? Filter.communities.includes(community.pk)
-          ? 'block' : 'none'
-        : Filter.check.osr
-          ? 'block' : 'none'
-      : 'none';
+    Context.community && community && Context.community.pk === community.pk
+      ? 'block'
+      : Filter.check.public
+        ? community
+          ? Filter.communities.includes(community.pk)
+            ? 'block' : 'none'
+          : Filter.check.osr
+            ? 'block' : 'none'
+        : 'none';
 
   transform = (e) => {
     const {r, g, b, a} = hexToRgba(e.color || '#3788d8', 0.8);
@@ -230,7 +233,7 @@ class PublicSource extends EventSource {
 
   didMount(data) {
     const content = data.event.extendedProps.description;
-    if (Calendar.object.view.type === 'listWeek') {
+    if (Calendar.object.view.type === 'listWeek' || Calendar.object.view.type === 'list') {
       const parent = data.el.querySelector('.fc-list-event-title');
       const el = document.createElement('span');
       el.innerHTML = `${content}`;
@@ -412,14 +415,17 @@ class AppointmentSource extends EventSource {
   constructor() { super(AppointmentSource); }
 
   display = (e) =>
-    Context.profil
-      ? this.displayProfil(e)
-      : Filter.check.appointment
-        ? e.divisions.length
-          ? e.divisions.map(({league}) => league.pk).some(pk => Filter.leagues.includes(pk))
-            ? 'block' : 'none'
-          :'block'
-        : 'none'
+    Context.community && e.divisions.length && e.divisions.filter(
+      ({league}) => league.community && league.community.pk === Context.community.pk).length
+      ? 'block'
+      : Context.profil
+        ? this.displayProfil(e)
+        : Filter.check.appointment
+          ? e.divisions.length
+            ? e.divisions.map(({league}) => league.pk).some(pk => Filter.leagues.includes(pk))
+              ? 'block' : 'none'
+            :'block'
+          : 'none'
 
   displayProfil = (e) => e.users.map(({pk}) => pk).includes(Context.profil.pk) ? 'block' : 'none';
 
@@ -477,7 +483,7 @@ class AppointmentSource extends EventSource {
   static initialize(locale) {
     Calendar.object = new Calendar(locale);
     Calendar.object.render();
-    if (!Context.profil) {
+    if (!Context.profil && !Context.community) {
       Calendar.initializeTimeRangeSlider();
       Filter.initialize();
     }
@@ -507,16 +513,13 @@ class AppointmentSource extends EventSource {
      * set the calendar to 'profil mode' and lists
      * all profil's related events.
      */
-    const profilOpts = {
+    const listOpts = {
       locale,
       allDaySlot: false,
       eventDisplay: 'block',
       initialView: 'list',
-      duration: { weeks: 4 },
-      headerToolbar: {
-        left: 'prev,next today',
-        right: 'title'
-      },
+      duration: { weeks: 24 },
+      headerToolbar: false,
       timeZone: 'UTC',
       height: 'auto',
     }
@@ -538,7 +541,10 @@ class AppointmentSource extends EventSource {
       selectable: true,
     }
 
-    super(document.getElementById('calendar'), Context.profil ? profilOpts : opts);
+    super(
+      document.getElementById('calendar'),
+      Context.profil || Context.community ? listOpts : opts
+    );
 
     this.setOption('viewDidMount', Calendar.update);
     this.setOption('eventDidMount', this.handleEventDidMount);
@@ -555,9 +561,11 @@ class AppointmentSource extends EventSource {
       this.addEventSource(new ProfilAvailableSource());
     } else {
       this.addEventSource(new PublicSource());
-      this.setOption('select', this.createEvent);
-      this.setOption('eventDrop', this.updateAvailableEvent);
-      this.setOption('eventResize', this.updateAvailableEvent);
+      if (!Context.community) {
+        this.setOption('select', this.createEvent);
+        this.setOption('eventDrop', this.updateAvailableEvent);
+        this.setOption('eventResize', this.updateAvailableEvent);
+      }
     }
   }
 
