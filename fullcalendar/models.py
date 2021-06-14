@@ -64,8 +64,10 @@ class PublicEvent(CalEvent):
         event['title'] = self.title
         event['description'] = self.description
         event['url'] = self.url
-        event['color'] = self.category.color if self.category else ''
-        event['community'] = self.community.format() if self.community else ''
+        if self.category:
+            event['color'] = self.category.color
+        if self.community:
+            event['community'] = self.community.format()
         return event
 
     def can_edit(self, user):
@@ -87,11 +89,12 @@ class PublicEvent(CalEvent):
             )
 
     @staticmethod
-    def get_formated(start, end, tz):
+    def get_formated(end, tz):
         """
-        Returns all public events that occurs in a range period.
+        Returns all public futures events.
         """
-        events = PublicEvent.objects.filter(end__gte=start, start__lte=end)
+        now = timezone.now()
+        events = PublicEvent.objects.filter(end__gte=now, start__lte=end)
         return [event.format(tz) for event in events]
 
     @staticmethod
@@ -131,21 +134,10 @@ class PublicEvent(CalEvent):
 class AvailableEvent(CalEvent):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def format(self, tz, type='user-available'):
+    def format(self, tz, type='available'):
         event = super().format(tz, type)
         event['user'] = self.user.format()
         return event
-
-    @staticmethod
-    def get_formated_opponents(user, end, leagues):
-        """
-        The calendar sends a list of leagues.
-        We get all related divisions then all user's opponents.
-
-        """
-        divisions = Division.objects.filter(league_event__in=leagues)
-        events = AvailableEvent.get_formated_other_available_dict(user, divisions, end)
-        return events
 
     @staticmethod
     def get_formated_user(user, end, tz):
@@ -155,6 +147,16 @@ class AvailableEvent(CalEvent):
         now = timezone.now()
         events = AvailableEvent.objects.filter(user=user, end__gte=now, start__lte=end)
         return [event.format(tz) for event in events]
+
+    @staticmethod
+    def get_formated_opponents(user, end, leagues=None):
+        """
+        The calendar sends a list of leagues.
+        We get all related divisions then all user's opponents.
+        """
+        divisions = Division.objects.filter(league_event__in=leagues) if leagues else user.get_active_divisions()
+        events = AvailableEvent.get_formated_other_available_dict(user, divisions, end)
+        return events
 
     @staticmethod
     def get_formated_other_available(user, division_list=None, server_list=None):
@@ -288,7 +290,7 @@ class AvailableEvent(CalEvent):
                         'start': time.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
                         'end': change['time'].astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
                         'users': list(opponents),
-                        'type': 'available',
+                        'type': 'opponents-available',
                     })
                     time = change['time']
                     if change['type'] == 0:  # new user available
@@ -451,6 +453,7 @@ class GameAppointmentEvent(CalEvent):
         event = super().format(tz, type)
         event['divisions'] = [div.format() for div in self.divisions.all()]
         event['users'] = []
+        event['private'] = self.private
         for user in self.users.all():
             # we dont use user.format because
             # we need minimal infos
@@ -551,7 +554,7 @@ class GameAppointmentEvent(CalEvent):
         )
 
     @staticmethod
-    def get_formated(user, tz):
+    def get_formated(tz, user=None):
         """
         Game appointment are now considered as public event and
         therefore can be seen by anyone !
@@ -561,10 +564,8 @@ class GameAppointmentEvent(CalEvent):
         res = []
         now = timezone.now()
         events = GameAppointmentEvent.objects.filter(end__gte=now)
-        # get all public events
         res += [e.format(tz) for e in events.filter(private=False)]
-        if user.is_authenticated:
-            # get user's private events
+        if user:
             res += [e.format(tz) for e in events.filter(private=True, users=user)]
         return res
 

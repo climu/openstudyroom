@@ -1,4 +1,20 @@
 /**
+ * Converts hexadecimal color in rgba format.
+ * Used by public events.
+ * @param {string|number} hex - the color to convert
+ * @returns {string} - the converted color
+ */
+ function hexToRgba(hex, a=1) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return !result ? null : {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16),
+    a
+  };
+}
+
+/**
  * Just a basic wrapper with handy searching methods.
  * @param {object} data - raw data sent by the server
  */
@@ -39,8 +55,10 @@ class User {
  */
 class Context {
   static rawData =  JSON.parse(document.getElementById('context-data').textContent);
-  static communities = Context.rawData.communities;
-  static leagues = Context.rawData.leagues;
+  static communities = Context.rawData.communities || null;
+  static leagues = Context.rawData.leagues || null;
+  static profil = Context.rawData.profil || null;
+  static community = Context.rawData.community || null;
   static user = Context.rawData.user ? new User(Context.rawData.user) : null;
 }
 
@@ -73,9 +91,9 @@ class Filter {
 
   static get check() {
     return {
-      osr: Filter.el.osr.checked,
-      public: Filter.el.public.checked,
-      appointment: Filter.el.appointment.checked,
+      osr: Filter.el.osr && Filter.el.osr.checked,
+      public: Filter.el.public && Filter.el.public.checked,
+      appointment: Filter.el.appointment && Filter.el.appointment.checked,
       request: Filter.el.gameRequest && Filter.el.gameRequest.checked,
       available: Filter.el.available && Filter.el.available.checked,
       userAvailable: Filter.el.userAvailable && Filter.el.userAvailable.checked,
@@ -111,9 +129,7 @@ class Filter {
     });
 
     Filter.el.leagues.forEach(el => el.onchange = () => {
-      if (Context.user) {
-        Calendar.refetch(AvailableSource);
-      }
+      if (Context.user) { Calendar.refetch(OpponentsAvailableSource); }
       Calendar.update();
     });
 
@@ -138,22 +154,6 @@ class Filter {
       };
     }
   }
-}
-
-/**
- * Converts hexadecimal color in rgba format.
- * Used by public events.
- * @param {string|number} hex - the color to convert
- * @returns {string} - the converted color
- */
- function hexToRgba(hex, a=1) {
-  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16),
-    a
-  } : null;
 }
 
 /**
@@ -200,59 +200,9 @@ class EventSource {
    * Overrided by extended classes.
    */
   didMount() {}
-}
 
-/**
- * Serves user's available event.
- * Refetched each time a event is created, updated or deleted.
- */
-class UserAvailableSource extends EventSource {
-  static id = 'user-available';
-  static url = 'get-user-available-events/';
-
-  constructor() {
-    super(UserAvailableSource);
-    this.editable = true;
-  }
-
-  display = () =>
-    Filter.check.available
-      ? Filter.check.userAvailable
-        ? 'block' : 'background' : 'none';
-
-  didMount(data) {
-    const parent = data.el.querySelector('.fc-event-time')
-    if (parent) {
-      const el = document.createElement('i');
-      el.className = 'icon-close glyphicon glyphicon-remove';
-      el.onclick = () => Calendar.object.deleteAvailableEvent(data);
-      parent.appendChild(el);
-    }
-  }
-}
-
-/**
- * Serves available events of user's opponents.
- * Refetched each time the Filter state change.
- * (events merging process happens on the server)
- */
-class AvailableSource extends EventSource {
-  static id = 'available';
-  static url = 'get-available-events/';
-
-  constructor() {
-    super(AvailableSource);
-    this.extraParams = () => ({
-      leagues: JSON.stringify(Filter.leagues)
-    });
-  }
-
-  display = () => Filter.check.available ? 'background' : 'none';
-
-  transform = (e) => {
-    e.title = e.users.map(({name}) => name).join(', ');
-    return e;
-  }
+  /** Render block by default */
+  display = (e) => 'block';
 }
 
 /**
@@ -264,14 +214,12 @@ class PublicSource extends EventSource {
 
   constructor() { super(PublicSource); }
 
-  display = ({community}) =>
-    Filter.check.public
-      ? community
-        ? Filter.communities.includes(community.pk)
-          ? 'block' : 'none'
-        : Filter.check.osr
-          ? 'block' : 'none'
-      : 'none';
+  display = (e) => {
+    const pk = e.community ? e.community.pk : null;
+    const inCommunityPage = pk && Context.community && Context.community.pk === pk;
+    const inCalendar = Filter.check.public && (pk && Filter.communities.includes(pk) || (!pk && Filter.check.osr));
+    return inCommunityPage || inCalendar ? 'block' : 'none';
+  }
 
   transform = (e) => {
     const {r, g, b, a} = hexToRgba(e.color || '#3788d8', 0.8);
@@ -281,7 +229,120 @@ class PublicSource extends EventSource {
 
   didMount(data) {
     const content = data.event.extendedProps.description;
-    tippy(data.el, {content});
+    if (Calendar.object.view.type === 'listWeek' || Calendar.object.view.type === 'list') {
+      const parent = data.el.querySelector('.fc-list-event-title');
+      const el = document.createElement('span');
+      el.innerHTML = `${content}`;
+      parent.appendChild(el);
+    } else if (content) {
+      tippy(data.el, {content});
+    }
+  }
+}
+
+/**
+ * Serves user's available event.
+ * Refetched each time a event is created, updated or deleted.
+ */
+class UserAvailableSource extends EventSource {
+  static id = 'available';
+  static url = 'get-available-events/';
+
+  constructor() {
+    super(UserAvailableSource);
+    this.url += Context.user.pk + '/'
+    this.editable = true;
+  }
+
+  display = () =>
+    Context.profil && Context.profil.pk === Context.user.pk
+      ? 'block'
+      : Filter.check.available
+        ? Filter.check.userAvailable
+          ? 'block' : 'background'
+        : 'none';
+
+  transform = (e) => {
+    e.className = 'user-' + e.className;
+    e.title = 'Me available';
+    return e;
+  }
+
+  didMount(data) {
+    if (data.event.display === 'block') {
+      let vType = Calendar.object.view.type;
+      let parent;
+      let el = document.createElement('i');
+      if (vType === 'listWeek' || vType === 'list') {
+        parent = data.el.querySelector('.fc-list-event-title');
+        el.className = 'icon-close-list glyphicon glyphicon-remove';
+      } else {
+        parent = data.el.querySelector('.fc-event-time');
+        el.className = 'icon-close glyphicon glyphicon-remove';
+      }
+      el.onclick = () => Calendar.object.deleteAvailableEvent(data);
+      parent.appendChild(el);
+    }
+  }
+}
+
+/**
+ * Serves available events of user's opponents.
+ * Refetched each time the Filter state change.
+ * (events merging process happens on the server)
+ */
+class OpponentsAvailableSource extends EventSource {
+  static id = 'opponents-available';
+  static url = 'get-opponents-available-events/';
+
+  constructor() {
+    super(OpponentsAvailableSource);
+    this.url += Context.user.pk + '/'
+    this.extraParams = () => ({
+      leagues: JSON.stringify(Filter.leagues)
+    });
+  }
+
+  display = () =>
+    Filter.check.available
+      ? Calendar.object.view.type == 'listWeek' || Calendar.object.view.type == 'dayGridMonth'
+        ? 'block' : 'background'
+      : 'none';
+
+  transform = (e) => {
+    e.title = e.users.map(({name}) => name).join(', ');
+    return e;
+  }
+
+  didMount(data) {
+    const parent = data.el.querySelector('.fc-list-event-title');
+    if (parent) {
+      const plural = data.event.extendedProps.users.length > 1;
+      const el = document.createElement('a');
+      el.textContent = ` ${plural ? 'are' : 'is' } available`;
+      parent.classList.add('available');
+      parent.appendChild(el);
+    }
+  }
+}
+
+/**
+ * Serves profil's available event.
+ */
+ class ProfilAvailableSource extends EventSource {
+  static id = 'profil-available';
+  static url = 'get-available-events/';
+
+  constructor() {
+    super(ProfilAvailableSource);
+    this.url += Context.profil.pk + '/';
+  }
+
+  transform = (e) => {
+    e.className = 'opponents-' + e.className;
+    e.title = e.user.name + ' available';
+    e.type = 'profil-' + e.type;
+    return e;
   }
 }
 
@@ -301,29 +362,40 @@ class GameRequestSource extends EventSource {
   static url = 'get-game-request-events/';
 
   constructor() { super(GameRequestSource); }
-  display = ({divisions}) =>
-    Filter.check.request
-      ? divisions.length
-        ? divisions.map(({league}) => league.pk).some(
-            pk => Filter.leagues.includes(pk))
+
+  display = (e) =>
+    Context.profil
+      ? this.displayProfil(e)
+      : Filter.check.request
+        ? e.divisions.length
+          ? e.divisions.map(({league}) => league.pk).some(pk => Filter.leagues.includes(pk))
             ? 'block' : 'none'
-        :'block'
-      : 'none'
+          :'block'
+        : 'none'
+
+  displayProfil = (e) =>
+    e.receivers.map(({pk}) => pk).includes(Context.profil.pk) || e.sender.pk === Context.profil.pk ? 'block' : 'none';
 
   transform = (e) => {
     e.fromUser = Context.user.name === e.sender.name;
     e.className += e.fromUser ? '-user' : '';
     e.title = `
       ${e.sender.name} vs
-      ${e.receivers.map(({name}) => name).join(', ')}`
+      ${e.receivers.map(({name}) => name).join(', ')}`;
     return e;
   }
 
   didMount(data) {
     const divisions = data.event.extendedProps.divisions;
-    const content = divisions.map(div =>
-      `${div.league.name} - ${div.name}`).join(', ');
-    if (Boolean(content)) tippy(data.el, {content});
+    const content = divisions.map(div => `${div.league.name} - ${div.name}`).join(', ');
+    if (Calendar.object.view.type === 'listWeek' || Calendar.object.view.type === 'list') {
+      const parent = data.el.querySelector('.fc-list-event-title');
+      const el = document.createElement('span');
+      el.innerHTML = `(${content})`;
+      parent.appendChild(el);
+    } else if (content) {
+      tippy(data.el, {content});
+    }
   }
 }
 
@@ -336,33 +408,38 @@ class AppointmentSource extends EventSource {
   static id = 'game-appointment';
   static url = 'get-game-appointment-events/';
 
-  constructor() {
-    super(AppointmentSource);
+  constructor() { super(AppointmentSource); }
+
+  display = (e) => {
+    const divs = e.divisions;
+    const inCommunityPage = Context.community && divs.length && divs.filter(
+      ({league}) => league.community && league.community.pk === Context.community.pk).length;
+    const inProfil = Context.profil && e.users.map(({pk}) => pk).includes(Context.profil.pk);
+    const inCalendar = Filter.check.appointment && (!divs.length || divs.map(
+      ({league}) => league.pk).some(pk => Filter.leagues.includes(pk)));
+    return inCommunityPage || inProfil || inCalendar ? 'block' : 'none';
   }
 
-  display = ({divisions}) =>
-    Filter.check.appointment
-    ? divisions.length
-      ? divisions.map(({league}) => league.pk).some(
-          pk => Filter.leagues.includes(pk))
-          ? 'block' : 'none'
-      :'block'
-    : 'none'
+  displayProfil = (e) => e.users.map(({pk}) => pk).includes(Context.profil.pk) ? 'block' : 'none';
 
   transform = (e) => {
-    if (Context.user) {
-      e.hasUser = e.users.map(({pk}) => pk).includes(Context.user.pk);
-      e.className += e.hasUser ? '-user' : '';
-    }
+    e.hasUser = Context.user && e.users.map(({pk}) => pk).includes(Context.user.pk);
+    e.className += e.hasUser ? '-user' : '';
     e.title = `${e.users[0].name} vs ${e.users[1].name}`;
     return e;
   }
 
   didMount(data) {
     const divisions = data.event.extendedProps.divisions;
-    const content = divisions.map(div =>
-      `${div.league.name} - ${div.name}`).join(', ');
-    if (Boolean(content)) tippy(data.el, {content});
+    const content = divisions.map(div => `${div.league.name} - ${div.name}`).join(', ');
+    if (Calendar.object.view.type === 'listWeek' || Calendar.object.view.type === 'list') {
+      const parent = data.el.querySelector('.fc-list-event-title');
+      const el = document.createElement('span');
+      el.innerHTML = `(${content})`;
+      parent.appendChild(el);
+    } else if (content) {
+      tippy(data.el, {content});
+    }
   }
 }
 
@@ -398,8 +475,11 @@ class AppointmentSource extends EventSource {
 
   static initialize(locale) {
     Calendar.object = new Calendar(locale);
-    Calendar.initializeTimeRangeSlider();
-    Filter.initialize();
+    Calendar.object.render();
+    if (!Context.profil && !Context.community) {
+      Calendar.initializeTimeRangeSlider();
+      Filter.initialize();
+    }
   }
 
   static initializeTimeRangeSlider() {
@@ -420,7 +500,24 @@ class AppointmentSource extends EventSource {
   }
 
   constructor(locale) {
-    super(document.getElementById('calendar'), {
+
+    /**
+     * If a profil attribute exists in Context,
+     * set the calendar to 'profil mode' and lists
+     * all profil's related events.
+     */
+    const listOpts = {
+      locale,
+      allDaySlot: false,
+      eventDisplay: 'block',
+      initialView: 'list',
+      duration: { weeks: 24 },
+      headerToolbar: false,
+      timeZone: 'UTC',
+      height: 'auto',
+    }
+
+    const opts = {
       locale,
       height: 'auto',
       expandRows: false,
@@ -435,23 +532,34 @@ class AppointmentSource extends EventSource {
       selectMirror: true,
       timeZone: 'UTC',
       selectable: true,
-    });
+    }
 
+    super(
+      document.getElementById('calendar'),
+      Context.profil || Context.community ? listOpts : opts
+    );
+
+    this.setOption('viewDidMount', Calendar.update);
     this.setOption('eventDidMount', this.handleEventDidMount);
     this.setOption('eventClick', this.handleEventClick);
-    this.addEventSource(new PublicSource());
     this.addEventSource(new AppointmentSource());
 
     if (Context.user) {
-      this.setOption('select', this.createEvent);
-      this.setOption('eventDrop', this.updateAvailableEvent);
-      this.setOption('eventResize', this.updateAvailableEvent);
-      this.addEventSource(new AvailableSource());
-      this.addEventSource(new UserAvailableSource());
       this.addEventSource(new GameRequestSource());
+      this.addEventSource(new OpponentsAvailableSource());
+      this.addEventSource(new UserAvailableSource());
     }
 
-    this.render();
+    if (Context.profil && (!Context.user || Context.user.pk !== Context.profil.pk)) {
+      this.addEventSource(new ProfilAvailableSource());
+    } else {
+      this.addEventSource(new PublicSource());
+      if (!Context.community) {
+        this.setOption('select', this.createEvent);
+        this.setOption('eventDrop', this.updateAvailableEvent);
+        this.setOption('eventResize', this.updateAvailableEvent);
+      }
+    }
   }
 
   handleEventClick = (data) => {
@@ -461,13 +569,6 @@ class AppointmentSource extends EventSource {
     }
 
     switch (data.event.extendedProps.type) {
-      /**
-      case 'user-available':
-        if (Filter.check.userAvailable) {
-          this.deleteAvailableEvent(data);
-        }
-        break;
-      */
       case 'game-appointment':
         if (data.event.extendedProps.hasUser) {
           CancelGameAppointmentForm.init(data.event.extendedProps.pk);

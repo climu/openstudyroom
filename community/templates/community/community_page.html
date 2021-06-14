@@ -3,8 +3,20 @@
 {% block title %}OSR - {{community.name}}{% endblock %}
 {% block extra_head_js %}
 {% get_current_language as LANGUAGE_CODE %}
-<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css' />
-<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/calendar.css'%}"/>
+
+<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/styles/fullcalendar.css'%}"/>
+<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/styles/rangeslider.css'%}"/>
+<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/styles/micromodal.css'%}"/>
+<link rel='stylesheet' type="text/css" href="{%static 'fullcalendar/styles/custom.css'%}"/>
+<script src='https://cdn.jsdelivr.net/npm/moment@2.27.0/min/moment.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.7.0/main.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.7.0/locales-all.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/moment@5.5.0/main.global.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
+<script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+
 <link rel='stylesheet' type="text/css" href="{%static 'css/sidemenu.css'%}"/>
 
 <link rel='stylesheet' href='https://cdn.jsdelivr.net/qtip2/3.0.3/basic/jquery.qtip.min.css'/>
@@ -16,13 +28,9 @@
 </script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/locale/{{LANGUAGE_CODE}}.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
 <script src='https://cdn.jsdelivr.net/qtip2/3.0.3/basic/jquery.qtip.min.js'></script>
-<script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.8.1/bootstrap-slider.min.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.6.1/locale-all.js'></script>
 
 <script type="text/javascript">
 function load_game(game_id) {
@@ -107,32 +115,58 @@ return false;};
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#leagues">{% trans "Leagues" %}</a></li>
   <li><a data-toggle="tab" href="#tournaments">{% trans "tournaments" %}</a></li>
+  <li><a data-toggle="tab" href="#games">{% trans "Games" %}</a></li>
   <li><a data-toggle="tab" href="#members">{% trans "Members" %}</a></li>
-  <!--<li><a id="cal-tab-button" data-toggle="tab" href="#calendar-tab">{% trans "Calendar" %}</a></li>-->
+  <li><a data-toggle="tab" href="#activity">{% trans "Activity" %}</a></li>
   {% if admin %}
   <li><a data-toggle="tab" href="#events">{% trans "Events" %}</a></li>
   {% endif %}
 </ul>
 
 <div class="tab-content">
-<div id="leagues" class="panel panel-default tab-pane fade in active">
-<div class="panel-heading clearfix">
-  <h3>
-{% blocktrans with name=community.name %}All {{name}} leagues {% endblocktrans %}
-{% if admin %}
-<a href="{% url 'community:create_league' community.pk %}">
-  <button class="btn btn-success pull-right">
-    {% bootstrap_icon 'plus' %}
-    {% trans "Create new league" %}
-  </button>
-</a>
-{% endif %}
-</h3>
-{% trans "Open leagues are green." %}
-</div>
-{% include "community/includes/leagues_table.html" with leagues=leagues%}
-</div>
 
+  <div id="leagues" class="panel panel-default tab-pane fade in active">
+    <div class="panel-heading clearfix">
+      <h3>
+        {% blocktrans with name=community.name %}All {{name}} leagues {% endblocktrans %}
+        {% if admin %}
+        <a href="{% url 'community:create_league' community.pk %}">
+          <button class="btn btn-success pull-right">
+            {% bootstrap_icon 'plus' %}
+            {% trans "Create new league" %}
+          </button>
+        </a>
+        {% endif %}
+      </h3>
+      {% trans "Open leagues are green." %}
+    </div>
+    {% include "community/includes/leagues_table.html" with leagues=leagues%}
+  </div>
+
+  <div id="games" class="panel panel-default tab-pane fade in">
+    <div class="panel-heading">
+      <h3>{{community.name}} {% trans "Games" %}</h3>
+    </div>
+    <div class ="row">
+      <div class="col-md-4">
+        <div id ="game_infos"></div>
+        {% include "league/includes/games.html" with sgfs=sgfs %}
+      </div>
+      <div class="col-md-8">
+        <div id="player">
+          <div class="alert alert-info">
+            {% trans "Click a game result to see it." %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="activity" class="panel panel-default tab-pane fade in">
+    <div id='calendar' class="panel-body"></div>
+    <!-- Modal forms -->
+    {% include 'fullcalendar/includes/modal.html' %}
+  </div>
 
 <div id="tournaments" class="panel panel-default tab-pane fade">
 <div class="panel-heading clearfix">
@@ -178,32 +212,6 @@ return false;};
 {% include "community/includes/members_table.html" with members=members%}
 </div>
 
-
-<div id="calendar-tab" class="panel panel-default tab-pane fade">
-  <div class="panel-heading clearfix">
-    <h3>{{community.name}} {% trans 'calendar' %} ({{TIME_ZONE}})</h3>
-  </div>
-{% if can_quit %}
-    <div class="row">
-      <div class="col-md-2">
-        {% include 'fullcalendar/includes/game-planer-nav.html' %}
-      </div>
-      <div class="col-md-1">
-      </div>
-      <div class="col-md-9">
-      <div id="info-well" class="text-center alert well">
-      Browse all your OSR events.
-      </div>
-        <div id='calendar'></div>
-      </div>
-      {% include 'fullcalendar/includes/cal-modal.html' %}
-
-    </div>
-{% else %}
-  <div id='calendar'></div>
-{% endif %}
-</div>
-
 {% if admin %}
   <div id="events" class="panel panel-default tab-pane fade">
     <legend>
@@ -228,31 +236,6 @@ return false;};
 
   </div>
 {% endif %}
-
-
-
-
-<div class="panel panel-default">
-<div class="panel-heading"><h3>{{community.name}} {% trans "Games" %}</h3></div>
-<div class ="row">
-<div class="col-md-4">
-  <div id ="game_infos">
-</div>
-
-{% include "league/includes/games.html" with sgfs=sgfs %}
-</div>
-
-<div class="col-md-8">
-
-    <div id="player">
-      <div class="alert alert-info">
-      {% trans "Click a game result to see it." %}
-    </div>
-  </div>
-</div>
-</div>
-</div>
-</div>
 
 {% endblock %}
 
@@ -340,22 +323,14 @@ $(document).ready(function() {
     } );
     {% endif %}
 
-    {% if can_quit %}
-        load_calendar_member('{{TIME_ZONE}}', '{{LANGUAGE_CODE}}', {{start_time_range}}, {{end_time_range}}, {{community.pk}});
-    {% else %}
-        load_calendar('{{LANGUAGE_CODE}}', {{community.pk}});
-    {% endif %}
-
-
-  $('#cal-tab-button').click(function(){
-    // we need a timeout for bootstrap tab transition
-    setTimeout(() => {
-      $('#calendar').fullCalendar( 'render');
-    }
-     , 200);
-})
-
 });
 </script>
-
+{{ calendar_data|json_script:"context-data" }}
+<script>{% include 'league/includes/ajax_setup.html' %}</script>
+<script src={% static 'fullcalendar/calendar.js' %}></script>
+<script>
+	$(document).ready(function() {
+    Calendar.initialize('{{LANGUAGE_CODE}}');
+  });
+</script>
 {% endblock %}

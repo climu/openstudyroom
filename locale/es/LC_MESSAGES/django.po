@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openstudyroom\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-21 19:59+0100\n"
+"POT-Creation-Date: 2021-06-14 01:36+0200\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -10,263 +10,306 @@ msgstr ""
 "X-Generator: POEditor.com\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: fullcalendar/models/apps.py:474
-msgid "Game Appointment Created Title"
-msgstr "Nueva pieza programada"
-
-#: community/templates/community/admin/user_list.html:5
+#: .\community\templates\community\admin\user_list.html:5
 msgid "members"
 msgstr "miembros"
 
-#: community/templates/community/admin/user_list.html:11
-#: community/templates/community/community_page.html:134
+#: .\community\templates\community\admin\user_list.html:11
+#: .\community\templates\community\community_page.html:196
 msgid "Invite a user"
 msgstr "Invitar a un usuario"
 
-#: community/templates/community/admin/user_list.html:20
-#: community/templates/community/community_page.html:140
+#: .\community\templates\community\admin\user_list.html:20
+#: .\community\templates\community\community_page.html:202
 msgid "Invite  !"
 msgstr "¡Invitar!"
 
-#: community/templates/community/admin/user_list.html:29
+#: .\community\templates\community\admin\user_list.html:29
 #, python-format
 msgid "All %(community.name)s members "
 msgstr "Todos los miembros de %(community.name)s"
 
-#: community/templates/community/admin/user_list.html:33
-#: community/templates/community/admin/user_list.html:34
-#: community/templates/community/includes/members_table.html:5
-#: community/templates/community/includes/members_table.html:6
-#: community/templates/community/includes/new_user_table.html:9
-#: community/templates/community/includes/new_user_table.html:10
-#: community/templates/community/includes/new_user_table.html:11
+#: .\community\templates\community\admin\user_list.html:33
+#: .\community\templates\community\admin\user_list.html:34
+#: .\community\templates\community\includes\members_table.html:38
+#: .\community\templates\community\includes\members_table.html:39
+#: .\community\templates\community\includes\members_table.html:40
+#: .\community\templates\community\includes\new_user_table.html:9
+#: .\community\templates\community\includes\new_user_table.html:10
+#: .\community\templates\community\includes\new_user_table.html:11
 msgid "username"
 msgstr "usuario"
 
-#: community/templates/community/admin/user_list.html:35
-#: community/templates/community/includes/members_table.html:9
+#: .\community\templates\community\admin\user_list.html:35
+#: .\community\templates\community\includes\members_table.html:46
 msgid "kick out"
 msgstr "echar"
 
-#: community/templates/community/admin/user_list.html:48
-#: community/templates/community/includes/members_table.html:29
+#: .\community\templates\community\admin\user_list.html:36
+#: .\community\templates\community\includes\members_table.html:45
+#, fuzzy
+#| msgid "Leagues"
+msgid "leagues"
+msgstr "Ligas"
+
+#: .\community\templates\community\admin\user_list.html:49
+#: .\community\templates\community\includes\members_table.html:86
 msgid "Kick  !"
 msgstr "¡Patear!"
 
-#: community/templates/community/community_page.html:38
-#: openstudyroom/templates/forum_conversation/topic_detail.html:33
+#: .\community\templates\community\community_page.html:71
+#: .\openstudyroom\templates\forum_conversation\topic_detail.html:33
 msgid "Edit"
 msgstr "Editar"
 
-#: community/templates/community/community_page.html:47
+#: .\community\templates\community\community_page.html:80
 #, python-format
 msgid "You are about to join the %(name)s community. Allright? "
 msgstr "Está a punto de inscribirse en la comunidad %(name)s.  ¿Está bien?"
 
-#: community/templates/community/community_page.html:49
-#: league/templates/league/includes/league_nav.html:28
+#: .\community\templates\community\community_page.html:82
+#: .\league\templates\league\includes\league_nav.html:28
 msgid "Join"
 msgstr "Unirse a"
 
-#: community/templates/community/community_page.html:61
-#: league/templates/league/includes/league_nav.html:39
+#: .\community\templates\community\community_page.html:94
+#: .\league\templates\league\includes\league_nav.html:39
 msgid "Quit"
 msgstr "Salir"
 
-#: community/templates/community/community_page.html:84
-#: league/templates/league/archives_games.html:51
+#: .\community\templates\community\community_page.html:116
+#: .\league\templates\league\archives_games.html:52
 msgid "Leagues"
 msgstr "Ligas"
 
-#: community/templates/community/community_page.html:85
+#: .\community\templates\community\community_page.html:117
 msgid "tournaments"
 msgstr "Torneos"
 
-#: community/templates/community/community_page.html:86
+#: .\community\templates\community\community_page.html:118
+#: .\community\templates\community\community_page.html:148
+#: .\league\templates\league\archives_games.html:54
+#: .\league\templates\league\includes\league_nav.html:11
+msgid "Games"
+msgstr "Partidas"
+
+#: .\community\templates\community\community_page.html:119
 msgid "Members"
 msgstr "Participantes"
 
-#: community/templates/community/community_page.html:93
+#: .\community\templates\community\community_page.html:120
+#: .\league\templates\league\includes\user_nav.html:5
+msgid "Activity"
+msgstr "Actividad"
+
+#: .\community\templates\community\community_page.html:122
+msgid "Events"
+msgstr ""
+
+#: .\community\templates\community\community_page.html:131
 #, python-format
 msgid "All %(name)s leagues "
 msgstr "Todas las ligas de %(name)s"
 
-#: community/templates/community/community_page.html:98
+#: .\community\templates\community\community_page.html:136
 msgid "Create new league"
 msgstr "Crear nueva liga"
 
-#: community/templates/community/community_page.html:103
+#: .\community\templates\community\community_page.html:141
 msgid "Open leagues are green."
 msgstr "Ligas abiertas están pintadas en verde"
 
-#: community/templates/community/community_page.html:112
+#: .\community\templates\community\community_page.html:158
+msgid "Click a game result to see it."
+msgstr "Hacer clic a un resultado para revisarlo."
+
+#: .\community\templates\community\community_page.html:174
 #, python-format
 msgid "All %(name)s tournaments "
 msgstr "Todos los torneos de %(name)s"
 
-#: community/templates/community/community_page.html:117
+#: .\community\templates\community\community_page.html:179
 msgid "Create new tournament"
 msgstr "Crear torneo nuevo"
 
-#: community/templates/community/community_page.html:122
+#: .\community\templates\community\community_page.html:184
 msgid "Open tournament are green."
 msgstr "Torneos abiertos etán pintados en verde."
 
-#: community/templates/community/community_page.html:131
+#: .\community\templates\community\community_page.html:193
 #, python-format
 msgid "All %(name)s members "
 msgstr "Todas las participantes de %(name)s"
 
-#: community/templates/community/community_page.html:138
+#: .\community\templates\community\community_page.html:200
 msgid "OSR exact username"
 msgstr "Nombre de usuario exacto de OSR"
 
-#: community/templates/community/community_page.html:147
+#: .\community\templates\community\community_page.html:209
 msgid "Community admins are blue."
 msgstr "Administrador@s de la comunidad en letra azul."
 
-#: community/templates/community/community_page.html:157
-#: league/templates/league/archives_games.html:53
-#: league/templates/league/includes/league_nav.html:11
-msgid "Games"
-msgstr "Partidas"
-
-#: community/templates/community/community_page.html:170
-#: league/templates/league/archives_games.html:78
-msgid "Click a game result to see it."
-msgstr "Hacer clic a un resultado para revisarlo."
-
-#: community/templates/community/includes/leagues_table.html:7
-#: community/templates/community/includes/tournaments_table.html:6
+#: .\community\templates\community\includes\leagues_table.html:7
+#: .\community\templates\community\includes\tournaments_table.html:6
 msgid "name"
 msgstr "nombre"
 
-#: community/templates/community/includes/leagues_table.html:8
+#: .\community\templates\community\includes\leagues_table.html:8
 msgid "begin"
 msgstr "comenzar"
 
-#: community/templates/community/includes/leagues_table.html:9
+#: .\community\templates\community\includes\leagues_table.html:9
 msgid "ends"
 msgstr "termina"
 
-#: community/templates/community/includes/leagues_table.html:10
-msgid "type"
-msgstr "tipo"
-
-#: community/templates/community/includes/leagues_table.html:11
+#: .\community\templates\community\includes\leagues_table.html:10
 msgid "divisions"
 msgstr "divisiones"
 
-#: community/templates/community/includes/leagues_table.html:12
+#: .\community\templates\community\includes\leagues_table.html:11
 msgid "players"
 msgstr "jugadores"
 
-#: community/templates/community/includes/leagues_table.html:13
-#: league/templates/league/players.html:90
+#: .\community\templates\community\includes\leagues_table.html:12
+#: .\league\templates\league\players.html:90
 msgid "games"
 msgstr "juegos"
 
-#: community/templates/community/includes/leagues_table.html:15
+#: .\community\templates\community\includes\leagues_table.html:14
 msgid "edit"
 msgstr "editar"
 
-#: community/templates/community/includes/members_table.html:28
-#: community/templates/community/includes/new_user_table.html:29
+#: .\community\templates\community\includes\leagues_table.html:15
+msgid "copy"
+msgstr ""
+
+#: .\community\templates\community\includes\members_table.html:85
+#: .\community\templates\community\includes\new_user_table.html:36
 #, python-format
 msgid "You are about to kick %(username)s. Allright?"
 msgstr "Estás por patear a %(username)s. ¿De acuerdo?"
 
-#: community/templates/community/includes/members_table.html:45
+#: .\community\templates\community\includes\members_table.html:102
 #, python-format
 msgid "You are about to add %(username)s as a community admin?"
 msgstr "¿Vas a agregar a %(username)s como un administrador de la comunidad?"
 
-#: community/templates/community/includes/members_table.html:61
+#: .\community\templates\community\includes\members_table.html:118
 #, python-format
 msgid "You are about to remove %(username)s from community admins?"
 msgstr "¿Vas a remover a %(username)s de los administradores de la comunidad?"
 
-#: community/templates/community/includes/new_user_table.html:4
+#: .\community\templates\community\includes\new_user_table.html:4
 msgid "New users"
 msgstr ""
 
-#: community/templates/community/includes/new_user_table.html:12
+#: .\community\templates\community\includes\new_user_table.html:12
 msgid "reject"
 msgstr "rechazar"
 
-#: community/templates/community/includes/new_user_table.html:13
+#: .\community\templates\community\includes\new_user_table.html:13
 msgid "accept"
 msgstr "aceptar"
 
-#: community/templates/community/includes/new_user_table.html:43
+#: .\community\templates\community\includes\new_user_table.html:50
 #, python-format
 msgid "You are about to add %(username)s as a community member?"
 msgstr "¿Vas a agregar a %(username)s como un miembro de la comunidad?"
 
-#: community/templates/community/includes/tournaments_table.html:7
+#: .\community\templates\community\includes\tournaments_table.html:7
 #, fuzzy
 #| msgid "begin"
 msgid "begin time"
 msgstr "comenzar"
 
-#: community/templates/community/includes/tournaments_table.html:8
+#: .\community\templates\community\includes\tournaments_table.html:8
 msgid "end time"
 msgstr ""
 
-#: community/templates/community/includes/tournaments_table.html:10
+#: .\community\templates\community\includes\tournaments_table.html:10
 msgid "manage"
 msgstr ""
 
-#: community/templates/community/includes/tournaments_table.html:11
+#: .\community\templates\community\includes\tournaments_table.html:11
 #, fuzzy
 #| msgid "Undelete"
 msgid "delete"
 msgstr "Recuperar"
 
-#: discord_bind/apps.py:33
+#: .\community\templates\community\includes\tournaments_table.html:34
+#: .\openstudyroom\templates\forum_conversation\topic_detail.html:37
+#: .\openstudyroom\templates\postman\base_folder.html:27
+#: .\openstudyroom\templates\postman\view.html:13
+#: .\openstudyroom\templates\postman\view.html:41
+msgid "Delete"
+msgstr "Eliminar"
+
+#: .\discord_bind\apps.py:33
 msgid "Discord Binding"
 msgstr "Enlazar Discord"
 
-#: home/templates/home/home_page.html:92
-#: openstudyroom/templates/puput/blog_page.html:53
+#: .\fullcalendar\models.py:477
+msgid "Game Appointment Created Title"
+msgstr "Nueva pieza programada"
+
+#: .\home\templates\home\home_page.html:138
+#: .\openstudyroom\templates\puput\blog_page.html:53
 msgid "Continue reading"
 msgstr "Continuar leyendo"
 
-#: league/templates/league/archives_games.html:34
-#: league/templates/league/event.html:7 league/templates/league/players.html:9
-#: league/templates/league/results.html:8
-#: league/templates/league/scrap_list.html:11
-#: openstudyroom/templates/postman/archives.html:15
-#: openstudyroom/templates/postman/base.html:21
-#: openstudyroom/templates/postman/base_write.html:30
-#: openstudyroom/templates/postman/inbox.html:14
-#: openstudyroom/templates/postman/sent.html:16
-#: openstudyroom/templates/postman/trash.html:18
+#: .\home\templates\home\includes\poll.html:21
+msgid "You may select <b>1</b> option"
+msgstr ""
+
+#: .\home\templates\home\includes\poll.html:25
+#, python-format
+msgid "You may select up to <b>%(max_options)s</b> options"
+msgstr ""
+
+#: .\home\templates\home\includes\poll.html:44
+msgid "Vote"
+msgstr ""
+
+#: .\home\templates\home\includes\poll.html:48
+msgid "Change your vote"
+msgstr ""
+
+#: .\league\templates\league\archives_games.html:35
+#: .\league\templates\league\event.html:8
+#: .\league\templates\league\players.html:9
+#: .\league\templates\league\results.html:8
+#: .\league\templates\league\scrap_list.html:11
+#: .\openstudyroom\templates\postman\archives.html:15
+#: .\openstudyroom\templates\postman\base.html:21
+#: .\openstudyroom\templates\postman\base_write.html:30
+#: .\openstudyroom\templates\postman\inbox.html:14
+#: .\openstudyroom\templates\postman\sent.html:16
+#: .\openstudyroom\templates\postman\trash.html:18
 msgid "Archives"
 msgstr "Archivos"
 
-#: league/templates/league/archives_games.html:47
-#: league/templates/league/event.html:18
-#: league/templates/league/players.html:29
-#: league/templates/league/results.html:28
-#: league/templates/league/scrap_list.html:3
-#: league/templates/league/scrap_list.html:6
-#: league/templates/league/scrap_list.html:17
+#: .\league\templates\league\archives_games.html:48
+#: .\league\templates\league\event.html:19
+#: .\league\templates\league\players.html:29
+#: .\league\templates\league\results.html:28
+#: .\league\templates\league\scrap_list.html:3
+#: .\league\templates\league\scrap_list.html:6
+#: .\league\templates\league\scrap_list.html:17
 msgid "Scrape list"
 msgstr "Lista de rastreo"
 
-#: league/templates/league/archives_games.html:52
-#: league/templates/league/includes/league_nav.html:8
-#: league/templates/league/players.html:4
+#: .\league\templates\league\archives_games.html:53
+#: .\league\templates\league\includes\league_nav.html:8
+#: .\league\templates\league\players.html:4
 msgid "Players"
 msgstr "Jugadores"
 
-#: league/templates/league/event.html:23
-#: league/templates/league/includes/league_nav.html:14
+#: .\league\templates\league\event.html:24
+#: .\league\templates\league\includes\league_nav.html:14
 msgid "Infos"
 msgstr "Informaciones"
 
-#: league/templates/league/event.html:25
+#: .\league\templates\league\event.html:26
 msgid ""
 "This league is a <b>primary league</b>. It means it will be automatically "
 "joined when joining another league."
@@ -274,27 +317,27 @@ msgstr ""
 "Esta liga es una <b>liga primaria</b>. Esto significa que se unirá "
 "automáticamente cuando se una a otra liga."
 
-#: league/templates/league/event.html:27
+#: .\league\templates\league\event.html:28
 #, python-format
 msgid ""
 "The <b>%(name)s</b> started on <b>%(begin_time)s</b> (%(TIME_ZONE)s) and "
 msgstr "El <b>%(name)s</b> comenzó el <b>%(begin_time)s</b> (%(TIME_ZONE)s) y "
 
 #. Translators: Following words is for the sentence "the league will start/stop on date"
-#: league/templates/league/event.html:29
+#: .\league\templates\league\event.html:30
 msgid "stoped"
 msgstr "detenido"
 
-#: league/templates/league/event.html:29
+#: .\league\templates\league\event.html:30
 msgid "will stop"
 msgstr "se detendrá"
 
-#: league/templates/league/event.html:29
-#: openstudyroom/templates/forum_conversation/topic_detail.html:76
+#: .\league\templates\league\event.html:30
+#: .\openstudyroom\templates\forum_conversation\topic_detail.html:76
 msgid "on"
 msgstr "el"
 
-#: league/templates/league/event.html:30
+#: .\league\templates\league\event.html:31
 #, python-format
 msgid ""
 "%(number_players)s players played %(number_games)s games in "
@@ -305,23 +348,39 @@ msgstr ""
 "%(number_divisions)s divisiones. Eso es %(percent_game_played)s %% de "
 "%(possible_games)s partidas posibles."
 
-#: league/templates/league/event.html:32
+#: .\league\templates\league\event.html:37
 msgid "Game settings"
 msgstr "Configuración de la partida"
 
-#: league/templates/league/event.html:34
-msgid "Game must be played either on the KGS or on the OGS go server"
+#: .\league\templates\league\event.html:40
+#, fuzzy, python-format
+#| msgid "Games must be played with <b>no handicap</b>"
+msgid "Game must be played with the <b>%(rules)s rules</b>"
+msgstr "Las partidas deben ser jugadas <b>sin hándicap</b>"
+
+#: .\league\templates\league\event.html:42
+#, fuzzy
+#| msgid "Game must be played either on the KGS or on the OGS go server"
+msgid "Game must be played on one of the following Go server:"
 msgstr "La partida debe ser jugada en el servidor OGS o KGS"
 
-#: league/templates/league/event.html:35
+#: .\league\templates\league\event.html:43
 msgid "Game must be <b>public</b>."
 msgstr "La partida debe ser <b>pública</b>."
 
-#: league/templates/league/event.html:36
+#: .\league\templates\league\event.html:45
 msgid "Games must be played with <b>no handicap</b>"
 msgstr "Las partidas deben ser jugadas <b>sin hándicap</b>"
 
-#: league/templates/league/event.html:37
+#: .\league\templates\league\event.html:47
+#, python-format
+msgid ""
+"\n"
+"      Handicap must be between %(min_handi)s and %(max_handi)s inclusive.\n"
+"     "
+msgstr ""
+
+#: .\league\templates\league\event.html:51
 #, python-format
 msgid ""
 "Games must use <b>Japanese timesetting</b> with at least <b>"
@@ -332,7 +391,7 @@ msgstr ""
 "%(get_main_time_min)s min de tiempo principal</b> y <b>3 x "
 "%(additional_time)s seg byo-yomi</b>."
 
-#: league/templates/league/event.html:38
+#: .\league\templates\league\event.html:52
 #, python-format
 msgid ""
 "At least one player must tag the game saying <b>%(tag_upper)s</b> or <b>"
@@ -341,21 +400,21 @@ msgstr ""
 "Por lo menos un jugador debe etiqutar la partida comentando <b>"
 "%(tag_upper)s</b> o <b>%(tag_lower)s</b> en el chat."
 
-#: league/templates/league/event.html:39
+#: .\league\templates\league\event.html:53
 msgid "The game can be ranked or free to the convenience of the players."
 msgstr "La partida puede ser evaluada o libre.  "
 
-#: league/templates/league/event.html:40
+#: .\league\templates\league\event.html:54
 #, python-format
 msgid "Komi must be set to <b>%(komi)s</b>."
 msgstr "El Komi debe ser de <b>%(komi)s</b>."
 
-#: league/templates/league/event.html:41
+#: .\league\templates\league\event.html:55
 msgid "If played on OGS, <b>game analysis should be disabled</b>."
 msgstr ""
 "Si se juega en OGS, <b>el análisis de la partida debería ser desactivado</b>."
 
-#: league/templates/league/event.html:42
+#: .\league\templates\league\event.html:56
 msgid ""
 "Using a bot such as Leela or Crazy Stone during league game is strictly "
 "forbidden. The OSR team might check some games from time to time to look for "
@@ -365,11 +424,11 @@ msgstr ""
 "estrictamente prohibido. El equipo OSR podría revisar algunas partidas de "
 "vez en cuando para analizar correlaciones con éstos."
 
-#: league/templates/league/event.html:44
+#: .\league\templates\league\event.html:58
 msgid "League rules"
 msgstr "Reglas de la liga"
 
-#: league/templates/league/event.html:46
+#: .\league\templates\league\event.html:60
 #, python-format
 msgid ""
 "Players can play up to <b>%(nb_matchs)s games</b> against the same opponent "
@@ -377,11 +436,11 @@ msgstr ""
 "Jugadores pueden jugar hasta <b>%(nb_matchs)s partidas</b> contra el mismo "
 "oponente "
 
-#: league/templates/league/event.html:46
+#: .\league\templates\league\event.html:60
 msgid "within the group"
 msgstr "dentro del grupo"
 
-#: league/templates/league/event.html:47
+#: .\league\templates\league\event.html:61
 #, python-format
 msgid ""
 "A win grants <b>%(ppwin)s points</b> and a loss grants <b>%(pploss)s</b>."
@@ -389,7 +448,7 @@ msgstr ""
 "Una victoria otorga <b>%(ppwin)s puntos</b> y una derrota otorga <b>"
 "%(pploss)s</b>."
 
-#: league/templates/league/event.html:48
+#: .\league\templates\league\event.html:62
 #, python-format
 msgid ""
 "Players who played at least <b>%(min_matchs)s games</b> will be added to the "
@@ -398,7 +457,7 @@ msgstr ""
 "Jugadores que hayan jugado al menos <b>%(min_matchs)s partidas</b> serán "
 "agregados a la siguiente liga, una vez que ésta haya finalizado."
 
-#: league/templates/league/event.html:50
+#: .\league\templates\league\event.html:64
 msgid ""
 "Players are strongly encouraged to review their game afterward. If both "
 "players have the same rank, or if your opponent can't help you in reviewing "
@@ -411,132 +470,144 @@ msgstr ""
 "jugadores más fuertes en nuestra sala de KGS y/o en nuestro canal de discord "
 "si lo pueden ayudar a revisar."
 
-#: league/templates/league/event.html:60
+#: .\league\templates\league\event.html:74
 msgid "League ends in"
 msgstr "La liga finaliza en"
 
-#: league/templates/league/includes/games.html:9
+#: .\league\templates\league\includes\game_table_view.html:16
+#: .\league\templates\league\includes\games.html:9
 #, fuzzy
 #| msgid "Updated"
 msgid "date"
 msgstr "Actualizado"
 
-#: league/templates/league/includes/games.html:10
+#: .\league\templates\league\includes\game_table_view.html:17
+#: .\league\templates\league\includes\games.html:10
 msgid "white"
 msgstr ""
 
-#: league/templates/league/includes/games.html:11
+#: .\league\templates\league\includes\game_table_view.html:18
+#: .\league\templates\league\includes\games.html:11
 msgid "black"
 msgstr ""
 
-#: league/templates/league/includes/games.html:12
+#: .\league\templates\league\includes\game_table_view.html:19
+#: .\league\templates\league\includes\games.html:12
 #, fuzzy
 #| msgid "results"
 msgid "result"
 msgstr "resultados"
 
-#: league/templates/league/includes/league_nav.html:5
+#: .\league\templates\league\includes\league_nav.html:5
 msgid "Results"
 msgstr "Resultados"
 
-#: league/templates/league/includes/league_nav.html:27
+#: .\league\templates\league\includes\league_nav.html:27
 #, python-format
 msgid " You are about to join the %(event)s. Allright? "
 msgstr " Usted está a punto de unirse a %(event)s. ¿De acuerdo? "
 
-#: league/templates/league/includes/league_nav.html:38
+#: .\league\templates\league\includes\league_nav.html:38
 #, python-format
 msgid "You are about to quit the %(event)s. Allright?"
 msgstr "Está a punto de salir de %(event)s.  ¿Está bien?"
 
-#: league/templates/league/players.html:35
+#: .\league\templates\league\players.html:35
 msgid "This table show all users who"
 msgstr ""
 
-#: league/templates/league/players.html:35
+#: .\league\templates\league\players.html:35
 #, fuzzy
 #| msgid "player"
 msgid "played"
 msgstr "jugador"
 
-#: league/templates/league/players.html:35
+#: .\league\templates\league\players.html:35
 #, fuzzy
 #| msgid "player"
 msgid "play"
 msgstr "jugador"
 
-#: league/templates/league/players.html:35
+#: .\league\templates\league\players.html:35
 msgid "in the"
 msgstr ""
 
-#: league/templates/league/players.html:42
+#: .\league\templates\league\players.html:42
 msgid "Filter by server (check to only see users who plays on this server)"
 msgstr ""
 
-#: league/templates/league/players.html:64
+#: .\league\templates\league\players.html:64
 msgid "Filter by division (check to see users of this division)"
 msgstr ""
 
-#: league/templates/league/players.html:84
+#: .\league\templates\league\players.html:84
 #, fuzzy
 #| msgid "divisions"
 msgid "division"
 msgstr "divisiones"
 
-#: league/templates/league/players.html:85
+#: .\league\templates\league\players.html:85
 msgid "rank"
 msgstr ""
 
-#: league/templates/league/players.html:86
-#: league/templates/league/scrap_list.html:35
+#: .\league\templates\league\players.html:86
+#: .\league\templates\league\scrap_list.html:35
 msgid "player"
 msgstr "jugador"
 
-#: league/templates/league/players.html:87
+#: .\league\templates\league\players.html:87
 msgid "score"
 msgstr ""
 
-#: league/templates/league/players.html:88
+#: .\league\templates\league\players.html:88
 msgid "win"
 msgstr ""
 
-#: league/templates/league/players.html:89
+#: .\league\templates\league\players.html:89
 msgid "loss"
 msgstr ""
 
-#: league/templates/league/profile.html:4
-#: openstudyroom/templates/forum_member/forum_profile_update.html:4
-#: openstudyroom/templates/forum_member/forum_profile_update.html:19
+#: .\league\templates\league\profile.html:4
+#: .\openstudyroom\templates\forum_member\forum_profile_update.html:4
+#: .\openstudyroom\templates\forum_member\forum_profile_update.html:19
 msgid "Edit forum profile"
 msgstr "Editar el perfil de foro"
 
-#: league/templates/league/profile.html:32
-#: openstudyroom/templates/forum_member/forum_profile_update.html:27
+#: .\league\templates\league\profile.html:32
+#: .\openstudyroom\templates\forum_member\forum_profile_update.html:27
 msgid "(optional)"
 msgstr "(opcional)"
 
-#: league/templates/league/profile.html:48
-#: openstudyroom/templates/forum_member/forum_profile_update.html:43
+#: .\league\templates\league\profile.html:48
+#: .\openstudyroom\templates\forum_member\forum_profile_update.html:43
 msgid "Submit"
 msgstr "Enviar"
 
-#: league/templates/league/results.html:3
+#: .\league\templates\league\results.html:3
+#: .\league\templates\league\results_iframe.html:20
 msgid "results"
 msgstr "resultados"
 
-#: league/templates/league/results.html:47
-#: league/templates/league/results.html:54
+#: .\league\templates\league\results.html:47
+#: .\league\templates\league\results.html:54
+#: .\league\templates\league\results_iframe.html:139
+#: .\league\templates\league\results_iframe.html:149
 msgid "This league is empty !"
 msgstr "¡La liga está vacía!"
 
-#: league/templates/league/scrap_list.html:3
-#: league/templates/league/scrap_list.html:6
+#: .\league\templates\league\scrap_list.html:3
+#: .\league\templates\league\scrap_list.html:6
 msgid "OSR leagues"
 msgstr "ligas OSR"
 
-#: league/templates/league/scrap_list.html:19
+#: .\league\templates\league\scrap_list.html:19
+#, fuzzy
+#| msgid ""
+#| "Every 5 minutes, our system checks whether a player (one player at a "
+#| "time) has played any new games. This table shows the players that are "
+#| "next in line to be checked by the system."
 msgid ""
-"Every 5 minutes, our system checks whether a player (one player at a time) "
+"Every 2 minutes, our system checks whether a player (one player at a time) "
 "has played any new games. This table shows the players that are next in line "
 "to be checked by the system."
 msgstr ""
@@ -544,7 +615,7 @@ msgstr ""
 "jugado nuevas partidas. Esta tabla muestra a los jugadores que son los "
 "siguientes que el sistema revisará."
 
-#: league/templates/league/scrap_list.html:23
+#: .\league\templates\league\scrap_list.html:23
 msgid ""
 "If you just played a game, you can move you up this list by clicking this "
 "button :"
@@ -552,57 +623,57 @@ msgstr ""
 "Si usted jugó una partida, puede moverse arriba en la lista pulsando este "
 "botón:"
 
-#: league/templates/league/scrap_list.html:27
+#: .\league\templates\league\scrap_list.html:27
 msgid "Put me up !"
 msgstr "¡Ponme arriba!"
 
-#: league/templates/league/scrap_list.html:36
+#: .\league\templates\league\scrap_list.html:36
 msgid "check in (min)"
 msgstr "revisar en (min)"
 
-#: league/templates/league/scrap_list.html:38
+#: .\league\templates\league\scrap_list.html:38
 msgid "put up"
 msgstr "poner arriba"
 
-#: openstudyroom/templates/account/email.html:16
+#: .\openstudyroom\templates\account\email.html:16
 msgid "E-mail Addresses"
 msgstr "Direcciones de correo electrónico"
 
-#: openstudyroom/templates/account/email.html:20
+#: .\openstudyroom\templates\account\email.html:20
 msgid "The following e-mail addresses are associated with your account:"
 msgstr ""
 "Las siguientes direcciones de correo electrónico están asociadas con tu "
 "cuenta:"
 
-#: openstudyroom/templates/account/email.html:34
+#: .\openstudyroom\templates\account\email.html:34
 msgid "Verified"
 msgstr "Verificado"
 
-#: openstudyroom/templates/account/email.html:36
+#: .\openstudyroom\templates\account\email.html:36
 msgid "Unverified"
 msgstr "Sin verificar"
 
-#: openstudyroom/templates/account/email.html:38
+#: .\openstudyroom\templates\account\email.html:38
 msgid "Primary"
 msgstr "Principal"
 
-#: openstudyroom/templates/account/email.html:44
+#: .\openstudyroom\templates\account\email.html:44
 msgid "Make Primary"
 msgstr "Convertirlo en primario"
 
-#: openstudyroom/templates/account/email.html:45
+#: .\openstudyroom\templates\account\email.html:45
 msgid "Re-send Verification"
 msgstr "Reenviar la verificación"
 
-#: openstudyroom/templates/account/email.html:46
+#: .\openstudyroom\templates\account\email.html:46
 msgid "Remove"
 msgstr "Remover"
 
-#: openstudyroom/templates/account/email.html:53
+#: .\openstudyroom\templates\account\email.html:53
 msgid "Warning:"
 msgstr "Atención:"
 
-#: openstudyroom/templates/account/email.html:53
+#: .\openstudyroom\templates\account\email.html:53
 msgid ""
 "You currently do not have any e-mail address set up. You should really add "
 "an e-mail address so you can receive notifications, reset your password, etc."
@@ -611,19 +682,19 @@ msgstr ""
 "Deberías agregar una para poder recibir notificaciones, resetear la "
 "contraseña, etc."
 
-#: openstudyroom/templates/account/email.html:61
+#: .\openstudyroom\templates\account\email.html:61
 msgid "Add E-mail Address"
 msgstr "Añadir dirección de correo electrónico"
 
-#: openstudyroom/templates/account/email.html:68
+#: .\openstudyroom\templates\account\email.html:68
 msgid "Add E-mail"
 msgstr "Añadir correo electrónico"
 
-#: openstudyroom/templates/account/email.html:79
+#: .\openstudyroom\templates\account\email.html:79
 msgid "Do you really want to remove the selected e-mail address?"
 msgstr "¿En verdad quieres remover el correo electrónico seleccionado?"
 
-#: openstudyroom/templates/account/email/email_confirmation_message.txt:1
+#: .\openstudyroom\templates\account\email\email_confirmation_message.txt:1
 #, fuzzy, python-format
 #| msgid ""
 #| "A user on %(site_name)s has created an account using this email address.\n"
@@ -645,12 +716,12 @@ msgstr ""
 "\n"
 "Si no te registraste en esta página, puedes ignorar este mensaje.\n"
 
-#: openstudyroom/templates/account/email/email_confirmation_subject.txt:1
+#: .\openstudyroom\templates\account\email\email_confirmation_subject.txt:1
 #, python-format
 msgid "Confirm email address for %(site_name)s"
 msgstr "Confirmar la dirección de correo electrónico para %(site_name)s"
 
-#: openstudyroom/templates/account/email/invite_user.txt:1
+#: .\openstudyroom\templates\account\email\invite_user.txt:1
 #, python-format
 msgid ""
 "You have been invited to sign up at %(name)s.\n"
@@ -661,12 +732,12 @@ msgstr ""
 "\n"
 "%(signup_url)s\n"
 
-#: openstudyroom/templates/account/email/invite_user_subject.txt:1
+#: .\openstudyroom\templates\account\email\invite_user_subject.txt:1
 #, python-format
 msgid "Create an account on %(name)s"
 msgstr "Crear una cuenta en %(name)s"
 
-#: openstudyroom/templates/account/email/password_change.txt:1
+#: .\openstudyroom\templates\account\email\password_change.txt:1
 #, python-format
 msgid ""
 "This is the email notification to confirm your password has been changed on "
@@ -675,11 +746,11 @@ msgstr ""
 "Este es una notificación por correo electrónico para confirmar que tu "
 "contraseña se ha modificado %(now)s."
 
-#: openstudyroom/templates/account/email/password_change_subject.txt:1
+#: .\openstudyroom\templates\account\email\password_change_subject.txt:1
 msgid "Change password email notification"
 msgstr "Cambiar la contraseña por notificación por correo electrónico"
 
-#: openstudyroom/templates/account/email/password_reset.txt:1
+#: .\openstudyroom\templates\account\email\password_reset.txt:1
 #, python-format
 msgid ""
 "You're receiving this email because you or someone else has requested a "
@@ -696,16 +767,16 @@ msgstr ""
 "\n"
 "%(password_reset_url)s\n"
 
-#: openstudyroom/templates/account/email/password_reset_subject.txt:1
+#: .\openstudyroom\templates\account\email\password_reset_subject.txt:1
 #, python-format
 msgid "[%(site_name)s] Password reset"
 msgstr "[%(site_name)s] Cambio de contraseña"
 
-#: openstudyroom/templates/account/email_confirm.html:12
+#: .\openstudyroom\templates\account\email_confirm.html:12
 msgid "Confirm E-mail Address"
 msgstr "Confirmar correo electrónico"
 
-#: openstudyroom/templates/account/email_confirm.html:22
+#: .\openstudyroom\templates\account\email_confirm.html:22
 #, python-format
 msgid ""
 "Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
@@ -714,11 +785,11 @@ msgstr ""
 "Por favor confirme que <a href=\"mailto:%(email)s\">%(email)s</a> es una "
 "dirección de correo electrónico para el usuario %(user_display)s."
 
-#: openstudyroom/templates/account/email_confirm.html:26
+#: .\openstudyroom\templates\account\email_confirm.html:26
 msgid "Confirm"
 msgstr "Confirmar"
 
-#: openstudyroom/templates/account/email_confirm.html:33
+#: .\openstudyroom\templates\account\email_confirm.html:33
 #, python-format
 msgid ""
 "This e-mail confirmation link expired or is invalid. Please <a href="
@@ -728,12 +799,12 @@ msgstr ""
 "invalido.  Por favor <a href=\"%(email_url)s\">envia una nueva solicitud de "
 "confirmación de tu dirección de correo electrónico</a>."
 
-#: openstudyroom/templates/account/email_confirmation_sent.html:5
-#: openstudyroom/templates/account/email_confirmation_sent.html:8
+#: .\openstudyroom\templates\account\email_confirmation_sent.html:5
+#: .\openstudyroom\templates\account\email_confirmation_sent.html:8
 msgid "Confirm your email address"
 msgstr "Confirma tu correo electrónico"
 
-#: openstudyroom/templates/account/email_confirmation_sent.html:10
+#: .\openstudyroom\templates\account\email_confirmation_sent.html:10
 #, python-format
 msgid ""
 "We have sent you an email to <b>%(email)s</b> for verification. Follow the "
@@ -746,30 +817,30 @@ msgstr ""
 "inscripción. Si no lo recibes dentro de unos minutos, contáctanos en <a href="
 "\"mailto:openstudyroom@gmail.com\">openstudyroom@gmail.com</a>."
 
-#: openstudyroom/templates/account/email_confirmation_sent.html:11
+#: .\openstudyroom\templates\account\email_confirmation_sent.html:11
 msgid "Go back"
 msgstr "Volver atrás"
 
-#: openstudyroom/templates/account/email_confirmed.html:5
-#: openstudyroom/templates/account/email_confirmed.html:8
+#: .\openstudyroom\templates\account\email_confirmed.html:5
+#: .\openstudyroom\templates\account\email_confirmed.html:8
 msgid "Email confirmed"
 msgstr "Correo electrónico confirmado"
 
-#: openstudyroom/templates/account/email_confirmed.html:9
+#: .\openstudyroom\templates\account\email_confirmed.html:9
 #, python-format
 msgid "You have confirmed <b>%(email)s</b>"
 msgstr "Has confirmado <b>%(email)s</b>"
 
-#: openstudyroom/templates/account/password_reset_from_key.html:6
-#: openstudyroom/templates/account/password_reset_from_key.html:9
+#: .\openstudyroom\templates\account\password_reset_from_key.html:6
+#: .\openstudyroom\templates\account\password_reset_from_key.html:9
 msgid "Change Password"
 msgstr "Cambiar contraseña"
 
-#: openstudyroom/templates/account/password_reset_from_key.html:9
+#: .\openstudyroom\templates\account\password_reset_from_key.html:9
 msgid "Bad Token"
 msgstr "Token Invalido"
 
-#: openstudyroom/templates/account/password_reset_from_key.html:18
+#: .\openstudyroom\templates\account\password_reset_from_key.html:18
 #, python-format
 msgid ""
 "The password reset link was invalid, possibly because it has already been "
@@ -780,23 +851,23 @@ msgstr ""
 "sido utilizado.  Por favor solicita un <a href=\"%(passwd_reset_url)s"
 "\">reseteo de contraseña nuevo</a>"
 
-#: openstudyroom/templates/account/password_reset_from_key.html:25
+#: .\openstudyroom\templates\account\password_reset_from_key.html:25
 msgid "change password"
 msgstr "cambiar contraseña"
 
-#: openstudyroom/templates/account/password_reset_from_key.html:29
+#: .\openstudyroom\templates\account\password_reset_from_key.html:29
 msgid "Your password is now changed."
 msgstr "Su contraseña no ha sido modificada."
 
-#: openstudyroom/templates/account/signup.html:14
+#: .\openstudyroom\templates\account\signup.html:14
 msgid "Join the Open Study Room"
 msgstr "Ingresar a Open Study Room"
 
-#: openstudyroom/templates/account/signup.html:22
+#: .\openstudyroom\templates\account\signup.html:22
 msgid "The Open Study Room"
 msgstr "Open Study Room"
 
-#: openstudyroom/templates/account/signup.html:24
+#: .\openstudyroom\templates\account\signup.html:24
 msgid ""
 "Take chance to join an online go community dedicated to play, teach, learn "
 "and study the fascinating game of go"
@@ -804,7 +875,7 @@ msgstr ""
 "Súmase a una comunidad en línea dedicada a jugar, aprender, enseñar y "
 "estudiar el juego fascinante que es el Go."
 
-#: openstudyroom/templates/account/signup.html:27
+#: .\openstudyroom\templates\account\signup.html:27
 msgid ""
 "It's free, community driven, and we welcome everyone from beginers to strong "
 "dans"
@@ -812,7 +883,7 @@ msgstr ""
 "Es gratis, auto-gestionado, y recibimos con alegría a cualquiera, no importa "
 "su rango o nivel de experiencia del Go."
 
-#: openstudyroom/templates/account/signup.html:30
+#: .\openstudyroom\templates\account\signup.html:30
 msgid ""
 "If you are uncertain what OSR is, or have any questions, be sure to read our "
 "<a href='/faq/'>FAQ</a>. You can also ask us directly in <a href='https://"
@@ -822,11 +893,11 @@ msgstr ""
 "leer nuestro <a href='/faq/'>FAQ</a>. Tambien puede consultar en nuestro <a "
 "href='https://discord.gg/b7meDjX'>servidor Discord</a>"
 
-#: openstudyroom/templates/account/signup.html:32
+#: .\openstudyroom\templates\account\signup.html:32
 msgid "Register here"
 msgstr "Registrarse aquí"
 
-#: openstudyroom/templates/account/signup.html:34
+#: .\openstudyroom\templates\account\signup.html:34
 msgid ""
 "Registering will allow you to participate in our <a href='/league/"
 "league_rules'>leagues</a>, use our <a href='/forum/'>forums</a> and our "
@@ -836,7 +907,7 @@ msgstr ""
 "league_rules'>ligas</a>, usar nuestros<a href='/forum/'>foros</a> y nuestro "
 "servidor Discord."
 
-#: openstudyroom/templates/account/signup.html:37
+#: .\openstudyroom\templates\account\signup.html:37
 msgid ""
 "Just fill this form by indicating your <a href='https://www.gokgs.com'>KGS</"
 "a> and/or <a href='https://online-go.com'>OGS</a> username so that our "
@@ -847,7 +918,7 @@ msgstr ""
 "nuestro rastreador automatico pueda subir sus partidas de liga al sistema e "
 "incluir sus resultados en las tablas de las ligas en las cuales participa."
 
-#: openstudyroom/templates/account/signup.html:39
+#: .\openstudyroom\templates\account\signup.html:39
 msgid ""
 "We will check that your OGS/KGS username are valid (at least one game) and "
 "that you verify your email before activating your account"
@@ -856,17 +927,17 @@ msgstr ""
 "menos una partida jugada) y que haya verificado su dirección de correo "
 "electrónico antes de activar su cuenta."
 
-#: openstudyroom/templates/account/signup.html:40
+#: .\openstudyroom\templates\account\signup.html:40
 msgid ""
 "Setting your timezone will allow our website to adapt all times to your "
 "local time"
 msgstr "Si indica su zona horaria el"
 
-#: openstudyroom/templates/account/signup.html:41
+#: .\openstudyroom\templates\account\signup.html:41
 msgid "OSR code of conduct"
 msgstr "Código de conducta de OSR"
 
-#: openstudyroom/templates/account/signup.html:42
+#: .\openstudyroom\templates\account\signup.html:42
 msgid ""
 "By creating an account on OSR website, you agree to <a href='/code-"
 "conduct/'>OSR code of conduct</a>. Just simple common sense rules so "
@@ -877,105 +948,118 @@ msgstr ""
 "algunas reglas y directrices de sentido común que promueven la sana "
 "convivencia."
 
-#: openstudyroom/templates/account/signup.html:48
-#: openstudyroom/templates/account/signup.html:65
+#: .\openstudyroom\templates\account\signup.html:48
+#: .\openstudyroom\templates\account\signup.html:70
 msgid "Sign up"
 msgstr "Registrarse"
 
-#: openstudyroom/templates/account/signup.html:62
-msgid "Select the communities you have interest in"
+#: .\openstudyroom\templates\account\signup.html:58
+msgid "Go servers usernames"
+msgstr ""
+
+#: .\openstudyroom\templates\account\signup.html:59
+msgid "We ask at least one valid username from KGS or OGS"
+msgstr ""
+
+#: .\openstudyroom\templates\account\signup.html:67
+#, fuzzy
+#| msgid "Select the communities you have interest in"
+msgid ""
+"Selection of <a href='/community/'>communities</a> hosted by OSR you may "
+"have interest in"
 msgstr ""
 "Indica si le interesaría participar en alguna de las siguientes comunidades "
 "externas."
 
-#: openstudyroom/templates/account/signup.html:69
+#: .\openstudyroom\templates\account\signup.html:74
 msgid "Already have an account?"
 msgstr "¿Ya tiene una cuenta?"
 
-#: openstudyroom/templates/account/signup.html:69
+#: .\openstudyroom\templates\account\signup.html:74
 msgid "Log in"
 msgstr "Ingresar"
 
-#: openstudyroom/templates/board_base.html:40
+#: .\openstudyroom\templates\board_base.html:40
 msgid "Search..."
 msgstr "Buscar..."
 
-#: openstudyroom/templates/board_base.html:47
+#: .\openstudyroom\templates\board_base.html:47
 msgid "Advanced search"
 msgstr "Búsqueda avanzada"
 
-#: openstudyroom/templates/board_base.html:70
+#: .\openstudyroom\templates\board_base.html:70
 msgid "Subscriptions"
 msgstr "Suscripciones"
 
-#: openstudyroom/templates/board_base.html:71
+#: .\openstudyroom\templates\board_base.html:71
 msgid "View my messages"
 msgstr "Ver mis mensajes"
 
-#: openstudyroom/templates/board_base.html:75
+#: .\openstudyroom\templates\board_base.html:75
 msgid "Moderation queue"
 msgstr "Cola de moderación"
 
-#: openstudyroom/templates/forum_conversation/topic_detail.html:37
-#: openstudyroom/templates/postman/base_folder.html:27
-#: openstudyroom/templates/postman/view.html:13
-#: openstudyroom/templates/postman/view.html:41
-msgid "Delete"
-msgstr "Eliminar"
+#: .\openstudyroom\templates\comments\form.html:71
+msgid "send"
+msgstr ""
 
-#: openstudyroom/templates/forum_conversation/topic_detail.html:52
-#: openstudyroom/templates/forum_member/user_posts_list.html:75
+#: .\openstudyroom\templates\comments\form.html:72
+msgid "preview"
+msgstr ""
+
+#: .\openstudyroom\templates\forum_conversation\topic_detail.html:52
+#: .\openstudyroom\templates\forum_member\user_posts_list.html:75
 #, python-format
 msgid "By: <a href=\"%(poster_url)s\">%(username)s</a> on %(creation_date)s"
 msgstr "Por: <a href=\"%(poster_url)s\">%(username)s</a> %(creation_date)s"
 
-#: openstudyroom/templates/forum_conversation/topic_detail.html:56
+#: .\openstudyroom\templates\forum_conversation\topic_detail.html:56
 #, python-format
 msgid "By: %(poster_username)s on %(creation_date)s"
 msgstr "Por: %(poster_username)s %(creation_date)s"
 
-#: openstudyroom/templates/forum_conversation/topic_detail.html:76
+#: .\openstudyroom\templates\forum_conversation\topic_detail.html:76
 msgid "Last edited by:"
 msgstr "Última vez editado por:"
 
-#: openstudyroom/templates/forum_conversation/topic_detail.html:76
+#: .\openstudyroom\templates\forum_conversation\topic_detail.html:76
 msgid "Updated"
 msgstr "Actualizado"
 
-#: openstudyroom/templates/forum_conversation/topic_detail.html:76
+#: .\openstudyroom\templates\forum_conversation\topic_detail.html:76
 #, python-format
 msgid "edited %(counter)s time in total."
 msgid_plural "edited %(counter)s times in total."
 msgstr[0] "editado %(counter)s vez en total."
 msgstr[1] "editado %(counter)s veces en total."
 
-#: openstudyroom/templates/forum_conversation/topic_detail.html:81
+#: .\openstudyroom\templates\forum_conversation\topic_detail.html:81
 msgid "Reason:"
 msgstr "Razón:"
 
-#: openstudyroom/templates/forum_conversation/topic_detail.html:97
-#: openstudyroom/templates/forum_member/user_posts_list.html:94
+#: .\openstudyroom\templates\forum_conversation\topic_detail.html:97
+#: .\openstudyroom\templates\forum_member\user_posts_list.html:94
 msgid "Posts:"
 msgstr "Articulos:"
 
-#: openstudyroom/templates/forum_conversation/topic_detail.html:100
+#: .\openstudyroom\templates\forum_conversation\topic_detail.html:100
 msgid "Anonymous user"
 msgstr "Usuario anónimo"
 
-#: openstudyroom/templates/forum_member/forum_profile_detail.html:4
+#: .\openstudyroom\templates\forum_member\forum_profile_detail.html:4
 #, python-format
 msgid "%(username)s profile"
 msgstr "perfil de %(username)s"
 
-#: openstudyroom/templates/forum_member/forum_profile_detail.html:32
+#: .\openstudyroom\templates\forum_member\forum_profile_detail.html:32
 msgid "Edit profile"
 msgstr "Editar perfil"
 
-#: openstudyroom/templates/forum_member/forum_profile_detail.html:40
+#: .\openstudyroom\templates\forum_member\forum_profile_detail.html:40
 msgid "Statistics"
 msgstr "Estadísticas"
 
-#: openstudyroom/templates/forum_member/forum_profile_detail.html:45
+#: .\openstudyroom\templates\forum_member\forum_profile_detail.html:45
 #, python-format
 msgid ""
 "<h2><strong>%(counter)s</strong></h2>\n"
@@ -990,7 +1074,7 @@ msgstr[1] ""
 "<h2><strong>%(counter)s</strong></h2>\n"
 "                    <p><small>Posts</small></p>"
 
-#: openstudyroom/templates/forum_member/forum_profile_detail.html:50
+#: .\openstudyroom\templates\forum_member\forum_profile_detail.html:50
 #, python-format
 msgid ""
 "<h2><strong>%(counter)s</strong></h2>\n"
@@ -1005,90 +1089,90 @@ msgstr[1] ""
 "<h2><strong>%(counter)s</strong></h2>\n"
 "                    <p><small>Temas</small></p>"
 
-#: openstudyroom/templates/forum_member/forum_profile_detail.html:64
+#: .\openstudyroom\templates\forum_member\forum_profile_detail.html:64
 msgid "Recent posts"
 msgstr "Anuncios recientes"
 
-#: openstudyroom/templates/forum_member/forum_profile_detail.html:64
+#: .\openstudyroom\templates\forum_member\forum_profile_detail.html:64
 msgid "View all"
 msgstr "Ver todos"
 
-#: openstudyroom/templates/forum_member/forum_profile_detail.html:74
+#: .\openstudyroom\templates\forum_member\forum_profile_detail.html:74
 #, python-format
 msgid "On %(creation_date)s"
 msgstr "En %(creation_date)s"
 
-#: openstudyroom/templates/forum_member/subscription_topic_list.html:4
-#: openstudyroom/templates/forum_member/subscription_topic_list.html:10
+#: .\openstudyroom\templates\forum_member\subscription_topic_list.html:4
+#: .\openstudyroom\templates\forum_member\subscription_topic_list.html:10
 msgid "Topics that you are subscribed to"
 msgstr "Temas a los que estás suscrito"
 
-#: openstudyroom/templates/forum_member/subscription_topic_list.html:17
+#: .\openstudyroom\templates\forum_member\subscription_topic_list.html:17
 #, python-format
 msgid "%(counter)s topic found"
 msgid_plural "%(counter)s topics found"
 msgstr[0] "%(counter)s tema encontrado"
 msgstr[1] "%(counter)s temas encontrados"
 
-#: openstudyroom/templates/forum_member/subscription_topic_list.html:31
+#: .\openstudyroom\templates\forum_member\subscription_topic_list.html:31
 msgid "Not topics found."
 msgstr "No se han encontrado temas."
 
-#: openstudyroom/templates/forum_member/topic_subscribe.html:5
-#: openstudyroom/templates/forum_member/topic_subscribe.html:12
+#: .\openstudyroom\templates\forum_member\topic_subscribe.html:5
+#: .\openstudyroom\templates\forum_member\topic_subscribe.html:12
 msgid "Subscribe to topic"
 msgstr "Suscribirse al tema"
 
-#: openstudyroom/templates/forum_member/topic_subscribe.html:15
+#: .\openstudyroom\templates\forum_member\topic_subscribe.html:15
 msgid "Would you like to subscribe to this topic?"
 msgstr "¿Te gustaría suscribirte a este  tema?"
 
-#: openstudyroom/templates/forum_member/topic_subscribe.html:18
-#: openstudyroom/templates/forum_member/topic_unsubscribe.html:18
+#: .\openstudyroom\templates\forum_member\topic_subscribe.html:18
+#: .\openstudyroom\templates\forum_member\topic_unsubscribe.html:18
 msgid "Yes"
 msgstr "Sí"
 
-#: openstudyroom/templates/forum_member/topic_subscribe.html:19
-#: openstudyroom/templates/forum_member/topic_unsubscribe.html:19
+#: .\openstudyroom\templates\forum_member\topic_subscribe.html:19
+#: .\openstudyroom\templates\forum_member\topic_unsubscribe.html:19
 msgid "No"
 msgstr "No"
 
-#: openstudyroom/templates/forum_member/topic_unsubscribe.html:5
-#: openstudyroom/templates/forum_member/topic_unsubscribe.html:12
+#: .\openstudyroom\templates\forum_member\topic_unsubscribe.html:5
+#: .\openstudyroom\templates\forum_member\topic_unsubscribe.html:12
 msgid "Unsubscribe from topic"
 msgstr "Desuscribir del tema"
 
-#: openstudyroom/templates/forum_member/topic_unsubscribe.html:15
+#: .\openstudyroom\templates\forum_member\topic_unsubscribe.html:15
 msgid "Would you like to unsubscribe from this topic?"
 msgstr "¿Te gustaría desuscribirte de este tema?"
 
-#: openstudyroom/templates/forum_member/user_posts_list.html:4
-#: openstudyroom/templates/forum_member/user_posts_list.html:34
+#: .\openstudyroom\templates\forum_member\user_posts_list.html:4
+#: .\openstudyroom\templates\forum_member\user_posts_list.html:34
 msgid "My messages"
 msgstr "Mis mensajes"
 
-#: openstudyroom/templates/forum_member/user_posts_list.html:4
-#: openstudyroom/templates/forum_member/user_posts_list.html:34
+#: .\openstudyroom\templates\forum_member\user_posts_list.html:4
+#: .\openstudyroom\templates\forum_member\user_posts_list.html:34
 #, python-format
 msgid "%(username)s's posts"
 msgstr "posts de %(username)s"
 
-#: openstudyroom/templates/forum_member/user_posts_list.html:42
+#: .\openstudyroom\templates\forum_member\user_posts_list.html:42
 #, python-format
 msgid "%(counter)s post found"
 msgid_plural "%(counter)s posts found"
 msgstr[0] "%(counter)s post encontrado"
 msgstr[1] "%(counter)s posts encontrados"
 
-#: openstudyroom/templates/forum_member/user_posts_list.html:49
+#: .\openstudyroom\templates\forum_member\user_posts_list.html:49
 msgid "No posts found"
 msgstr "Ningún post encontrado."
 
-#: openstudyroom/templates/postman/archives.html:3
+#: .\openstudyroom\templates\postman\archives.html:3
 msgid "Archived Messages"
 msgstr "Mensajes archivados"
 
-#: openstudyroom/templates/postman/archives.html:7
+#: .\openstudyroom\templates\postman\archives.html:7
 msgid ""
 "Messages in this folder will never be removed. You can use this folder for "
 "long term storage."
@@ -1096,170 +1180,166 @@ msgstr ""
 "Los mensajes en esta carpeta nunca serán removidos. Puede usar esta carpeta "
 "como almacenamiento a largo plazo."
 
-#: openstudyroom/templates/postman/archives.html:12
-#: openstudyroom/templates/postman/base.html:18
-#: openstudyroom/templates/postman/base_write.html:27
-#: openstudyroom/templates/postman/inbox.html:11
-#: openstudyroom/templates/postman/sent.html:13
-#: openstudyroom/templates/postman/trash.html:15
+#: .\openstudyroom\templates\postman\archives.html:12
+#: .\openstudyroom\templates\postman\base.html:18
+#: .\openstudyroom\templates\postman\base_write.html:27
+#: .\openstudyroom\templates\postman\inbox.html:11
+#: .\openstudyroom\templates\postman\sent.html:13
+#: .\openstudyroom\templates\postman\trash.html:15
 msgid "Inbox"
 msgstr "Buzón"
 
-#: openstudyroom/templates/postman/archives.html:13
-#: openstudyroom/templates/postman/base.html:19
-#: openstudyroom/templates/postman/base_write.html:28
-#: openstudyroom/templates/postman/inbox.html:12
-#: openstudyroom/templates/postman/sent.html:3
-#: openstudyroom/templates/postman/sent.html:14
-#: openstudyroom/templates/postman/trash.html:16
+#: .\openstudyroom\templates\postman\archives.html:13
+#: .\openstudyroom\templates\postman\base.html:19
+#: .\openstudyroom\templates\postman\base_write.html:28
+#: .\openstudyroom\templates\postman\inbox.html:12
+#: .\openstudyroom\templates\postman\sent.html:3
+#: .\openstudyroom\templates\postman\sent.html:14
+#: .\openstudyroom\templates\postman\trash.html:16
 msgid "Sent Messages"
 msgstr "Enviar mensajes"
 
-#: openstudyroom/templates/postman/archives.html:14
-#: openstudyroom/templates/postman/base.html:20
-#: openstudyroom/templates/postman/base_write.html:29
-#: openstudyroom/templates/postman/inbox.html:13
-#: openstudyroom/templates/postman/sent.html:15
-#: openstudyroom/templates/postman/trash.html:17
-#: openstudyroom/templates/postman/write.html:3
+#: .\openstudyroom\templates\postman\archives.html:14
+#: .\openstudyroom\templates\postman\base.html:20
+#: .\openstudyroom\templates\postman\base_write.html:29
+#: .\openstudyroom\templates\postman\inbox.html:13
+#: .\openstudyroom\templates\postman\sent.html:15
+#: .\openstudyroom\templates\postman\trash.html:17
+#: .\openstudyroom\templates\postman\write.html:3
 msgid "Write"
 msgstr "Escribir"
 
-#: openstudyroom/templates/postman/archives.html:16
-#: openstudyroom/templates/postman/base.html:22
-#: openstudyroom/templates/postman/base_write.html:31
-#: openstudyroom/templates/postman/inbox.html:15
-#: openstudyroom/templates/postman/sent.html:17
-#: openstudyroom/templates/postman/trash.html:19
+#: .\openstudyroom\templates\postman\archives.html:16
+#: .\openstudyroom\templates\postman\base.html:22
+#: .\openstudyroom\templates\postman\base_write.html:31
+#: .\openstudyroom\templates\postman\inbox.html:15
+#: .\openstudyroom\templates\postman\sent.html:17
+#: .\openstudyroom\templates\postman\trash.html:19
 msgid "Trash"
 msgstr "Basura"
 
-#: openstudyroom/templates/postman/base.html:3
+#: .\openstudyroom\templates\postman\base.html:3
 msgid "Messaging"
 msgstr "Mensajería"
 
-#: openstudyroom/templates/postman/base_folder.html:14
+#: .\openstudyroom\templates\postman\base_folder.html:14
 msgid "Sorry, this page number is invalid."
 msgstr "Lo sentimos, este número de página no es válido."
 
-#: openstudyroom/templates/postman/base_folder.html:19
+#: .\openstudyroom\templates\postman\base_folder.html:19
 msgid "by conversation"
 msgstr "por conversación"
 
-#: openstudyroom/templates/postman/base_folder.html:22
+#: .\openstudyroom\templates\postman\base_folder.html:22
 msgid "by message"
 msgstr "por mensaje"
 
-#: openstudyroom/templates/postman/base_folder.html:28
-#: openstudyroom/templates/postman/view.html:15
-#: openstudyroom/templates/postman/view.html:43
+#: .\openstudyroom\templates\postman\base_folder.html:28
+#: .\openstudyroom\templates\postman\view.html:15
+#: .\openstudyroom\templates\postman\view.html:43
 msgid "Archive"
 msgstr "Archivos"
 
-#: openstudyroom/templates/postman/base_folder.html:29
+#: .\openstudyroom\templates\postman\base_folder.html:29
 msgid "Undelete"
 msgstr "Recuperar"
 
-#: openstudyroom/templates/postman/base_folder.html:30
+#: .\openstudyroom\templates\postman\base_folder.html:30
 msgid "Mark as read"
 msgstr "Marcar como leído"
 
-#: openstudyroom/templates/postman/base_folder.html:31
+#: .\openstudyroom\templates\postman\base_folder.html:31
 msgid "Mark as unread"
 msgstr "Marcar como no leído"
 
-#: openstudyroom/templates/postman/base_folder.html:36
+#: .\openstudyroom\templates\postman\base_folder.html:36
 msgid "Action"
 msgstr "Acción"
 
-#: openstudyroom/templates/postman/base_folder.html:37
+#: .\openstudyroom\templates\postman\base_folder.html:37
 msgid "Sender"
 msgstr "Emisor"
 
-#: openstudyroom/templates/postman/base_folder.html:38
-#: openstudyroom/templates/postman/reply.html:4
+#: .\openstudyroom\templates\postman\base_folder.html:38
+#: .\openstudyroom\templates\postman\reply.html:4
 msgid "Recipient"
 msgstr "Recipiente"
 
-#: openstudyroom/templates/postman/base_folder.html:39
+#: .\openstudyroom\templates\postman\base_folder.html:39
 msgid "Subject"
 msgstr "Tema"
 
-#: openstudyroom/templates/postman/base_folder.html:40
+#: .\openstudyroom\templates\postman\base_folder.html:40
 msgid "Date"
 msgstr "Fecha"
 
-#: openstudyroom/templates/postman/base_folder.html:55
-msgid "g:i A,M j,n/j/y"
-msgstr "g: i A, M j, n / j / y"
-
-#: openstudyroom/templates/postman/base_folder.html:62
+#: .\openstudyroom\templates\postman\base_folder.html:62
 msgid "No messages."
 msgstr "Sin mensajes."
 
-#: openstudyroom/templates/postman/base_write.html:19
+#: .\openstudyroom\templates\postman\base_write.html:19
 msgid "Send"
 msgstr "Enviar"
 
-#: openstudyroom/templates/postman/email_user.txt:4
-#: openstudyroom/templates/postman/email_visitor.txt:3
+#: .\openstudyroom\templates\postman\email_user.txt:4
+#: .\openstudyroom\templates\postman\email_visitor.txt:3
 #, python-format
 msgid "On %(date)s, you asked to send a message to the user '%(recipient)s'."
 msgstr ""
 "El %(date)s, usted solicitó enviar un mensaje al usuario '%(recipient)s'."
 
-#: openstudyroom/templates/postman/email_user.txt:6
-#: openstudyroom/templates/postman/email_visitor.txt:5
+#: .\openstudyroom\templates\postman\email_user.txt:6
+#: .\openstudyroom\templates\postman\email_visitor.txt:5
 msgid "Your message has been rejected by the moderator"
 msgstr "Tu mensaje ha sido rechazado por el moderador"
 
-#: openstudyroom/templates/postman/email_user.txt:6
-#: openstudyroom/templates/postman/email_visitor.txt:5
+#: .\openstudyroom\templates\postman\email_user.txt:6
+#: .\openstudyroom\templates\postman\email_visitor.txt:5
 msgid ", for the following reason:"
 msgstr ", por las siguientes razones:"
 
-#: openstudyroom/templates/postman/email_user.txt:11
+#: .\openstudyroom\templates\postman\email_user.txt:11
 #, python-format
 msgid "You have received a message from the user '%(sender)s'"
 msgstr "Has recibido un mensaje del usuario ''%(sender)s"
 
-#: openstudyroom/templates/postman/email_user_subject.txt:1
-#: openstudyroom/templates/postman/email_visitor_subject.txt:1
+#: .\openstudyroom\templates\postman\email_user_subject.txt:1
+#: .\openstudyroom\templates\postman\email_visitor_subject.txt:1
 #, python-format
 msgid "Message \"%(subject)s\" on the site %(sitename)s"
 msgstr "Mensaje \"%(subject)s\" en el sitio %(sitename)s"
 
-#: openstudyroom/templates/postman/email_visitor.txt:1
+#: .\openstudyroom\templates\postman\email_visitor.txt:1
 msgid "Dear visitor,"
 msgstr "Querido visitante,"
 
-#: openstudyroom/templates/postman/email_visitor.txt:8
+#: .\openstudyroom\templates\postman\email_visitor.txt:8
 msgid "As a reminder, please find below the content of your message."
 msgstr ""
 "Como un recordatorio, a continuación encontrará el contenido de su mensaje."
 
-#: openstudyroom/templates/postman/email_visitor.txt:10
+#: .\openstudyroom\templates\postman\email_visitor.txt:10
 #, python-format
 msgid "On %(date)s, you sent a message to the user '%(sender)s'."
 msgstr "El %(date)s, usted envió un mensaje al usuario '%(sender)s'."
 
-#: openstudyroom/templates/postman/email_visitor.txt:11
+#: .\openstudyroom\templates\postman\email_visitor.txt:11
 msgid "Please find below the answer from your correspondent."
 msgstr "Por favor encuentre abajo la respuesta de su correspondiente."
 
-#: openstudyroom/templates/postman/email_visitor.txt:14
+#: .\openstudyroom\templates\postman\email_visitor.txt:14
 msgid "Thank you again for your interest in our services."
 msgstr "Gracias nuevamente por tu interés en nuestros servicios."
 
-#: openstudyroom/templates/postman/email_visitor.txt:15
+#: .\openstudyroom\templates\postman\email_visitor.txt:15
 msgid "For more comfort, we encourage you to open an account on the site."
 msgstr "Para mayor comodidad, le sugerimos abrir una cuenta en el sitio."
 
-#: openstudyroom/templates/postman/email_visitor.txt:16
+#: .\openstudyroom\templates\postman\email_visitor.txt:16
 msgid "The site administrator"
 msgstr "El administrador del sitio"
 
-#: openstudyroom/templates/postman/email_visitor.txt:18
+#: .\openstudyroom\templates\postman\email_visitor.txt:18
 msgid ""
 "Note: This message is issued by an automated system.\n"
 "Do not reply, this would not be taken into account."
@@ -1267,30 +1347,30 @@ msgstr ""
 "Nota: Este mensaje ha sido emitido de manera automática. No lo contestes, "
 "pues no sería considerado."
 
-#: openstudyroom/templates/postman/inbox.html:3
+#: .\openstudyroom\templates\postman\inbox.html:3
 msgid "Received Messages"
 msgstr "Mensajes recibidos"
 
-#: openstudyroom/templates/postman/inbox.html:6
+#: .\openstudyroom\templates\postman\inbox.html:6
 msgid "Received"
 msgstr "Recibidos"
 
-#: openstudyroom/templates/postman/reply.html:3
-#: openstudyroom/templates/postman/view.html:17
-#: openstudyroom/templates/postman/view.html:45
-#: openstudyroom/templates/postman/view.html:52
+#: .\openstudyroom\templates\postman\reply.html:3
+#: .\openstudyroom\templates\postman\view.html:17
+#: .\openstudyroom\templates\postman\view.html:45
+#: .\openstudyroom\templates\postman\view.html:52
 msgid "Reply"
 msgstr "Contestar"
 
-#: openstudyroom/templates/postman/sent.html:8
+#: .\openstudyroom\templates\postman\sent.html:8
 msgid "Sent"
 msgstr "Enviados"
 
-#: openstudyroom/templates/postman/trash.html:3
+#: .\openstudyroom\templates\postman\trash.html:3
 msgid "Deleted Messages"
 msgstr "Mensajes Eliminados"
 
-#: openstudyroom/templates/postman/trash.html:10
+#: .\openstudyroom\templates\postman\trash.html:10
 msgid ""
 "Messages in this folder can be removed from time to time. For long term "
 "storage, use instead the archive folder."
@@ -1298,48 +1378,54 @@ msgstr ""
 "Los mensajes en esta carpeta pueden ser removidos con el paso del tiempo. "
 "Para almacenarlos un mayor tiempo, use la carpeta de archivos."
 
-#: openstudyroom/templates/postman/view.html:5
+#: .\openstudyroom\templates\postman\view.html:5
 msgid "Conversation"
 msgstr "Conversación"
 
-#: openstudyroom/templates/postman/view.html:5
+#: .\openstudyroom\templates\postman\view.html:5
 msgid "Message"
 msgstr "Mensaje"
 
-#: openstudyroom/templates/postman/view.html:11
-#: openstudyroom/templates/postman/view.html:39
+#: .\openstudyroom\templates\postman\view.html:11
+#: .\openstudyroom\templates\postman\view.html:39
 msgid "Back"
 msgstr "Retornar"
 
-#: openstudyroom/templates/postman/view.html:30
+#: .\openstudyroom\templates\postman\view.html:30
 msgid "Rejected"
 msgstr "Rechazado"
 
-#: openstudyroom/templates/postman/view.html:30
+#: .\openstudyroom\templates\postman\view.html:30
 msgid ":"
 msgstr ":"
 
-#: openstudyroom/templates/postman/view.html:49
+#: .\openstudyroom\templates\postman\view.html:49
 msgid "Fast Reply"
 msgstr "Respuesta Rápida"
 
-#: openstudyroom/templates/puput/base.html:30
+#: .\openstudyroom\templates\puput\base.html:30
 msgid "Search OSR blog"
 msgstr "Buscar en blog de OSR"
 
-#: openstudyroom/templates/puput/base.html:39
+#: .\openstudyroom\templates\puput\base.html:39
 msgid "Last Entries"
 msgstr "Últimas Entradas"
 
-#: openstudyroom/templates/puput/blog_page.html:6
-#: openstudyroom/templates/puput/blog_page.html:7
-#: openstudyroom/templates/puput/blog_page.html:29
+#: .\openstudyroom\templates\puput\blog_page.html:6
+#: .\openstudyroom\templates\puput\blog_page.html:7
+#: .\openstudyroom\templates\puput\blog_page.html:29
 msgid "Entries for"
 msgstr "Entradas para"
 
-#: openstudyroom/templates/puput/blog_page.html:57
+#: .\openstudyroom\templates\puput\blog_page.html:57
 msgid "No results founds."
 msgstr "Resultados no encontrados."
+
+#~ msgid "type"
+#~ msgstr "tipo"
+
+#~ msgid "g:i A,M j,n/j/y"
+#~ msgstr "g: i A, M j, n / j / y"
 
 #~ msgid ""
 #~ "\n"

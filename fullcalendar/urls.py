@@ -65,14 +65,14 @@ urlpatterns = [
         name='get_public_events'
     ),
     url(
-        r'^get-user-available-events/$',
-        views.get_user_available_events,
-        name='get_user_available_events'
-    ),
-    url(
-        r'^get-available-events/$',
+        r'^get-available-events/(?P<user_pk>[0-9]+)/$',
         views.get_available_events,
         name='get_available_events'
+    ),
+    url(
+        r'^get-opponents-available-events/(?P<user_pk>[0-9]+)/$',
+        views.get_opponents_available_events,
+        name='get_opponents_available_events'
     ),
     url(
         r'^get-game-request-events/$',
