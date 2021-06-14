@@ -1,18 +1,13 @@
-{% load bootstrap3 %}
+{% load bootstrap3 i18n %}
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav navbar-left">
-  <li {% if active == 'league' %}class="active"{% endif %}><a href="{% url "league:league_account" user%}">League</a></li>
-  <li {% if active == 'activity' %}class="active"{% endif %}><a href="{% url "league:league_account_activity" user%}">Activity</a></li>
+  <li {% if active == 'league' %}class="active"{% endif %}><a href="{% url "league:league_account" user%}">{% trans "Leagues" %}</a></li>
+  <li {% if active == 'activity' %}class="active"{% endif %}><a href="{% url "league:league_account_activity" user%}">{% trans "Activity" %}</a></li>
   <li {% if active == 'forum' %}class="active"{% endif %}><a href="{% url "forum_member:profile" user.pk%}">Forum</a></li>
 </ul>
 {% if request.user.is_authenticated %}
 {% if user == request.user%}
 <ul class="nav navbar-nav navbar-right active" style="margin-right:5px;">
-  <!--<li {% if active == 'calendar' %}class="active"{% endif %}>
-    <a href="{% url "calendar:calendar_main_view"%}">
-      <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-      Calendar</a></li>-->
-
   <li {% if active == 'messages' %}class="active"{% endif %}>
     <a href="{% url "postman:inbox" %}" >
       <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
@@ -37,12 +32,7 @@
 </ul>
 {% else %}
 <ul class="nav navbar-nav navbar-right active" style="margin-right:5px;">
-    <!--<li {% if active == 'calendar' %}class="active"{% endif %}>
-        <a href="{% url "calendar:calendar_main_view" %}">
-          <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-          Calendar</a></li>-->
   <li ><a href="{% url "postman:write" user.username%}">{% bootstrap_icon "envelope" %} Send message</a></li>
-
 </ul>
 {% endif %}
 {% endif %}

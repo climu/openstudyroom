@@ -214,16 +214,12 @@ class PublicSource extends EventSource {
 
   constructor() { super(PublicSource); }
 
-  display = ({community}) =>
-    Context.community && community && Context.community.pk === community.pk
-      ? 'block'
-      : Filter.check.public
-        ? community
-          ? Filter.communities.includes(community.pk)
-            ? 'block' : 'none'
-          : Filter.check.osr
-            ? 'block' : 'none'
-        : 'none';
+  display = (e) => {
+    const pk = e.community ? e.community.pk : null;
+    const inCommunityPage = pk && Context.community && Context.community.pk === pk;
+    const inCalendar = Filter.check.public && (pk && Filter.communities.includes(pk) || (!pk && Filter.check.osr));
+    return inCommunityPage || inCalendar ? 'block' : 'none';
+  }
 
   transform = (e) => {
     const {r, g, b, a} = hexToRgba(e.color || '#3788d8', 0.8);
@@ -414,18 +410,15 @@ class AppointmentSource extends EventSource {
 
   constructor() { super(AppointmentSource); }
 
-  display = (e) =>
-    Context.community && e.divisions.length && e.divisions.filter(
-      ({league}) => league.community && league.community.pk === Context.community.pk).length
-      ? 'block'
-      : Context.profil
-        ? this.displayProfil(e)
-        : Filter.check.appointment
-          ? e.divisions.length
-            ? e.divisions.map(({league}) => league.pk).some(pk => Filter.leagues.includes(pk))
-              ? 'block' : 'none'
-            :'block'
-          : 'none'
+  display = (e) => {
+    const divs = e.divisions;
+    const inCommunityPage = Context.community && divs.length && divs.filter(
+      ({league}) => league.community && league.community.pk === Context.community.pk).length;
+    const inProfil = Context.profil && e.users.map(({pk}) => pk).includes(Context.profil.pk);
+    const inCalendar = Filter.check.appointment && (!divs.length || divs.map(
+      ({league}) => league.pk).some(pk => Filter.leagues.includes(pk)));
+    return inCommunityPage || inProfil || inCalendar ? 'block' : 'none';
+  }
 
   displayProfil = (e) => e.users.map(({pk}) => pk).includes(Context.profil.pk) ? 'block' : 'none';
 
