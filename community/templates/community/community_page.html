@@ -168,53 +168,52 @@ return false;};
     {% include 'fullcalendar/includes/modal.html' %}
   </div>
 
-<div id="tournaments" class="panel panel-default tab-pane fade">
-<div class="panel-heading clearfix">
-  <h3>
-{% blocktrans with name=community.name %}All {{name}} tournaments {% endblocktrans %}
-{% if admin %}
-<a href="{% url 'community:create_tournament' community.pk %}">
-  <button class="btn btn-success pull-right">
-    {% bootstrap_icon 'plus' %}
-    {% trans "Create new tournament" %}
-  </button>
-</a>
-{% endif %}
-</h3>
-{% trans "Open tournament are green." %}
-</div>
-{% include "community/includes/tournaments_table.html" with leagues=tournaments%}
-</div>
-
-
-<div id="members" class="panel panel-default tab-pane fade">
-<div class="panel-heading clearfix">
-  <h3>
-{% blocktrans with name=community.name %}All {{name}} members {% endblocktrans %}
-{% if admin %}
-  <div class="pull-right">
-    {% trans "Invite a user" %}
-    <form action=" {% url 'community:admin_invite_user' community.pk %}" method="post" >
-        {% csrf_token %}
-        <div class="form-group">
-        <input type="text" name="username" placeholder="{% trans 'OSR exact username' %}" >
-        <button type="submit" class="btn btn-success btn-sm"  >
-        {% bootstrap_icon "ok" %} {% trans "Invite  !" %}
-        </button>
-        </div>
-        </form>
+  <div id="tournaments" class="panel panel-default tab-pane fade">
+    <div class="panel-heading clearfix">
+      <h3>
+        {% blocktrans with name=community.name %}All {{name}} tournaments {% endblocktrans %}
+        {% if admin %}
+        <a href="{% url 'community:create_tournament' community.pk %}">
+          <button class="btn btn-success pull-right">
+            {% bootstrap_icon 'plus' %}
+            {% trans "Create new tournament" %}
+          </button>
+        </a>
+        {% endif %}
+      </h3>
+    {% trans "Open tournament are green." %}
+    </div>
+    {% include "community/includes/tournaments_table.html" with leagues=tournaments%}
   </div>
-{% endif %}
-</h3>
-{% trans "Community admins are blue." %}
-</div>
+
+
+  <div id="members" class="panel panel-default tab-pane fade">
+    <div class="panel-heading clearfix">
+      <h3> {% blocktrans with name=community.name %}All {{name}} members {% endblocktrans %} </h3>
+      {% if admin %}
+        <div class="pull-right">
+          {% trans "Invite a user" %}
+          <form action=" {% url 'community:admin_invite_user' community.pk %}" method="post" >
+            {% csrf_token %}
+            <div class="form-group">
+              <input type="text" name="username" placeholder="{% trans 'OSR exact username' %}" >
+              <button type="submit" class="btn btn-success btn-sm"  >
+              {% bootstrap_icon "ok" %} {% trans "Invite  !" %}
+              </button>
+            </div>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+  {% trans "Community admins are blue." %}
+  </div>
 
 {% include "community/includes/members_table.html" with members=members%}
 </div>
 
 {% if admin %}
   <div id="events" class="panel panel-default tab-pane fade">
-    <legend>
+      <legend>
       Categories
       <a  href="{%url 'community:create_category' community.pk %}">
         <button class="btn btn-xs btn-success pull-right clearfix">
@@ -224,7 +223,7 @@ return false;};
       </legend>
     {% include 'fullcalendar/includes/admin_category_table.html' %}
 
-    <legend>
+      <legend>
       Events
       <a  href="{%url 'community:create_event' community.pk %}">
         <button class="btn btn-xs btn-success pull-right clearfix">
