@@ -56,20 +56,23 @@
 {% endif %}
 
 {% if division %}
-  {% if can_edit_division_infos or admin %}
+
+
   <p>
+    {% if can_edit_division_infos or admin %}
     <a href="{% url 'league:division_update_infos' division.pk %}">
       <button class="btn btn-default">Edit informations</button>
     </a>
-  </p>
-  {% endif %}
-  {% if admin %}
-  <p>
+    {% endif %}
+    {% if admin %}
     <a href="{% url 'league:division_update_wont_play' division.pk %}">
       <button class="btn btn-default">Manage WontPlay results</button>
     </a>
+    <a href="{% url 'league:division_create_forfait' division.pk %}">
+      <button class="btn btn-default">Create forfait</button>
+    </a>
+    {% endif %}
   </p>
-  {% endif %}
 {% endif %}
 
 {% if division.informations %}

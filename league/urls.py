@@ -85,6 +85,8 @@ urlpatterns = [
     url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/delete/$', views.admin_delete_sgf, name='delete_sgf'),
     url(r'^division/(?P<pk>[0-9]+)/informations/$',
         views.DivisionUpdate.as_view(), name='division_update_infos'),
+    url(r'^division/(?P<division_id>[0-9]+)/forfait/create$',
+        views.division_create_forfait, name='division_create_forfait'),
     url(r'^division/(?P<division_id>[0-9]+)/wont-play/$',
         views.division_update_wont_play, name='division_update_wont_play'),
     url(r'^division/(?P<division_id>[0-9]+)/wont-play/create$',
