@@ -40,7 +40,7 @@ class SgfAdminForm(forms.Form):
 class AddWontPlayForm(forms.Form):
     players = MultipleIntField(2)
 
-class CreateForfaitForm(forms.Form):
+class CreateForfeitForm(forms.Form):
     winner = forms.IntegerField()
     loser = forms.IntegerField()
     def clean(self):

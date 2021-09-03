@@ -617,7 +617,6 @@ class Sgf(models.Model):
             errors.append('rules')
         # check the server
         if event.servers:
-            server = ''
             if self.place.startswith('OGS'):
                 server = 'ogs'
             elif self.place.startswith('The KGS'):
@@ -770,23 +769,6 @@ class Sgf(models.Model):
             sgf.divisions.add(division)
             return sgf
         return None
-
-    @staticmethod
-    def create_forfait(event, division, winner, loser):
-        """Creates and returns an sgf with forfait result"""
-        sgf = Sgf()
-        sgf.winner = winner
-        sgf.black = winner
-        sgf.white = loser
-        sgf.result = 'B+F'
-        sgf.p_status = 0
-        sgf.bplayer = winner.username
-        sgf.wplayer = loser.username
-        sgf.league_valid = True
-        sgf.save()
-        sgf.events.add(event)
-        sgf.divisions.add(division)
-        return sgf
 
 class User(AbstractUser):
     """User used for auth in all project."""
@@ -1467,6 +1449,21 @@ class Division(models.Model):
         )
         return results
 
+    def create_forfeit(self, winner, loser):
+        """Creates and returns an sgf with forfait result"""
+        sgf = Sgf()
+        sgf.winner = winner
+        sgf.black = winner
+        sgf.white = loser
+        sgf.result = 'B+F'
+        sgf.p_status = 0
+        sgf.bplayer = winner.username
+        sgf.wplayer = loser.username
+        sgf.league_valid = True
+        sgf.save()
+        sgf.events.add(self.league_event)
+        sgf.divisions.add(self)
+        return sgf
 
 class LeaguePlayer(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)

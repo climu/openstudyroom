@@ -3,7 +3,7 @@
 {% block title %} {{division.name}} edit {% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1> {{division.name}} - create forfait</h1>
+    <h1> {{division.name}} - create forfeit</h1>
     <a href="{% url 'league:results' event_pk division.pk %}">Go back to division's page</a>
 </div>
 {%endblock%}
@@ -11,7 +11,7 @@
 {% block content %}
 <div class="row">
     <div class="col-md-2">
-        <form action="{% url 'league:division_create_forfait' division.pk %}" method="POST">{% csrf_token %}
+        <form action="{% url 'league:division_create_forfeit' division.pk %}" method="POST">{% csrf_token %}
             <div class="form-group">
                 <select id="select-winner" class="form-control" name="winner">
                     <option value="">Select the winner ...</option>
