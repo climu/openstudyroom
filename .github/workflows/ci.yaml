@@ -1,0 +1,29 @@
+# https://docs.github.com/en/actions/guides/building-and-testing-python
+
+name: CI
+
+on:
+  push:
+    branches: '*'
+  pull_request:
+    branches: '*'
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.7'
+
+    - name: install dependencies
+      run: pip3 install --quiet --requirement requirements_dev.txt
+
+    - name: pytest
+      run: ./manage.py makemigrations && pytest --create-db
+
+    - name: pylint
+      run: pylint community fixtures fullcalendar home league openstudyroom search wgo manage.py
