@@ -41,7 +41,7 @@ mistune==0.8.4
 oauthlib==2.0.1
 olefile==0.44
 packaging==16.8
-Pillow==8.1.1
+Pillow==8.3.2
 psycopg2-binary==2.7.5
 puput==1.1.1
 pybbm==0.18.4
