@@ -280,11 +280,11 @@ def format_ffg_tou(league, licences, location=None, comment=None):
             winner.wins += 1
 
     # sorting players
-    ordered = sorted(players, key=operator.attrgetter('name'))
-    ordered = sorted(players, key=operator.attrgetter('rating'), reverse=True)
-    ordered = sorted(players, key=operator.attrgetter('wins'), reverse=True)
+    ordered1 = sorted(players, key=operator.attrgetter('name'))
+    ordered2 = sorted(ordered1, key=operator.attrgetter('rating'), reverse=True)
+    ordered3 = sorted(ordered2, key=operator.attrgetter('wins'), reverse=True)
 
-    for player in ordered:
+    for player in ordered3:
         print(type(player.rating), player.rating, player.rank)
         tou += f'{player.num:>4} {player.name:24} {player.rank:>3} {player.licence_number}'
         tou += f'{player.club:4}{player.results}\n'
