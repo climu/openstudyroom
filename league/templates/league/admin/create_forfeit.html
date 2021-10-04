@@ -1,0 +1,56 @@
+{% extends 'full_width.html' %}
+{% load bootstrap3 league_tags %}
+{% block title %} {{division.name}} edit {% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1> {{division.name}} - create forfeit</h1>
+    <a href="{% url 'league:results' event_pk division.pk %}">Go back to division's page</a>
+</div>
+{%endblock%}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-2">
+        <form action="{% url 'league:division_create_forfeit' division.pk %}" method="POST">{% csrf_token %}
+            <div class="form-group">
+                <select id="select-winner" class="form-control" name="winner">
+                    <option value="">Select the winner ...</option>
+                    {% for player in division.get_results %}
+                        <option value="{{player.user.pk}}">{{player.user}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <select id="select-loser" class="form-control" name="loser">
+                    <option value="">Select the loser ...</option>
+                    {% for player in division.get_results %}
+                        <option value="{{player.user.pk}}">{{player.user}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button id="button_submit" class="btn btn-primary" type="submit" disabled>Create SGF</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+{% block extra_css %}
+{% endblock extra_css %}
+
+{% block extra_js %}
+{{ form.media.js }}
+<script>
+    const winner = document.getElementById('select-winner')
+    const loser = document.getElementById('select-loser')
+    function onSelectChange(e) {
+        const submit = document.getElementById('button_submit')
+        if (winner.value && loser.value && winner.value != loser.value)
+            submit.removeAttribute('disabled')
+        else
+            submit.setAttribute('disabled', true)
+    }
+    winner.addEventListener('change', onSelectChange)
+    loser.addEventListener('change', onSelectChange)
+
+</script>
+{% endblock extra_js %}

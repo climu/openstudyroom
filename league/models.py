@@ -1449,6 +1449,21 @@ class Division(models.Model):
         )
         return results
 
+    def create_forfeit(self, winner, loser):
+        """Creates and returns an sgf with forfait result"""
+        sgf = Sgf()
+        sgf.winner = winner
+        sgf.black = winner
+        sgf.white = loser
+        sgf.result = 'B+F'
+        sgf.p_status = 0
+        sgf.bplayer = winner.username
+        sgf.wplayer = loser.username
+        sgf.league_valid = True
+        sgf.save()
+        sgf.events.add(self.league_event)
+        sgf.divisions.add(self)
+        return sgf
 
 class LeaguePlayer(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)

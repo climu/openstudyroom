@@ -42,7 +42,7 @@ from . import utils
 from . import ogs
 from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
     Profile
-from .forms import SgfAdminForm, AddWontPlayForm, RemoveWontPlayForm, ActionForm,\
+from .forms import SgfAdminForm, AddWontPlayForm, CreateForfeitForm, RemoveWontPlayForm, ActionForm,\
     LeaguePopulateForm, UploadFileForm, DivisionForm,\
     LeagueEventForm, EmailForm, TimezoneForm, ProfileForm
 from .go_federations import format_ffg_tou
@@ -1482,8 +1482,34 @@ def division_update_wont_play(request, division_id):
         'event_pk': event.pk,
         'division': division,
     }
-    print(event.pk)
     return render(request, 'league/admin/update_wont_play.html', context)
+
+@login_required()
+def division_create_forfeit(request, division_id):
+    division = get_object_or_404(Division, pk=division_id)
+    event = division.league_event
+    if not request.user.is_league_admin(event):
+        raise Http404("What are you doing here ?")
+    context = {
+            'event_pk': event.pk,
+            'division': division,
+        }
+    if request.method == 'POST':
+        form = CreateForfeitForm(request.POST)
+        if form.is_valid():
+            winner = get_object_or_404(User, pk=form.cleaned_data['winner'])
+            loser = get_object_or_404(User, pk=form.cleaned_data['loser'])
+            division.create_forfeit(winner, loser)
+            return HttpResponseRedirect(reverse('league:results',
+                kwargs={
+                    'event_id': event.pk,
+                    'division_id' : division_id
+                }
+            ))
+        else:
+            raise Http404("Form is invalid")
+    else:
+        return render(request, 'league/admin/create_forfeit.html', context)
 
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)

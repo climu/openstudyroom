@@ -102,7 +102,7 @@ def ffg_user_infos_alternative(ffg_licence_number, echelle_ffg):
         }
 
 
-def format_ffg_tou(league, licences, location=None, comment=None):
+def format_ffg_tou2(league, licences, location=None, comment=None):
     """
     format a division results in tou format for the French Go fédération.
     https://ffg.jeudego.org/echelle/format_res.php
@@ -210,5 +210,72 @@ def format_ffg_tou(league, licences, location=None, comment=None):
         tou += f'{player.num:>4} {player.name:24} {player.rank:>3} {player.licence_number}'
         tou += f' {player.club:4}{player.results}\n'
     # add the footer
+
+    return tou
+
+def format_ffg_tou(league, licences, location=None, comment=None):
+    """
+    Same purpose of the previous one (see above) without 0= result.
+    (league admin can create a forfait sgf if a player dont player a round)
+    """
+    # Create the header
+    tou = f';name={league.name}\n'
+    date = league.begin_time.strftime("%d/%m/%Y")
+    tou += f';date={date}\n'
+    if location:
+        tou += f';vill={location}\n'
+    if comment:
+        tou += f';comm={comment}\n'
+    tou += f';size={league.board_size}\n'
+    # clock_type is 'byoyomi' or 'fisher'
+    tou += f';time={league.main_time/60:.0f}+{league.clock_type[0]}\n'
+    tou += f';komi={league.komi}\n'
+    tou += f';vill={league.servers}\n'
+    tou += ';prog=https://github.com/climu/openstudyroom/\n'
+    tou += ';\n'
+    tou += ';Num Nom Prénom               Niv Licence Club\n'
+
+    # get the last FFG information
+    url = "https://ffg.jeudego.org/echelle/echtxt/ech_ffg_V3.txt"
+    request = requests.get(url, timeout=10)
+    if request.status_code != 200:
+        return None
+    echelle_ffg = request.text
+
+    sgfs = league.sgf_set.exclude(winner__isnull=True).\
+        defer('sgf_text').select_related('winner', 'white', 'black').all()
+    players = league.leagueplayer_set.all().prefetch_related('user__profile')
+
+    # First add extra fields to players
+    for idx, player in enumerate(players):
+        # if a player does not have a licence number we return None
+        licence_number = licences[player.user.username]
+        if licence_number is None or licence_number == 0:
+            return None
+        infos = ffg_user_infos_alternative(licence_number, echelle_ffg)
+        if infos is None:
+            return None
+        player.num = idx + 1
+        player.name = infos["name"]
+        player.rank = ffg_rating2rank(infos['rating'])
+        player.licence_number = licence_number
+        player.club = infos["club"]
+        player.results = '' #    2+w0    4+w2    3-b0
+
+    for sgf in sgfs:
+        if sgf.winner == sgf.white:
+            loser = next(player for player in players if player.user == sgf.black)
+            winner = next(player for player in players if player.user == sgf.white)
+            loser.results += f'{winner.num:>5}-b{sgf.handicap}'
+            winner.results += f'{loser.num:>5}+w{sgf.handicap}'
+        else:
+            loser = next(player for player in players if player.user == sgf.white)
+            winner = next(player for player in players if player.user == sgf.black)
+            loser.results += f'{winner.num:>5}-w{sgf.handicap}'
+            winner.results += f'{loser.num:>5}+b{sgf.handicap}'
+
+    for player in players:
+        tou += f'{player.num:>4} {player.name:24} {player.rank:>3} {player.licence_number}'
+        tou += f' {player.club:4}{player.results}\n'
 
     return tou

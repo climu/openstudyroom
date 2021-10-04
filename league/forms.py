@@ -40,6 +40,16 @@ class SgfAdminForm(forms.Form):
 class AddWontPlayForm(forms.Form):
     players = MultipleIntField(2)
 
+class CreateForfeitForm(forms.Form):
+    winner = forms.IntegerField()
+    loser = forms.IntegerField()
+    def clean(self):
+        cleaned_data = super().clean()
+        winner = cleaned_data.get("winner")
+        loser = cleaned_data.get("loser")
+        if winner == loser:
+            raise ValidationError("Winner and loser cannot be the same user")
+
 class RemoveWontPlayForm(forms.Form):
     sgfs = MultipleIntField()
 

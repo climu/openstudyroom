@@ -90,16 +90,16 @@ def html_one_result_2(context, _tr_idx, _td_idx, _blank=False):
 
     if not opponent.pk in player.results:
         html += '<td class="' + class_name + '"></td>'
-
     else:
         results = player.results[opponent.pk]
         # gray opponent's cell if a WontPlay result exists in player's result
         if any(game['p'] == 'WontPlay' for game in results):
             html += '<td class="disabled"></td>'
         else:
+            html = '<td class="' + class_name + '">'
             for game in results:
                 # here, game['id'] would get you the id of the game to add a link
-                html = '<td class="' + class_name + '">'
+
                 html += '<a data-toggle="tooltip" target="' + ("_blank" if _blank is True else "_self")  + \
                         '" href="/league/' + event + 'games/' + str(game['id']) + '" \
                         title="' + player.user.username + ' vs ' + \
