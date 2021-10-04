@@ -1,6 +1,7 @@
 """ Get data from go Federations"""
 from math import ceil
 import requests
+import operator
 
 def get_egf_rank(egf_id):
     """
@@ -257,10 +258,12 @@ def format_ffg_tou(league, licences, location=None, comment=None):
             return None
         player.num = idx + 1
         player.name = infos["name"]
+        player.rating = int(infos['rating'])
         player.rank = ffg_rating2rank(infos['rating'])
         player.licence_number = licence_number
         player.club = infos["club"]
         player.results = '' #    2+w0    4+w2    3-b0
+        player.wins = 0
 
     for sgf in sgfs:
         if sgf.winner == sgf.white:
@@ -268,14 +271,22 @@ def format_ffg_tou(league, licences, location=None, comment=None):
             winner = next(player for player in players if player.user == sgf.white)
             loser.results += f'{winner.num:>5}-b{sgf.handicap}'
             winner.results += f'{loser.num:>5}+w{sgf.handicap}'
+            winner.wins += 1
         else:
             loser = next(player for player in players if player.user == sgf.white)
             winner = next(player for player in players if player.user == sgf.black)
             loser.results += f'{winner.num:>5}-w{sgf.handicap}'
             winner.results += f'{loser.num:>5}+b{sgf.handicap}'
+            winner.wins += 1
 
-    for player in players:
+    # sorting players
+    ordered = sorted(players, key=operator.attrgetter('name'))
+    ordered = sorted(players, key=operator.attrgetter('rating'), reverse=True)
+    ordered = sorted(players, key=operator.attrgetter('wins'), reverse=True)
+
+    for player in ordered:
+        print(type(player.rating), player.rating, player.rank)
         tou += f'{player.num:>4} {player.name:24} {player.rank:>3} {player.licence_number}'
-        tou += f' {player.club:4}{player.results}\n'
+        tou += f'{player.club:4}{player.results}\n'
 
     return tou
