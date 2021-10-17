@@ -42,6 +42,7 @@ from . import utils
 from . import ogs
 from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
     Profile
+from fullcalendar.models import GameAppointmentEvent
 from .forms import SgfAdminForm, AddWontPlayForm, CreateForfeitForm, RemoveWontPlayForm, ActionForm,\
     LeaguePopulateForm, UploadFileForm, DivisionForm,\
     LeagueEventForm, EmailForm, TimezoneForm, ProfileForm
@@ -282,9 +283,20 @@ def division_results(request, event_id=None, division_id=None):
     else:
         number_players = len(results)
     template = loader.get_template('league/results.html')
+
+    # Get game appointments related to the division
+    div_appointments = []
+    if division:
+        tz = request.user.get_timezone() if request.user.is_authenticated else pytz.utc
+        all_appointments = GameAppointmentEvent.get_formated(tz)
+        for e in all_appointments:
+            e['divisions'] = [div['pk'] for div in e['divisions']]
+        div_appointments = [e for e in all_appointments if division.pk in e['divisions']]
+
     context = {
         'event': event,
         'division': division,
+        'appointments': div_appointments,
         'results': results,
         'open_events': open_events,
         'can_edit_division_infos': can_edit_division_infos,
