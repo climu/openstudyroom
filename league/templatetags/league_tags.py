@@ -77,39 +77,50 @@ def html_one_result(context, _blank=False):
 @register.simple_tag(takes_context=True)
 def html_one_result_2(context, _tr_idx, _td_idx, _blank=False):
     """Replacement for html_one_result. Handles "WontPlay" results"""
+
     player = context['player']
     opponent = context['opponent']
+    appointments = []
+
+    for e in context['appointments']:
+        ev = {
+            'start': e['start'],
+            'players': [p['pk'] for p in e['users']]
+        }
+        if player.user.pk in ev['players'] and opponent.user.pk in ev['players'] and player.user.pk != opponent.user.pk :
+            appointments.append(ev)
+
     event = str(context['event'].pk) + '/' if 'event' in context else ''
     html = ''
-
     class_name = ('even-col' if (_td_idx % 2) == 0 else 'odd-col')
 
+    if opponent.pk in player.results:
+        results = player.results[opponent.pk]
+    else:
+        results = []
+
     # gray self opponent's cell
-    if _tr_idx == _td_idx:
+    if _tr_idx == _td_idx or any(game['p'] == 'WontPlay' for game in results):
         class_name += ' disabled'
 
-    if not opponent.pk in player.results:
-        html += '<td class="' + class_name + '"></td>'
-    else:
-        results = player.results[opponent.pk]
-        # gray opponent's cell if a WontPlay result exists in player's result
-        if any(game['p'] == 'WontPlay' for game in results):
-            html += '<td class="disabled"></td>'
-        else:
-            html = '<td class="' + class_name + '">'
-            for game in results:
-                # here, game['id'] would get you the id of the game to add a link
+    html = '<td class="' + class_name + '">'
 
-                html += '<a data-toggle="tooltip" target="' + ("_blank" if _blank is True else "_self")  + \
-                        '" href="/league/' + event + 'games/' + str(game['id']) + '" \
-                        title="' + player.user.username + ' vs ' + \
-                        opponent.user.username + '">'
-                if game['r'] == 1:
-                    html += '<i class="fa fa-check" aria-hidden="true" style="color:green"></i></a>'
-                # will be glyphicon glyphicon-ok-circle or fontawesome thing
-                else:
-                    html += '<i class="fa fa-remove" aria-hidden="true" style="color:red"></i></a>'
-        html += '</td>'
+    for game in results:
+        # here, game['id'] would get you the id of the game to add a link
+        html += '<a data-toggle="tooltip" target="' + ("_blank" if _blank is True else "_self")  + \
+                '" href="/league/' + event + 'games/' + str(game['id']) + '" \
+                title="' + player.user.username + ' vs ' + \
+                opponent.user.username + '">'
+        if game['r'] == 1:
+            html += '<i class="fa fa-check" aria-hidden="true" style="color:green"></i></a>'
+        # will be glyphicon glyphicon-ok-circle or fontawesome thing
+        else:
+            html += '<i class="fa fa-remove" aria-hidden="true" style="color:red"></i></a>'
+
+    for ev in appointments:
+        html += '<i data-toggle="tooltip" class="fa fa-clock" aria-hidden="true" title="' + ev['start'] + '"></i>'
+
+    html += '</td>'
 
     return mark_safe(html)
 
