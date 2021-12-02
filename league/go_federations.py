@@ -1,7 +1,7 @@
 """ Get data from go Federations"""
 from math import ceil
-import requests
 import operator
+import requests
 
 def get_egf_rank(egf_id):
     """
