@@ -87,7 +87,7 @@ def html_one_result_2(context, _tr_idx, _td_idx, _blank=False):
             'start': e['start'],
             'players': [p['pk'] for p in e['users']]
         }
-        if player.user.pk in ev['players'] and opponent.user.pk in ev['players'] and player.user.pk != opponent.user.pk :
+        if player.user.pk in ev['players'] and opponent.user.pk in ev['players'] and player.user.pk != opponent.user.pk:
             appointments.append(ev)
 
     event = str(context['event'].pk) + '/' if 'event' in context else ''
