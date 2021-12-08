@@ -106,16 +106,17 @@ def html_one_result_2(context, _tr_idx, _td_idx, _blank=False):
     html = '<td class="' + class_name + '">'
 
     for game in results:
-        # here, game['id'] would get you the id of the game to add a link
-        html += '<a data-toggle="tooltip" target="' + ("_blank" if _blank is True else "_self")  + \
-                '" href="/league/' + event + 'games/' + str(game['id']) + '" \
-                title="' + player.user.username + ' vs ' + \
-                opponent.user.username + '">'
-        if game['r'] == 1:
-            html += '<i class="fa fa-check" aria-hidden="true" style="color:green"></i></a>'
-        # will be glyphicon glyphicon-ok-circle or fontawesome thing
-        else:
-            html += '<i class="fa fa-remove" aria-hidden="true" style="color:red"></i></a>'
+        if game['p'] != 'WontPlay':
+            # here, game['id'] would get you the id of the game to add a link
+            html += '<a data-toggle="tooltip" target="' + ("_blank" if _blank is True else "_self")  + \
+                    '" href="/league/' + event + 'games/' + str(game['id']) + '" \
+                    title="' + player.user.username + ' vs ' + \
+                    opponent.user.username + '">'
+            if game['r'] == 1:
+                html += '<i class="fa fa-check" aria-hidden="true" style="color:green"></i></a>'
+            # will be glyphicon glyphicon-ok-circle or fontawesome thing
+            else:
+                html += '<i class="fa fa-remove" aria-hidden="true" style="color:red"></i></a>'
 
     for ev in appointments:
         html += '<i data-toggle="tooltip" class="fa fa-clock" aria-hidden="true" title="' + ev['start'] + '"></i>'

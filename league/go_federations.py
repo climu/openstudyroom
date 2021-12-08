@@ -1,7 +1,7 @@
 """ Get data from go Federations"""
 from math import ceil
-import requests
 import operator
+import requests
 
 def get_egf_rank(egf_id):
     """
@@ -101,7 +101,6 @@ def ffg_user_infos_alternative(ffg_licence_number, echelle_ffg):
             'rating': line[38:43].lstrip(),
             'club': line[54:58]
         }
-
 
 def format_ffg_tou2(league, licences, location=None, comment=None):
     """
@@ -256,7 +255,6 @@ def format_ffg_tou(league, licences, location=None, comment=None):
         infos = ffg_user_infos_alternative(licence_number, echelle_ffg)
         if infos is None:
             return None
-        player.num = idx + 1
         player.name = infos["name"]
         player.rating = int(infos['rating'])
         player.rank = ffg_rating2rank(infos['rating'])
@@ -265,18 +263,15 @@ def format_ffg_tou(league, licences, location=None, comment=None):
         player.results = '' #    2+w0    4+w2    3-b0
         player.wins = 0
 
+    # add number of wins for each player
     for sgf in sgfs:
         if sgf.winner == sgf.white:
             loser = next(player for player in players if player.user == sgf.black)
             winner = next(player for player in players if player.user == sgf.white)
-            loser.results += f'{winner.num:>5}-b{sgf.handicap}'
-            winner.results += f'{loser.num:>5}+w{sgf.handicap}'
             winner.wins += 1
         else:
             loser = next(player for player in players if player.user == sgf.white)
             winner = next(player for player in players if player.user == sgf.black)
-            loser.results += f'{winner.num:>5}-w{sgf.handicap}'
-            winner.results += f'{loser.num:>5}+b{sgf.handicap}'
             winner.wins += 1
 
     # sorting players
@@ -284,8 +279,50 @@ def format_ffg_tou(league, licences, location=None, comment=None):
     players = sorted(players, key=operator.attrgetter('rating'), reverse=True)
     players = sorted(players, key=operator.attrgetter('wins'), reverse=True)
 
+    # Set an id for each player based of their classment
+    for idx, player in enumerate(players):
+        player.num = idx + 1
+
+    # we create a list of round.
+    # We will put the sgfs inside each round so a player can only play one game per round.
+    # rounds = [{"users": [list of users who played this round], "sgfs": [list of sgfs]}]
+    rounds = [{'users':[], 'sgfs':[]}]
+    for sgf in sgfs:
+        # we put the sgf in the first round where both player have not played yet
+        in_round = False
+        for round in rounds:
+            if sgf.black not in round['users'] and sgf.white not in round['users']:
+                round['sgfs'].append(sgf)
+                round['users'].extend([sgf.white, sgf.black])
+                in_round = True
+                break
+        # if no round can welcome this sgf, we create a new round
+        if not in_round:
+            rounds.append({
+                'users': [sgf.white, sgf.black],
+                'sgfs': [sgf]
+            })
+
+    # render players results per round
+    for round in rounds:
+        for sgf in round['sgfs']:
+            if sgf.winner == sgf.white:
+                loser = next(player for player in players if player.user == sgf.black)
+                winner = next(player for player in players if player.user == sgf.white)
+                loser.results += f'{winner.num:>5}-b{sgf.handicap}'
+                winner.results += f'{loser.num:>5}+w{sgf.handicap}'
+            else:
+                loser = next(player for player in players if player.user == sgf.white)
+                winner = next(player for player in players if player.user == sgf.black)
+                loser.results += f'{winner.num:>5}-w{sgf.handicap}'
+                winner.results += f'{loser.num:>5}+b{sgf.handicap}'
+        # add 0= for players who didn't participate in the round
+        for player in players:
+            if player.user not in round['users']:
+                player.results += '    0=  '
+
     for player in players:
-        tou += f'{player.num:>4} {player.name:24} {player.rank:>3} {player.licence_number}'
-        tou += f'{player.club:4}{player.results}\n'
+        tou += f'{player.num:>4} {player.name:24} {player.rank:>3} {player.licence_number} '
+        tou += f'{player.club:4} {player.results}\n'
 
     return tou

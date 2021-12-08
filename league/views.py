@@ -38,11 +38,11 @@ from postman.api import pm_write
 from discord_bind.models import DiscordUser
 from tournament.models import Tournament
 from community.models import Community
+from fullcalendar.models import GameAppointmentEvent
 from . import utils
 from . import ogs
 from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
     Profile
-from fullcalendar.models import GameAppointmentEvent
 from .forms import SgfAdminForm, AddWontPlayForm, CreateForfeitForm, RemoveWontPlayForm, ActionForm,\
     LeaguePopulateForm, UploadFileForm, DivisionForm,\
     LeagueEventForm, EmailForm, TimezoneForm, ProfileForm
