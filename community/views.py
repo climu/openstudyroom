@@ -192,6 +192,7 @@ def community_ranking(request, slug):
 
                 # next, extend members properties with community related stats
                 for idx, user in enumerate(members):
+                    user.idx = idx
                     players = user.leagueplayer_set.all().filter(event__in=leagues)
                     games_count = 0
                     wins_count = 0
