@@ -11,6 +11,11 @@ urlpatterns = [
         name='community_page'
     ),
     url(
+        r'^(?P<slug>[\w.@+-]+)/ranking/$',
+        views.community_ranking,
+        name='community_ranking'
+    ),
+    url(
         r'^admin/list/$',
         views.admin_community_list,
         name='admin_community_list'
