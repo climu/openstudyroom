@@ -1,20 +1,25 @@
 from django.conf.urls import url
 
+from league.models import LeagueEvent
+
 from . import views
 
+# init urlpatterns
+urlpatterns = []
+
+# make the pattern for all the events
+for (event_type,_) in LeagueEvent.EVENT_TYPE_CHOICES:
+    urlpatterns = urlpatterns + [url(r'^meijin/$', views.getLeagueEvent(event_type), name=event_type)]
+
 app_name = 'league'
-urlpatterns = [
+urlpatterns = urlpatterns + [
     url(r'^$', views.division_results, name='results'),
     # Sad, but for historical reason, info page is named event.
     # If you want to replace reverses everywhere, be my guest
     url(r'^infos/$', views.infos, name='event'),
 
+
     url(r'^results/$', views.division_results, name='results'),
-    url(r'^meijin/$', views.meijin, name='meijin'),
-    url(r'^ladder/$', views.ladder, name='ladder'),
-    url(r'^ddk/$', views.ddk, name='ddk'),
-    url(r'^dan/$', views.dan, name='dan'),
-    url(r'^9x9/$', views.ninenine, name='ninenine'),
 
     url(r'^admin/event/(?P<to_event_id>[0-9]+)/populate/$',
         views.populate, name='admin_event_populate'),

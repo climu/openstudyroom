@@ -335,69 +335,22 @@ def division_results_iframe(request, event_id=None, division_id=None):
     }
     return HttpResponse(template.render(context, request))
 
-def meijin(request):
-    """A simple view that redirects to the last open meijin league."""
-    league = LeagueEvent.objects.filter(
-        event_type='meijin',
-        is_open=True,
-        community__isnull=True
-    ).order_by('end_time').first()
-    return HttpResponseRedirect(reverse(
-        'league:results',
-        kwargs={'event_id': league.pk})
-    )
-
-
-def ladder(request):
-    """A simple view that redirects to the last open ladder league."""
-    league = LeagueEvent.objects.filter(
-        event_type='ladder',
-        is_open=True,
-        community__isnull=True
-    ).order_by('end_time').first()
-    return HttpResponseRedirect(reverse(
-        'league:results',
-        kwargs={'event_id': league.pk})
-    )
-
-
-def ddk(request):
-    """A simple view that redirects to the last open ddk league."""
-    league = LeagueEvent.objects.filter(
-        event_type='ddk',
-        is_open=True,
-        community__isnull=True
-    ).order_by('end_time').first()
-    return HttpResponseRedirect(reverse(
-        'league:results',
-        kwargs={'event_id': league.pk})
-    )
-
-def dan(request):
-    """A simple view that redirects to the last open dan league."""
-    league = LeagueEvent.objects.filter(
-        event_type='dan',
-        is_open=True,
-        community__isnull=True
-    ).order_by('end_time').first()
-    return HttpResponseRedirect(reverse(
-        'league:results',
-        kwargs={'event_id': league.pk})
-    )
-
-def ninenine(request):
-    """A simple view that redirects to the last open 9x9 league."""
-    league = LeagueEvent.objects.filter(
-        event_type='league',
-        is_open=True,
-        community__isnull=True,
-        board_size=9
-    ).order_by('end_time').first()
-
-    return HttpResponseRedirect(reverse(
-        'league:results',
-        kwargs={'event_id': league.pk})
-    )
+# generic function to return an event type
+def getLeagueEvent(event_type, board_size=19):
+    """A simple view that redirects to the last open league for a given event type."""
+    # create a generate method
+    def event_type_request_processor(request):
+        league = LeagueEvent.objects.filter(
+            event_type=event_type,
+            is_open=True,
+            community__isnull=True,
+            board_size=board_size
+        ).order_by('end_time').first()
+        return HttpResponseRedirect(reverse(
+            'league:results',
+            kwargs={'event_id': league.pk})
+        )
+    return event_type_request_processor
 
 def archives(request):
     """Show a list of all leagues."""
