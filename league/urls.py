@@ -18,7 +18,7 @@ urlpatterns = urlpatterns + [
     # Sad, but for historical reason, info page is named event.
     # If you want to replace reverses everywhere, be my guest
     url(r'^infos/$', views.infos, name='event'),
-    url(r'^9x9/$', views.get_first_league_event(event_type, board_size = 9), name='ninenine'),
+    url(r'^9x9/$', views.ninenine, name='ninenine'),
 
     url(r'^results/$', views.division_results, name='results'),
 
