@@ -8,7 +8,7 @@ from . import views
 urlpatterns = []
 
 # make the pattern for all the events
-for (event_type,_) in LeagueEvent.EVENT_TYPE_CHOICES:
+for (event_type, _) in LeagueEvent.EVENT_TYPE_CHOICES:
     urlpatterns = urlpatterns + [url(r"^" + re.escape(event_type) +r"/$", views.getLeagueEvent(event_type), name=event_type)]
 
 app_name = 'league'
