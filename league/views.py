@@ -336,7 +336,7 @@ def division_results_iframe(request, event_id=None, division_id=None):
     return HttpResponse(template.render(context, request))
 
 # generic function to return an event type
-def getLeagueEvent(event_type, board_size=19):
+def get_league_event(event_type, board_size=19):
     """A simple view that redirects to the last open league for a given event type."""
     # create a generate method
     def event_type_request_processor(request):
