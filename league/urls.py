@@ -9,7 +9,7 @@ urlpatterns = []
 
 # make the pattern for all the events
 for (event_type, _) in LeagueEvent.EVENT_TYPE_CHOICES:
-    new_pattern = [url(r"^" + re.escape(event_type) +r"/$", views.get_league_event(event_type), name=event_type)]
+    new_pattern = [url(r"^" + re.escape(event_type) +r"/$", views.get_first_league_event(event_type), name=event_type)]
     urlpatterns = urlpatterns + new_pattern
 
 app_name = 'league'
@@ -18,7 +18,7 @@ urlpatterns = urlpatterns + [
     # Sad, but for historical reason, info page is named event.
     # If you want to replace reverses everywhere, be my guest
     url(r'^infos/$', views.infos, name='event'),
-
+    url(r'^9x9/$', views.get_first_league_event(event_type, board_size = 9), name='ninenine'),
 
     url(r'^results/$', views.division_results, name='results'),
 

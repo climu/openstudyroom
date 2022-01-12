@@ -336,16 +336,23 @@ def division_results_iframe(request, event_id=None, division_id=None):
     return HttpResponse(template.render(context, request))
 
 # generic function to return an event type
-def get_league_event(event_type, board_size=19):
+def get_first_league_event(event_type, board_size=None):
     """A simple view that redirects to the last open league for a given event type."""
     # create a generate method
     def event_type_request_processor(request):
-        league = LeagueEvent.objects.filter(
-            event_type=event_type,
-            is_open=True,
-            community__isnull=True,
-            board_size=board_size
-        ).order_by('end_time').first()
+        if board_size is None:
+            league = LeagueEvent.objects.filter(
+                event_type=event_type,
+                is_open=True,
+                community__isnull=True
+            ).order_by('end_time').first()
+        else: 
+            league = LeagueEvent.objects.filter(
+                event_type=event_type,
+                is_open=True,
+                community__isnull=True,
+                board_size=board_size
+            ).order_by('end_time').first()
         return HttpResponseRedirect(reverse(
             'league:results',
             kwargs={'event_id': league.pk})
