@@ -10,4 +10,4 @@ docker stop $NAME
 docker rm $NAME
 set -e
 docker build -t osr/$NAME .
-docker run --restart=always --name=$NAME $PORTS $VOLUME -d osr/$NAME
+docker run --name=$NAME $PORTS $VOLUME -d osr/$NAME
