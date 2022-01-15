@@ -8,8 +8,9 @@ RUN mkdir /app
 WORKDIR /app
 
 ADD requirements.txt /app/
+ADD requirements_dev.txt /app/
 
-RUN pip install -r requirements.txt
+RUN pip install -r requirements_dev.txt
 
 EXPOSE 8000
 
