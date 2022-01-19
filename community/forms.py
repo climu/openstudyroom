@@ -75,7 +75,6 @@ class CommunytyUserForm(forms.Form):
 
 
 class CommunityRankingForm(forms.Form):
-
     begin_time = forms.DateField(
         widget=forms.DateInput(format='%d/%m/%Y', attrs={'class': 'form-control'}),
     )
