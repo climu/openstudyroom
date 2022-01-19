@@ -91,41 +91,36 @@ class Community(models.Model):
 
         # next, extend members properties with community related stats
         for idx, user in enumerate(members):
-            user.idx = idx
+            ## dictionary returned
+            this_user_data = {
+                "full_name":user.get_full_name(),
+                "games_count":0,
+                "wins_count":0,
+                "win_ratio":0.0,
+                "idx":idx,
+            }
             players = user.leagueplayer_set.all().filter(event__in=leagues)
-            games_count = 0
-            wins_count = 0
-            win_ratio = 0.0
 
             for player in players:
-                wins_count += player.nb_win()
-                games_count += player.nb_games()
-            if games_count > 0:
-                win_ratio = (wins_count * 100) / games_count
-
-            user.games_count = games_count
-            user.wins_count = wins_count
-            user.win_ratio = win_ratio
+                this_user_data['wins_count'] += player.nb_win()
+                this_user_data['games_count'] += player.nb_games()
+            if this_user_data['games_count'] > 0:
+                this_user_data['win_ratio'] = (this_user_data['wins_count'] * 100) / this_user_data['games_count']
 
             # ffg
             if user.profile.hasFfgLicenseNumber():
                 rating = int(ffg_user_infos(user.profile.ffg_licence_number, ffg_ladder)['rating'])
                 rank = ffg_rating2rank(rating)
-                user.ffg_rating = rating
-                user.ffg_rank = rank
+                this_user_data['ffg_rating'] = rating
+                this_user_data['ffg_rank'] = rank
+                this_user_data['has_ffg_license'] = True
             else:
-                user.ffg_rating = "N/A"
-                user.ffg_rank = "N/A"
+                this_user_data['ffg_rating'] = "N/A"
+                this_user_data['ffg_rank'] = "N/A"
+                this_user_data['has_ffg_license'] = False
 
 
-            output['data'].append({
-                'full_name':user.get_full_name(),
-                'games_count':user.games_count,
-                'wins_count':user.wins_count,
-                'win_ratio':user.win_ratio,
-                'ffg_rating':user.ffg_rating,
-                'ffg_rank':user.ffg_rank
-            })
+            output['data'].append(this_user_data)
         return output
 
 

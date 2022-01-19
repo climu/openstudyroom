@@ -7,8 +7,8 @@ app_name = 'community'
 urlpatterns = [
     url(
         r'^(?P<slug>[\w.@+-]+)/my_beautiful/$',
-        views.my_beautiful,
-        name='my_beautiful_page'        
+        views.ranking_api,
+        name='ranking_api'        
     ),
     url(
         r'^(?P<slug>[\w.@+-]+)/$',

@@ -163,7 +163,7 @@ def community_page(request, slug):
     return render(request, 'community/community_page.html', context)
 
 
-def my_beautiful(request,slug):
+def ranking_api(request,slug):
     """
     Shows community league ranking as a data JSON
     """
@@ -186,6 +186,17 @@ def my_beautiful(request,slug):
 
     data = community.ranking(begin_time=begin_time, end_time=end_time)
 
+    # Create the file's content
+    txt = f'{community.name}\'s ranking from {begin_time.date()} to {end_time.date()}\n'
+
+    for (stat_name,stat_sort) in [
+        ("Played games","games_count"),
+        ("Games won","wins_count"),
+        ("Win ratio (%)","win_ratio")
+    ]:
+        txt += '\n-------------------\n'+stat_name+' :\n-------------------\n'
+        txt += '\n'.join([f'{d["full_name"]} {d[stat_sort]}' for d in sorted(data['data'],key= lambda el: el[stat_sort])])
+
     return JsonResponse(data)
 
 def community_ranking(request, slug):
@@ -200,7 +211,6 @@ def community_ranking(request, slug):
     if request.method == 'POST':
         form = CommunityRankingForm(request.POST)
         if form.is_valid():
-
             # format inc dates
             begin_time = datetime.combine(form.cleaned_data['begin_time'], datetime.min.time(), utc)
             end_time = datetime.combine(form.cleaned_data['end_time'], datetime.min.time(), utc)
@@ -208,74 +218,23 @@ def community_ranking(request, slug):
 
             if begin_time < end_time:
 
-                # get leagues
-                leagues = community.leagueevent_set.all().\
-                    exclude(event_type='tournament').\
-                    filter(begin_time__gte=begin_time, end_time__lte=end_time)
-
-                # get members
-                members = User.objects.filter(groups=community.user_group).select_related('profile')
-
-                # next, extend members properties with community related stats
-                for idx, user in enumerate(members):
-                    user.idx = idx
-                    players = user.leagueplayer_set.all().filter(event__in=leagues)
-                    games_count = 0
-                    wins_count = 0
-                    win_ratio = 0.0
-
-                    for player in players:
-                        wins_count += player.nb_win()
-                        games_count += player.nb_games()
-                    if games_count > 0:
-                        win_ratio = (wins_count * 100) / games_count
-
-                    user.games_count = games_count
-                    user.wins_count = wins_count
-                    user.win_ratio = win_ratio
-
-                played_games_ranking = sorted(members, key=operator.attrgetter('games_count'), reverse=True)
-                win_games_ranking = sorted(members, key=operator.attrgetter('wins_count'), reverse=True)
-                win_ratio_ranking = sorted(members, key=operator.attrgetter('win_ratio'), reverse=True)
-
-                # add FFG rating if needed
-                if ffg_rating:
-                    members_with_ffg_licence = members.\
-                        exclude(profile__ffg_licence_number__exact='').\
-                        exclude(profile__ffg_licence_number__isnull=True)
-
-                    ffg_ladder = get_ffg_ladder()
-
-                    for idx, user in enumerate(members_with_ffg_licence):
-                        rating = int(ffg_user_infos(user.profile.ffg_licence_number, ffg_ladder)['rating'])
-                        rank = ffg_rating2rank(rating)
-                        user.ffg_rating = rating
-                        user.ffg_rank = rank
-
-                    ffg_rating_ranking = sorted(
-                        members_with_ffg_licence,
-                        key=operator.attrgetter('ffg_rating'),
-                        reverse=True)
+                data = community.ranking(begin_time=begin_time, end_time=end_time)
 
                 # Create the file's content
                 txt = f'{community.name}\'s ranking from {begin_time.date()} to {end_time.date()}\n'
 
-                txt += '\n-------------------\nPlayed games :\n-------------------\n'
-                for user in played_games_ranking:
-                    txt += f'{user.get_full_name(): <30}{user.games_count}\n'
+                for (stat_name,stat_sort) in [
+                    ("Played games","games_count"),
+                    ("Games won","wins_count"),
+                    ("Win ratio (%)","win_ratio")
+                ]:
+                    txt += '\n-------------------\n'+stat_name+' :\n-------------------\n'
+                    txt += '\n'.join([f'{d["full_name"]} {d[stat_sort]}' for d in sorted(data['data'],key= lambda el: el[stat_sort], reverse=True)])
 
-                txt += '\n-------------------\nGames won :\n-------------------\n'
-                for user in win_games_ranking:
-                    txt += f'{user.get_full_name(): <30}{user.wins_count}\n'
-
-                txt += '\n-------------------\nWin ratio (%) :\n-------------------\n'
-                for user in win_ratio_ranking:
-                    txt += f'{user.get_full_name(): <30}{user.win_ratio}\n'
 
                 if ffg_rating:
                     txt += '\n-------------------\nFFG Rating :\n-------------------\n'
-                    for user in ffg_rating_ranking:
-                        txt += f'{user.get_full_name(): <30}{user.ffg_rating} ({user.ffg_rank})\n'
+                    txt += '\n'.join([f'{d["full_name"]} {d["ffg_rating"] (d["ffg_rank"])}' for d in sorted(data['data'],key= lambda el: el['ffg_rating'], reverse=True)])
 
                 filename = 'OSR-community-ranking.txt'
                 response = HttpResponse(txt, content_type='text/plain')

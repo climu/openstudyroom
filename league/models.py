@@ -1287,8 +1287,6 @@ class Profile(models.Model):
         return self.user.username
 
     def hasFfgLicenseNumber(self):
-        print("hasFfgLicenseNumber:")
-        print(not self.ffg_licence_number)
         """
         Returns true if the user has a valid ffg license number
         """
