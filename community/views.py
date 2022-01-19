@@ -186,17 +186,6 @@ def ranking_api(request,slug):
 
     data = community.ranking(begin_time=begin_time, end_time=end_time)
 
-    # Create the file's content
-    txt = f'{community.name}\'s ranking from {begin_time.date()} to {end_time.date()}\n'
-
-    for (stat_name,stat_sort) in [
-        ("Played games","games_count"),
-        ("Games won","wins_count"),
-        ("Win ratio (%)","win_ratio")
-    ]:
-        txt += '\n-------------------\n'+stat_name+' :\n-------------------\n'
-        txt += '\n'.join([f'{d["full_name"]} {d[stat_sort]}' for d in sorted(data['data'],key= lambda el: el[stat_sort])])
-
     return JsonResponse(data)
 
 def community_ranking(request, slug):
