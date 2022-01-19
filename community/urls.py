@@ -6,6 +6,11 @@ app_name = 'community'
 
 urlpatterns = [
     url(
+        r'^(?P<slug>[\w.@+-]+)/my_beautiful/$',
+        views.my_beautiful,
+        name='my_beautiful_page'        
+    ),
+    url(
         r'^(?P<slug>[\w.@+-]+)/$',
         views.community_page,
         name='community_page'

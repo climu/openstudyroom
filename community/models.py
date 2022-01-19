@@ -5,6 +5,8 @@ from django.contrib.auth import get_user_model
 from django.conf.global_settings import LANGUAGES
 from machina.models.fields import MarkupTextField
 from machina.core import validators
+from league.go_federations import get_ffg_ladder, ffg_user_infos, ffg_rating2rank
+
 
 class Community(models.Model):
 
@@ -49,6 +51,7 @@ class Community(models.Model):
         validators=[validators.NullableMaxLengthValidator(4000)])
     discord_webhook_url = models.URLField(blank=True, null=True)
 
+
     def __str__(self):
         return self.name
 
@@ -57,6 +60,74 @@ class Community(models.Model):
             'pk': self.pk,
             'name': self.name,
         }
+
+    def members(self):
+        """
+        Get the members of the league
+        """
+                # from league.models import User
+        User = get_user_model()
+        return User.objects.filter(groups=self.user_group).select_related('profile')
+
+    def ranking(self,begin_time,end_time):
+        """
+        Retuern community league ranking dict
+        """
+        # get leagues
+        leagues = self.leagueevent_set.all().\
+            exclude(event_type='tournament').\
+            filter(begin_time__gte=begin_time, end_time__lte=end_time)
+
+        # get members
+        members = self.members()
+
+        # get ffg ladder
+        ffg_ladder = get_ffg_ladder()
+
+        # init the output data
+        output = {
+            'data':[]
+        }
+
+        # next, extend members properties with community related stats
+        for idx, user in enumerate(members):
+            user.idx = idx
+            players = user.leagueplayer_set.all().filter(event__in=leagues)
+            games_count = 0
+            wins_count = 0
+            win_ratio = 0.0
+
+            for player in players:
+                wins_count += player.nb_win()
+                games_count += player.nb_games()
+            if games_count > 0:
+                win_ratio = (wins_count * 100) / games_count
+
+            user.games_count = games_count
+            user.wins_count = wins_count
+            user.win_ratio = win_ratio
+
+            # ffg
+            if user.profile.hasFfgLicenseNumber():
+                rating = int(ffg_user_infos(user.profile.ffg_licence_number, ffg_ladder)['rating'])
+                rank = ffg_rating2rank(rating)
+                user.ffg_rating = rating
+                user.ffg_rank = rank
+            else:
+                user.ffg_rating = "N/A"
+                user.ffg_rank = "N/A"
+
+
+            output['data'].append({
+                'full_name':user.get_full_name(),
+                'games_count':user.games_count,
+                'wins_count':user.wins_count,
+                'win_ratio':user.win_ratio,
+                'ffg_rating':user.ffg_rating,
+                'ffg_rank':user.ffg_rank
+            })
+        return output
+
 
     @classmethod
     def create(cls, name, slug):

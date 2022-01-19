@@ -2,7 +2,7 @@ import operator
 from datetime import datetime
 from pytz import utc
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect, Http404, HttpResponse
+from django.http import HttpResponseRedirect, Http404, HttpResponse, JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import UpdateView
 from django.urls import reverse
@@ -161,6 +161,32 @@ def community_page(request, slug):
         'calendar_data': calendar_data,
     }
     return render(request, 'community/community_page.html', context)
+
+
+def my_beautiful(request,slug):
+    """
+    Shows community league ranking as a data JSON
+    """
+    # load the input params
+    form = CommunityRankingForm(request.GET)
+    if not form.is_valid():
+        raise Http404("Invalid params")
+    begin_time = datetime.combine(form.cleaned_data['begin_time'], datetime.min.time(), utc)
+    end_time = datetime.combine(form.cleaned_data['end_time'], datetime.min.time(), utc)
+    ffg_rating = form.cleaned_data['ffg_rating']
+
+    # load the community
+    community = get_object_or_404(Community, slug=slug)
+
+    if community.private and not community.is_member(request.user):
+        raise Http404('What are you doing here?')
+
+    if begin_time >= end_time:
+        raise Http404('End time should be later than begin time')
+
+    data = community.ranking(begin_time=begin_time, end_time=end_time)
+
+    return JsonResponse(data)
 
 def community_ranking(request, slug):
     """
