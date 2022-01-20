@@ -69,7 +69,7 @@ class Community(models.Model):
         User = get_user_model()
         return User.objects.filter(groups=self.user_group).select_related('profile')
 
-    def ranking(self,begin_time,end_time):
+    def ranking(self, begin_time, end_time):
         """
         Retuern community league ranking dict
         """

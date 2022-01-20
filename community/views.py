@@ -172,21 +172,21 @@ def ranking_table(request, slug):
         'community': community,
         'datatable_config':{
             'columns':[
-                { "title":"Name", "key":"full_name"},
-                { "title":"# Games", "key":"games_count"},
-                { "title":"# Wins", "key":"wins_count"},
-                { "title":"Win ratio (%)", "key":"win_ratio"},
-                { "title":"FFG Rating", "key":"ffg_rating"},
-                { "title":"FFG Rank", "key":"ffg_rank"}
+                {"title":"Name", "key":"full_name"},
+                {"title":"# Games", "key":"games_count"},
+                {"title":"# Wins", "key":"wins_count"},
+                {"title":"Win ratio (%)", "key":"win_ratio"},
+                {"title":"FFG Rating", "key":"ffg_rating"},
+                {"title":"FFG Rank", "key":"ffg_rank"}
             ],
             'id':'community_ranking_table',
-            'url':f'/community/{slug}/ranking_api/?begin_time=2021-1-1&end_time=2022-1-1' 
+            'url':f'/community/{slug}/ranking_api/?begin_time=2021-1-1&end_time=2022-1-1'
         }
     }
 
     return render(request, 'community/ranking_table.html', context)
 
-def ranking_api(request,slug):
+def ranking_api(request, slug):
     """
     Shows community league ranking as a data JSON
     """
@@ -196,7 +196,6 @@ def ranking_api(request,slug):
         raise Http404("Invalid params")
     begin_time = datetime.combine(form.cleaned_data['begin_time'], datetime.min.time(), utc)
     end_time = datetime.combine(form.cleaned_data['end_time'], datetime.min.time(), utc)
-    ffg_rating = form.cleaned_data['ffg_rating']
 
     # load the community
     community = get_object_or_404(Community, slug=slug)
@@ -235,18 +234,24 @@ def community_ranking(request, slug):
                 # Create the file's content
                 txt = f'{community.name}\'s ranking from {begin_time.date()} to {end_time.date()}\n'
 
-                for (stat_name,stat_sort) in [
-                    ("Played games","games_count"),
-                    ("Games won","wins_count"),
-                    ("Win ratio (%)","win_ratio")
+                for (stat_name, stat_sort) in [
+                    ("Played games", "games_count"),
+                    ("Games won", "wins_count"),
+                    ("Win ratio (%)", "win_ratio")
                 ]:
                     txt += '\n-------------------\n'+stat_name+' :\n-------------------\n'
-                    txt += '\n'.join([f'{d["full_name"]} {d[stat_sort]}' for d in sorted(data['data'],key= lambda el: el[stat_sort], reverse=True)])
+                    txt += '\n'.join([
+                        f'{d["full_name"]} {d[stat_sort]}'
+                        for d in sorted(data['data'], key=lambda el, ss=stat_sort: el[ss], reverse=True)
+                    ])
 
 
                 if ffg_rating:
                     txt += '\n-------------------\nFFG Rating :\n-------------------\n'
-                    txt += '\n'.join([f'{d["full_name"]} {d["ffg_rating"] (d["ffg_rank"])}' for d in sorted(data['data'],key= lambda el: el['ffg_rating'], reverse=True)])
+                    txt += '\n'.join([
+                        f'{d["full_name"]} {d["ffg_rating"] (d["ffg_rank"])}' 
+                        for d in sorted(data['data'], key=lambda el: el['ffg_rating'], reverse=True)
+                    ])
 
                 filename = 'OSR-community-ranking.txt'
                 response = HttpResponse(txt, content_type='text/plain')
