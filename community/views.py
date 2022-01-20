@@ -180,7 +180,7 @@ def ranking_table(request, slug):
                 { "title":"FFG Rank", "key":"ffg_rank"}
             ],
             'id':'community_ranking_table',
-            'url':f'http://localhost:8000/community/{slug}/ranking_api/?begin_time=2021-1-1&end_time=2022-1-1' 
+            'url':f'/community/{slug}/ranking_api/?begin_time=2021-1-1&end_time=2022-1-1' 
         }
     }
 
