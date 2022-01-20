@@ -1,4 +1,5 @@
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from pytz import utc
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, Http404, HttpResponse, JsonResponse
@@ -166,8 +167,16 @@ def ranking_table(request, slug):
     if community.private and not community.is_member(request.user):
         raise Http404('What are you doing here?')
 
+    # default to last year
+
+    ranking_from = (datetime.now() - relativedelta(years=1)).strftime("%Y-%m-%d")
+    ranking_to = datetime.now().strftime("%Y-%m-%d")
+
     context = {
         'community': community,
+        'url_pattern':f'/community/{slug}/ranking_api/?begin_time=<RANKING_FROM>&end_time=<RANKING_TO>',
+        'ranking_from':ranking_from,
+        'ranking_to':ranking_to,
         'datatable_config':{
             'columns':[
                 {"title":"Name", "key":"full_name"},
@@ -178,7 +187,7 @@ def ranking_table(request, slug):
                 {"title":"FFG Rank", "key":"ffg_rank"}
             ],
             'id':'community_ranking_table',
-            'url':f'/community/{slug}/ranking_api/?begin_time=2021-1-1&end_time=2022-1-1'
+            'url':f'/community/{slug}/ranking_api/?begin_time={ranking_from}&end_time={ranking_to}',
         }
     }
 

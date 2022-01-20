@@ -1,4 +1,4 @@
-{% extends "league/base.html" %}
+{% extends 'league/admin/base.html' %}
 {% load tz static league_tags bootstrap3 i18n %}
 {% load datatable_tags %}
 
@@ -6,6 +6,15 @@
 {% block content %}
 {% get_meijin as meijin %}
 
+<div class="container">
+  <div class="row">
+    <label class="col-md-2">From</label>
+    <input class="col-md-2" id="ranking_from_input" type="date" value='{{ranking_from}}'/>
+    <label class="col-md-2">To</label>
+    <input class="col-md-2" id="ranking_to_input" type="date" value='{{ranking_to}}'/>
+    <button class="col-md-4" id="submitDate">Load</button>
+  </div>
+</div>
 
 {{ datatable_config | datatable_tag }}
 
@@ -14,6 +23,17 @@
 
 {% block extra_js %}
 <script type="text/javascript">
+  $(document).ready(function(){
+    var url_pattern = "{{url_pattern | safe}}"
+
+    $("#submitDate").on('click',function(e){
+      var ranking_from = $("#ranking_from_input").val()
+      var ranking_to = $("#ranking_to_input").val()
+      var new_url = url_pattern.replace("<RANKING_FROM>",ranking_from).replace("<RANKING_TO>",ranking_to)
+      // loading the new data
+      osr_datatable_loader.update_data_source(new_url)
+    })
+  })
   
 </script>
 {% endblock %}
