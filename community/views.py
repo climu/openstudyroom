@@ -170,14 +170,17 @@ def ranking_table(request, slug):
 
     context = {
         'community': community,
-        'columns':[
-            { "title":"Name", "key":"full_name"},
-            { "title":"# Games", "key":"games_count"},
-            { "title":"# Wins", "key":"wins_count"},
-            { "title":"Win ratio (%)", "key":"win_ratio"},
-            { "title":"FFG Rating", "key":"ffg_rating"},
-            { "title":"FFG Rank", "key":"ffg_rank"}
-        ]
+        'datatable_config':{
+            'columns':[
+                { "title":"Name", "key":"full_name"},
+                { "title":"# Games", "key":"games_count"},
+                { "title":"# Wins", "key":"wins_count"},
+                { "title":"Win ratio (%)", "key":"win_ratio"},
+                { "title":"FFG Rating", "key":"ffg_rating"},
+                { "title":"FFG Rank", "key":"ffg_rank"}
+            ],
+            'id':'community_ranking_table'        
+        }
     }
 
     return render(request, 'community/ranking_table.html', context)

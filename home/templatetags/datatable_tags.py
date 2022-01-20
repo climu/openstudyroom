@@ -5,13 +5,10 @@ from django.template import Context, Template
 register = template.Library()
 
 @register.filter()
-def datatable_tag(columns):
+def datatable_tag(config):
     t = template.loader.get_template('home/tags/datatable.html')
-    context = {
-      "columns": columns
-    }
 
-    result = t.render(context)
+    result = t.render(config)
     return result
 
   # return render(request, 'lld/lld_sections.html',{'document': document})
