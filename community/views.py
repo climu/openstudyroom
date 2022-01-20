@@ -179,7 +179,8 @@ def ranking_table(request, slug):
                 { "title":"FFG Rating", "key":"ffg_rating"},
                 { "title":"FFG Rank", "key":"ffg_rank"}
             ],
-            'id':'community_ranking_table'        
+            'id':'community_ranking_table',
+            'url':f'http://localhost:8000/community/{slug}/ranking_api/?begin_time=2021-1-1&end_time=2022-1-1' 
         }
     }
 
