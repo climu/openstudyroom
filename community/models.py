@@ -61,14 +61,6 @@ class Community(models.Model):
             'name': self.name,
         }
 
-    def members(self):
-        """
-        Get the members of the league
-        """
-                # from league.models import User
-        User = get_user_model()
-        return User.objects.filter(groups=self.user_group).select_related('profile')
-
     def ranking(self, begin_time, end_time):
         """
         Retuern community league ranking dict
@@ -79,7 +71,7 @@ class Community(models.Model):
             filter(begin_time__gte=begin_time, end_time__lte=end_time)
 
         # get members
-        members = self.members()
+        members = self.user_group.user_set.select_related('profile')
 
         # get ffg ladder
         ffg_ladder = get_ffg_ladder()
