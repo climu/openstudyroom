@@ -1,4 +1,3 @@
-import operator
 from datetime import datetime
 from pytz import utc
 from django.shortcuts import get_object_or_404, render
@@ -14,7 +13,6 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from league.models import User, LeagueEvent, Sgf
 from league.views import LeagueEventCreate, LeagueEventUpdate
 from league.forms import ActionForm
-from league.go_federations import get_ffg_ladder, ffg_user_infos, ffg_rating2rank
 from tournament.views import TournamentCreate
 from fullcalendar.views import PublicEventCreate, CategoryCreate
 from .models import Community
@@ -249,7 +247,7 @@ def community_ranking(request, slug):
                 if ffg_rating:
                     txt += '\n-------------------\nFFG Rating :\n-------------------\n'
                     txt += '\n'.join([
-                        f'{d["full_name"]} {d["ffg_rating"] (d["ffg_rank"])}' 
+                        f'{d["full_name"]} {d["ffg_rating"] (d["ffg_rank"])}'
                         for d in sorted(data['data'], key=lambda el: el['ffg_rating'], reverse=True)
                     ])
 

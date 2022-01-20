@@ -1291,9 +1291,9 @@ class Profile(models.Model):
         Returns true if the user has a valid ffg license number
         """
         if self.ffg_licence_number == '':
-            return False 
+            return False
         if self.ffg_licence_number is None:
-            return False 
+            return False
         if not self.ffg_licence_number:
             return False
         return True
