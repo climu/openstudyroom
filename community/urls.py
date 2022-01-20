@@ -6,6 +6,11 @@ app_name = 'community'
 
 urlpatterns = [
     url(
+        r'^(?P<slug>[\w.@+-]+)/ranking_table/$',
+        views.ranking_table,
+        name='ranking_table'        
+    ),
+    url(
         r'^(?P<slug>[\w.@+-]+)/ranking_api/$',
         views.ranking_api,
         name='ranking_api'        

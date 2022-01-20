@@ -162,6 +162,25 @@ def community_page(request, slug):
     }
     return render(request, 'community/community_page.html', context)
 
+def ranking_table(request, slug):
+    community = get_object_or_404(Community, slug=slug)
+
+    if community.private and not community.is_member(request.user):
+        raise Http404('What are you doing here?')
+
+    context = {
+        'community': community,
+        'columns':[
+            { "title":"Name", "key":"full_name"},
+            { "title":"# Games", "key":"games_count"},
+            { "title":"# Wins", "key":"wins_count"},
+            { "title":"Win ratio (%)", "key":"win_ratio"},
+            { "title":"FFG Rating", "key":"ffg_rating"},
+            { "title":"FFG Rank", "key":"ffg_rank"}
+        ]
+    }
+
+    return render(request, 'community/ranking_table.html', context)
 
 def ranking_api(request,slug):
     """

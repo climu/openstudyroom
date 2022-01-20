@@ -1,0 +1,19 @@
+{% extends "league/base.html" %}
+{% load tz static league_tags bootstrap3 i18n %}
+{% load datatable_tags %}
+
+{% block title %}Ranking{% endblock %}
+{% block content %}
+{% get_meijin as meijin %}
+
+
+{{ columns | datatable_tag }}
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript">
+  
+</script>
+{% endblock %}
