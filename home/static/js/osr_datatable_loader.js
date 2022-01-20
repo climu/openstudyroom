@@ -1,17 +1,18 @@
 "use strict";
 (function(osr_datatable_loader){
   // init function
-  osr_datatable_loader.init = ({id, url, columns}) => {
+  osr_datatable_loader.init = function(config){
     // create the datatable
-    $(`#${id}`).DataTable({
+    $('#'+config.id).DataTable({
       ajax: {
-        url: url,
+        url: config.url,
         dataSrc: 'data'
       },
-      columns: columns.map(({key}) => { return {data: key}})
+      columns: config.columns.map(function(el){ 
+        return {
+          data: el.key
+        }
+      })
     });
-    // load the data
   }
-
-
 })(window.osr_datatable_loader = window.osr_datatable_loader || {})
