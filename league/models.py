@@ -1287,6 +1287,17 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
+    def hasFfgLicenseNumber(self):
+        """
+        Returns true if the user has a valid ffg license number
+        """
+        if self.ffg_licence_number == '':
+            return False
+        if self.ffg_licence_number is None:
+            return False
+        if not self.ffg_licence_number:
+            return False
+        return True
 
 class Division(models.Model):
     """A group of players in a league"""
