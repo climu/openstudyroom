@@ -36,6 +36,7 @@ class LeagueEvent(models.Model):
         ('meijin', 'meijin'),
         ('dan', 'dan'),
         ('ddk', 'ddk'),
+        ('sdk', 'sdk'),
         ('tournament', 'tournament'),
     )
     CLOCK_TYPE_CHOICES = (
