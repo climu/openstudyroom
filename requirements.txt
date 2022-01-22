@@ -3,7 +3,7 @@ bs4==0.0.1
 certifi==2017.7.27.1
 chardet==3.0.4
 defusedxml==0.6.0
-Django==3.0
+Django==3.1.14
 django-comments-xtd==2.9.5
 django-allauth==0.42.0
 django-annoying==0.10.3
@@ -16,14 +16,14 @@ django-common-helpers==0.9.0
 django-compressor==3.1
 django-countries==7.2.1
 django-cron==0.5.0
-django-debug-toolbar==3.0
+django-debug-toolbar==3.2.1
 django-el-pagination==3.3.0
 django-haystack==3.0
 django-js-asset==1.1.0
 django-machina==1.1.2
 django-mathfilters==0.4.0
 django-modelcluster==5.2
-django-mptt==0.10.0
+django-mptt==0.12
 django-postman==4.0
 django-social-share==1.3.0
 django-taggit==1.0
