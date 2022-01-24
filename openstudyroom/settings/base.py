@@ -326,7 +326,11 @@ BOOTSTRAP3 = {
     #'theme_url': '/static/css/bootstrap-theme.min.css',
 
     # The complete URL to the Bootstrap JavaScript file (None means derive it from base_url)
-    'javascript_url': None,
+    "javascript_url": {
+    "url": "https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js",
+    "integrity": "sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd",
+    "crossorigin": "anonymous",
+    },
 
     # Put JavaScript in the HEAD section of the HTML document (only relevant if you use bootstrap3.html)
     'javascript_in_head': False,
