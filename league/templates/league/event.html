@@ -49,7 +49,7 @@
      {% endblocktrans %}</li>
   {% endif %}
   {% if event.clock_type == "fisher" %}
-    <li>{% blocktrans with get_main_time_min=event.get_main_time_min additional_time=event.additional_time %}Games must use <b>Fisher timesetting</b> with at least <b>{{get_main_time_min}} min main time and max time</b> and <b>{additional_time}} sec increment</b>.{% endblocktrans %}</li>
+    <li>{% blocktrans with get_main_time_min=event.get_main_time_min additional_time=event.additional_time %}Games must use <b>Fisher timesetting</b> with at least <b>{{get_main_time_min}} min main time and max time</b> and <b>{{additional_time}} sec increment</b>.{% endblocktrans %}</li>
   {% else %}
     <li>{% blocktrans with get_main_time_min=event.get_main_time_min additional_time=event.additional_time %}Games must use <b>Japanese timesetting</b> with at least <b>{{get_main_time_min}} min main time</b> and <b>3 x {{additional_time}} sec byo-yomi</b>.{% endblocktrans %}</li>
   {% endif %}
