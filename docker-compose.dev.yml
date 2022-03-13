@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: openstudyroom-dev
+    image: openstudyroom-dev
+    build:
+      context: .
+      target: webserver
+    volumes:
+      - ./:/app/
+    ports:
+      - 8000:8000
+  cli: 
+    container_name: openstudyroom-cli
+    image: openstudyroom-dev
+    stdin_open: true
+    build:
+      context: .
+      target: cli
+    volumes:
+      - ./:/app/
+  pylint: 
+    container_name: openstudyroom-pylint
+    image: openstudyroom-dev
+    build:
+      context: .
+      target: pylint
+    volumes:
+      - ./:/app/
+    stdin_open: true
