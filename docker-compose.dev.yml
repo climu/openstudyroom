@@ -4,6 +4,7 @@ services:
   app:
     container_name: openstudyroom-dev
     image: openstudyroom-dev
+    restart: always
     build:
       context: .
       target: webserver
