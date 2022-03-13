@@ -74,10 +74,10 @@ docker-compose -f docker-compose.dev.yml up app
 ```
 - Launch pylint tests with (it's slow) : 
 ```bash
-docker-compose -f docker-compose.dev.yml run pylint
+docker-compose -f docker-compose.dev.yml run --rm pylint
 ```
 - Launch the container cli (for ewample to update translations) : 
 ```bash
-docker-compose -f docker-compose.dev.yml run cli
+docker-compose -f docker-compose.dev.yml run --rm cli
 ```
 

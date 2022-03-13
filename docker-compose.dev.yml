@@ -14,7 +14,7 @@ services:
       - 8000:8000
   cli: 
     container_name: openstudyroom-cli
-    image: openstudyroom-dev
+    image: openstudyroom-cli
     stdin_open: true
     build:
       context: .
@@ -23,7 +23,7 @@ services:
       - ./:/app/
   pylint: 
     container_name: openstudyroom-pylint
-    image: openstudyroom-dev
+    image: openstudyroom-pylint
     build:
       context: .
       target: pylint
