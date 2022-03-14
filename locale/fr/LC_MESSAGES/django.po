@@ -376,7 +376,18 @@ msgid ""
 "     "
 msgstr ""
 
-#: .\league\templates\league\event.html:51
+#: .\league\templates\league\event.html:52
+#, python-format
+msgid ""
+"Games must use <b>Fisher timesetting</b> with at least <b>"
+"%(get_main_time_min)s min main time and max time</b> and <b>"
+"%(additional_time)s sec increment</b>."
+msgstr ""
+"Les parties doivent utiliser <b>les réglages de temps Fisher</b> avec au "
+"moins <b>%(get_main_time_min)s min de temps principal et max</b> et <b>"
+"%(additional_time)s d'incrément</b>."
+
+#: .\league\templates\league\event.html:54
 #, python-format
 msgid ""
 "Games must use <b>Japanese timesetting</b> with at least <b>"

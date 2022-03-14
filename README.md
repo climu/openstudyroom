@@ -59,3 +59,25 @@ It's functionalities are documented [here](https://openstudyroom.org/forum/forum
 # Contributing:
 Have a look at our contributing guidelines [here](/CONTRIBUTING.md).
 
+
+# Working with Docker
+With the current Dockerfile and Docker compose, you can build everything with : 
+
+```bash
+docker-compose docker-compose -f docker-compose.dev.yml build
+```
+
+Then, you can : 
+- Run the web server with : 
+```bash
+docker-compose -f docker-compose.dev.yml up app
+```
+- Launch pylint tests with (it's slow) : 
+```bash
+docker-compose -f docker-compose.dev.yml run --rm pylint
+```
+- Launch the container cli (for ewample to update translations) : 
+```bash
+docker-compose -f docker-compose.dev.yml run --rm cli
+```
+

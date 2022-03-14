@@ -9,5 +9,5 @@ VOLUME="-v $(pwd):/app"
 docker stop $NAME
 docker rm $NAME
 set -e
-docker build -t osr/$NAME .
+docker build -t osr/$NAME . --target webserver
 docker run --restart=always --name=$NAME $PORTS $VOLUME -d osr/$NAME
