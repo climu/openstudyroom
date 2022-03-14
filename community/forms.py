@@ -72,3 +72,18 @@ class CommunytyUserForm(forms.Form):
             message = "We don't have a user with username" + username + "."
             raise forms.ValidationError(message)
         return username
+
+
+class CommunityRankingForm(forms.Form):
+    begin_time = forms.DateField(
+        widget=forms.DateInput(format='%d/%m/%Y', attrs={'class': 'form-control'}),
+    )
+    end_time = forms.DateField(
+        widget=forms.DateInput(format='%d/%m/%Y', attrs={'class': 'form-control'}),
+    )
+    ffg_rating = forms.BooleanField(
+        initial=True,
+        required=False,
+        label='FFG Rating',
+        widget=forms.CheckboxInput()
+    )

@@ -9,7 +9,6 @@ from django.db.models import Count, Case, IntegerField, When
 from django.db.models.functions import TruncMonth
 from django.dispatch import receiver
 from django.template.loader import render_to_string
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils import timezone
 from django import forms
 from django.urls import reverse
@@ -37,7 +36,7 @@ TopicPoll.__module__ = "machina.apps.forum_conversation.forum_polls.models"
 register_snippet(TopicPoll)
 
 @register_snippet
-@python_2_unicode_compatible  # provide equivalent __unicode__ and __str__ methods on Python 2
+
 class Advert(models.Model):
     title = models.CharField(max_length=255)
     url = models.URLField(null=True, blank=True)
@@ -54,7 +53,6 @@ class Advert(models.Model):
 
 
 @register_snippet
-@python_2_unicode_compatible  # provide equivalent __unicode__ and __str__ methods on Python 2
 class Quote(models.Model):
     text = models.TextField(blank=True, null=True, max_length=100)
     source = models.TextField(blank=True, null=True, max_length=20)

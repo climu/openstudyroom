@@ -206,9 +206,9 @@ return false;};
       {% endif %}
     </div>
   {% trans "Community admins are blue." %}
+  {% include "community/includes/members_table.html" with members=members%}
   </div>
 
-{% include "community/includes/members_table.html" with members=members%}
 </div>
 
 {% if admin %}

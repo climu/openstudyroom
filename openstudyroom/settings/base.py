@@ -15,7 +15,6 @@ from __future__ import absolute_import, unicode_literals
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-from machina import get_apps as get_machina_apps
 from machina import MACHINA_MAIN_TEMPLATE_DIR
 from machina import MACHINA_MAIN_STATIC_DIR
 
@@ -115,9 +114,20 @@ INSTALLED_APPS = [
     'discord_bind',
     #"anymail",
     'stats',
-    'fancysearch'
-
-]+ get_machina_apps()
+    'fancysearch',
+        # Machina apps:
+    'machina',
+    'machina.apps.forum',
+    'machina.apps.forum_conversation',
+    'machina.apps.forum_conversation.forum_attachments',
+    'machina.apps.forum_conversation.forum_polls',
+    'machina.apps.forum_feeds',
+    'machina.apps.forum_moderation',
+    'machina.apps.forum_search',
+    'machina.apps.forum_tracking',
+    'machina.apps.forum_member',
+    'machina.apps.forum_permission',
+]
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -316,7 +326,11 @@ BOOTSTRAP3 = {
     #'theme_url': '/static/css/bootstrap-theme.min.css',
 
     # The complete URL to the Bootstrap JavaScript file (None means derive it from base_url)
-    'javascript_url': None,
+    "javascript_url": {
+    "url": "https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js",
+    "integrity": "sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd",
+    "crossorigin": "anonymous",
+    },
 
     # Put JavaScript in the HEAD section of the HTML document (only relevant if you use bootstrap3.html)
     'javascript_in_head': False,

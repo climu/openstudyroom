@@ -1,5 +1,8 @@
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+from pytz import utc
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, HttpResponse, JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import UpdateView
 from django.urls import reverse
@@ -14,8 +17,7 @@ from league.forms import ActionForm
 from tournament.views import TournamentCreate
 from fullcalendar.views import PublicEventCreate, CategoryCreate
 from .models import Community
-from .forms import CommunityForm, AdminCommunityForm, CommunytyUserForm
-
+from .forms import CommunityForm, AdminCommunityForm, CommunytyUserForm, CommunityRankingForm
 
 @login_required()
 @user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
@@ -159,6 +161,116 @@ def community_page(request, slug):
     }
     return render(request, 'community/community_page.html', context)
 
+def ranking_table(request, slug):
+    community = get_object_or_404(Community, slug=slug)
+
+    if community.private and not community.is_member(request.user):
+        raise Http404('What are you doing here?')
+
+    # default to last year
+
+    ranking_from = (datetime.now() - relativedelta(years=1)).strftime("%Y-%m-%d")
+    ranking_to = datetime.now().strftime("%Y-%m-%d")
+
+    context = {
+        'community': community,
+        'url_pattern':f'/community/{slug}/ranking_api/?begin_time=<RANKING_FROM>&end_time=<RANKING_TO>',
+        'ranking_from':ranking_from,
+        'ranking_to':ranking_to,
+        'datatable_config':{
+            'columns':[
+                {"title":"Name", "key":"full_name"},
+                {"title":"# Games", "key":"games_count"},
+                {"title":"# Wins", "key":"wins_count"},
+                {"title":"Win ratio (%)", "key":"win_ratio"},
+                {"title":"FFG Rating", "key":"ffg_rating"},
+                {"title":"FFG Rank", "key":"ffg_rank"}
+            ],
+            'id':'community_ranking_table',
+            'url':f'/community/{slug}/ranking_api/?begin_time={ranking_from}&end_time={ranking_to}',
+        }
+    }
+
+    return render(request, 'community/ranking_table.html', context)
+
+def ranking_api(request, slug):
+    """
+    Shows community league ranking as a data JSON
+    """
+    # load the input params
+    form = CommunityRankingForm(request.GET)
+    if not form.is_valid():
+        raise Http404("Invalid params")
+    begin_time = datetime.combine(form.cleaned_data['begin_time'], datetime.min.time(), utc)
+    end_time = datetime.combine(form.cleaned_data['end_time'], datetime.min.time(), utc)
+
+    # load the community
+    community = get_object_or_404(Community, slug=slug)
+
+    if community.private and not community.is_member(request.user):
+        raise Http404('What are you doing here?')
+
+    if begin_time >= end_time:
+        raise Http404('End time should be later than begin time')
+
+    data = community.ranking(begin_time=begin_time, end_time=end_time)
+
+    return JsonResponse(data)
+
+def community_ranking(request, slug):
+    """
+    Shows community league ranking.
+    """
+    community = get_object_or_404(Community, slug=slug)
+
+    if community.private and not community.is_member(request.user):
+        raise Http404('What are you doing here?')
+
+    if request.method == 'POST':
+        form = CommunityRankingForm(request.POST)
+        if form.is_valid():
+            # format inc dates
+            begin_time = datetime.combine(form.cleaned_data['begin_time'], datetime.min.time(), utc)
+            end_time = datetime.combine(form.cleaned_data['end_time'], datetime.min.time(), utc)
+            ffg_rating = form.cleaned_data['ffg_rating']
+
+            if begin_time < end_time:
+
+                data = community.ranking(begin_time=begin_time, end_time=end_time)
+
+                # Create the file's content
+                txt = f'{community.name}\'s ranking from {begin_time.date()} to {end_time.date()}\n'
+
+                for (stat_name, stat_sort) in [
+                    ("Played games", "games_count"),
+                    ("Games won", "wins_count"),
+                    ("Win ratio (%)", "win_ratio")
+                ]:
+                    txt += '\n-------------------\n'+stat_name+' :\n-------------------\n'
+                    txt += '\n'.join([
+                        f'{d["full_name"]} {d[stat_sort]}'
+                        for d in sorted(data['data'], key=lambda el, ss=stat_sort: el[ss], reverse=True)
+                    ])
+
+
+                if ffg_rating:
+                    txt += '\n-------------------\nFFG Rating :\n-------------------\n'
+                    txt += '\n'.join([
+                        f'{d["full_name"]} {d["ffg_rating"] (d["ffg_rank"])}'
+                        for d in sorted(data['data'], key=lambda el: el['ffg_rating'], reverse=True)
+                    ])
+
+                filename = 'OSR-community-ranking.txt'
+                response = HttpResponse(txt, content_type='text/plain')
+                response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
+                return response
+
+    context = {
+        'community': community,
+        'form': CommunityRankingForm,
+    }
+
+    return render(request, 'community/community_ranking.html', context)
 
 def community_list(request):
     groups = request.user.groups.all()

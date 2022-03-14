@@ -4,8 +4,11 @@ ENV PYTHONUNBUFFERED 1
 # Create the app directory
 RUN mkdir /app
 WORKDIR /app
+
 ADD requirements.txt /app/
-RUN pip install -r requirements.txt
+ADD requirements_dev.txt /app/
+
+RUN pip install -r requirements_dev.txt
 
 FROM base_build as webserver
 EXPOSE 8000
