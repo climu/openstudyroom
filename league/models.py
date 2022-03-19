@@ -956,7 +956,7 @@ class User(AbstractUser):
         for player in players:
             division = player.division
             player_opponents = LeaguePlayer.objects.filter(
-                division=division).exclude(pk=player.pk)
+                division=division).exclude(pk=player.pk).select_related("user")
             if server_list is not None:
                 if 'OGS' in server_list:
                     player_opponents = player_opponents.exclude(
