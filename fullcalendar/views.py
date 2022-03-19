@@ -13,7 +13,7 @@ from django.utils.timezone import make_aware
 from django.utils import timezone
 from django.template import loader
 from django.views.decorators.http import require_POST
-from postman.api import pm_broadcast, pm_write
+from postman.api import pm_write
 from pytz import utc
 
 from community.models import Community
