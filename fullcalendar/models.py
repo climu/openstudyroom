@@ -38,6 +38,7 @@ class Category(models.Model):
             )
 
 class CalEvent(models.Model):
+    """Base class for calendar events"""
     start = models.DateTimeField()
     end = models.DateTimeField()
 
@@ -97,52 +98,18 @@ class PublicEvent(CalEvent):
         events = PublicEvent.objects.filter(end__gte=now, start__lte=end)
         return [event.format(tz) for event in events]
 
-    @staticmethod
-    def get_future_public_events():
-        """return a query of all future public events to a user."""
-        now = timezone.now()
-        public_events = PublicEvent.objects.filter(end__gte=now)
-        return public_events
-
-    @staticmethod
-    def get_formated_public_event(start, end, tz, community_pk=None):
-        """ return a dict of publics events between start and end formated for json."""
-        public_events = PublicEvent.objects.filter(end__gte=start, start__lte=end)
-        if community_pk is None:
-            public_events = public_events.filter(community=None)
-        else:
-            community = Community.objects.get(pk=int(community_pk))
-            public_events = public_events.filter(community=community)
-        data = []
-        for event in public_events:
-            dict = {
-                'id': 'public:' + str(event.pk),
-                'title': event.title,
-                'description': event.description,
-                'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
-                'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
-                'is_new': False,
-                'editable': False,
-                'type': 'public',
-                'color': str(event.category.color) if event.category else "#3a87ad"
-            }
-            if event.url:
-                dict['url'] = event.url
-            data.append(dict)
-        return data
-
 class AvailableEvent(CalEvent):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def format(self, tz, type='available'):
         event = super().format(tz, type)
-        event['user'] = self.user.format()
+        event['user'] = {"name": self.user.username}
         return event
 
     @staticmethod
     def get_formated_user(user, end, tz):
         """
-        Returns a list of all formated available events of the user.
+        Returns a list of all formated available events of a given user.
         """
         now = timezone.now()
         events = AvailableEvent.objects.filter(user=user, end__gte=now, start__lte=end)
@@ -153,15 +120,6 @@ class AvailableEvent(CalEvent):
         """
         The calendar sends a list of leagues.
         We get all related divisions then all user's opponents.
-        """
-        divisions = Division.objects.filter(league_event__in=leagues) if leagues else user.get_active_divisions()
-        events = AvailableEvent.get_formated_other_available_dict(user, divisions, end)
-        return events
-
-    @staticmethod
-    def get_formated_other_available(user, division_list=None, server_list=None):
-        """Return the other-available events related to a user for the divisions
-        in division_list
 
         First we create a changes list that contain dicts formated as such:
         {
@@ -176,70 +134,7 @@ class AvailableEvent(CalEvent):
             ‘users’: a list of users available at between start and end
         }
         """
-        now = timezone.now()
-        list_users = user.get_opponents(division_list, server_list)
-        availables = AvailableEvent.objects.filter(
-            end__gte=now,
-            user__in=list_users
-        )
-        changes = []
-        for event in availables:
-            change = {
-                'time': event.start,
-                'user': event.user.username,
-                'type': 1  # means the user becomes available
-            }
-            changes.append(change)
-            change = {
-                'time': event.end,
-                'user': event.user.username,
-                'type': 0  # means the user becomes unavailable
-            }
-            changes.append(change)
-        changes = sorted(changes, key=lambda k: k['time'])
-
-        events = []
-        for idx, change in enumerate(changes):
-            if idx == 0:
-                time = change['time']
-                list_users = [change['user']]
-                continue
-
-            if time == change['time']:
-                # another change at the same moment.
-                # We just add or remove a player
-                if change['type'] == 1:  # user becomes available
-                    list_users.append(change['user'])
-                else:
-                    list_users.remove(change['user'])
-            else:
-                if len(list_users) == 0:
-                    if change['type'] == 1:
-                        # we need to start a new event
-                        time = change['time']
-                        list_users.append(change['user'])
-                else:
-                    # we add the event to the events list
-                    events.append({
-                        'start': time,
-                        'end': change['time'],
-                        'users': list(list_users),
-                    })
-                    time = change['time']
-                    if change['type'] == 0:  # new user available
-                        list_users.remove(change['user'])
-                    else:
-                        list_users.append(change['user'])
-        return events
-
-    @staticmethod
-    def get_formated_other_available_dict(user, divisions, end):
-        """
-        get_formated_other_available_dict is the same function as
-        get_formated_other_available but it returns a
-        dict instead of str username. The old function will be removed as
-        soon as the new calendar version works fine.
-        """
+        divisions = Division.objects.filter(league_event__in=leagues)
         tz = user.get_timezone()
         now = timezone.now()
         opponents = user.get_opponents(divisions)
@@ -252,13 +147,13 @@ class AvailableEvent(CalEvent):
         for event in availables:
             change = {
                 'time': event.start,
-                'user': event.user.format(),
+                'user': {"name": event.user.username},
                 'type': 1  # means the user becomes available
             }
             changes.append(change)
             change = {
                 'time': event.end,
-                'user': event.user.format(),
+                'user': {"name": event.user.username},
                 'type': 0  # means the user becomes unavailable
             }
             changes.append(change)
@@ -298,68 +193,6 @@ class AvailableEvent(CalEvent):
                     else:
                         opponents.append(change['user'])
         return events
-
-    @staticmethod
-    def format_me_availables(events, background, tz):
-        formated_events = []
-
-        for event in events:
-            dict = {
-                'id': 'me-a:' + str(event.pk),
-                'pk': str(event.pk),
-                'title': 'I am available',
-                'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
-                'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
-                'is_new': False,
-                'type': 'me-available',
-                'color': '#ffff80',
-                'className': 'me-available',
-            }
-            if background:
-                dict['rendering'] = 'background'
-            else:
-                dict['editable'] = True
-
-            formated_events.append(dict)
-
-        return formated_events
-
-    @staticmethod
-    def annonce_on_discord(events):
-        """Announce new available events on discord.
-
-        events is a list of AvailableEvent all related to one single user.
-        """
-        if not events:
-            return
-
-        if settings.DEBUG:
-            return
-        else:
-            with open('/etc/discord_calendar_hook_url.txt') as f:
-                discord_url = f.read().strip()
-
-        user = events[0].user.username
-        title = "Plan your games!"
-        content = "[" + user +"]" + "(https://openstudyroom.org/league/account/" + user +") wants to play:\n\n"
-        for event in events:
-            content += "- " + event.start.astimezone(utc).strftime("%d/%m %H:%M") +\
-                " → " + event.end.astimezone(utc).strftime("%H:%M") + "\n"
-        values = {
-            "embeds": [{
-                "title": title,
-                "url": "https://openstudyroom.org/calendar/",
-                "description": content,
-                "footer":{
-                "text": "All times in day/month format in 24h UTC time"
-                }
-            }]
-        }
-        r = requests.post(discord_url, json=values)
-        r.raise_for_status()
-
-
-
 class GameRequestEvent(CalEvent):
     """
     Added 'private' and 'divisions' fields.
@@ -383,7 +216,7 @@ class GameRequestEvent(CalEvent):
 
     def format(self, tz, type='game-request'):
         event = super().format(tz, type)
-        event['sender'] = self.sender.format()
+        event['sender'] = {'pk': self.sender.pk, 'name': self.sender.username}
         event['private'] = self.private
         event['divisions'] = [div.format() for div in self.divisions.all()]
         event['receivers'] = [{'pk': user.pk, 'name': user.username} for user in self.receivers.all()]
@@ -435,9 +268,6 @@ class GameRequestEvent(CalEvent):
         return game_request
 
 class GameAppointmentEvent(CalEvent):
-    """
-    We will add private field and divisions field
-    """
     users = models.ManyToManyField(
         User,
         related_name="%(app_label)s_%(class)s_related",
@@ -462,35 +292,6 @@ class GameAppointmentEvent(CalEvent):
                 'name': user.username
             })
         return event
-
-    def format_discord(self, tz=utc, locale=None):
-        """
-        Makes a Discord's embed object from event's data.
-        Optionnal timezone and locale can be used
-
-        """
-        date = timezone.localtime(self.start, tz).strftime('%d-%m-%Y %H:%M')
-        title = 'New game planned !'
-        divisions = []
-        if locale:
-            activate(locale)
-            title = _('Game Appointment Created Title')
-            deactivate()
-        for division in self.divisions.all():
-            divURI = settings.BASE_URL + f'/league/{division.league_event.pk}/results/{division.pk}'
-            divisions.append(f'[{division.league_event.name} - {division.name}]({divURI})')
-        leagueInfo = '' if not divisions else ', '.join(divisions)
-        accountURI = settings.BASE_URL + reverse('league:league_account')
-        players = ' vs '.join(f'**[{user.username}]({accountURI + user.username}/)**' for user in self.users.all())
-        return {
-            "embeds": [{
-                "title": title,
-                "description": f'{leagueInfo} \n\n {players} \n {date} ({tz})',
-                "thumbnail": {
-                    "url": "https://sits-go.org/wp-content/uploads/2021/03/the-shell-16x4-1.jpg"
-                }
-            }]
-        }
 
     def title(self):
         users = self.users.all()
@@ -536,14 +337,45 @@ class GameAppointmentEvent(CalEvent):
                 skip_notification=False
             )
         if self.private is not True:
-            # Get communities both users are in and annonce the event on discord
-            communities = list(set(sender.get_communities()) & set(receiver.get_communities()))
-            for community in communities:
-                if community.discord_webhook_url is not None:
-                    values = self.format_discord(community.get_timezone(), community.locale)
-                    r = requests.post(community.discord_webhook_url, json=values)
-                    r.raise_for_status()
+            self.notify_on_discord(sender, receiver)
 
+    def notify_on_discord(self, sender, receiver):
+        # Get communities both users are in
+        communities = list(set(sender.get_communities()) & set(receiver.get_communities()))
+        for community in communities:
+            if community.discord_webhook_url is not None:
+                values = self.format_discord(community.get_timezone(), community.locale)
+                r = requests.post(community.discord_webhook_url, json=values)
+                r.raise_for_status()
+
+    def format_discord(self, tz=utc, locale=None):
+        """
+        Makes a Discord's embed object from event's data.
+        Optionnal timezone and locale can be used
+
+        """
+        date = timezone.localtime(self.start, tz).strftime('%d-%m-%Y %H:%M')
+        title = 'New game planned !'
+        divisions = []
+        if locale:
+            activate(locale)
+            title = _('Game Appointment Created Title')
+            deactivate()
+        for division in self.divisions.all():
+            divURI = settings.BASE_URL + f'/league/{division.league_event.pk}/results/{division.pk}'
+            divisions.append(f'[{division.league_event.name} - {division.name}]({divURI})')
+        leagueInfo = '' if not divisions else ', '.join(divisions)
+        accountURI = settings.BASE_URL + reverse('league:league_account')
+        players = ' vs '.join(f'**[{user.username}]({accountURI + user.username}/)**' for user in self.users.all())
+        return {
+            "embeds": [{
+                "title": title,
+                "description": f'{leagueInfo} \n\n {players} \n {date} ({tz})',
+                "thumbnail": {
+                    "url": "https://sits-go.org/wp-content/uploads/2021/03/the-shell-16x4-1.jpg"
+                }
+            }]
+        }
 
     @staticmethod
     def get_future_games(user):
@@ -568,29 +400,6 @@ class GameAppointmentEvent(CalEvent):
         if user:
             res += [e.format(tz) for e in events.filter(private=True, users=user)]
         return res
-
-    @staticmethod
-    def get_formated_game_appointments(user, now, tz):
-        data = []
-        game_appointments = user.fullcalendar_gameappointmentevent_related.filter(
-            end__gte=now
-        )
-        for event in game_appointments:
-            opponent = event.opponent(user)
-            dict = {
-                'id': 'game:' + str(event.pk),
-                'pk': event.pk,
-                'title': 'Game vs ' + opponent.username,
-                'start': event.start.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
-                'end': event.end.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S'),
-                'is_new': False,
-                'editable': False,
-                'type': 'game',
-                'color': '#ff4444'
-            }
-            data.append(dict)
-
-        return data
 
     @staticmethod
     def create(sender, receiver, divisions, private, start, end, from_game_request=False):
