@@ -26,7 +26,7 @@
             <select id="modal-player-select" class="form-control" required>
               <option selected="selected" value="">select a player...</option>
               {% for opp in user_opponents %}
-              <option value="{{opp.pk}}">{{opp.username}}</option>
+              <option value="{{opp.pk}}">{{opp.name}}</option>
               {% endfor %}
             </select>
           </div>

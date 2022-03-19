@@ -55,11 +55,15 @@ class User {
  */
 class Context {
   static rawData =  JSON.parse(document.getElementById('context-data').textContent);
+  // Assigned if a user is authenticated
+  static user = Context.rawData.user ? new User(Context.rawData.user) : null;
+  // Assigned in the profil view
+  static profil = Context.rawData.profil || null;
+  // Assigned in the community view
+  static community = Context.rawData.community || null;
+  // Assigned in the calendar's main view
   static communities = Context.rawData.communities || null;
   static leagues = Context.rawData.leagues || null;
-  static profil = Context.rawData.profil || null;
-  static community = Context.rawData.community || null;
-  static user = Context.rawData.user ? new User(Context.rawData.user) : null;
 }
 
 /**
@@ -403,6 +407,8 @@ class GameRequestSource extends EventSource {
  * As public events, appointments can be seen by everyone
  * if its private attribute is not true. (else, only
  * involved users can see it)
+ * All those events are fetched in the calendar constructor
+ * and displayed for the right context (main view, profil view or community view)
  */
 class AppointmentSource extends EventSource {
   static id = 'game-appointment';
@@ -476,6 +482,8 @@ class AppointmentSource extends EventSource {
   static initialize(locale) {
     Calendar.object = new Calendar(locale);
     Calendar.object.render();
+    // If the calendar is initialized on the main view,
+    // we add filtering tools.
     if (!Context.profil && !Context.community) {
       Calendar.initializeTimeRangeSlider();
       Filter.initialize();
@@ -501,11 +509,6 @@ class AppointmentSource extends EventSource {
 
   constructor(locale) {
 
-    /**
-     * If a profil attribute exists in Context,
-     * set the calendar to 'profil mode' and lists
-     * all profil's related events.
-     */
     const listOpts = {
       locale,
       allDaySlot: false,
@@ -531,9 +534,13 @@ class AppointmentSource extends EventSource {
       },
       selectMirror: true,
       timeZone: 'UTC',
-      selectable: true,
+      selectable: !!Context.user,
     }
 
+    /**
+     * If a profil or a community attribute exists in Context,
+     * set the calendar to 'list mode'. Otherwise, we are in the main view.
+     */
     super(
       document.getElementById('calendar'),
       Context.profil || Context.community ? listOpts : opts
@@ -542,24 +549,32 @@ class AppointmentSource extends EventSource {
     this.setOption('viewDidMount', Calendar.update);
     this.setOption('eventDidMount', this.handleEventDidMount);
     this.setOption('eventClick', this.handleEventClick);
+
     this.addEventSource(new AppointmentSource());
 
+    // Fetch user's related events
     if (Context.user) {
       this.addEventSource(new GameRequestSource());
-      this.addEventSource(new OpponentsAvailableSource());
       this.addEventSource(new UserAvailableSource());
-    }
-
-    if (Context.profil && (!Context.user || Context.user.pk !== Context.profil.pk)) {
-      this.addEventSource(new ProfilAvailableSource());
-    } else {
-      this.addEventSource(new PublicSource());
-      if (!Context.community) {
+      if (!Context.profil && !Context.community) {
+        this.addEventSource(new OpponentsAvailableSource());
+        // Enable calendar interactivity in the main view
         this.setOption('select', this.createEvent);
         this.setOption('eventDrop', this.updateAvailableEvent);
         this.setOption('eventResize', this.updateAvailableEvent);
       }
     }
+
+    // Fetch public event for main view and community view
+    if (!Context.profil) {
+      this.addEventSource(new PublicSource());
+    }
+
+    // Fetch available events of the profil (other than the authenticated user)
+    if (Context.profil && (Context.user && Context.user.pk !== Context.profil.pk)) {
+      this.addEventSource(new ProfilAvailableSource());
+    }
+
   }
 
   handleEventClick = (data) => {
@@ -567,14 +582,12 @@ class AppointmentSource extends EventSource {
       data.jsEvent.preventDefault();
       window.open(data.event.url, "_blank");
     }
-
     switch (data.event.extendedProps.type) {
       case 'game-appointment':
         if (data.event.extendedProps.hasUser) {
           CancelGameAppointmentForm.init(data.event.extendedProps.pk);
         }
         break;
-
       case 'game-request':
         const Form = data.event.extendedProps.fromUser
           ? CancelGameRequestForm
@@ -667,7 +680,7 @@ class CancelGameAppointmentForm {
 
   static handleSubmit = (pk) => (e) => {
     e.preventDefault(e);
-    $.post('/calendar/cancel-game-ajax/', { pk }, () => {
+    $.post('/calendar/cancel-game-appointment-ajax/', { pk }, () => {
       Calendar.refetch(AppointmentSource);
       MicroModal.close();
     });
@@ -763,7 +776,7 @@ class CreateGameForm {
     const receiver = CreateGameForm.el.playerSelect.value;
     const divisions = JSON.stringify(CreateGameForm.divisions);
     const isprivate = document.getElementById('modal-private').checked;
-    $.post('/calendar/create-game/', {
+    $.post('/calendar/create-game-ajax/', {
       date,
       receiver,
       divisions,

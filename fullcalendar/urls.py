@@ -6,6 +6,7 @@ app_name = 'fullcalendar'
 
 
 urlpatterns = [
+    url(r'^$', views.calendar_main_view, name='calendar_main_view'),
     url(
         r'^update/(?P<pk>[0-9]+)/$',
         views.PublicEventUpdate.as_view(success_url='/calendar/admin/event-list/'),
@@ -46,19 +47,11 @@ urlpatterns = [
         views.CategoryUpdate.as_view(success_url='/calendar/admin/event-list/'),
         name='admin_update_category'
     ),
-    url(r'^old/$', views.calendar_view, name='calendar_view'),
-    url(
-        r'^old/(?P<user_id>[0-9]+)/$',
-        views.calendar_view,
-        name='calendar_view'
-    ),
     url(
         r'^admin/event-list/$',
         views.admin_cal_event_list,
         name='admin_cal_event_list'
     ),
-    url(r'^save/$', views.save, name='save'),
-    url(r'^$', views.calendar_main_view, name='calendar_main_view'),
     url(
         r'^get-public-events/$',
         views.get_public_events,
@@ -75,16 +68,6 @@ urlpatterns = [
         name='get_opponents_available_events'
     ),
     url(
-        r'^get-game-request-events/$',
-        views.get_game_request_events,
-        name='get_game_request_events'
-    ),
-    url(
-        r'^get-game-appointment-events/$',
-        views.get_game_appointment_events,
-        name='get_game_appointment_events'
-    ),
-    url(
         r'^create-available-event/$',
         views.create_available_event,
         name='create_available_event'
@@ -99,31 +82,21 @@ urlpatterns = [
         views.delete_available_event,
         name='delete_available_event'
     ),
-    url(r'^json-feed/$', views.json_feed, name='json_feed'),
     url(
-        r'^json-feed/(?P<user_id>[0-9]+)/$',
-        views.json_feed_other,
-        name='json_feed_other'
+        r'^get-game-request-events/$',
+        views.get_game_request_events,
+        name='get_game_request_events'
     ),
     url(
-        r'^create-game-request/$',
-        views.create_game_request,
-        name='create_game_request'
+        r'^get-game-appointment-events/$',
+        views.get_game_appointment_events,
+        name='get_game_appointment_events'
     ),
     url(
-        r'^create-game/$',
-        views.create_game,
-        name='create_game'
-    ),
-    url(
-        r'^cancel-game-request-ajax/$',
-        views.cancel_game_request_ajax,
-        name='cancel_game_request_ajax'
-    ),
-    url(
-        r'^reject-game-request-ajax/$',
-        views.reject_game_request_ajax,
-        name='reject_game_request_ajax'
+        # Game requests and appointments
+        r'^create-game-ajax/$',
+        views.create_game_ajax,
+        name='create_game_ajax'
     ),
     url(
         r'^accept-game-request-ajax/$',
@@ -131,19 +104,24 @@ urlpatterns = [
         name='accept_game_request_ajax'
     ),
     url(
-        r'^cancel-game-ajax/$',
-        views.cancel_game_ajax,
-        name='cancel_game_ajax'
+        r'^reject-game-request-ajax/$',
+        views.reject_game_request_ajax,
+        name='reject_game_request_ajax'
+    ),
+    url(
+        r'^cancel-game-request-ajax/$',
+        views.cancel_game_request_ajax,
+        name='cancel_game_request_ajax'
+    ),
+    url(
+        r'^cancel-game-appointment-ajax/$',
+        views.cancel_game_appointment_ajax,
+        name='cancel_game_appointment_ajax'
     ),
     url(
         r'^update-time-range-ajax/$',
         views.update_time_range_ajax,
         name='update_time_range_ajax'
-    ),
-    url(
-        r'^copy-previous-week-ajax/$',
-        views.copy_previous_week_ajax,
-        name='copy_previous_week_ajax'
     ),
     url(r'^ical/(?P<user_id>\d+)/osr.ics$', views.ical, name="osr_ical")
 ]

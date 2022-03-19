@@ -797,7 +797,7 @@ class User(AbstractUser):
         res['communities'] = [com.format() for com in self.get_communities()]
         res['divisions'] = [div.format() for div in self.get_active_divisions()]
         res['opponents'] = []
-        for opponent in self.get_opponents_for_calendar():
+        for opponent in self.get_opponents():
             # we dont use opponent.format because
             # we need minimal infos
             res['opponents'].append({
@@ -934,35 +934,6 @@ class User(AbstractUser):
         players = self.leagueplayer_set.all()
         return Division.objects.filter(leagueplayer__in=players, league_event__is_open=True)
 
-    def get_opponents_for_calendar(self):
-        """
-        Returns a list of all user's opponents.
-        The only difference with get_opponents is that we search
-        in divisions where league has not ended.
-        No reason to plan a game related to a finished event
-
-        Can this division filter remplaces the current one in the whole application ?
-        """
-        players = self.leagueplayer_set.filter(
-            division__league_event__end_time__gte=timezone.now())
-        # For each player, we get related opponents
-        opponents = []
-        for player in players:
-            division = player.division
-            player_opponents = LeaguePlayer.objects.filter(
-                division=division).exclude(pk=player.pk)
-            for opponent in player_opponents:
-                n_black = player.user.black_sgf.get_queryset().filter(
-                    divisions=division,
-                    white=opponent.user).count()
-                n_white = player.user.white_sgf.get_queryset().filter(
-                    divisions=division,
-                    black=opponent.user).count()
-                if n_white + n_black < division.league_event.nb_matchs:
-                    if opponent.user not in opponents:
-                        opponents.append(opponent.user)
-        return opponents
-
     def get_opponents(self, divs_list=None, server_list=None):
         """return a list of all user self can play with.
 
@@ -972,7 +943,10 @@ class User(AbstractUser):
         as well as the number of games remaining.
         """
         # First we get all self players in open divisions
-        players = self.leagueplayer_set.filter(division__league_event__is_open=True)
+        players = self.leagueplayer_set.filter(
+            division__league_event__is_open=True,
+            division__league_event__end_time__gte=timezone.now())
+
         if divs_list is not None:
             players = players.filter(division__in=divs_list)
         if len(players) == 0:
