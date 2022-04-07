@@ -176,14 +176,14 @@ class DivisionForm(ModelForm):
         }
 
 class LeagueEventForm(forms.ModelForm):
-    begin_time = forms.DateField(
-        input_formats=['%d/%m/%Y'],
-        widget=forms.DateInput(format='%d/%m/%Y'),
+    begin_time = forms.DateTimeField(
+        input_formats=['%d/%m/%Y %H:%M:%S'],
+        widget=forms.DateTimeInput(format='%d/%m/%Y %H:%M:%S'),
         help_text="UTC time at 00:00. Format: dd/mm/yyyy"
     )
-    end_time = forms.DateField(
-        input_formats=['%d/%m/%Y'],
-        widget=forms.DateInput(format='%d/%m/%Y'),
+    end_time = forms.DateTimeField(
+        input_formats=['%d/%m/%Y %H:%M:%S'],
+        widget=forms.DateTimeInput(format='%d/%m/%Y %H:%M:%S'),
         help_text="Set it to the 1st to have full month."
     )
 
@@ -243,25 +243,6 @@ class LeagueEventForm(forms.ModelForm):
             'additional_informations': 'This will be shown in the infos tab of the league.',
             'servers': 'Comma seperated list of Go servers from "KGS", "OGS" and "Goquest".'
         }
-
-    def clean(self):
-        '''convert replace timezones to utc'''
-        cleaned_data = self.cleaned_data
-        cleaned_data['begin_time'] = make_aware(
-            datetime.datetime.combine(
-                cleaned_data['begin_time'],
-                datetime.time()
-            ),
-            pytz.utc
-        )
-        cleaned_data['end_time'] = make_aware(
-            datetime.datetime.combine(
-                cleaned_data['end_time'],
-                datetime.time()
-            ),
-            pytz.utc
-        )
-        return cleaned_data
 
 
 class EmailForm(forms.Form):
