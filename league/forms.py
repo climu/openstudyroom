@@ -176,7 +176,7 @@ class LeagueEventForm(forms.ModelForm):
     begin_time = forms.DateTimeField(
         input_formats=['%d/%m/%Y %H:%M:%S'],
         widget=forms.DateTimeInput(format='%d/%m/%Y %H:%M:%S'),
-        help_text="UTC time at 00:00. Format: dd/mm/yyyy"
+        help_text="Beware, in your timezone. Format: dd/mm/yyyy h:m:s"
     )
     end_time = forms.DateTimeField(
         input_formats=['%d/%m/%Y %H:%M:%S'],
