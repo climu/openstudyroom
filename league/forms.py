@@ -176,12 +176,12 @@ class LeagueEventForm(forms.ModelForm):
     begin_time = forms.DateTimeField(
         input_formats=['%d/%m/%Y %H:%M:%S'],
         widget=forms.DateTimeInput(format='%d/%m/%Y %H:%M:%S'),
-        help_text="UTC time at 00:00. Format: dd/mm/yyyy"
+        help_text="Format: dd/mm/yyyy hh:mm:ss (utc)"
     )
     end_time = forms.DateTimeField(
         input_formats=['%d/%m/%Y %H:%M:%S'],
         widget=forms.DateTimeInput(format='%d/%m/%Y %H:%M:%S'),
-        help_text="Set it to the 1st to have full month."
+        help_text="Format: dd/mm/yyyy hh:mm:ss (utc)"
     )
 
     class Meta:
@@ -241,6 +241,12 @@ class LeagueEventForm(forms.ModelForm):
             'servers': 'Comma seperated list of Go servers from "KGS", "OGS" and "Goquest".'
         }
 
+    def clean(self):
+        '''convert replace timezones to utc'''
+        cleaned_data = self.cleaned_data
+        cleaned_data['begin_time'] = cleaned_data['begin_time'].replace(tzinfo=pytz.utc)
+        cleaned_data['end_time'] = cleaned_data['end_time'].replace(tzinfo=pytz.utc)
+        return cleaned_data
 
 class EmailForm(forms.Form):
     subject = forms.CharField(required=True)
