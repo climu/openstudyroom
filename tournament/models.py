@@ -58,26 +58,26 @@ class Tournament(LeagueEvent):
         """
         out = {
             'valid': False,
-            'message': 'Tournament is closed',
+            'message': [],
             'group': None,
             'match': None
         }
         if self.stage == 0:
+            out['message'].append('Tournament is closed')
             return out
 
         settings = sgf.check_event_settings(self)
-
-        if not settings['valid']:
-            out.update({'message': settings['message']})
+        if settings:
+            out.update({'message': settings})
         elif self.stage == 1:
-            group = sgf.check_players(self)
-            if group['valid']:
+            group, errors = sgf.check_players(self)
+            if group:
                 out.update({
                     'valid': True,
-                    'group': group['division']
+                    'group': group
                 })
             else:
-                out.update({'message': group['message']})
+                out['message'] += errors
 
         elif self.stage == 2:
             [bplayer, wplayer] = sgf.get_players(self)
@@ -89,16 +89,14 @@ class Tournament(LeagueEvent):
                 if match is not None:
                     out.update({
                         'valid': True,
-                        'match': match,
-                        'message': ''
+                        'match': match
                     })
                 else:
-                    out.update({'message': '; Not a match'})
+                    out['message'].append('Not a match')
             else:
-                out.update({'message': '; One of the player is not a league player'})
+                out['message'].append(' One of the player is not a league player')
         else:
-            out.update({'message': '; This tournament stage is wrong'})
-        sgf.message = out['message']
+            out['message'].append('This tournament stage is wrong')
         sgf.league_valid = out['valid']
         return out
 
@@ -237,7 +235,7 @@ class Match(models.Model):
 
 class TournamentEvent(PublicEvent):
     """ Public event related to a tournament."""
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE )
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
 
     def can_edit(self, user):
         return self.tournament.is_admin(user)

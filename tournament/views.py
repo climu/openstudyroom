@@ -624,7 +624,8 @@ def upload_sgf(request, tournament_id):
                 'sgf': sgf,
                 'form': form,
                 'match': check['match'],
-                'group': check['group']
+                'group': check['group'],
+                'errors': check['message']
             }
             template = loader.get_template('tournament/upload_sgf.html')
             return HttpResponse(template.render(context, request))
