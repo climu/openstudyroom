@@ -68,7 +68,6 @@ def ffg_user_infos(ffg_licence_number, echelle_ffg):
     ABAD Jahin                            -3000 - 2000205 38GJ FR
     ABADIA Mickaël                        -1400 - 9728205 94MJ FR
     ABADIE Yves                           -1500 - 0452000 31To FR
-    
     """
     # we skip first line that is header
     line = None
