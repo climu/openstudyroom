@@ -32,7 +32,8 @@ def get_ffg_ladder():
     """
     get the last FFG information
     """
-    url = "https://ffg.jeudego.org/echelle/echtxt/ech_ffg_V3.txt"
+    # url = "https://ffg.jeudego.org/echelle/echtxt/ech_ffg_V3.txt"
+    url = "https://ffg.jeudego.org/echelle/hybtxt/ech_ffg_V3.txt"
     request = requests.get(url, timeout=10)
     if request.status_code != 200:
         return None
@@ -44,7 +45,8 @@ def get_ffg_rank(ffg_licence_number):
     We return the rank (a string) or None if it's not valid
     """
     # url = "https://ffg.jeudego.org/echelle/echtxt/echelle.txt"
-    url = "https://ffg.jeudego.org/echelle/echtxt/ech_ffg_V3.txt"
+    # url = "https://ffg.jeudego.org/echelle/echtxt/ech_ffg_V3.txt"
+    url = "https://ffg.jeudego.org/echelle/hybtxt/ech_ffg_V3.txt"
     request = requests.get(url, timeout=10)
     if request.status_code == 200:
         infos = ffg_user_infos(ffg_licence_number, request.text)
@@ -66,6 +68,7 @@ def ffg_user_infos(ffg_licence_number, echelle_ffg):
     ABAD Jahin                            -3000 - 2000205 38GJ FR
     ABADIA Mickaël                        -1400 - 9728205 94MJ FR
     ABADIE Yves                           -1500 - 0452000 31To FR
+    
     """
     # we skip first line that is header
     line = None

@@ -84,16 +84,15 @@
 
 {% else %}
 This SGF is not valid :
-
-
 </div>
 <table class="table table-condensed">
-{% with sgf.get_messages as messages %}
-{% for message in messages %}
-<tr><td>{{message}}</td></tr>
-{% endfor %}
-{% endwith %}
-</table>
+  {% for error in errors %}
+    <tr><td>{{error}}</td></tr>
+  {% endfor %}
+  </table>
+
+
+
 {% endif %}
 
 

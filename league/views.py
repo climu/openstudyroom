@@ -1210,6 +1210,8 @@ class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                 'min_handicap': copy_from.min_handicap,
                 'max_handicap': copy_from.max_handicap,
                 'additional_informations': copy_from.additional_informations,
+                'is_primary': copy_from.is_primary,
+                'self_join': copy_from.self_join
             })
 
         return initials
