@@ -1224,7 +1224,7 @@ class Profile(models.Model):
     """A user profile. Store settings and infos about a user."""
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     kgs_username = models.CharField(max_length=10, blank=True)
-    ogs_username = models.CharField(max_length=40, blank=True)
+    ogs_username = models.CharField(max_length=60, blank=True)
     go_quest_username = models.CharField(max_length=40, blank=True)
     kgs_rank = models.CharField(max_length=40, blank=True)
     ogs_rank = models.CharField(max_length=40, blank=True)
