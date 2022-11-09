@@ -1,0 +1,15 @@
+<div class="row">
+{% for sponsor in sponsors %}
+<div class="sponsors col-md-4 col-xs-6">
+<a href="{{ sponsor.url }}">
+  {% if sponsor.image %}
+  <img class="img-responsive center-block" src="{{ sponsor.image }}" alt="{{ sponsor.name }}" >
+  {% else %}
+  <div class="panel panel-default">
+    <div class="panel-body"> {{ sponsor.name }}</div>
+  </div>
+  {% endif %}
+</a>
+</div>
+{% endfor %}
+</div>

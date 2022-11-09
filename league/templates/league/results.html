@@ -1,5 +1,5 @@
 {% extends "league/base.html" %}
-{% load tz static league_tags bootstrap3 i18n forum_markup_tags %}
+{% load tz static league_tags bootstrap3 i18n forum_markup_tags osr_tags %}
 {% block title %}{{event}}- {% trans "results" %}{% endblock %}
 
 
@@ -77,6 +77,10 @@
 
 {% if division.informations %}
 <div>{{division.informations|safe|rendered}}</div>
+{% endif %}
+{% if not event.community %}
+<h3> OSR is made possible thanks to the support from friends and partners </h3>
+  {% sponsors %}
 {% endif %}
 {% endblock %}
 
