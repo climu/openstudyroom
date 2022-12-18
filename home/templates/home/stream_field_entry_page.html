@@ -49,11 +49,14 @@
                 </span>
             </section>
         {% endif %}
-        <section>
+        <section class="clearfix">
+          <div>
           {{ self.body|richtext}}
           {% include "home/includes/streamfield.html" with content=self.streamfield %}
+          </div>
         </section>
         <div id="comments"></div>
+
 
     </article>
 {% endblock content %}
@@ -76,8 +79,14 @@
     polling_interval: 10000  // In milliseconds.
   };
 </script>
-<script type="text/javascript"
-        src="{% url 'javascript-catalog' %}"></script>
-<script src="{% static 'django_comments_xtd/js/vendor-2.2.1.js' %}"></script>
-<script src="{% static 'django_comments_xtd/js/plugin-2.2.1.js' %}"></script>
+<script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+<script
+src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+crossorigin="anonymous"></script>
+
+<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+<script src="{% static 'django_comments_xtd/js/vendor~plugin-2.9.5.js' %}"></script>
+<script src="{% static 'django_comments_xtd/js/plugin-2.9.5.js' %}"></script>
 {% endblock %}
