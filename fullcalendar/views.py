@@ -138,7 +138,8 @@ def get_public_events(request):
     user = request.user
     tz = user.get_timezone() if user.is_authenticated else utc
     end = parseFCalendarDate(request.GET.get('end'), tz)
-    events = PublicEvent.get_formated(end, tz)
+    start = parseFCalendarDate(request.GET.get('start'), tz)
+    events = PublicEvent.get_formated(start, end, tz)
     return JsonResponse(events, safe=False)
 
 def get_available_events(request, user_pk):
