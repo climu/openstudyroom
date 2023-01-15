@@ -1,10 +1,11 @@
 import json
+import random
 import datetime
 import io
 from collections import OrderedDict
 from time import sleep
 from zipfile import ZipFile
-
+from dateutil import relativedelta
 import pytz
 import requests
 from django.shortcuts import get_object_or_404, render
@@ -31,7 +32,7 @@ from django.template.defaultfilters import date as _date, time as _time
 from django.utils import timezone
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.functions import TruncMonth
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 from machina.core.db.models import get_model
 from postman.api import pm_write
 
@@ -45,11 +46,12 @@ from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
     Profile
 from .forms import SgfAdminForm, AddWontPlayForm, CreateForfeitForm, RemoveWontPlayForm, ActionForm,\
     LeaguePopulateForm, UploadFileForm, DivisionForm,\
-    LeagueEventForm, EmailForm, TimezoneForm, ProfileForm
+    LeagueEventForm, EmailForm, TimezoneForm, ProfileForm, Random_game_form
 from .go_federations import format_ffg_tou
 
 ForumProfile = get_model('forum_member', 'ForumProfile')
 discord_url_file = "/etc/discord_url.txt"
+
 
 def scraper():
     """Check kgs to update our db.
@@ -62,7 +64,6 @@ def scraper():
     - 4.2 check a player
     This is not a view. belongs in utils. Don't forget  to update cronjob tho.
     """
-
 
     # 1 check time since get from kgs
     now = timezone.now()
@@ -79,24 +80,28 @@ def scraper():
     for m in json.loads(r.text)['messages']:
         if m['type'] == 'ROOM_JOIN' and m['channelId'] == 3627409:
             for kgs_user in m['users']:
-                profile = Profile.objects.filter(kgs_username__iexact=kgs_user['name']).first()
+                profile = Profile.objects.filter(
+                    kgs_username__iexact=kgs_user['name']).first()
                 if profile is not None:
                     profile.last_kgs_online = now
                     if 'rank' in kgs_user:
-                        profile.kgs_rank = kgs_user['rank'] # scraping the rank of the players
+                        # scraping the rank of the players
+                        profile.kgs_rank = kgs_user['rank']
                     profile.save()
     # then OGS
     ogs_users = ogs.get_online_users()
     for ogs_user in ogs_users:
         profile = Profile.objects.filter(ogs_id=ogs_user['id']).first()
         if profile is not None:
-            profile.ogs_rank = ogs.rating2rank(ogs_user['ratings']["overall"]["rating"])
+            profile.ogs_rank = ogs.rating2rank(
+                ogs_user['ratings']["overall"]["rating"])
             profile.last_ogs_online = now
             profile.save()
-    #finally discord
-    #first we set everyone to offline
+    # finally discord
+    # first we set everyone to offline
     DiscordUser.objects.all().update(status='offline')
-    discord_json = requests.get('https://discordapp.com/api/guilds/287487891003932672/widget.json', timeout=10).json()
+    discord_json = requests.get(
+        'https://discordapp.com/api/guilds/287487891003932672/widget.json', timeout=10).json()
     Registry.set_discord_presence_count(discord_json['presence_count'])
     discord_users = discord_json['members']
     for user in discord_users:
@@ -176,9 +181,11 @@ def timezone_update(request):
 def download_sgf(request, sgf_id):
     """Download one sgf file."""
     sgf = get_object_or_404(Sgf, pk=sgf_id)
-    response = HttpResponse(sgf.sgf_text, content_type='application/octet-stream')
+    response = HttpResponse(
+        sgf.sgf_text, content_type='application/octet-stream')
     # for testing special characters slugify("Andre🍃")
-    str = slugify(sgf.wplayer) + '-' + slugify(sgf.bplayer) + '-' + sgf.date.strftime('%m/%d/%Y') + ".sgf"
+    str = slugify(sgf.wplayer) + '-' + slugify(sgf.bplayer) + \
+        '-' + sgf.date.strftime('%m/%d/%Y') + ".sgf"
     response['Content-Disposition'] = 'attachment; filename=%s' % str
     return response
 
@@ -195,7 +202,8 @@ def download_all_sgf(request, user_id):
 
     for sgf in white_sgfs.union(black_sgfs):
 
-        current_name = slugify(sgf.wplayer) + '-' + slugify(sgf.bplayer) + '-' + sgf.date.strftime('%m-%d-%Y')
+        current_name = slugify(
+            sgf.wplayer) + '-' + slugify(sgf.bplayer) + '-' + sgf.date.strftime('%m-%d-%Y')
         counter = 1
 
         for name_in_zip in zip.namelist():
@@ -211,12 +219,14 @@ def download_all_sgf(request, user_id):
     zip.close()
 
     response = HttpResponse(content_type="application/x-zip-compressed")
-    response["Content-Disposition"] = "attachment; filename=" + user.username + ".zip"
+    response["Content-Disposition"] = "attachment; filename=" + \
+        user.username + ".zip"
 
     in_memory.seek(0)
     response.write(in_memory.read())
 
     return response
+
 
 def games_datatable_api(request):
     """
@@ -259,6 +269,7 @@ def list_games(request, event_id=None, sgf_id=None):
         })
     return HttpResponse(template.render(context, request))
 
+
 def division_results(request, event_id=None, division_id=None):
     """Show the results of a division."""
     open_events = LeagueEvent.get_events(request.user).filter(is_open=True)
@@ -276,7 +287,8 @@ def division_results(request, event_id=None, division_id=None):
         can_edit_division_infos = False
         results = None
     else:
-        can_edit_division_infos = request.user.is_authenticated and request.user.is_in_division(division)
+        can_edit_division_infos = request.user.is_authenticated and request.user.is_in_division(
+            division)
         results = division.get_results()
     if results is None:
         number_players = 0
@@ -291,7 +303,8 @@ def division_results(request, event_id=None, division_id=None):
         all_appointments = GameAppointmentEvent.get_formated(tz)
         for e in all_appointments:
             e['divisions'] = [div['pk'] for div in e['divisions']]
-        div_appointments = [e for e in all_appointments if division.pk in e['divisions']]
+        div_appointments = [
+            e for e in all_appointments if division.pk in e['divisions']]
 
     context = {
         'event': event,
@@ -306,6 +319,7 @@ def division_results(request, event_id=None, division_id=None):
         'admin': request.user.is_authenticated and request.user.is_league_admin(event)
     }
     return HttpResponse(template.render(context, request))
+
 
 @xframe_options_exempt
 def division_results_iframe(request, event_id=None, division_id=None):
@@ -335,6 +349,7 @@ def division_results_iframe(request, event_id=None, division_id=None):
     }
     return HttpResponse(template.render(context, request))
 
+
 def ninenine(request):
     """A simple view that redirects to the last open 9x9 league."""
     league = LeagueEvent.objects.filter(
@@ -350,6 +365,8 @@ def ninenine(request):
     )
 
 # generic function to return an event type
+
+
 def get_first_league_event(event_type):
     """A simple view that redirects to the last open league for a given event type."""
     # create a generate method
@@ -365,9 +382,11 @@ def get_first_league_event(event_type):
         )
     return event_type_request_processor
 
+
 def archives(request):
     """Show a list of all leagues."""
-    events = LeagueEvent.get_events(request.user).exclude(event_type='tournament')
+    events = LeagueEvent.get_events(
+        request.user).exclude(event_type='tournament')
     open_events = events.filter(is_open=True)
 
     context = {
@@ -412,11 +431,13 @@ def list_players(request, event_id=None, division_id=None):
                 ),
                 Prefetch(
                     'black_sgf',
-                    queryset=Sgf.objects.defer('sgf_text').exclude(winner__isnull=True)
+                    queryset=Sgf.objects.defer(
+                        'sgf_text').exclude(winner__isnull=True)
                 ),
                 Prefetch(
                     'white_sgf',
-                    queryset=Sgf.objects.defer('sgf_text').exclude(winner__isnull=True)
+                    queryset=Sgf.objects.defer(
+                        'sgf_text').exclude(winner__isnull=True)
                 ),
                 'profile', 'discord_user')
         users = [user.get_stats for user in users]
@@ -494,7 +515,6 @@ def join_event(request, event_id, user_id):
             # set up success message
             message = "Welcome in " + event.name + " ! You can start playing right now.\n"
 
-
             if not user.join_event(event):
                 message = "Oops ! Something went wrong. You didn't join."
                 messages.success(request, message)
@@ -532,7 +552,8 @@ def quit_league(request, event_id, user_id=None):  # pylint: disable=inconsisten
         if not (user == request.user or request.user.is_league_admin()):
             raise Http404('What are you doing here?1')
         if league.can_quit(user):
-            player = LeaguePlayer.objects.filter(user=user, event=league).first()
+            player = LeaguePlayer.objects.filter(
+                user=user, event=league).first()
             message = "Succesfully deleted the player " + user.username +\
                 " from " + league.name
             messages.success(request, message)
@@ -542,6 +563,7 @@ def quit_league(request, event_id, user_id=None):  # pylint: disable=inconsisten
             message = "A player canot quit a league once he have played games in it."
             messages.success(request, message)
             return HttpResponseRedirect(form.cleaned_data['next'])
+
 
 def account_activity(request, user_name):
     """
@@ -557,6 +579,7 @@ def account_activity(request, user_name):
     context['calendar_data'] = calendar_data
     context['user'] = user
     return render(request, 'league/account_activity.html', context)
+
 
 def account(request, user_name=None):
     """Show a user account.
@@ -616,7 +639,8 @@ def account(request, user_name=None):
 
     discord_user = DiscordUser.objects.filter(user=user).first()
 
-    players = user.leagueplayer_set.exclude(event__event_type='tournament').order_by('-pk')
+    players = user.leagueplayer_set.exclude(
+        event__event_type='tournament').order_by('-pk')
 
     sgfs = Sgf.objects.defer('sgf_text').\
         exclude(date__isnull=True).\
@@ -691,7 +715,8 @@ def game_api(request, sgf_id, event_id=None):
         {'sgf': sgf, 'event': event}
     )
     data = {}
-    data['sgf'] = sgf.sgf_text.replace(';B[]', "").replace(';W[]', "").replace(';)', '').replace(':/', "").replace(';-)', '')
+    data['sgf'] = sgf.sgf_text.replace(';B[]', "").replace(
+        ';W[]', "").replace(';)', '').replace(':/', "").replace(';-)', '')
     data['permalink'] = '/league/games/' + str(sgf.pk) + '/'
     data['game_infos'] = html
     data['white'] = sgf.white.username
@@ -718,7 +743,8 @@ def scrap_list_up(request, profile_id):
     """ Set user profile p_status to 2 so this user will be checked soon"""
     profile = get_object_or_404(Profile, pk=profile_id)
     if profile.p_status == 2:
-        message = str(profile.user) + ' will already be scraped with hight priority'
+        message = str(profile.user) + \
+            ' will already be scraped with hight priority'
         messages.success(request, message)
         return HttpResponseRedirect(reverse('league:scrap_list'))
     if profile.user == request.user or request.user.is_league_admin():
@@ -728,7 +754,8 @@ def scrap_list_up(request, profile_id):
                 if form.cleaned_data['action'] == 'p_status_up':
                     profile.p_status = 2
                     profile.save()
-                    message = 'You just moved ' + str(profile.user.username) + ' up the scrap list'
+                    message = 'You just moved ' + \
+                        str(profile.user.username) + ' up the scrap list'
                     messages.success(request, message)
                     return HttpResponseRedirect(reverse('league:scrap_list'))
     raise Http404("What are you doing here ?")
@@ -737,7 +764,8 @@ def scrap_list_up(request, profile_id):
 def discord_api(request):
     """ API to feed the discord bot"""
     uids = request.GET.getlist('uids', '{}')
-    discord_users = DiscordUser.objects.filter(uid__in=uids).select_related('user__profile')
+    discord_users = DiscordUser.objects.filter(
+        uid__in=uids).select_related('user__profile')
     out = {}
     for u in discord_users:
         out[u.uid] = {
@@ -746,10 +774,11 @@ def discord_api(request):
             'country': u.user.profile.country.name,
         }
         players = u.user.leagueplayer_set.all()
-        leagues = LeagueEvent.objects.filter(leagueplayer__in=players, is_open=True)
+        leagues = LeagueEvent.objects.filter(
+            leagueplayer__in=players, is_open=True)
         if leagues:
             out[u.uid].update({
-                'leagues': [{"name": league.name, "id":league.pk} for league in leagues]
+                'leagues': [{"name": league.name, "id": league.pk} for league in leagues]
             })
 
         if u.user.profile.bio is not None:
@@ -797,18 +826,20 @@ def admin(request):
 
             # send discord webhook
             if settings.DEBUG:
-                discord_url = 'http://exemple.com' # change this for local test
+                discord_url = 'http://exemple.com'  # change this for local test
             else:
                 with open('/etc/discord_welcome_hook_url.txt') as f:
                     discord_url = f.read().strip()
-            n_users = User.objects.filter(groups__name__in=['league_member']).count()
+            n_users = User.objects.filter(
+                groups__name__in=['league_member']).count()
             message = "Please welcome **%s** who is OSR member number %d with a violent game of baduk.\n"\
                 % (user.username, n_users)
             if user.profile.kgs_username:
                 message += "KGS : " + user.profile.kgs_username + " \n"
             if user.profile.ogs_username:
                 message += "OGS : [" + user.profile.ogs_username +\
-                    "](https://online-go.com/player/" + str(user.profile.ogs_id) + ")"
+                    "](https://online-go.com/player/" + \
+                    str(user.profile.ogs_id) + ")"
                 if user.profile.ogs_rank:
                     message += " (" + user.profile.ogs_rank + ")"
             values = {"content": message}
@@ -898,7 +929,8 @@ def user_leagues_manage(request, user_id):
         leagues_list = []
         for league in leagues:
             divisions = league.division_set.all()
-            player = LeaguePlayer.objects.filter(user=user, event=league).first()
+            player = LeaguePlayer.objects.filter(
+                user=user, event=league).first()
             if player is not None:
                 player_division = player.division
             else:
@@ -907,18 +939,18 @@ def user_leagues_manage(request, user_id):
             divisions_list = []
             for division in divisions:
                 divisions_list.append({
-                'pk': division.pk,
-                'name': division.name,
-                'is_in': division == player_division
+                    'pk': division.pk,
+                    'name': division.name,
+                    'is_in': division == player_division
                 })
 
             leagues_list.append({
-            'name': league.name,
-            'pk': league.pk,
-            'can_join': league.can_join(user, request.user),
-            'can_quit': league.can_quit(user, request.user),
-            'is_in': player_division is not None,
-            'divisions': divisions_list
+                'name': league.name,
+                'pk': league.pk,
+                'can_join': league.can_join(user, request.user),
+                'can_quit': league.can_quit(user, request.user),
+                'is_in': player_division is not None,
+                'divisions': divisions_list
             })
         out = {
             'user_pk': user.pk,
@@ -926,7 +958,7 @@ def user_leagues_manage(request, user_id):
             'leagues': leagues_list
         }
         return JsonResponse(out)
-    else: # POST
+    else:  # POST
         leagues_list = request.POST.get('leaguesList')
         if leagues_list is not None:
             leagues_list = json.loads(leagues_list)
@@ -938,18 +970,17 @@ def user_leagues_manage(request, user_id):
             if not request.user.is_league_admin(league):
                 continue
             if item['divisionId'] != "0":
-                division = league.division_set.filter(pk=item['divisionId']).first()
+                division = league.division_set.filter(
+                    pk=item['divisionId']).first()
                 if division is not None:
                     if league.assign(user, division, request.user):
                         HttpResponse('success')
             elif league.can_quit(user, request.user):
-                player = LeaguePlayer.objects.filter(user=user, event=league).first()
+                player = LeaguePlayer.objects.filter(
+                    user=user, event=league).first()
                 player.delete()
 
         return HttpResponse('success')
-
-
-
 
 
 # Next 3 views handle sgf upload.
@@ -1100,7 +1131,8 @@ def admin_edit_sgf(request, sgf_id):  # pylint: disable=inconsistent-return-stat
             sgf.p_status = 2
             sgf = sgf.parse()
             valid_events, errors = sgf.check_validity()
-            form = SgfAdminForm(initial={'sgf': sgf.sgf_text, 'url': sgf.urlto})
+            form = SgfAdminForm(
+                initial={'sgf': sgf.sgf_text, 'url': sgf.urlto})
             context = {
                 'sgf': sgf,
                 'form': form,
@@ -1145,6 +1177,7 @@ class LeagueEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         context['other_events'] = league.get_other_events
         return context
 
+
 class DivisionUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """ Update a division"""
     model = Division
@@ -1156,7 +1189,7 @@ class DivisionUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return user.is_authenticated and (
             user.leagueplayer_set.filter(division=self.get_object()).exists()
             or user.is_league_admin(self.get_object().league_event)
-            )
+        )
 
     def get_login_url(self):
         return '/accounts/login/'
@@ -1166,7 +1199,6 @@ class DivisionUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             'event_id': self.get_object().league_event.pk,
             'division_id': self.get_object().pk
         })
-
 
 
 class LeagueEventCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -1272,7 +1304,8 @@ def admin_events_set_primary(request, event_id):
                 r = Registry.objects.get(pk=1)
                 r.primary_event = event
                 r.save()
-                message = "Changed primary event to \"{}\"".format(r.primary_event.name)
+                message = "Changed primary event to \"{}\"".format(
+                    r.primary_event.name)
                 messages.success(request, message)
                 return HttpResponseRedirect(reverse('league:admin_events'))
     raise Http404("What are you doing here ?")
@@ -1294,7 +1327,8 @@ def admin_delete_division(request, division_id):
                     message = "You just deleted the division" + str(division) + " and the " + str(
                         nb_players) + " players in it."
                 else:
-                    message = "You just deleted the empty division" + str(division) + "."
+                    message = "You just deleted the empty division" + \
+                        str(division) + "."
                 division.delete()
                 messages.success(request, message)
                 return HttpResponseRedirect(form.cleaned_data['next'])
@@ -1356,7 +1390,8 @@ def admin_rename_division(request, division_id):
     if request.method == 'POST':
         form = DivisionForm(request.POST)
         if form.is_valid():
-            message = "You renamed " + str(division) + " to " + form.cleaned_data['name']
+            message = "You renamed " + \
+                str(division) + " to " + form.cleaned_data['name']
             division.name = form.cleaned_data['name']
             division.save()
             messages.success(request, message)
@@ -1380,7 +1415,8 @@ def admin_division_up_down(request, division_id):
                 order = division_1.order
                 while not event.division_set.exclude(pk=division_1.pk).filter(order=order).exists():
                     order -= 1
-                division_2 = Division.objects.get(league_event=division_1.league_event, order=order)
+                division_2 = Division.objects.get(
+                    league_event=division_1.league_event, order=order)
                 order_2 = division_1.order
                 division_2.order = -1
                 division_2.save()
@@ -1392,7 +1428,8 @@ def admin_division_up_down(request, division_id):
                 order = division_1.order
                 while not event.division_set.exclude(pk=division_1.pk).filter(order=order).exists():
                     order += 1
-                division_2 = Division.objects.get(league_event=division_1.league_event, order=order)
+                division_2 = Division.objects.get(
+                    league_event=division_1.league_event, order=order)
                 order_2 = division_1.order
                 division_2.order = -1
                 division_2.save()
@@ -1405,6 +1442,7 @@ def admin_division_up_down(request, division_id):
             else:
                 return HttpResponseRedirect(reverse('league:admin_events_update', kwargs={'pk': event.pk}))
     raise Http404("What are you doing here ?")
+
 
 @login_required
 @user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
@@ -1424,6 +1462,7 @@ def division_set_winner(request, division_id):
             return HttpResponseRedirect(form.cleaned_data['next'])
     raise Http404("What are you doing here ?")
 
+
 @login_required()
 def division_create_wont_play(request, division_id):
     division = get_object_or_404(Division, pk=division_id)
@@ -1433,12 +1472,14 @@ def division_create_wont_play(request, division_id):
     form = AddWontPlayForm(request.POST)
     if form.is_valid():
         try:
-            users = [User.objects.get(pk=pk) for pk in form.cleaned_data['players']]
+            users = [User.objects.get(pk=pk)
+                     for pk in form.cleaned_data['players']]
             if all([division.has_user(user) for user in users]):
                 Sgf.create_wont_play(event, division, users)
         except:
             pass
     return division_update_wont_play(request, division.pk)
+
 
 @login_required()
 def division_remove_wont_play(request, division_id):
@@ -1452,6 +1493,7 @@ def division_remove_wont_play(request, division_id):
             Sgf.objects.filter(pk=pk).delete()
     return division_update_wont_play(request, division.pk)
 
+
 @login_required()
 def division_update_wont_play(request, division_id):
     division = get_object_or_404(Division, pk=division_id)
@@ -1464,6 +1506,7 @@ def division_update_wont_play(request, division_id):
     }
     return render(request, 'league/admin/update_wont_play.html', context)
 
+
 @login_required()
 def division_create_forfeit(request, division_id):
     division = get_object_or_404(Division, pk=division_id)
@@ -1471,9 +1514,9 @@ def division_create_forfeit(request, division_id):
     if not request.user.is_league_admin(event):
         raise Http404("What are you doing here ?")
     context = {
-            'event_pk': event.pk,
-            'division': division,
-        }
+        'event_pk': event.pk,
+        'division': division,
+    }
     if request.method == 'POST':
         form = CreateForfeitForm(request.POST)
         if form.is_valid():
@@ -1481,15 +1524,16 @@ def division_create_forfeit(request, division_id):
             loser = get_object_or_404(User, pk=form.cleaned_data['loser'])
             division.create_forfeit(winner, loser)
             return HttpResponseRedirect(reverse('league:results',
-                kwargs={
-                    'event_id': event.pk,
-                    'division_id' : division_id
-                }
-            ))
+                                                kwargs={
+                                                    'event_id': event.pk,
+                                                    'division_id': division_id
+                                                }
+                                                ))
         else:
             raise Http404("Form is invalid")
     else:
         return render(request, 'league/admin/create_forfeit.html', context)
+
 
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
@@ -1520,7 +1564,8 @@ def populate(request, to_event_id, from_event_id=None):
                 division.results = division.get_results()
                 for player in division.results:
                     if player.is_active and form.cleaned_data['player_' + str(player.pk)] != '0':
-                        new_division = Division.objects.get(pk=form.cleaned_data['player_' + str(player.pk)])
+                        new_division = Division.objects.get(
+                            pk=form.cleaned_data['player_' + str(player.pk)])
                         new_player = LeaguePlayer(
                             user=player.user,
                             event=to_event,
@@ -1534,7 +1579,8 @@ def populate(request, to_event_id, from_event_id=None):
             preview = True
     else:
         if 'from_event' in request.GET:
-            from_event = get_object_or_404(LeagueEvent, pk=request.GET['from_event'])
+            from_event = get_object_or_404(
+                LeagueEvent, pk=request.GET['from_event'])
         else:
             raise Http404("What are you doing here ?")
         form = LeaguePopulateForm(from_event, to_event)
@@ -1557,8 +1603,6 @@ def populate(request, to_event_id, from_event_id=None):
     return HttpResponse(template.render(context, request))
 
 
-
-
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
 def proceed_populate(request, from_event_id, to_event_id):
@@ -1579,13 +1623,15 @@ def proceed_populate(request, from_event_id, to_event_id):
             for player in from_event.get_players():
                 if player.nb_games() >= from_event.min_matchs and form.cleaned_data['player_' + str(player.pk)] != '0':
                     n += 1
-                    new_division = Division.objects.get(pk=form.cleaned_data['player_' + str(player.pk)])
+                    new_division = Division.objects.get(
+                        pk=form.cleaned_data['player_' + str(player.pk)])
                     LeaguePlayer.objects.create(user=player.user,
                                                 event=to_event,
                                                 kgs_username=player.kgs_username,
                                                 ogs_username=player.ogs_username,
                                                 division=new_division)
-        message = "The new " + to_event.name + " was populated with " + str(n) + " players."
+        message = "The new " + to_event.name + \
+            " was populated with " + str(n) + " players."
         messages.success(request, message)
         if request.user.is_league_admin():
             return HttpResponseRedirect(reverse('league:admin_events'))
@@ -1628,7 +1674,8 @@ def admin_user_send_mail(request, user_id):  # pylint: disable=inconsistent-retu
                 body=form.cleaned_data['message'],
                 skip_notification=True,
             )
-            message = "Successfully sent an email and a message to " + str(user)
+            message = "Successfully sent an email and a message to " + \
+                str(user)
             messages.success(request, message)
             return HttpResponseRedirect(reverse('league:admin'))
     else:
@@ -1705,7 +1752,6 @@ def admin_users_list(request, event_id=None, division_id=None):
     return render(request, 'league/admin/users.html', context)
 
 
-
 @login_required()
 @user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
 def create_profile(request, user_id):
@@ -1767,7 +1813,8 @@ def update_all_profiles(request):
             # replace all FFG "0" by empty string
             profiles = Profile.objects.filter(ffg_licence_number="0")
             profiles.update(ffg_licence_number="")
-            message = "Successfully updated " + str(profiles.count()) + " profiles."
+            message = "Successfully updated " + \
+                str(profiles.count()) + " profiles."
             messages.success(request, message)
             return HttpResponseRedirect(reverse('league:admin'))
         else:
@@ -1776,6 +1823,7 @@ def update_all_profiles(request):
             return HttpResponseRedirect(reverse('league:admin'))
     else:
         return render(request, 'league/admin/update_all_profiles.html')
+
 
 @login_required()
 @user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
@@ -1790,7 +1838,8 @@ def download_ffg_tou(request, league_id):
 
     if request.method == 'POST':
         # Is it proper? we are reading all POST datas except csrfmiddlewaretoken as licence number.
-        licences = {i:request.POST[i] for i in request.POST if i != 'csrfmiddlewaretoken'}
+        licences = {i: request.POST[i]
+                    for i in request.POST if i != 'csrfmiddlewaretoken'}
         tou = format_ffg_tou(league, licences)
 
         if tou is None:
@@ -1800,7 +1849,8 @@ def download_ffg_tou(request, league_id):
 
         filename = f'OSR-league-{timezone.now().strftime("%m/%Y")}.tou'
         response = HttpResponse(tou, content_type='text/plain')
-        response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
+        response['Content-Disposition'] = 'attachment; filename={0}'.format(
+            filename)
         return response
 
     context = {}
@@ -1809,3 +1859,58 @@ def download_ffg_tou(request, league_id):
     context['league'] = league
     context['users'] = [players.user for players in players]
     return render(request, 'league/admin/download_ffg_tou.html', context)
+
+
+def random_game(request):
+    """ Allow user to draw a random game filtered by:
+        - date range
+        - rank range
+    """
+    if request.method == 'GET':
+        form = Random_game_form()
+        # Set initials datas
+        now = datetime.datetime.now()
+        start_date = now - relativedelta.relativedelta(months=4)
+        form.fields['start_date'].initial = start_date.strftime('%Y-%m-%d')
+        form.fields['end_date'].initial = now.strftime('%Y-%m-%d')
+        context = {'form': form}
+
+    elif request.method == 'POST':
+        form = Random_game_form(request.POST)
+        context = {'form': form}
+        if form.is_valid():
+            # Get POST params
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            start_rank = form.cleaned_data['start_rank']
+            end_rank = form.cleaned_data['end_rank']
+
+            # Render all ranks from 30k to 8d
+            ranks = [f'{i}k' for i in range(30, 0, -1)] + \
+                [f'{i}d' for i in range(1, 10)]
+            # Filter ranks froms start_rank to end_rank
+            start_indice = ranks.index(start_rank)
+            end_indice = ranks.index(end_rank)
+            ranks = [rank for index, rank in enumerate(
+                ranks) if start_indice <= index <= end_indice]
+
+            osr_leagues = LeagueEvent.objects.filter(
+                is_public=True,
+                community__isnull=True
+            )
+
+            # Get SGF in those ranges (date and rank)
+            sgf = Sgf.objects.defer('sgf_text').\
+                filter(events__in=osr_leagues).\
+                filter(date__range=(start_date, end_date),
+                       white__profile__ogs_rank__in=ranks,
+                       black__profile__ogs_rank__in=ranks,
+                       league_valid=True).\
+                order_by('?')[:1]
+            if sgf:
+                context['sgf'] = sgf.get()
+            else:
+                message = "No SGF match the query"
+                messages.success(request, message)
+
+    return render(request, 'league/random_game.html', context)
