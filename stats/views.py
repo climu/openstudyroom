@@ -18,6 +18,7 @@ def overview(request):
         .defer('sgf_text')\
         .filter(league_valid=True)\
         .filter(events__in=osr_leagues)\
+        .distinct()\
         .annotate(month=TruncMonth('date'))\
         .values('month')\
         .annotate(total=Count('id'))\
