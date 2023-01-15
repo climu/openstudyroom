@@ -1,5 +1,4 @@
 import json
-import random
 import datetime
 import io
 from collections import OrderedDict
@@ -32,7 +31,7 @@ from django.template.defaultfilters import date as _date, time as _time
 from django.utils import timezone
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.functions import TruncMonth
-from django.views.decorators.http import require_POST, require_GET
+from django.views.decorators.http import require_POST
 from machina.core.db.models import get_model
 from postman.api import pm_write
 
