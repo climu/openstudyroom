@@ -9,7 +9,8 @@ urlpatterns = []
 
 # make the pattern for all the events
 for (event_type, _) in LeagueEvent.EVENT_TYPE_CHOICES:
-    new_pattern = [url(r"^" + re.escape(event_type) +r"/$", views.get_first_league_event(event_type), name=event_type)]
+    new_pattern = [url(r"^" + re.escape(event_type) + r"/$",
+                       views.get_first_league_event(event_type), name=event_type)]
     urlpatterns = urlpatterns + new_pattern
 
 app_name = 'league'
@@ -31,38 +32,50 @@ urlpatterns = urlpatterns + [
         views.proceed_populate, name='admin_proceed_populate'),
     url(r'^archives/$', views.archives, name='archives'),
 
-    url(r'^(?P<event_id>[0-9]+)/results/(?P<division_id>[0-9]+)/$', views.division_results, name='results'),
-    url(r'^(?P<event_id>[0-9]+)/results/$', views.division_results, name='results'),
+    url(r'^(?P<event_id>[0-9]+)/results/(?P<division_id>[0-9]+)/$',
+        views.division_results, name='results'),
+    url(r'^(?P<event_id>[0-9]+)/results/$',
+        views.division_results, name='results'),
     url(r'^(?P<event_id>[0-9]+)/$', views.division_results, name='results'),
     url(r'^(?P<event_id>[0-9]+)/infos/$', views.infos, name='event'),
-    url(r'^(?P<event_id>[0-9]+)/iframe/$', views.division_results_iframe, name='results_iframe'),
-    url(r'^(?P<event_id>[0-9]+)/iframe/(?P<division_id>[0-9]+)/$', views.division_results_iframe, name='results_iframe'),
+    url(r'^(?P<event_id>[0-9]+)/iframe/$',
+        views.division_results_iframe, name='results_iframe'),
+    url(r'^(?P<event_id>[0-9]+)/iframe/(?P<division_id>[0-9]+)/$',
+        views.division_results_iframe, name='results_iframe'),
 
     url(r'^games/$', views.list_games, name='games'),
     url(r'^games/(?P<sgf_id>[0-9]+)/$', views.list_games, name='game'),
     url(r'^(?P<event_id>[0-9]+)/games/$', views.list_games, name='games'),
-    url(r'^(?P<event_id>[0-9]+)/games/(?P<sgf_id>[0-9]+)/$', views.list_games, name='game'),
+    url(r'^(?P<event_id>[0-9]+)/games/(?P<sgf_id>[0-9]+)/$',
+        views.list_games, name='game'),
 
     url(r'^players/$', views.list_players, name='players'),
-    url(r'^(?P<event_id>[0-9]+)/players/$', views.list_players, name='players'),
+    url(r'^(?P<event_id>[0-9]+)/players/$',
+        views.list_players, name='players'),
 
     url(r'^discord/$', views.discord_redirect, name='discord_redirect'),
 
     url(r'^sgf/(?P<sgf_id>[0-9]+)/$', views.download_sgf, name='sgf'),
-    url(r'^all_sgf/(?P<user_id>[0-9]+)/$', views.download_all_sgf, name='all_sgf'),
+    url(r'^all_sgf/(?P<user_id>[0-9]+)/$',
+        views.download_all_sgf, name='all_sgf'),
 
     url(r'^account/timezone/$', views.timezone_update, name='timezone_update'),
 
 
     url(r'^account/$', views.account, name='league_account'),
-    url(r'^account/(?P<user_name>[\w.@+-]+)/$', views.account, name='league_account'),
-    url(r'^account/(?P<user_name>[\w.@+-]+)/activity/$', views.account_activity, name='league_account_activity'),
+    url(r'^account/(?P<user_name>[\w.@+-]+)/$',
+        views.account, name='league_account'),
+    url(r'^account/(?P<user_name>[\w.@+-]+)/activity/$',
+        views.account_activity, name='league_account_activity'),
     url(r'^scraper/$', views.scraper_view, name='scraper'),
 
     url(r'^admin/$', views.admin, name='admin'),
-    url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/$', views.admin_edit_sgf, name='edit_sgf'),
-    url(r'^admin/handle-upload-sgf/$', views.handle_upload_sgf, name='handle_upload_sgf'),
-    url(r'^admin/handle-upload-sgf/(?P<tournament_id>[0-9]+)/$', views.handle_upload_sgf, name='handle_upload_sgf'),
+    url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/$',
+        views.admin_edit_sgf, name='edit_sgf'),
+    url(r'^admin/handle-upload-sgf/$',
+        views.handle_upload_sgf, name='handle_upload_sgf'),
+    url(r'^admin/handle-upload-sgf/(?P<tournament_id>[0-9]+)/$',
+        views.handle_upload_sgf, name='handle_upload_sgf'),
     url(r'^admin/upload-sgf/$', views.upload_sgf, name='upload_sgf'),
     url(r'^admin/create-sgf/$', views.create_sgf, name='create_sgf'),
 
@@ -87,8 +100,10 @@ urlpatterns = urlpatterns + [
     url(r'^admin/events/(?P<event_id>[0-9]+)/delete/$',
         views.admin_events_delete, name='delete_event'),
     url(r'^admin/sgf/$', views.admin_sgf_list, name='admin_sgf'),
-    url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/save/$', views.admin_save_sgf, name='save_sgf'),
-    url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/delete/$', views.admin_delete_sgf, name='delete_sgf'),
+    url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/save/$',
+        views.admin_save_sgf, name='save_sgf'),
+    url(r'^admin/sgf/(?P<sgf_id>[0-9]+)/delete/$',
+        views.admin_delete_sgf, name='delete_sgf'),
     url(r'^division/(?P<pk>[0-9]+)/informations/$',
         views.DivisionUpdate.as_view(), name='division_update_infos'),
     url(r'^division/(?P<division_id>[0-9]+)/forfeit/create$',
@@ -117,15 +132,21 @@ urlpatterns = urlpatterns + [
     url(r'^admin/users/(?P<user_id>[0-9]+)/send-mail/$',
         views.admin_user_send_mail, name='admin_user_send_mail'),
     url(r'^scrap-list/$', views.scrap_list, name='scrap_list'),
-    url(r'^scrap-list/(?P<profile_id>[0-9]+)/up/$', views.scrap_list_up, name='scrap_list_up'),
+    url(r'^scrap-list/(?P<profile_id>[0-9]+)/up/$',
+        views.scrap_list_up, name='scrap_list_up'),
     url(r'^game/json/(?P<sgf_id>[0-9]+)/$', views.game_api, name='game_api'),
-    url(r'^game/json/(?P<sgf_id>[0-9]+)/(?P<event_id>[0-9]+)/$', views.game_api, name='game_api'),
+    url(r'^game/json/(?P<sgf_id>[0-9]+)/(?P<event_id>[0-9]+)/$',
+        views.game_api, name='game_api'),
 
-    url(r'^(?P<event_id>[0-9]+)/join/(?P<user_id>[0-9]+)/$', views.join_event, name='join_event'),
-    url(r'^(?P<event_id>[0-9]+)/quit/$', views.quit_league, name='quit_league'),
-    url(r'^(?P<event_id>[0-9]+)/quit/(?P<user_id>[0-9]+)/$', views.quit_league, name='quit_league'),
+    url(r'^(?P<event_id>[0-9]+)/join/(?P<user_id>[0-9]+)/$',
+        views.join_event, name='join_event'),
+    url(r'^(?P<event_id>[0-9]+)/quit/$',
+        views.quit_league, name='quit_league'),
+    url(r'^(?P<event_id>[0-9]+)/quit/(?P<user_id>[0-9]+)/$',
+        views.quit_league, name='quit_league'),
 
-    url(r'^admin/create-profile/(?P<user_id>[0-9]+)$', views.create_profile, name='create_profile'),
+    url(r'^admin/create-profile/(?P<user_id>[0-9]+)$',
+        views.create_profile, name='create_profile'),
     url(r'^admin/update-all-sgf-check-code/$',
         views.update_all_sgf_check_code, name='update_all_sgf_check_code'),
     url(
@@ -134,7 +155,8 @@ urlpatterns = urlpatterns + [
         name='update_all_profiles'
     ),
     url(r'^admin/set-meijin/$', views.admin_set_meijin, name='set_meijin'),
-    url(r'^admin/download-ffg-tou/(?P<league_id>[0-9]+)/$', views.download_ffg_tou, name='download_ffg_tou'),
+    url(r'^admin/download-ffg-tou/(?P<league_id>[0-9]+)/$',
+        views.download_ffg_tou, name='download_ffg_tou'),
     url(
         r'^profile/update/$',
         views.ProfileUpdate.as_view(),
@@ -147,5 +169,7 @@ urlpatterns = urlpatterns + [
     ),
     url(r'discord-api/$', views.discord_api, name='discord_api'),
     url(r'games-api/$', views.games_datatable_api, name='games_api'),
-    url(r'user-leagues-manage/(?P<user_id>[0-9]+)/$', views.user_leagues_manage, name='user_leagues_manage'),
+    url(r'user-leagues-manage/(?P<user_id>[0-9]+)/$',
+        views.user_leagues_manage, name='user_leagues_manage'),
+    url(r'random-game/$', views.random_game, name='random_game'),
 ]
