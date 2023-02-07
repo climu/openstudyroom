@@ -341,7 +341,7 @@ BOOTSTRAP3 = {
 
 COMMENTS_APP = 'django_comments_xtd'
 COMMENTS_XTD_MAX_THREAD_LEVEL = 2
-COMMENTS_XTD_CONFIRM_EMAIL = True
+COMMENTS_XTD_CONFIRM_EMAIL = False
 #  To help obfuscating comments before they are sent for confirmation.
 COMMENTS_XTD_SALT = (b"Timendi causa est nescire. "
                      b"Aequam memento rebus in arduis servare mentem.")
@@ -352,11 +352,13 @@ COMMENTS_XTD_APP_MODEL_OPTIONS = {
         'allow_flagging': True,
         'allow_feedback': True,
         'show_feedback': True,
+        'who_can_post': 'users'
     },
     'home.streamfieldentrypage':{
         'allow_flagging': True,
         'allow_feedback': True,
         'show_feedback': True,
+        'who_can_post': 'users'
     }
 }
 

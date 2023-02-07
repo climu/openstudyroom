@@ -10,36 +10,48 @@ from .models import Division, LeagueEvent, Profile
 from .ogs import get_user_id, get_user_rank
 from .go_federations import get_egf_rank, get_ffg_rank
 
+
 class MultipleValueWidget(forms.TextInput):
     def value_from_datadict(self, data, files, name):
         return data.getlist(name)
 
+
 class MultipleIntField(forms.Field):
     widget = MultipleValueWidget
+
     def __init__(self, length=None):
         super().__init__()
         self.length = length
+
     def clean_int(self, x):
         try:
             return int(x)
         except:
-            raise ValidationError("Cannot convert to integer: {}".format(repr(x)))
+            raise ValidationError(
+                "Cannot convert to integer: {}".format(repr(x)))
+
     def clean(self, value):
         if self.length is len(value) or self.length is None:
             return [self.clean_int(x) for x in value]
         else:
-            raise ValidationError("List integer must be of length: {}".format(repr(self.length)))
+            raise ValidationError(
+                "List integer must be of length: {}".format(repr(self.length)))
+
 
 class SgfAdminForm(forms.Form):
-    sgf = forms.CharField(label='sgf data', widget=forms.Textarea(attrs={'cols': 60, 'rows': 20}))
+    sgf = forms.CharField(label='sgf data', widget=forms.Textarea(
+        attrs={'cols': 60, 'rows': 20}))
     url = forms.CharField(label="KGS archive link", required=False)
+
 
 class AddWontPlayForm(forms.Form):
     players = MultipleIntField(2)
 
+
 class CreateForfeitForm(forms.Form):
     winner = forms.IntegerField()
     loser = forms.IntegerField()
+
     def clean(self):
         cleaned_data = super().clean()
         winner = cleaned_data.get("winner")
@@ -47,19 +59,25 @@ class CreateForfeitForm(forms.Form):
         if winner == loser:
             raise ValidationError("Winner and loser cannot be the same user")
 
+
 class RemoveWontPlayForm(forms.Form):
     sgfs = MultipleIntField()
 
+
 class ActionForm(forms.Form):
-    action = forms.CharField(label='action', widget=forms.HiddenInput(), required=False)
-    user_id = forms.IntegerField(label='user_id', widget=forms.HiddenInput(), required=False)
-    next = forms.CharField(label='next', widget=forms.HiddenInput(), required=False)
+    action = forms.CharField(
+        label='action', widget=forms.HiddenInput(), required=False)
+    user_id = forms.IntegerField(
+        label='user_id', widget=forms.HiddenInput(), required=False)
+    next = forms.CharField(
+        label='next', widget=forms.HiddenInput(), required=False)
 
 
 class LeagueSignupForm(forms.Form):
     kgs_username = forms.CharField(max_length=10, required=False)
     ogs_username = forms.CharField(max_length=40, required=False)
-    egf_id = forms.IntegerField(label='European Go Federation ID (optional)', required=False)
+    egf_id = forms.IntegerField(
+        label='European Go Federation ID (optional)', required=False)
     timezone = forms.ChoiceField(
         label='Time Zone (optional)',
         choices=[(t, t) for t in pytz.common_timezones],
@@ -83,7 +101,8 @@ class LeagueSignupForm(forms.Form):
             return ''
         egf_id = self.cleaned_data['egf_id']
         if Profile.objects.filter(egf_id=egf_id).exists():
-            self.add_error('egf_id', "This EGF ID is already used by one of our member. You should contact us.")
+            self.add_error(
+                'egf_id', "This EGF ID is already used by one of our member. You should contact us.")
         egf_rank = get_egf_rank(egf_id)
         if egf_rank is None:
             self.add_error('egf_id', 'This EGF ID seems invalid.')
@@ -94,7 +113,8 @@ class LeagueSignupForm(forms.Form):
             return ''
         kgs_username = self.cleaned_data['kgs_username']
         if Profile.objects.filter(kgs_username__iexact=kgs_username).exists():
-            self.add_error('kgs_username', "This kgs username is already used by one of our member. You should contact us")
+            self.add_error(
+                'kgs_username', "This kgs username is already used by one of our member. You should contact us")
         return kgs_username
 
     def clean_ogs_username(self):
@@ -103,10 +123,12 @@ class LeagueSignupForm(forms.Form):
             return ''
         ogs_username = self.cleaned_data['ogs_username']
         if Profile.objects.filter(ogs_username__iexact=ogs_username).exists():
-            self.add_error('ogs_username', 'Someone is already using this OGS username. Please contact an admin')
+            self.add_error(
+                'ogs_username', 'Someone is already using this OGS username. Please contact an admin')
         id = get_user_id(ogs_username)
         if id == 0:
-            self.add_error('ogs_username', 'There is no such user registered at the Online Go Server')
+            self.add_error(
+                'ogs_username', 'There is no such user registered at the Online Go Server')
         return ogs_username
 
     def clean(self):
@@ -122,7 +144,8 @@ class LeagueSignupForm(forms.Form):
         group = Group.objects.get(name='new_user')
         user.groups.add(group)
         if self.cleaned_data['communities']:
-            communities = Community.objects.filter(pk__in=self.cleaned_data['communities'])
+            communities = Community.objects.filter(
+                pk__in=self.cleaned_data['communities'])
             for community in communities:
                 user.groups.add(community.new_user_group)
         user.save()
@@ -134,7 +157,8 @@ class LeagueSignupForm(forms.Form):
             profile.kgs_username = self.cleaned_data['kgs_username']
         if self.cleaned_data['ogs_username']:
             profile.ogs_username = self.cleaned_data['ogs_username']
-            id = get_user_id(self.cleaned_data['ogs_username']) # we do an extra request after clean. We should store.
+            # we do an extra request after clean. We should store.
+            id = get_user_id(self.cleaned_data['ogs_username'])
             profile.ogs_id = id
             if id > 0:
                 profile.ogs_rank = get_user_rank(id)
@@ -155,22 +179,27 @@ class LeaguePopulateForm(forms.Form):
         players = from_event.get_players()
         divisions = to_event.get_divisions()
         for player in players:
-            choices = [(division.pk, division.name) for division in divisions] + [(0, 'drop')]
-            self.fields['player_'+str(player.pk)] = forms.ChoiceField(choices=choices, required=False)
+            choices = [(division.pk, division.name)
+                       for division in divisions] + [(0, 'drop')]
+            self.fields['player_'+str(player.pk)
+                        ] = forms.ChoiceField(choices=choices, required=False)
             # an attempt to set initial choice with same order... failed.
-            #division =divisions.filter(order=player.division.order).first()
-            #if division != None:
+            # division =divisions.filter(order=player.division.order).first()
+            # if division != None:
             #    self.fields['player_'+str(player.pk)].inital = (division.pk,division.name)
 
 
 class DivisionForm(ModelForm):
-    next = forms.CharField(label='next', widget=forms.HiddenInput(), required=False)
+    next = forms.CharField(
+        label='next', widget=forms.HiddenInput(), required=False)
+
     class Meta:
         model = Division
         fields = ['name', 'next']
         widgets = {
-            'name':forms.TextInput(),
+            'name': forms.TextInput(),
         }
+
 
 class LeagueEventForm(forms.ModelForm):
     begin_time = forms.DateTimeField(
@@ -215,7 +244,7 @@ class LeagueEventForm(forms.ModelForm):
             'servers'
         ]
         # Customise year list to show 2 years in the past/future
-        #EVENT_YEAR_CHOICES = range(datetime.date.today().year - 2, datetime.date.today().year + 3)
+        # EVENT_YEAR_CHOICES = range(datetime.date.today().year - 2, datetime.date.today().year + 3)
         widgets = {
             'name': forms.TextInput(),
             'community': forms.HiddenInput()
@@ -244,9 +273,12 @@ class LeagueEventForm(forms.ModelForm):
     def clean(self):
         '''convert replace timezones to utc'''
         cleaned_data = self.cleaned_data
-        cleaned_data['begin_time'] = cleaned_data['begin_time'].replace(tzinfo=pytz.utc)
-        cleaned_data['end_time'] = cleaned_data['end_time'].replace(tzinfo=pytz.utc)
+        cleaned_data['begin_time'] = cleaned_data['begin_time'].replace(
+            tzinfo=pytz.utc)
+        cleaned_data['end_time'] = cleaned_data['end_time'].replace(
+            tzinfo=pytz.utc)
         return cleaned_data
+
 
 class EmailForm(forms.Form):
     subject = forms.CharField(required=True)
@@ -284,7 +316,7 @@ class ProfileForm(ModelForm):
         if Profile.objects.get(pk=self.instance.pk).egf_id:
             self.fields['egf_id'].disabled = True
         if Profile.objects.get(pk=self.instance.pk).ffg_licence_number and \
-            Profile.objects.get(pk=self.instance.pk).ffg_licence_number != "0":
+                Profile.objects.get(pk=self.instance.pk).ffg_licence_number != "0":
             self.fields['ffg_licence_number'].disabled = True
 
     def clean_kgs_username(self):
@@ -293,9 +325,11 @@ class ProfileForm(ModelForm):
         kgs_username = self.cleaned_data['kgs_username']
         if Profile.objects.filter(kgs_username__iexact=kgs_username).\
                 exclude(pk=self.instance.pk).exists():
-            self.add_error('kgs_username', 'Someone is already using this KGS username. Please contact an admin')
+            self.add_error(
+                'kgs_username', 'Someone is already using this KGS username. Please contact an admin')
         else:  # Update all related league players kgs username
-            open_players = self.instance.user.leagueplayer_set.filter(event__is_open=True)
+            open_players = self.instance.user.leagueplayer_set.filter(
+                event__is_open=True)
             open_players.update(kgs_username=kgs_username)
         return kgs_username
 
@@ -307,16 +341,19 @@ class ProfileForm(ModelForm):
         if ogs_username:
             id = get_user_id(ogs_username)
             if id == 0:
-                self.add_error('ogs_username', 'There is no such user registered at the Online Go Server')
+                self.add_error(
+                    'ogs_username', 'There is no such user registered at the Online Go Server')
             elif Profile.objects.filter(ogs_username__iexact=ogs_username).\
                     exclude(pk=self.instance.pk).exists():
-                self.add_error('ogs_username', 'Someone is already using this OGS username. Please contact an admin')
+                self.add_error(
+                    'ogs_username', 'Someone is already using this OGS username. Please contact an admin')
             else:
                 # update ogs_id
                 self.instance.ogs_id = id
                 self.instance.save()
                 # update all related players ogs usernames
-                open_players = self.instance.user.leagueplayer_set.filter(event__is_open=True)
+                open_players = self.instance.user.leagueplayer_set.filter(
+                    event__is_open=True)
                 open_players.update(ogs_username=ogs_username)
         return ogs_username
 
@@ -333,7 +370,8 @@ class ProfileForm(ModelForm):
                 )
             else:
                 # udate goquest username for all players
-                open_players = self.instance.user.leagueplayer_set.filter(event__is_open=True)
+                open_players = self.instance.user.leagueplayer_set.filter(
+                    event__is_open=True)
                 open_players.update(go_quest_username=go_quest_username)
         return go_quest_username
 
@@ -368,7 +406,8 @@ class ProfileForm(ModelForm):
         # check if ID is valid and get rank
         ffg_rank = get_ffg_rank(ffg_licence_number)
         if ffg_rank is None:
-            self.add_error('ffg_licence_number', 'This FFG licence number seems invalid')
+            self.add_error('ffg_licence_number',
+                           'This FFG licence number seems invalid')
         else:
             # store egf_rank to avoid extra api call later at clean
             self.ffg_rank_cache = ffg_rank
@@ -385,3 +424,12 @@ class ProfileForm(ModelForm):
             self.add_error('ogs_username', '')
             raise forms.ValidationError("You should enter OGS or KGS username")
         return self.cleaned_data
+
+
+class Random_game_form(forms.Form):
+    start_date = forms.DateField(
+        widget=forms.HiddenInput(), input_formats=['%Y-%m-%d'])
+    end_date = forms.DateField(
+        widget=forms.HiddenInput(), input_formats=['%Y-%m-%d'])
+    start_rank = forms.CharField(widget=forms.HiddenInput(), initial='30k')
+    end_rank = forms.CharField(widget=forms.HiddenInput(), initial='8d')

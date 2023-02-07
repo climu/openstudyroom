@@ -4,15 +4,21 @@ from django.template import loader
 from django.db.models import Count, Case, IntegerField, When
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.functions import TruncMonth
-from league.models import User, Sgf
+from league.models import User, Sgf, LeagueEvent
 
 
 def overview(request):
     '''Render various stats OSR related'''
+    osr_leagues = LeagueEvent.objects.filter(
+                    is_public=True,
+                    community__isnull=True
+                )
     games = Sgf.objects\
         .exclude(date__isnull=True)\
         .defer('sgf_text')\
         .filter(league_valid=True)\
+        .filter(events__in=osr_leagues)\
+        .distinct()\
         .annotate(month=TruncMonth('date'))\
         .values('month')\
         .annotate(total=Count('id'))\

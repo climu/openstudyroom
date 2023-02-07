@@ -1,0 +1,40 @@
+{% extends 'full_width.html' %}
+{% load bootstrap3 league_tags tz static%}
+{% block title %}OSR league - random game{% endblock %}
+
+{% block extra_head_js%}
+
+<link href="{% static 'nouislider/nouislider.css'%}" rel="stylesheet">
+<script src="{% static 'nouislider/nouislider.js'%}"></script>
+<script defer src="{% static 'league/js/random_game.js'%}"></script>
+{% endblock %}
+{% block heading %}
+<div class="page-header">
+    <h1>
+      Random game
+    </h1>
+</div>
+{% endblock %}
+
+{% block content %}
+{% get_meijin as meijin %}
+Random game from <strong id="date_min"></strong> to <strong id="date_max"></strong> for players ranks <strong id="rank_min"></strong>-<span id="rank_max"></span>
+
+<div id="slider_date" class="slider"></div>
+<div id="slider_rank" class="slider"></div>
+
+<form method="POST">
+  {% csrf_token %}
+  
+  {% bootstrap_form form %}
+  <button type="submit" class="btn btn-primary slider">{% bootstrap_icon "refresh" %}</button>
+  
+</form>
+
+{% if sgf %}
+
+<div class="well">
+  {{sgf.white | user_link:meijin}} vs {{sgf.black | user_link:meijin}} on {{sgf.date}} <a href="/league/games/{{sgf.pk}}"> link</a>
+</div>
+{% endif %}
+ {% endblock %}

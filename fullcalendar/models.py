@@ -90,12 +90,11 @@ class PublicEvent(CalEvent):
             )
 
     @staticmethod
-    def get_formated(end, tz):
+    def get_formated(start, end, tz):
         """
-        Returns all public futures events.
+        Returns all public events.
         """
-        now = timezone.now()
-        events = PublicEvent.objects.filter(end__gte=now, start__lte=end)
+        events = PublicEvent.objects.filter(end__gte=start, start__lte=end)
         return [event.format(tz) for event in events]
 
 class AvailableEvent(CalEvent):

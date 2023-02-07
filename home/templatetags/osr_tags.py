@@ -1,5 +1,5 @@
 from django import template
-from home.models import Advert
+from home.models import Advert, Sponsor
 from machina.core.db.models import get_model
 from machina.core.loading import get_class
 import requests
@@ -16,6 +16,12 @@ def adverts(context):
     return {
         'adverts': Advert.objects.all(),
         'request': context['request'],
+    }
+
+@register.inclusion_tag('home/tags/sponsors.html', takes_context=True)
+def sponsors(context):
+    return {
+        'sponsors': Sponsor.objects.all(),
     }
 
 @register.simple_tag()

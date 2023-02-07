@@ -64,6 +64,26 @@ class Quote(models.Model):
     def __str__(self):
         return self.text[0:30]
 
+@register_snippet
+class Sponsor(models.Model):
+    name = models.TextField(blank=True, null=True, max_length=100)
+    image = models.URLField(null=True, blank=True)
+    url = models.URLField(null=True, blank=True)
+    order = models.IntegerField(null=True, blank=True)
+    panels = [
+        FieldPanel('name'),
+        FieldPanel('image'),
+        FieldPanel('url'),
+        FieldPanel('order'),
+    ]
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.name
+
+
 # Global Streamfield definition
 
 
@@ -104,6 +124,10 @@ class ImageBlock(StructBlock):
         help_text="optional width in px. Default is auto."
     )
 
+class SponsorsBlock(StructBlock):
+    class Meta:
+        icon = "placeholder"
+        template = "home/includes/sponsors_block.html"
 
 class AlignedHTMLBlock(StructBlock):
     html = RawHTMLBlock()
@@ -134,6 +158,7 @@ class MyStreamBlock(StreamBlock):
     wgo = WgoBlock(label="wgo")
     table = TableBlock()
     poll = SnippetChooserBlock(TopicPoll, template="home/includes/poll.html")
+    sponsor = SponsorsBlock()
 
 
 class HomePage(Page):
