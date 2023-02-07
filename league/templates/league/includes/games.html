@@ -1,9 +1,21 @@
 {% load wagtailcore_tags league_tags i18n%}
 {% get_meijin as meijin %}
+{% load static %}
+<script type="text/javascript"src={% static 'league/js/sgfs_datatable.js'%}></script>
+<script>
+    $(document).ready(function () {
+        games_tab = $("#games_tab");
+        games_tab[0].onclick = function()
+        {
+            loadDataTableGames();
+            games_tab[0].onclick = null;
+        };
+    })
 
+</script>
 {# generate a table from a game queryset #}
 {# don't forget to add the extrajs when including this ! #}
-<table id='game-table' class='display table small' cellspacing='0' width='100%'>
+<table id='game-table' class='display table small' cellspacing='0' width='100%' data-community-pk = {{ community.pk }}>
    <thead>
      <tr>
        <th>{% trans "date" %}</th>
@@ -11,7 +23,7 @@
        <th>{% trans "black" %}</th>
        <th>{% trans "result" %}</th>
     </thead>
-    <tbody>
+{% comment %}    <tbody>
 {% for sgf in sgfs %}
   <tr>
     <td> {{ sgf.date |date:"Y-m-d" }}</td>
@@ -26,5 +38,5 @@
     <td> {%if event %}{{ sgf |game_link:event }} {%else%}{{ sgf |game_link}}{%endif%}</td>
   </tr>
   {% endfor %}
-</tbody>
+</tbody>{% endcomment %}
 </table>

@@ -224,10 +224,19 @@ def games_datatable_api(request):
     https://datatables.net/manual/server-side
     """
     league_id = request.GET.get('league')
+    community_id = request.GET.get('community')
     base_sgfs_queryset = Sgf.objects.exclude(winner__isnull=True)
     if league_id:
         league = get_object_or_404(LeagueEvent, pk=league_id)
         base_sgfs_queryset = base_sgfs_queryset.filter(events=league)
+    if community_id:
+        community = get_object_or_404(Community, pk=community_id)
+        leagues = community.leagueevent_set.all()
+        if not admin:
+            leagues = leagues.filter(is_public=True)
+        leagues = leagues.exclude(event_type='tournament')
+        base_sgfs_queryset = base_sgfs_queryset.filter(events__in=leagues)
+
     sgfs = Sgf.fetch_and_get_context(base_sgfs_queryset)
     out = {
         'draw': int(request.GET.get('draw', 0)),
