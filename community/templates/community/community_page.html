@@ -115,7 +115,7 @@ return false;};
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#leagues">{% trans "Leagues" %}</a></li>
   <li><a data-toggle="tab" href="#tournaments">{% trans "tournaments" %}</a></li>
-  <li><a data-toggle="tab" href="#games">{% trans "Games" %}</a></li>
+  <li><a data-toggle="tab" href="#games" id="games_tab">{% trans "Games" %}</a></li>
   <li><a data-toggle="tab" href="#members">{% trans "Members" %}</a></li>
   <li><a data-toggle="tab" href="#activity">{% trans "Activity" %}</a></li>
   {% if admin %}
@@ -150,7 +150,7 @@ return false;};
     <div class ="row">
       <div class="col-md-4">
         <div id ="game_infos"></div>
-        {% include "league/includes/games.html" with sgfs=sgfs %}
+        {% include "league/includes/games.html" with community=community %}
       </div>
       <div class="col-md-8">
         <div id="player">
@@ -258,13 +258,6 @@ return false;};
 <script type="text/javascript">
 
 $(document).ready(function() {
-  $('#game-table').DataTable({"bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
-  "columnDefs": [ {
-    targets: 0,
-    render: $.fn.dataTable.render.moment( 'YYYY-MM-DD','L', '{{LANGUAGE_CODE}}' )
-  } ],
-  "order": [[ 0, "desc" ]]});
-
     $('#tournaments-table').DataTable({
       "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
       "columnDefs": [ {

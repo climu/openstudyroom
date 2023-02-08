@@ -15,7 +15,7 @@ You'll find more information [here](/docs/docker.md). If you have trouble, don't
 
 ## Manually
 
-This should work on any UNIX with python 3.7.
+This should work on any UNIX with python 3.7. This will note work on ulterior versions such as 3.10!
 
 Updated and tested on April 2021.
 
