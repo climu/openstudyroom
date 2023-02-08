@@ -11,7 +11,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.views.decorators.http import require_POST
 from django.views.decorators.clickjacking import xframe_options_exempt
-from league.models import User, LeagueEvent, Sgf
+from league.models import User, LeagueEvent
 from league.views import LeagueEventCreate, LeagueEventUpdate
 from league.forms import ActionForm
 from tournament.views import TournamentCreate
