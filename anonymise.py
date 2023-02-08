@@ -11,6 +11,7 @@ from django_comments.models import Comment
 from django_comments_xtd.models import Comment as CommentXtd
 from django.contrib.sessions.models import Session
 from postman.models import Message
+from community.models import Community
 
 fake = Faker()
 Faker.seed(0)
@@ -114,6 +115,27 @@ def rm_messages():
     Message.objects.all().delete()
 
 
+def handle_communities():
+    """ Anonymise communities:
+    - remove private communities
+    - fake url in discord_webhook_url
+    - private description to empty string
+
+    We canot use anon.BaseAnonymizer for community.private_description.
+    Indeed machina.models.fields.MarkupTextField store rendered markdown
+    in a _private_description_rendered database field.
+    We need to call save() to update it.
+    """
+    # Remove private communities
+    Community.objects.filter(private=True).delete()
+    # handle public ones
+    communities = Community.objects.all()
+    for community in communities:
+        community.private_description = ""
+        discord_webhook_url = anon.fake_url
+        community.save()
+
+
 # UserAnonymizer().run()
 # EmailAnonymizer().run()
 # DiscordUserlAnonymizer().run()
@@ -121,4 +143,5 @@ def rm_messages():
 # rm_django_admin_logs()
 # rm_comments()
 # rm_sessions()
-rm_messages()
+# rm_messages()
+rm_private_communities()
