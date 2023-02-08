@@ -241,7 +241,7 @@ def games_datatable_api(request):
     if community_id:
         community = get_object_or_404(Community, pk=community_id)
         leagues = community.leagueevent_set.all()
-        if not admin:
+        if not community.is_admin(request.user):
             leagues = leagues.filter(is_public=True)
         leagues = leagues.exclude(event_type='tournament')
         base_sgfs_queryset = base_sgfs_queryset.filter(events__in=leagues)

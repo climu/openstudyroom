@@ -34,11 +34,8 @@ function loadDataTableGames() {
             return link
         }
         game_table = $('#game-table')
-        console.log(game_table)
         community_pk = game_table[0].getAttribute("data-community-pk")
         event_pk = game_table[0].getAttribute("data-event-pk")
-        console.log(community_pk)
-        console.log(event_pk)
         game_table.DataTable({
             "bLengthChange": false ,
             drawCallback: function () {

@@ -14,7 +14,7 @@
 
 </script>
 {# generate a table from a game queryset #}
-{# don't forget to add the extrajs when including this ! #}
+{# don't forget to add data-community-pk or data-event-pk! #}
 <table id='game-table' class='display table small' cellspacing='0' width='100%' data-community-pk = {{ community.pk }}>
    <thead>
      <tr>
@@ -23,20 +23,4 @@
        <th>{% trans "black" %}</th>
        <th>{% trans "result" %}</th>
     </thead>
-{% comment %}    <tbody>
-{% for sgf in sgfs %}
-  <tr>
-    <td> {{ sgf.date |date:"Y-m-d" }}</td>
-    {% if sgf.winner == sgf.white %}
-    <td><b> {{ sgf.white | user_link:meijin}}<b></td>
-    <td> {{ sgf.black | user_link:meijin }}</td>
-
-    {% else %}
-    <td> {{ sgf.white | user_link:meijin }}</td>
-    <td><b> {{ sgf.black | user_link:meijin }}</b></td>
-    {%endif%}
-    <td> {%if event %}{{ sgf |game_link:event }} {%else%}{{ sgf |game_link}}{%endif%}</td>
-  </tr>
-  {% endfor %}
-</tbody>{% endcomment %}
 </table>

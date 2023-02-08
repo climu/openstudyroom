@@ -258,13 +258,6 @@ return false;};
 <script type="text/javascript">
 
 $(document).ready(function() {
-{% comment %}  $('#game-table').DataTable({"bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
-  "columnDefs": [ {
-    targets: 0,
-    render: $.fn.dataTable.render.moment( 'YYYY-MM-DD','L', '{{LANGUAGE_CODE}}' )
-  } ],
-  "order": [[ 0, "desc" ]]});{% endcomment %}
-
     $('#tournaments-table').DataTable({
       "bLengthChange": false ,"dom":'<"H"lr>ft<"F"ip>',
       "columnDefs": [ {

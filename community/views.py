@@ -127,15 +127,6 @@ def community_page(request, slug):
         select_related('profile').\
         prefetch_related('discord_user')
 
-    # get game records
-    # sgfs = Sgf.objects.defer('sgf_text').\
-    #     filter(league_valid=True, events__in=leagues).\
-    #     exclude(winner__isnull=True).\
-    #     select_related('white', 'white__profile', 'black', 'black__profile', 'winner').\
-    #     prefetch_related("white__discord_user", "black__discord_user").\
-    #     distinct().\
-    #     order_by('-date')
-
     # get calendar data
     calendar_data = {}
     calendar_data['community'] = community.format()
@@ -146,7 +137,6 @@ def community_page(request, slug):
         'community': community,
         'leagues': leagues,
         'tournaments': tournaments,
-        # 'sgfs': sgfs,
         'admin': admin,
         'can_join': can_join,
         'can_quit': community.user_group in request.user.groups.all(),
