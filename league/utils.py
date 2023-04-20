@@ -9,13 +9,15 @@ from django.conf import settings
 from django.template import loader
 from django.core.mail import send_mail
 import requests
+import dateutil.parser
+
 
 def kgs_connect():
     url = 'http://www.gokgs.com/json/access'
     # If you are running this locally and want to run scraper, you should use your own
     # KGS credential
     if settings.DEBUG:
-        kgs_password = 'password' # change this for local test
+        kgs_password = 'password'  # change this for local test
     else:
         with open('/etc/kgs_password.txt') as f:
             kgs_password = f.read().strip()
@@ -42,8 +44,10 @@ def kgs_connect():
             break
     if response.status_code != 200:
         return False
-    requests.post(url, json.dumps({"type": "LOGOUT"}), cookies=cookies, timeout=10)
+    requests.post(url, json.dumps(
+        {"type": "LOGOUT"}), cookies=cookies, timeout=10)
     return r
+
 
 def check_byoyomi(s):
     '''check if a string is a correct byo-yomi time: at least '3x30 byo-yomi'
@@ -85,13 +89,15 @@ def extract_players_from_url(url):
             w_end = url.find('-', start)
             white = url[start:w_end]
             b_end = url.find('-', w_end + 1)
-            if b_end != -1:  # there is a -d at the end of the url (players play mutliples times)
+            # there is a -d at the end of the url (players play mutliples times)
+            if b_end != -1:
                 black = url[w_end + 1: b_end]
             elif url.find('.', w_end + 1) != -1:
                 b_end = url.find('.', w_end + 1)
                 black = url[w_end + 1: b_end]
 
-        return {'white': white, 'black': black}  # if unproper url, black is not define
+        # if unproper url, black is not define
+        return {'white': white, 'black': black}
     return None
 
 
@@ -109,7 +115,7 @@ def ask_kgs(kgs_username, year, month):
     soup = BeautifulSoup(t, "html5lib")
     # old method that just get the links to games
     # we need type too to exclude reviews :(
-    #la = soup.find_all(href=re.compile('^http://files.gokgs.com/games/'))
+    # la = soup.find_all(href=re.compile('^http://files.gokgs.com/games/'))
     l = []
     if soup.table is None:
         return l
@@ -127,6 +133,7 @@ def ask_kgs(kgs_username, year, month):
 
     return l
 
+
 def findnth(haystack, needle, n):
     ''' find the nth needle in a haystack. Return the index'''
     parts = haystack.split(needle, n+1)
@@ -134,12 +141,14 @@ def findnth(haystack, needle, n):
         return -1
     return len(haystack)-len(parts[-1])-len(needle)
 
+
 def parse_sgf_string(sgf_string):
     '''parse a sgf from a string and return a dict:
     bplayer,wplayer,time,byo,result,handi,komi,size,rule,date,place'''
 
     # First remove all espaces and new lines from the sgf
-    sgf_string = sgf_string.replace(chr(160), '').replace(chr(10), '').replace(chr(13), '')
+    sgf_string = sgf_string.replace(chr(160), '').replace(
+        chr(10), '').replace(chr(13), '')
     prop = {
         'DT': 'date',
         'RE': 'result',
@@ -151,7 +160,7 @@ def parse_sgf_string(sgf_string):
         'TM': 'time',
         'OT': 'byo',
         'PC': 'place',
-        'RU':'rules'
+        'RU': 'rules'
     }
     # default values:
     out = {
@@ -206,21 +215,20 @@ def quick_send_mail(user, mail):
         context = {'user': user}
         message = plaintext.render(context)
         send_mail(
-           'Welcome in the Open Study Room',
-           message,
-           'openstudyroom@gmail.com',
-           [address.email],
-           fail_silently=False,
+            'Welcome in the Open Study Room',
+            message,
+            'openstudyroom@gmail.com',
+            [address.email],
+            fail_silently=False,
         )
 
+
 def parse_ogs_iso8601_datetime(dt_str):
-    '''turn '2019-04-30T14:41:18.183258-04:00' into datetime.datetime(2019, 4, 30, 18, 41, 18, 183258)
+    '''turn '2019-04-30T14:41:18.183258-04:00' or '2019-04-30T14:41:18.183258Z'into 
+    datetime.datetime(2019, 4, 30, 18, 41, 18, 183258).
     OGS sends us these and we want to compare to a TZ-unaware datetime'''
-    no_tz = dt_str[:-6]
-    tz_str = dt_str[-6:]
-    offset_minutes = int(tz_str[1:3]) * 60 + int(tz_str[4:6])
-    if tz_str[0] == '-':
-        offset_minutes = -offset_minutes
-    dt = datetime.datetime.strptime(no_tz, '%Y-%m-%dT%H:%M:%S.%f')
-    dt -= datetime.timedelta(minutes=offset_minutes)
+
+    dt = dateutil.parser.isoparse(dt_str)
+    dt = dt.astimezone(datetime.timezone.utc)
+    dt = dt.replace(tzinfo=None)
     return dt

@@ -24,6 +24,11 @@ class TestUtils:
         assert parsed == expected
 
     def test_parse_ogs_iso8601_datetime(self):
-        parsed = utils.parse_ogs_iso8601_datetime('2019-04-30T14:41:18.183258-04:00')
+        parsed = utils.parse_ogs_iso8601_datetime(
+            '2019-04-30T14:41:18.183258-04:00')
         expected = datetime.datetime(2019, 4, 30, 18, 41, 18, 183258)
+        assert parsed == expected
+        parsed = utils.parse_ogs_iso8601_datetime(
+            '2019-04-30T14:41:18.183258Z')
+        expected = datetime.datetime(2019, 4, 30, 14, 41, 18, 183258)
         assert parsed == expected
