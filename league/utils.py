@@ -224,7 +224,7 @@ def quick_send_mail(user, mail):
 
 
 def parse_ogs_iso8601_datetime(dt_str):
-    '''turn '2019-04-30T14:41:18.183258-04:00' or '2019-04-30T14:41:18.183258Z'into 
+    '''turn '2019-04-30T14:41:18.183258-04:00' or '2019-04-30T14:41:18.183258Z' into
     datetime.datetime(2019, 4, 30, 18, 41, 18, 183258).
     OGS sends us these and we want to compare to a TZ-unaware datetime'''
 
