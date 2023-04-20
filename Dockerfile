@@ -1,4 +1,4 @@
-FROM python:3.7-stretch as base_build
+FROM python:3.7-bullseye as base_build
 # Do not buffer python's stdout or stderr
 ENV PYTHONUNBUFFERED 1
 # Create the app directory
