@@ -19,7 +19,8 @@ PermissionHandler = get_class('forum_permission.handler', 'PermissionHandler')
 def users_search(request):
     query = request.GET.get('query', None)
     if query is not None:
-        users = User.objects.filter(username__icontains=query).select_related('profile').prefetch_related('discord_user')[:5]
+        users = User.objects.filter(username__icontains=query) \
+            .select_related('profile').prefetch_related('discord_user')[:5]
         results = []
         for user in users:
             user_dict = {'id': user.pk, 'username': user.username}

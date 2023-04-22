@@ -1,3 +1,5 @@
+# ruff: noqa: E501
+
 import datetime
 
 import pytest
@@ -513,7 +515,9 @@ def ogs_response():
                 'white_player_rank': 18,
                 'white_player_rating': '915.978',
                 'time_per_move': 89280,
-                'time_control_parameters': '{\"system\": \"fischer\", \"pause_on_weekends\": true, \"time_control\": \"fischer\", \"initial_time\": 259200, \"max_time\": 432000, \"time_increment\": 86400, \"speed\": \"correspondence\"}',
+                'time_control_parameters': '{\"system\": \"fischer\", \"pause_on_weekends\": true, ' \
+                    '\"time_control\": \"fischer\", \"initial_time\": 259200, \"max_time\": 432000, ' \
+                    '\"time_increment\": 86400, \"speed\": \"correspondence\"}',
                 'disable_analysis': True,
                 'tournament': None,
                 'tournament_round': 0,

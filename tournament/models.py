@@ -221,9 +221,12 @@ class Match(models.Model):
         on_delete=models.SET_NULL)
     bracket = models.ForeignKey(Bracket, blank=True, null=True, on_delete=models.CASCADE)
     round = models.ForeignKey(Round, blank=True, null=True, on_delete=models.CASCADE)
-    player_1 = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name='player_1_match', on_delete=models.CASCADE)
-    player_2 = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name='player_2_match', on_delete=models.CASCADE)
-    winner = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name='winner_match', on_delete=models.CASCADE)
+    player_1 = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name='player_1_match',
+            on_delete=models.CASCADE)
+    player_2 = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name='player_2_match',
+            on_delete=models.CASCADE)
+    winner = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name='winner_match',
+            on_delete=models.CASCADE)
     order = models.PositiveSmallIntegerField()
 
     def __str__(self):
