@@ -1,7 +1,8 @@
 from django import template
 from django.utils import timezone
 from django.utils.safestring import mark_safe
-from fullcalendar.models import PublicEvent, GameAppointmentEvent
+
+from fullcalendar.models import GameAppointmentEvent, PublicEvent
 
 register = template.Library()
 

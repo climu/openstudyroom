@@ -4,12 +4,12 @@ import datetime
 import json
 import time
 
+import dateutil.parser
+import requests
 from bs4 import BeautifulSoup
 from django.conf import settings
-from django.template import loader
 from django.core.mail import send_mail
-import requests
-import dateutil.parser
+from django.template import loader
 
 
 def kgs_connect():

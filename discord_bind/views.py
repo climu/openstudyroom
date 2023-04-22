@@ -25,22 +25,23 @@ SOFTWARE.
 '''
 from __future__ import unicode_literals
 
-from datetime import datetime
 import logging
+from datetime import datetime
 
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponseRedirect
+
 try:
     from django.urls import reverse
 except ImportError:
     from django.core.urlresolvers import reverse
-from django.contrib.auth.decorators import login_required
-from django.utils.timezone import make_aware
-from django.db.models import Q
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.utils.timezone import make_aware
 from requests_oauthlib import OAuth2Session
 
-from discord_bind.models import DiscordUser, DiscordInvite
 from discord_bind.conf import settings
+from discord_bind.models import DiscordInvite, DiscordUser
 
 logger = logging.getLogger(__name__)
 

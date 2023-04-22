@@ -1,5 +1,6 @@
 from django import template
 from django.utils.safestring import mark_safe
+
 from league.models import Registry
 
 register = template.Library()

@@ -4,10 +4,12 @@ This is heavily inspire from https://github.com/kevinharvey/django-tourney and m
 """
 
 from django.db import models
-from league.models import LeagueEvent, LeaguePlayer, Sgf, Division
-from machina.models.fields import MarkupTextField
 from machina.core import validators
+from machina.models.fields import MarkupTextField
+
 from fullcalendar.models import PublicEvent
+from league.models import Division, LeagueEvent, LeaguePlayer, Sgf
+
 
 # Create your models here.
 class Tournament(LeagueEvent):

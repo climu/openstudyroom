@@ -1,8 +1,11 @@
 from django import forms
 from django.forms import ModelForm
+
+from league.forms import LeagueEventForm, ProfileForm
 from league.models import Profile
-from league.forms import ProfileForm, LeagueEventForm
-from .models import Tournament, TournamentGroup, Round
+
+from .models import Round, Tournament, TournamentGroup
+
 
 class TournamentForm(LeagueEventForm):
     class Meta:

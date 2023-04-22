@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.forms.widgets import Textarea
 
+
 class MarkdownTextareaWidget(Textarea):
     """ A simple Textarea widget using the simplemde JS library to provide Markdown editor. """
     class Media:

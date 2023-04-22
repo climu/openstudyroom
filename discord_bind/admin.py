@@ -24,7 +24,8 @@ SOFTWARE.
 
 '''
 from django.contrib import admin
-from .models import DiscordUser, DiscordInvite
+
+from .models import DiscordInvite, DiscordUser
 
 
 @admin.register(DiscordUser)

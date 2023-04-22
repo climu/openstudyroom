@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
-
 from machina.models.fields import MarkupTextFieldWidget
+
 from league.models import User
 
 from .models import Community

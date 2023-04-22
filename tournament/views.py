@@ -1,23 +1,32 @@
-from datetime import datetime
 import json
-from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.template import loader
-from django.shortcuts import get_object_or_404
-from django.db.models.functions import Lower
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic.edit import CreateView, UpdateView
-from django.contrib.auth.decorators import user_passes_test, login_required
+from datetime import datetime
+
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models.functions import Lower
+from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.template import loader
 from django.urls import reverse
 from django.utils import timezone
-from league.models import User, Sgf
-from league.forms import SgfAdminForm, ActionForm
-from fullcalendar.forms import UTCPublicEventForm
-from community.forms import CommunytyUserForm
+from django.views.generic.edit import CreateView, UpdateView
 from pytz import utc
-from .models import Tournament, Bracket, Match, TournamentPlayer, TournamentGroup, Round, TournamentEvent
-from .forms import TournamentForm, TournamentGroupForm, RoundForm, TournamentAboutForm,\
-    TournamentPlayerProfileForm, ForfeitForm
+
+from community.forms import CommunytyUserForm
+from fullcalendar.forms import UTCPublicEventForm
+from league.forms import ActionForm, SgfAdminForm
+from league.models import Sgf, User
+
+from .forms import (
+    ForfeitForm,
+    RoundForm,
+    TournamentAboutForm,
+    TournamentForm,
+    TournamentGroupForm,
+    TournamentPlayerProfileForm,
+)
+from .models import Bracket, Match, Round, Tournament, TournamentEvent, TournamentGroup, TournamentPlayer
 from .utils import save_round
 
 

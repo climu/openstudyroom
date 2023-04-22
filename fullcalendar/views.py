@@ -1,26 +1,26 @@
-from datetime import datetime, timedelta
 import json
-import vobject
+from datetime import datetime, timedelta
 
-from django.db.models import Q
-from django.shortcuts import render, get_object_or_404
-from django.views.generic.edit import UpdateView, CreateView
-from django.contrib.auth.decorators import user_passes_test, login_required
-from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse, \
-    HttpResponseForbidden
+import vobject
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.utils.timezone import make_aware
-from django.utils import timezone
+from django.db.models import Q
+from django.http import Http404, HttpResponse, HttpResponseForbidden, HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404, render
 from django.template import loader
+from django.utils import timezone
+from django.utils.timezone import make_aware
 from django.views.decorators.http import require_POST
+from django.views.generic.edit import CreateView, UpdateView
 from postman.api import pm_write
 from pytz import utc
 
 from community.models import Community
-from league.models import User, LeagueEvent, Division
 from league.forms import ActionForm
-from .forms import UTCPublicEventForm, CategoryForm
-from .models import PublicEvent, AvailableEvent, GameRequestEvent, GameAppointmentEvent, Category
+from league.models import Division, LeagueEvent, User
+
+from .forms import CategoryForm, UTCPublicEventForm
+from .models import AvailableEvent, Category, GameAppointmentEvent, GameRequestEvent, PublicEvent
 
 
 class CategoryCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):

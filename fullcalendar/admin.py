@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import PublicEvent, GameRequestEvent, GameAppointmentEvent
+
+from .models import GameAppointmentEvent, GameRequestEvent, PublicEvent
+
 # Register your models here.
 mymodels = [PublicEvent, GameRequestEvent, GameAppointmentEvent]
 

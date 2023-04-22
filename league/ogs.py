@@ -1,6 +1,8 @@
 """Get data from ogs api."""
-from math import log, ceil
+from math import ceil, log
+
 import requests
+
 
 def rating2rank(ogs_rating):
     """Return a human readable go rank from a OGS rating number"""

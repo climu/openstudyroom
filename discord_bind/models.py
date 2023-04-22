@@ -26,11 +26,12 @@ SOFTWARE.
 from __future__ import unicode_literals
 
 import logging
-import requests
 
-from django.db import models
+import requests
 from django.conf import settings as django_settings
 from django.contrib.auth.models import Group
+from django.db import models
+
 from discord_bind.conf import settings
 
 logger = logging.getLogger(__name__)

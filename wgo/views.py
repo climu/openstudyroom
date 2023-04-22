@@ -1,7 +1,10 @@
 import os
 import random
+
 from django.http import HttpResponse
+
 from openstudyroom.settings.base import BASE_DIR
+
 
 def tsumego_api(request):
     """

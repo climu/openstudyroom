@@ -1,10 +1,11 @@
-from django import template
-from home.models import Advert, Sponsor
-from machina.core.db.models import get_model
-from machina.core.loading import get_class
-import requests
 import json
 
+import requests
+from django import template
+from machina.core.db.models import get_model
+from machina.core.loading import get_class
+
+from home.models import Advert, Sponsor
 
 Forum = get_model('forum', 'Forum')
 Topic = get_model('forum_conversation', 'Topic')

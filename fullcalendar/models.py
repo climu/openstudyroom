@@ -1,15 +1,18 @@
 import requests
-from pytz import utc
-from django.db import models
-from django.utils import timezone
-from django.utils.translation import activate, deactivate, gettext as _
-from django.conf import settings
-from django.urls import reverse
-from django.template import loader
 from colorful.fields import RGBColorField
+from django.conf import settings
+from django.db import models
+from django.template import loader
+from django.urls import reverse
+from django.utils import timezone
+from django.utils.translation import activate, deactivate
+from django.utils.translation import gettext as _
 from postman.api import pm_broadcast, pm_write
-from league.models import User, Division
+from pytz import utc
+
 from community.models import Community
+from league.models import Division, User
+
 
 class Category(models.Model):
     name = models.CharField(max_length=20)

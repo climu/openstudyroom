@@ -6,12 +6,11 @@ from league.fixtures.pytest_fixtures import (
     cho_chikun,
     kobayashi_koichi,
     league_event,
-    sgf_cho_vs_kobayashi,
-    sgf_text,
     ogs_response,
     registry,
+    sgf_cho_vs_kobayashi,
+    sgf_text,
 )
-
 
 FROZEN_TIME = '2020-05-29T11:14:00'
 

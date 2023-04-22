@@ -15,8 +15,7 @@ from __future__ import absolute_import, unicode_literals
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-from machina import MACHINA_MAIN_TEMPLATE_DIR
-from machina import MACHINA_MAIN_STATIC_DIR
+from machina import MACHINA_MAIN_STATIC_DIR, MACHINA_MAIN_TEMPLATE_DIR
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)

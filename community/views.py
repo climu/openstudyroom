@@ -1,23 +1,27 @@
 from datetime import datetime
+
 from dateutil.relativedelta import relativedelta
-from pytz import utc
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect, Http404, HttpResponse, JsonResponse
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic.edit import UpdateView
-from django.urls import reverse
-from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q
-from django.views.decorators.http import require_POST
+from django.http import Http404, HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 from django.views.decorators.clickjacking import xframe_options_exempt
-from league.models import User, LeagueEvent
-from league.views import LeagueEventCreate, LeagueEventUpdate
+from django.views.decorators.http import require_POST
+from django.views.generic.edit import UpdateView
+from pytz import utc
+
+from fullcalendar.views import CategoryCreate, PublicEventCreate
 from league.forms import ActionForm
+from league.models import LeagueEvent, User
+from league.views import LeagueEventCreate, LeagueEventUpdate
 from tournament.views import TournamentCreate
-from fullcalendar.views import PublicEventCreate, CategoryCreate
+
+from .forms import AdminCommunityForm, CommunityForm, CommunityRankingForm, CommunytyUserForm
 from .models import Community
-from .forms import CommunityForm, AdminCommunityForm, CommunytyUserForm, CommunityRankingForm
+
 
 @login_required()
 @user_passes_test(User.is_osr_admin, login_url='/', redirect_field_name=None)

@@ -1,14 +1,16 @@
+import pytz
 from django import forms
 from django.contrib.auth.models import Group
-from django.forms import ModelForm
 from django.core.exceptions import ValidationError
+from django.forms import ModelForm
 from django_countries.widgets import CountrySelectWidget
-import pytz
+
 from community.models import Community
 from community.widget import Community_select
+
+from .go_federations import get_egf_rank, get_ffg_rank
 from .models import Division, LeagueEvent, Profile
 from .ogs import get_user_id, get_user_rank
-from .go_federations import get_egf_rank, get_ffg_rank
 
 
 class MultipleValueWidget(forms.TextInput):

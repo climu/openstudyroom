@@ -1,10 +1,12 @@
 import json
+
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import Case, Count, IntegerField, When
+from django.db.models.functions import TruncMonth
 from django.http import HttpResponse
 from django.template import loader
-from django.db.models import Count, Case, IntegerField, When
-from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models.functions import TruncMonth
-from league.models import User, Sgf, LeagueEvent
+
+from league.models import LeagueEvent, Sgf, User
 
 
 def overview(request):

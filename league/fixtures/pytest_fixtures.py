@@ -1,7 +1,7 @@
 import datetime
-import pytz
 
 import pytest
+import pytz
 
 from league import models
 

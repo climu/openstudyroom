@@ -2,7 +2,8 @@ from django import forms
 from django.forms import ModelForm
 from pytz import utc
 
-from .models import PublicEvent, Category
+from .models import Category, PublicEvent
+
 
 class UTCPublicEventForm(ModelForm):
     """a form that force time to be entered with UTC"""

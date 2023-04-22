@@ -1,11 +1,12 @@
 import pytz
-from django.db import models
-from django.contrib.auth.models import Group
-from django.contrib.auth import get_user_model
 from django.conf.global_settings import LANGUAGES
-from machina.models.fields import MarkupTextField
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
+from django.db import models
 from machina.core import validators
-from league.go_federations import get_ffg_ladder, ffg_user_infos, ffg_rating2rank
+from machina.models.fields import MarkupTextField
+
+from league.go_federations import ffg_rating2rank, ffg_user_infos, get_ffg_ladder
 
 
 class Community(models.Model):

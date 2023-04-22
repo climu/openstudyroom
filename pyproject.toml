@@ -1,6 +1,7 @@
 [tool.ruff]
 line-length = 120
 select = [
+    'I',
     'Q',
 ]
 [tool.ruff.flake8-quotes]

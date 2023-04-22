@@ -1,13 +1,14 @@
 import json
+
 from django.http import HttpResponse
 from django.urls import reverse
-from league.models import User
-from home.models import FullWidthPage
-from wagtail.search.backends import get_search_backend
-from puput.models import BlogPage
 from machina.core.db.models import get_model
 from machina.core.loading import get_class
+from puput.models import BlogPage
+from wagtail.search.backends import get_search_backend
 
+from home.models import FullWidthPage
+from league.models import User
 
 Forum = get_model('forum', 'Forum')
 Topic = get_model('forum_conversation', 'Topic')

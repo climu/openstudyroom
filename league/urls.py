@@ -1,5 +1,7 @@
 import re
+
 from django.conf.urls import url
+
 from league.models import LeagueEvent
 
 from . import views

@@ -1,34 +1,43 @@
 from __future__ import absolute_import, unicode_literals
+
 import random
 
 import requests
+from django import forms
 from django.conf import settings
 from django.db import models
-from django.db.models.signals import post_save
-from django.db.models import Count, Case, IntegerField, When
+from django.db.models import Case, Count, IntegerField, When
 from django.db.models.functions import TruncMonth
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.loader import render_to_string
-from django.utils import timezone
-from django import forms
 from django.urls import reverse
-from wagtail.core.models import Page
-from wagtail.core.fields import RichTextField, StreamField
-from wagtail.snippets.models import register_snippet
-from wagtail.snippets.blocks import SnippetChooserBlock
-from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel
-from wagtail.core.blocks import TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, \
-    RichTextBlock, RawHTMLBlock, IntegerBlock
-from wagtail.images.blocks import ImageChooserBlock
-from wagtail.documents.blocks import DocumentChooserBlock
-from wagtail.contrib.table_block.blocks import TableBlock
-from wagtail.core.signals import page_published
-from wagtailmenus.models import MenuPage
-from puput.models import EntryPage, BlogPage
-from machina.core.db.models import get_model
+from django.utils import timezone
 from machina.apps.forum_conversation.forum_polls.models import TopicPoll
-from league.models import Registry, Sgf, LeagueEvent
+from machina.core.db.models import get_model
+from puput.models import BlogPage, EntryPage
+from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel
+from wagtail.contrib.table_block.blocks import TableBlock
+from wagtail.core.blocks import (
+    CharBlock,
+    FieldBlock,
+    IntegerBlock,
+    RawHTMLBlock,
+    RichTextBlock,
+    StreamBlock,
+    StructBlock,
+    TextBlock,
+)
+from wagtail.core.fields import RichTextField, StreamField
+from wagtail.core.models import Page
+from wagtail.core.signals import page_published
+from wagtail.documents.blocks import DocumentChooserBlock
+from wagtail.images.blocks import ImageChooserBlock
+from wagtail.snippets.blocks import SnippetChooserBlock
+from wagtail.snippets.models import register_snippet
+from wagtailmenus.models import MenuPage
 
+from league.models import LeagueEvent, Registry, Sgf
 
 ForumPost = get_model('forum_conversation', 'Post')
 TopicPoll.__module__ = 'machina.apps.forum_conversation.forum_polls.models'

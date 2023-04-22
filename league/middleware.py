@@ -1,6 +1,6 @@
+import pytz
 from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
-import pytz
 
 
 class TimezoneMiddleware(MiddlewareMixin):

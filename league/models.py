@@ -1,15 +1,16 @@
-from collections import defaultdict
-from operator import attrgetter
 import datetime
 import json
-import time
 import re
+import time
+from collections import defaultdict
+from operator import attrgetter
+
 import pytz
 import requests
 from django.contrib.auth.models import AbstractUser
-from django.urls import reverse
 from django.db import models
-from django.db.models import Q, Prefetch
+from django.db.models import Prefetch, Q
+from django.urls import reverse
 from django.utils import timezone
 from django_countries.fields import CountryField
 from machina.core import validators
@@ -17,6 +18,7 @@ from machina.models.fields import MarkupTextField
 
 from community.models import Community
 from discord_bind.models import DiscordUser
+
 from . import utils
 from .ogs import get_user_rank
 

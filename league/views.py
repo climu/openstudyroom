@@ -1,52 +1,64 @@
-import json
 import datetime
 import io
+import json
 from collections import OrderedDict
 from time import sleep
 from zipfile import ZipFile
-from dateutil import relativedelta
+
 import pytz
 import requests
-from django.shortcuts import get_object_or_404, render
-from django.template import loader
-from django.template.defaultfilters import slugify
+from dateutil import relativedelta
 from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import Group
+from django.core.mail import send_mail
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import Case, Count, IntegerField, Prefetch, Q, When
+from django.db.models.functions import TruncMonth
 from django.http import (
+    Http404,
     HttpResponse,
     HttpResponseRedirect,
-    Http404,
     JsonResponse,
 )
+from django.shortcuts import get_object_or_404, render
+from django.template import loader
+from django.template.defaultfilters import date as _date
+from django.template.defaultfilters import slugify
+from django.template.defaultfilters import time as _time
 from django.urls import reverse
-from django.db.models import Count, Case, IntegerField, When, Q, Prefetch
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib import messages
-from django.contrib.auth.decorators import user_passes_test
-from django.core.mail import send_mail
-from django.views.generic.edit import CreateView, UpdateView
-from django.views.decorators.clickjacking import xframe_options_exempt
-from django.template.defaultfilters import date as _date, time as _time
 from django.utils import timezone
-from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models.functions import TruncMonth
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.http import require_POST
+from django.views.generic.edit import CreateView, UpdateView
 from machina.core.db.models import get_model
 from postman.api import pm_write
 
-from discord_bind.models import DiscordUser
-from tournament.models import Tournament
 from community.models import Community
+from discord_bind.models import DiscordUser
 from fullcalendar.models import GameAppointmentEvent
-from . import utils
-from . import ogs
-from .models import Sgf, LeaguePlayer, User, LeagueEvent, Division, Registry, \
-    Profile
-from .forms import SgfAdminForm, AddWontPlayForm, CreateForfeitForm, RemoveWontPlayForm, ActionForm,\
-    LeaguePopulateForm, UploadFileForm, DivisionForm,\
-    LeagueEventForm, EmailForm, TimezoneForm, ProfileForm, Random_game_form
+from tournament.models import Tournament
+
+from . import ogs, utils
+from .forms import (
+    ActionForm,
+    AddWontPlayForm,
+    CreateForfeitForm,
+    DivisionForm,
+    EmailForm,
+    LeagueEventForm,
+    LeaguePopulateForm,
+    ProfileForm,
+    Random_game_form,
+    RemoveWontPlayForm,
+    SgfAdminForm,
+    TimezoneForm,
+    UploadFileForm,
+)
 from .go_federations import format_ffg_tou
+from .models import Division, LeagueEvent, LeaguePlayer, Profile, Registry, Sgf, User
 
 ForumProfile = get_model('forum_member', 'ForumProfile')
 discord_url_file = '/etc/discord_url.txt'
