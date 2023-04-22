@@ -4,7 +4,7 @@ from .base import *
 # By default an in-memory sqlite DB is used
 # This is slow to develop with since each test run needs to re-migrate
 DATABASES['default']['TEST'] = {
-    'NAME': 'db_test.sqlite3'
+    'NAME': 'db_test.sqlite3',
 }
 
 DEBUG = True

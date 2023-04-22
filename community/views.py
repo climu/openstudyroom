@@ -38,7 +38,7 @@ def admin_community_create(request):
         if form.is_valid():
             community = Community.create(
                 form.cleaned_data['name'],
-                form.cleaned_data['slug']
+                form.cleaned_data['slug'],
             )
             community.save()
             return HttpResponseRedirect(reverse('community:admin_community_list'))
@@ -68,7 +68,7 @@ class CommunityUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         return reverse(
             'community:community_page',
-            kwargs={'slug': self.get_object().slug}
+            kwargs={'slug': self.get_object().slug},
         )
 
     def test_func(self):
@@ -178,11 +178,11 @@ def ranking_table(request, slug):
                 {'title':'# Wins', 'key':'wins_count'},
                 {'title':'Win ratio (%)', 'key':'win_ratio'},
                 {'title':'FFG Rating', 'key':'ffg_rating'},
-                {'title':'FFG Rank', 'key':'ffg_rank'}
+                {'title':'FFG Rank', 'key':'ffg_rank'},
             ],
             'id':'community_ranking_table',
             'url':f'/community/{slug}/ranking_api/?begin_time={ranking_from}&end_time={ranking_to}',
-        }
+        },
     }
 
     return render(request, 'community/ranking_table.html', context)
@@ -238,7 +238,7 @@ def community_ranking(request, slug):
                 for (stat_name, stat_sort) in [
                     ('Played games', 'games_count'),
                     ('Games won', 'wins_count'),
-                    ('Win ratio (%)', 'win_ratio')
+                    ('Win ratio (%)', 'win_ratio'),
                 ]:
                     txt += '\n-------------------\n'+stat_name+' :\n-------------------\n'
                     txt += '\n'.join([
@@ -272,7 +272,7 @@ def community_list(request):
     return render(
         request,
         'community/community_list.html',
-        {'communitys': communitys}
+        {'communitys': communitys},
     )
 
 
@@ -292,7 +292,7 @@ def community_join(request, community_pk, user_pk):
         messages.success(request, message)
         return HttpResponseRedirect(reverse(
             'community:community_page',
-            kwargs={'slug': community.slug}
+            kwargs={'slug': community.slug},
         ))
     else:
         raise Http404('what are you doing here ?')
@@ -318,14 +318,14 @@ def community_quit(request, community_pk, user_pk):
             else:
                 return HttpResponseRedirect(reverse(
                     'community:community_page',
-                    kwargs={'slug': community.slug}
+                    kwargs={'slug': community.slug},
                 ))
         else:
             message = user.username + ' is not in your community anymore.'
             messages.success(request, message)
             return HttpResponseRedirect(reverse(
                 'community:community_page',
-                kwargs={'slug': community.slug}
+                kwargs={'slug': community.slug},
             ))
     else:
         raise Http404('what are you doing here ?')
@@ -336,11 +336,11 @@ def community_results_page(request, slug):
     community = get_object_or_404(Community, slug=slug)
     league = LeagueEvent.objects.filter(
         community=community,
-        is_open=True
+        is_open=True,
     ).order_by('end_time').first()
     return HttpResponseRedirect(reverse(
         'league:results',
-        kwargs={'event_id': league.pk})
+        kwargs={'event_id': league.pk}),
     )
 
 
@@ -354,7 +354,7 @@ def admin_user_list(request, pk):
     return render(
         request,
         'community/admin/user_list.html',
-        {'community': community, 'community_users': community_users}
+        {'community': community, 'community_users': community_users},
     )
 
 
@@ -378,7 +378,7 @@ def admin_invite_user(request, pk):
     messages.success(request, message)
     return HttpResponseRedirect(reverse(
         'community:community_page',
-        kwargs={'slug': community.slug}
+        kwargs={'slug': community.slug},
     ))
 
 
@@ -404,7 +404,7 @@ def manage_admins(request, pk):
             messages.success(request, message)
     return HttpResponseRedirect(reverse(
         'community:community_page',
-        kwargs={'slug': community.slug}
+        kwargs={'slug': community.slug},
     ))
 
 
@@ -423,7 +423,7 @@ class CommunityLeagueEventCreate(LeagueEventCreate):
         community = get_object_or_404(Community, pk=community_pk)
         return reverse(
                 'community:community_page',
-                kwargs={'slug': community.slug}
+                kwargs={'slug': community.slug},
         )
 
     def form_valid(self, form):
@@ -438,7 +438,7 @@ class CommunityLeagueEventUpdate(LeagueEventUpdate):
     def get_success_url(self):
         return reverse(
             'community:community_page',
-            kwargs={'slug': self.get_object().community.slug}
+            kwargs={'slug': self.get_object().community.slug},
         )
 
     def get_context_data(self, **kwargs):
@@ -460,7 +460,7 @@ class CommunityTournamentCreate(TournamentCreate):
         community = get_object_or_404(Community, pk=community_pk)
         return reverse(
             'community:community_page',
-            kwargs={'slug': community.slug}
+            kwargs={'slug': community.slug},
         )
     def form_valid(self, form):
         response = super(CommunityTournamentCreate, self).form_valid(form)
@@ -482,7 +482,7 @@ class CommunityEventCreate(PublicEventCreate):
         community = get_object_or_404(Community, pk=community_pk)
         return reverse(
             'community:community_page',
-            kwargs={'slug': community.slug}
+            kwargs={'slug': community.slug},
         )
     def form_valid(self, form):
         response = super(CommunityEventCreate, self).form_valid(form)
@@ -508,7 +508,7 @@ class CommunityCategoryCreate(CategoryCreate):
         community = get_object_or_404(Community, pk=community_pk)
         return reverse(
             'community:community_page',
-            kwargs={'slug': community.slug}
+            kwargs={'slug': community.slug},
         )
     def form_valid(self, form):
         response = super(CommunityCategoryCreate, self).form_valid(form)
@@ -527,5 +527,5 @@ def calendar_iframe(request, slug):
     return render(
         request,
         'community/calendar_iframe.html',
-        {'community': community}
+        {'community': community},
     )

@@ -27,7 +27,7 @@ class TournamentForm(LeagueEventForm):
             'is_public',
             'description',
             'prizes',
-            'community'
+            'community',
         ]
         widgets = {
             'name': forms.TextInput(),
@@ -36,7 +36,7 @@ class TournamentForm(LeagueEventForm):
             'ppwin': forms.HiddenInput(),
             'pploss': forms.HiddenInput(),
             'event_type': forms.HiddenInput(),
-            'community': forms.HiddenInput()
+            'community': forms.HiddenInput(),
 
         }
 

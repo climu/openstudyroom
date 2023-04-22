@@ -160,7 +160,7 @@ def parse_sgf_string(sgf_string):
         'TM': 'time',
         'OT': 'byo',
         'PC': 'place',
-        'RU': 'rules'
+        'RU': 'rules',
     }
     # default values:
     out = {

@@ -10,118 +10,118 @@ urlpatterns = [
     url(
         r'^update/(?P<pk>[0-9]+)/$',
         views.PublicEventUpdate.as_view(success_url='/calendar/admin/event-list/'),
-        name='update_cal_event'
+        name='update_cal_event',
     ),
     url(
         r'^update/(?P<pk>[0-9]+)/(?P<tournament_id>[0-9]+)$',
         views.PublicEventUpdate.as_view(success_url='/calendar/admin/event-list/'),
-        name='update_cal_event'
+        name='update_cal_event',
     ),
     url(
         r'^delete/(?P<pk>[0-9]+)/$',
         views.admin_delete_event,
-        name='admin_delete_event'
+        name='admin_delete_event',
     ),
     url(
         r'^create/$',
         views.PublicEventCreate.as_view(success_url='/calendar/admin/event-list/'),
-        name='create_cal_event'
+        name='create_cal_event',
     ),
     url(
         r'^create/(?P<tournament_id>[0-9]+)/$',
         views.PublicEventCreate.as_view(success_url='/calendar/admin/event-list/'),
-        name='create_cal_event'
+        name='create_cal_event',
     ),
     url(
         r'^category/create/$',
         views.CategoryCreate.as_view(success_url='/calendar/admin/event-list/'),
-        name='create_category'
+        name='create_category',
     ),
     url(
         r'^category/delete/(?P<pk>[0-9]+)/$',
         views.admin_delete_category,
-        name='admin_delete_category'
+        name='admin_delete_category',
     ),
     url(
         r'^category/update/(?P<pk>[0-9]+)/$',
         views.CategoryUpdate.as_view(success_url='/calendar/admin/event-list/'),
-        name='admin_update_category'
+        name='admin_update_category',
     ),
     url(
         r'^admin/event-list/$',
         views.admin_cal_event_list,
-        name='admin_cal_event_list'
+        name='admin_cal_event_list',
     ),
     url(
         r'^get-public-events/$',
         views.get_public_events,
-        name='get_public_events'
+        name='get_public_events',
     ),
     url(
         r'^get-available-events/(?P<user_pk>[0-9]+)/$',
         views.get_available_events,
-        name='get_available_events'
+        name='get_available_events',
     ),
     url(
         r'^get-opponents-available-events/(?P<user_pk>[0-9]+)/$',
         views.get_opponents_available_events,
-        name='get_opponents_available_events'
+        name='get_opponents_available_events',
     ),
     url(
         r'^create-available-event/$',
         views.create_available_event,
-        name='create_available_event'
+        name='create_available_event',
     ),
     url(
         r'^update-available-event/$',
         views.update_available_event,
-        name='update_available_event'
+        name='update_available_event',
     ),
     url(
         r'^delete-available-event/$',
         views.delete_available_event,
-        name='delete_available_event'
+        name='delete_available_event',
     ),
     url(
         r'^get-game-request-events/$',
         views.get_game_request_events,
-        name='get_game_request_events'
+        name='get_game_request_events',
     ),
     url(
         r'^get-game-appointment-events/$',
         views.get_game_appointment_events,
-        name='get_game_appointment_events'
+        name='get_game_appointment_events',
     ),
     url(
         # Game requests and appointments
         r'^create-game-ajax/$',
         views.create_game_ajax,
-        name='create_game_ajax'
+        name='create_game_ajax',
     ),
     url(
         r'^accept-game-request-ajax/$',
         views.accept_game_request_ajax,
-        name='accept_game_request_ajax'
+        name='accept_game_request_ajax',
     ),
     url(
         r'^reject-game-request-ajax/$',
         views.reject_game_request_ajax,
-        name='reject_game_request_ajax'
+        name='reject_game_request_ajax',
     ),
     url(
         r'^cancel-game-request-ajax/$',
         views.cancel_game_request_ajax,
-        name='cancel_game_request_ajax'
+        name='cancel_game_request_ajax',
     ),
     url(
         r'^cancel-game-appointment-ajax/$',
         views.cancel_game_appointment_ajax,
-        name='cancel_game_appointment_ajax'
+        name='cancel_game_appointment_ajax',
     ),
     url(
         r'^update-time-range-ajax/$',
         views.update_time_range_ajax,
-        name='update_time_range_ajax'
+        name='update_time_range_ajax',
     ),
-    url(r'^ical/(?P<user_id>\d+)/osr.ics$', views.ical, name='osr_ical')
+    url(r'^ical/(?P<user_id>\d+)/osr.ics$', views.ical, name='osr_ical'),
 ]

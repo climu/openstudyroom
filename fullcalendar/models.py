@@ -37,7 +37,7 @@ class Category(models.Model):
         else:
             return reverse(
                 'community:community_page',
-                kwargs={'slug':self.community.slug}
+                kwargs={'slug':self.community.slug},
             )
 
 class CalEvent(models.Model):
@@ -89,7 +89,7 @@ class PublicEvent(CalEvent):
         else:
             return reverse(
                 'community:community_page',
-                kwargs={'slug':self.community.slug}
+                kwargs={'slug':self.community.slug},
             )
 
     @staticmethod
@@ -143,20 +143,20 @@ class AvailableEvent(CalEvent):
         availables = AvailableEvent.objects.filter(
             start__lte=end,
             end__gte=now,
-            user__in=opponents
+            user__in=opponents,
         )
         changes = []
         for event in availables:
             change = {
                 'time': event.start,
                 'user': {'name': event.user.username},
-                'type': 1  # means the user becomes available
+                'type': 1,  # means the user becomes available
             }
             changes.append(change)
             change = {
                 'time': event.end,
                 'user': {'name': event.user.username},
-                'type': 0  # means the user becomes unavailable
+                'type': 0,  # means the user becomes unavailable
             }
             changes.append(change)
         changes = sorted(changes, key=lambda k: k['time'])
@@ -205,7 +205,7 @@ class GameRequestEvent(CalEvent):
         User,
         related_name='%(app_label)s_%(class)s_related_sender',
         related_query_name='%(app_label)s_%(class)ss_sender',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
     receivers = models.ManyToManyField(
         User,
@@ -234,7 +234,7 @@ class GameRequestEvent(CalEvent):
         plaintext = loader.get_template('fullcalendar/messages/game_request.txt')
         context = {
             'sender': sender,
-            'date': self.start
+            'date': self.start,
         }
         message = plaintext.render(context)
         pm_broadcast(
@@ -242,7 +242,7 @@ class GameRequestEvent(CalEvent):
             recipients=receiver,
             subject=subject,
             body=message,
-            skip_notification=False
+            skip_notification=False,
         )
 
     @staticmethod
@@ -291,7 +291,7 @@ class GameAppointmentEvent(CalEvent):
             # we need minimal infos
             event['users'].append({
                 'pk': user.pk,
-                'name': user.username
+                'name': user.username,
             })
         return event
 
@@ -313,7 +313,7 @@ class GameAppointmentEvent(CalEvent):
             plaintext = loader.get_template('fullcalendar/messages/game_request_accepted.txt')
             context = {
                 'user': receiver,
-                'date': self.start
+                'date': self.start,
             }
             message = plaintext.render(context)
             pm_write(
@@ -321,14 +321,14 @@ class GameAppointmentEvent(CalEvent):
                 recipient=sender,
                 subject=subject,
                 body=message,
-                skip_notification=False
+                skip_notification=False,
             )
         else:
             subject = sender.username + ' has planned a game appointment on ' + self.start.strftime('%d %b')
             plaintext = loader.get_template('fullcalendar/messages/game_appointment.txt')
             context = {
                 'user': sender,
-                'date': self.start
+                'date': self.start,
             }
             message = plaintext.render(context)
             pm_write(
@@ -336,7 +336,7 @@ class GameAppointmentEvent(CalEvent):
                 recipient=receiver,
                 subject=subject,
                 body=message,
-                skip_notification=False
+                skip_notification=False,
             )
         if self.private is not True:
             self.notify_on_discord(sender, receiver)
@@ -374,9 +374,9 @@ class GameAppointmentEvent(CalEvent):
                 'title': title,
                 'description': f'{leagueInfo} \n\n {players} \n {date} ({tz})',
                 'thumbnail': {
-                    'url': 'https://sits-go.org/wp-content/uploads/2021/03/the-shell-16x4-1.jpg'
-                }
-            }]
+                    'url': 'https://sits-go.org/wp-content/uploads/2021/03/the-shell-16x4-1.jpg',
+                },
+            }],
         }
 
     @staticmethod
@@ -384,7 +384,7 @@ class GameAppointmentEvent(CalEvent):
         """Return all the future game appointments for a user."""
         now = timezone.now()
         return user.fullcalendar_gameappointmentevent_related.filter(
-            end__gte=now
+            end__gte=now,
         )
 
     @staticmethod

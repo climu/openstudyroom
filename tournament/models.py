@@ -22,11 +22,11 @@ class Tournament(LeagueEvent):
     stage = models.PositiveSmallIntegerField(default=0)
     about = MarkupTextField(
             blank=True, null=True,
-            validators=[validators.NullableMaxLengthValidator(5000)]
+            validators=[validators.NullableMaxLengthValidator(5000)],
     )
     rules = MarkupTextField(
             blank=True, null=True,
-            validators=[validators.NullableMaxLengthValidator(5000)]
+            validators=[validators.NullableMaxLengthValidator(5000)],
     )
     use_calendar = models.BooleanField(default=True)
     winner = models.ForeignKey(
@@ -34,7 +34,7 @@ class Tournament(LeagueEvent):
         null=True,
         blank=True,
         related_name='won_tournament',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
 
     def last_player_order(self):
@@ -62,7 +62,7 @@ class Tournament(LeagueEvent):
             'valid': False,
             'message': [],
             'group': None,
-            'match': None
+            'match': None,
         }
         if self.stage == 0:
             out['message'].append('Tournament is closed')
@@ -76,7 +76,7 @@ class Tournament(LeagueEvent):
             if group:
                 out.update({
                     'valid': True,
-                    'group': group
+                    'group': group,
                 })
             else:
                 out['message'] += errors
@@ -91,7 +91,7 @@ class Tournament(LeagueEvent):
                 if match is not None:
                     out.update({
                         'valid': True,
-                        'match': match
+                        'match': match,
                     })
                 else:
                     out['message'].append('Not a match')

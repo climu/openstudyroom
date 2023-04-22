@@ -12,7 +12,7 @@ class MarkdownTextareaWidget(Textarea):
         js = (
             'mdeditor/bootstrap-markdown.js',
             '//cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js',
-            '//cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js'
+            '//cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js',
         )
 
     def render(self, name, value, attrs=None, renderer=None):

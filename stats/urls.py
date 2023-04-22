@@ -8,6 +8,6 @@ urlpatterns = [
     url(
         r'^$',
         views.overview,
-        name='overview'
+        name='overview',
     ),
 ]

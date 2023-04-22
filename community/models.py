@@ -79,7 +79,7 @@ class Community(models.Model):
 
         # init the output data
         output = {
-            'data':[]
+            'data':[],
         }
 
         # next, extend members properties with community related stats
@@ -136,7 +136,7 @@ class Community(models.Model):
             slug=slug,
             admin_group=admin_group,
             user_group=user_group,
-            new_user_group=new_user_group
+            new_user_group=new_user_group,
         )
         return community
 

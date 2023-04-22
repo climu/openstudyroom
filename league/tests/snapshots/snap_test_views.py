@@ -21,7 +21,7 @@ snapshots['TestGamesDatatableAPI.test_with_sgf 1'] = {
                 'ogs_data': None,
                 'ogs_online': False,
                 'username': 'cho_chikun',
-                'winner': True
+                'winner': True,
             },
             {
                 'account_url': '/league/account/kobayashi_koichi',
@@ -34,16 +34,16 @@ snapshots['TestGamesDatatableAPI.test_with_sgf 1'] = {
                 'ogs_data': None,
                 'ogs_online': False,
                 'username': 'kobayashi_koichi',
-                'winner': False
+                'winner': False,
             },
             {
                 'sgf_pk': 1,
-                'sgf_result': '?'
-            }
-        ]
+                'sgf_result': '?',
+            },
+        ],
     ],
     'draw': 0,
-    'recordsTotal': 1
+    'recordsTotal': 1,
 }
 
 snapshots['TestGamesDatatableAPI.test_with_league 1'] = {
@@ -61,7 +61,7 @@ snapshots['TestGamesDatatableAPI.test_with_league 1'] = {
                 'ogs_data': None,
                 'ogs_online': False,
                 'username': 'cho_chikun',
-                'winner': True
+                'winner': True,
             },
             {
                 'account_url': '/league/account/kobayashi_koichi',
@@ -74,14 +74,14 @@ snapshots['TestGamesDatatableAPI.test_with_league 1'] = {
                 'ogs_data': None,
                 'ogs_online': False,
                 'username': 'kobayashi_koichi',
-                'winner': False
+                'winner': False,
             },
             {
                 'sgf_pk': 1,
-                'sgf_result': '?'
-            }
-        ]
+                'sgf_result': '?',
+            },
+        ],
     ],
     'draw': 0,
-    'recordsTotal': 1
+    'recordsTotal': 1,
 }

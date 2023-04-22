@@ -67,7 +67,7 @@ def about(request, tournament_id):
         'tournament': tournament,
         'admin': admin,
         'groups': groups,
-        'events': events
+        'events': events,
     }
     template = loader.get_template('tournament/about.html')
     return HttpResponse(template.render(context, request))
@@ -82,7 +82,7 @@ def brackets_view(request, tournament_id):
         'tournament': tournament,
         'groups': groups,
         'admin': request.user.is_authenticated and request.user.is_league_admin(tournament),
-        'brackets': brackets
+        'brackets': brackets,
     }
     template = loader.get_template('tournament/brackets.html')
     return HttpResponse(template.render(context, request))
@@ -97,7 +97,7 @@ def groups_view(request, tournament_id):
     context = {
         'tournament': tournament,
         'groups': groups,
-        'admin': request.user.is_authenticated and request.user.is_league_admin(tournament)
+        'admin': request.user.is_authenticated and request.user.is_league_admin(tournament),
     }
     template = loader.get_template('tournament/groups.html')
     return HttpResponse(template.render(context, request))
@@ -120,7 +120,7 @@ def games_view(request, tournament_id, sgf_id=None):
         'sgfs': sgfs,
         'tournament': tournament,
         'groups': groups,
-        'admin': request.user.is_authenticated and request.user.is_league_admin(tournament)
+        'admin': request.user.is_authenticated and request.user.is_league_admin(tournament),
     }
     if sgf_id is not None:
         sgf = get_object_or_404(Sgf, pk=sgf_id)
@@ -137,7 +137,7 @@ def players_view(request, tournament_id):
         'tournament': tournament,
         'players': players,
         'groups': groups,
-        'admin': request.user.is_authenticated and request.user.is_league_admin(tournament)
+        'admin': request.user.is_authenticated and request.user.is_league_admin(tournament),
     }
     template = loader.get_template('tournament/players.html')
     return HttpResponse(template.render(context, request))
@@ -151,7 +151,7 @@ def calendar(request, tournament_id):
         'tournament': tournament,
         'admin': request.user.is_authenticated and request.user.is_league_admin(tournament),
         'groups': groups,
-        'user': request.user
+        'user': request.user,
     }
     template = loader.get_template('tournament/calendar.html')
     return HttpResponse(template.render(context, request))
@@ -212,7 +212,7 @@ class TournamentEventUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView)
     def get_success_url(self):
         return reverse(
             'tournament:manage_calendar',
-            kwargs={'tournament_id': self.get_object().tournament.pk}
+            kwargs={'tournament_id': self.get_object().tournament.pk},
             )
 
 @login_required()
@@ -225,7 +225,7 @@ def manage_calendar(request, tournament_id):
     context = {
         'tournament': tournament,
         'events': events,
-        'groups': groups
+        'groups': groups,
     }
     template = loader.get_template('tournament/manage_events.html')
     return HttpResponse(template.render(context, request))
@@ -250,15 +250,15 @@ def create_calendar_event(request, tournament_id):
             messages.success(request, message)
             return HttpResponseRedirect(reverse(
                 'tournament:manage_calendar',
-                kwargs={'tournament_id': tournament.pk}
+                kwargs={'tournament_id': tournament.pk},
             ))
     form = UTCPublicEventForm({
         'start': datetime.now(),
-        'end': datetime.now()
+        'end': datetime.now(),
     })
     context = {
         'tournament': tournament,
-        'form': form
+        'form': form,
     }
     template = loader.get_template('tournament/create_calendar_event.html')
     return HttpResponse(template.render(context, request))
@@ -279,14 +279,14 @@ def edit_player_profile(request, tournament_id, user_id):
             messages.success(request, message)
             return HttpResponseRedirect(reverse(
                 'tournament:players',
-                kwargs={'tournament_id': tournament.pk}
+                kwargs={'tournament_id': tournament.pk},
             ))
     form = TournamentPlayerProfileForm(instance=user.profile)
     context = {
         'tournament': tournament,
         'form': form,
         'groups': groups,
-        'user': user
+        'user': user,
     }
     template = loader.get_template('tournament/edit_profile.html')
     return HttpResponse(template.render(context, request))
@@ -308,14 +308,14 @@ def edit_about(request, tournament_id):
             messages.success(request, message)
             return HttpResponseRedirect(reverse(
                 'tournament:about',
-                kwargs={'tournament_id': tournament.pk}
+                kwargs={'tournament_id': tournament.pk},
             ))
     else:
         form = TournamentAboutForm(instance=tournament)
     context = {
         'tournament': tournament,
         'form': form,
-        'groups': groups
+        'groups': groups,
     }
     template = loader.get_template('tournament/edit_about.html')
     return HttpResponse(template.render(context, request))
@@ -362,7 +362,7 @@ def manage_groups(request, tournament_id):
     context = {
         'tournament': tournament,
         'players': players,
-        'groups': groups
+        'groups': groups,
     }
     template = loader.get_template('tournament/manage_groups.html')
     return HttpResponse(template.render(context, request))
@@ -378,7 +378,7 @@ def create_bracket(request, tournament_id):
         bracket.save()
     return HttpResponseRedirect(reverse(
         'tournament:manage_brackets',
-        kwargs={'tournament_id': tournament.pk}
+        kwargs={'tournament_id': tournament.pk},
     ))
 
 @login_required()
@@ -391,7 +391,7 @@ def create_match(request, round_id):
 
     return HttpResponseRedirect(reverse(
         'tournament:manage_brackets',
-        kwargs={'tournament_id': round.bracket.tournament.pk}
+        kwargs={'tournament_id': round.bracket.tournament.pk},
     ))
 
 @login_required()
@@ -409,7 +409,7 @@ def delete_match(request, round_id):
             round.delete_match()
     return HttpResponseRedirect(reverse(
         'tournament:manage_brackets',
-        kwargs={'tournament_id': round.bracket.tournament.pk}
+        kwargs={'tournament_id': round.bracket.tournament.pk},
     ))
 
 @login_required()
@@ -424,7 +424,7 @@ def rename_round(request, round_id):
             round.save()
     return HttpResponseRedirect(reverse(
         'tournament:manage_brackets',
-        kwargs={'tournament_id': round.bracket.tournament.pk}
+        kwargs={'tournament_id': round.bracket.tournament.pk},
     ))
 
 
@@ -446,7 +446,7 @@ def create_round(request, bracket_id):
             Match.objects.create(bracket=bracket, round=round, order=0)
     return HttpResponseRedirect(reverse(
         'tournament:manage_brackets',
-        kwargs={'tournament_id': bracket.tournament.pk}
+        kwargs={'tournament_id': bracket.tournament.pk},
     ))
 
 
@@ -463,7 +463,7 @@ def rename_bracket(request, bracket_id):
             bracket.save()
     return HttpResponseRedirect(reverse(
         'tournament:manage_brackets',
-        kwargs={'tournament_id': bracket.tournament.pk}
+        kwargs={'tournament_id': bracket.tournament.pk},
     ))
 
 @login_required()
@@ -475,7 +475,7 @@ def delete_bracket(request, bracket_id):
         bracket.delete()
     return HttpResponseRedirect(reverse(
         'tournament:manage_brackets',
-        kwargs={'tournament_id': bracket.tournament.pk}
+        kwargs={'tournament_id': bracket.tournament.pk},
     ))
 
 
@@ -488,7 +488,7 @@ def delete_round(request, round_id):
         round.delete()
     return HttpResponseRedirect(reverse(
         'tournament:manage_brackets',
-        kwargs={'tournament_id': round.bracket.tournament.pk}
+        kwargs={'tournament_id': round.bracket.tournament.pk},
     ))
 
 
@@ -533,7 +533,7 @@ def manage_brackets(request, tournament_id):
             group.results = results
         context.update({
             'seeded_players': seeded_players,
-            'groups': groups
+            'groups': groups,
         })
 
     template = loader.get_template('tournament/manage_brackets.html')
@@ -550,7 +550,7 @@ def manage_games(request, tournament_id):
         pass
     context = {
         'tournament': tournament,
-        'games': games
+        'games': games,
     }
     template = loader.get_template('tournament/manage_games.html')
     return HttpResponse(template.render(context, request))
@@ -608,7 +608,7 @@ def create_sgf(request, tournament_id):
                 messages.success(request, message)
     return HttpResponseRedirect(reverse(
         'tournament:manage_games',
-        kwargs={'tournament_id': tournament.pk}
+        kwargs={'tournament_id': tournament.pk},
     ))
 
 @login_required()
@@ -634,7 +634,7 @@ def upload_sgf(request, tournament_id):
                 'form': form,
                 'match': check['match'],
                 'group': check['group'],
-                'errors': check['message']
+                'errors': check['message'],
             }
             template = loader.get_template('tournament/upload_sgf.html')
             return HttpResponse(template.render(context, request))
@@ -654,7 +654,7 @@ def upload_sgf(request, tournament_id):
                 'sgf': sgf,
                 'form': form,
                 'match': check['match'],
-                'group': check['group']
+                'group': check['group'],
             }
             template = loader.get_template('tournament/upload_sgf.html')
             return HttpResponse(template.render(context, request))
@@ -673,13 +673,13 @@ def invite_user(request, tournament_id):
             user = User.objects.get(username__iexact=form.cleaned_data['username'])
             if TournamentPlayer.objects.filter(
                 event=tournament,
-                user=user
+                user=user,
             ).exists():
                 message = user.username + ' is already in the tournament.'
                 messages.success(request, message)
                 return HttpResponseRedirect(reverse(
                     'tournament:manage_settings',
-                    kwargs={'tournament_id': tournament.pk}
+                    kwargs={'tournament_id': tournament.pk},
                 ))
 
             player = TournamentPlayer()
@@ -697,7 +697,7 @@ def invite_user(request, tournament_id):
             messages.success(request, message)
         return HttpResponseRedirect(reverse(
             'tournament:manage_settings',
-            kwargs={'tournament_id': tournament.pk}
+            kwargs={'tournament_id': tournament.pk},
         ))
 
 @login_required()

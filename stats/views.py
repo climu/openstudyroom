@@ -13,7 +13,7 @@ def overview(request):
     """Render various stats OSR related"""
     osr_leagues = LeagueEvent.objects.filter(
                     is_public=True,
-                    community__isnull=True
+                    community__isnull=True,
                 )
     games = Sgf.objects\
         .exclude(date__isnull=True)\
@@ -28,13 +28,13 @@ def overview(request):
             Case(
                 When(place__startswith='The KGS', then=1),
                 output_field=IntegerField(),
-                distinct=True
+                distinct=True,
             )))\
         .annotate(ogs=Count(
             Case(
                 When(place__startswith='OGS', then=1),
                 output_field=IntegerField(),
-                distinct=True
+                distinct=True,
             )))\
         .values('month', 'total', 'kgs', 'ogs')\
         .order_by('month')
@@ -55,7 +55,7 @@ def overview(request):
         total += month['total']
         dict = {
             'total': total,
-            'month': month['month']
+            'month': month['month'],
         }
         users.append(dict)
 
@@ -64,7 +64,7 @@ def overview(request):
     context = {
         'games': games,
         'registrations': registrations,
-        'users': users
+        'users': users,
     }
 
     template = loader.get_template('stats/overview.html')

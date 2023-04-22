@@ -34,7 +34,7 @@ def users_search(request):
                     'ogs_online': user.is_online_ogs(),
                     'ogs_username': user.profile.ogs_username,
                     'ogs_rank': user.profile.ogs_rank,
-                    'ogs_id': user.profile.ogs_id
+                    'ogs_id': user.profile.ogs_id,
                 })
 
             discord_user = user.discord_user.first()
@@ -42,7 +42,7 @@ def users_search(request):
                 user_dict.update({
                     'discord_status': discord_user.status,
                     'discord_username': discord_user.username,
-                    'discord_discriminator': discord_user.discriminator
+                    'discord_discriminator': discord_user.discriminator,
                 })
 
             results.append(user_dict)
@@ -62,7 +62,7 @@ def pages_search(request):
         for page in pages:
             results.append({
                 'title': str(page),
-                'url': page.get_url(request)
+                'url': page.get_url(request),
             })
         data = json.dumps(results)
     else:
@@ -80,7 +80,7 @@ def blog_search(request):
         for entry in entries:
             results.append({
                 'title': entry.title,
-                'url': entry.get_url(request)
+                'url': entry.get_url(request),
             })
         data = json.dumps(results)
     else:
@@ -100,11 +100,11 @@ def forum_search(request):
                 'forum_slug': topic.forum.slug,
                 'forum_pk': topic.forum.pk,
                 'slug': topic.slug,
-                'pk': topic.id
+                'pk': topic.id,
             })
             results.append({
                 'title': topic.subject,
-                'url': url
+                'url': url,
             })
         data = json.dumps(results)
     else:

@@ -349,7 +349,7 @@ def ogs_response():
         'results': [
             {
                 'related': {
-                    'detail': '/api/v1/games/16083413'
+                    'detail': '/api/v1/games/16083413',
                 },
                 'players': {
                     'black': {
@@ -362,12 +362,12 @@ def ogs_response():
                                 'deviation': 84.52931783075007,
                                 'rating': 1760.5976721537445,
                                 'games_played': 169,
-                                'volatility': 0.06097800395022088
-                            }
+                                'volatility': 0.06097800395022088,
+                            },
                         },
                         'ranking': 20,
                         'professional': False,
-                        'ui_class': ''
+                        'ui_class': '',
                     },
                     'white': {
                         'id': 106155,
@@ -379,13 +379,13 @@ def ogs_response():
                                 'deviation': 119.06634171319544,
                                 'rating': 1626.0943874056077,
                                 'games_played': 30,
-                                'volatility': 0.05991960465200883
-                            }
+                                'volatility': 0.05991960465200883,
+                            },
                         },
                         'ranking': 17,
                         'professional': False,
-                        'ui_class': 'supporter'
-                    }
+                        'ui_class': 'supporter',
+                    },
                 },
                 'id': 16083413,
                 'name': 'Tournament Game: Correspondence Weekly McMahon 19x19 2018-06-09 17:00 (37872) R:2 (raylu vs Naxe)',
@@ -426,15 +426,15 @@ def ogs_response():
                             'overall': {
                                 'rating': 1771.5311279296875,
                                 'deviation': 90.05663299560547,
-                                'volatility': 0.061021242290735245
-                            }
+                                'volatility': 0.061021242290735245,
+                            },
                         },
                         'username': 'Naxe',
                         'country': 'Naxe',
                         'ranking': 20,
                         'professional': False,
                         'icon': 'https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/8b76b3356a7f05669ea9fbeb28b2a05d-32.png',
-                        'ui_class': ''
+                        'ui_class': '',
                     },
                     'white': {
                         'id': 106155,
@@ -442,21 +442,21 @@ def ogs_response():
                             'overall': {
                                 'rating': 1652.8897705078125,
                                 'deviation': 109.97587585449219,
-                                'volatility': 0.05992735177278519
-                            }
+                                'volatility': 0.05992735177278519,
+                            },
                         },
                         'username': 'raylu',
                         'country': 'raylu',
                         'ranking': 17,
                         'professional': False,
                         'icon': 'https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/2b733fc955a2883ef8a7093ff10563f5-32.png',
-                        'ui_class': 'supporter'
-                    }
-                }
+                        'ui_class': 'supporter',
+                    },
+                },
             },
             {
                 'related': {
-                    'detail': '/api/v1/games/16963628'
+                    'detail': '/api/v1/games/16963628',
                 },
                 'players': {
                     'black': {
@@ -469,12 +469,12 @@ def ogs_response():
                                 'deviation': 91.68388954461214,
                                 'rating': 1736.140415330084,
                                 'games_played': 42,
-                                'volatility': 0.060318472835717056
-                            }
+                                'volatility': 0.060318472835717056,
+                            },
                         },
                         'ranking': 18,
                         'professional': False,
-                        'ui_class': ''
+                        'ui_class': '',
                     },
                     'white': {
                         'id': 106155,
@@ -486,13 +486,13 @@ def ogs_response():
                                 'deviation': 119.06634171319544,
                                 'rating': 1626.0943874056077,
                                 'games_played': 30,
-                                'volatility': 0.05991960465200883
-                            }
+                                'volatility': 0.05991960465200883,
+                            },
                         },
                         'ranking': 17,
                         'professional': False,
-                        'ui_class': 'supporter'
-                    }
+                        'ui_class': 'supporter',
+                    },
                 },
                 'id': 16963628,
                 'name': 'Friendly Match',
@@ -533,15 +533,15 @@ def ogs_response():
                             'overall': {
                                 'rating': 1699.94482421875,
                                 'deviation': 76.8810806274414,
-                                'volatility': 0.06031230464577675
-                            }
+                                'volatility': 0.06031230464577675,
+                            },
                         },
                         'username': 'stonemuncher',
                         'country': 'stonemuncher',
                         'ranking': 18,
                         'professional': False,
                         'icon': 'https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/c8ec4f3f96c64417c12e6e7b7c57a63d-32.png',
-                        'ui_class': ''
+                        'ui_class': '',
                     },
                     'white': {
                         'id': 106155,
@@ -549,17 +549,17 @@ def ogs_response():
                             'overall': {
                                 'rating': 1689.1734619140625,
                                 'deviation': 115.30014038085938,
-                                'volatility': 0.05995921045541763
-                            }
+                                'volatility': 0.05995921045541763,
+                            },
                         },
                         'username': 'raylu',
                         'country': 'raylu',
                         'ranking': 17,
                         'professional': False,
                         'icon': 'https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/2b733fc955a2883ef8a7093ff10563f5-32.png',
-                        'ui_class': 'supporter'
-                    }
-                }
-            }
-        ]
+                        'ui_class': 'supporter',
+                    },
+                },
+            },
+        ],
     }

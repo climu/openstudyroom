@@ -86,7 +86,7 @@ def html_one_result_2(context, _tr_idx, _td_idx, _blank=False):
     for e in context['appointments']:
         ev = {
             'start': e['start'],
-            'players': [p['pk'] for p in e['users']]
+            'players': [p['pk'] for p in e['users']],
         }
         if player.user.pk in ev['players'] and opponent.user.pk in ev['players'] and player.user.pk != opponent.user.pk:
             appointments.append(ev)

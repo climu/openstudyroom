@@ -15,7 +15,7 @@ DATABASES = {
         'PASSWORD' : DB_PASS,
         'HOST': 'localhost',
         'PORT': '',
-    }
+    },
 }
 
 ALLOWED_HOSTS = ['openstudyroom.org']

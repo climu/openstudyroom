@@ -85,17 +85,17 @@ urlpatterns = urlpatterns + [
     url(
         r'^admin/events/(?P<pk>[0-9]+)/$',
         views.LeagueEventUpdate.as_view(),
-        name='admin_events_update'
+        name='admin_events_update',
     ),
     url(
         r'^admin/events/create/$',
         views.LeagueEventCreate.as_view(success_url='/league/admin/events/'),
-        name='admin_events_create'
+        name='admin_events_create',
     ),
     url(
         r'^admin/events/create/(?P<copy_from_pk>[0-9]+)/$',
         views.LeagueEventCreate.as_view(),
-        name='admin_events_create'
+        name='admin_events_create',
     ),
     url(r'^admin/events/(?P<event_id>[0-9]+)/set_primary/$',
         views.admin_events_set_primary, name='set_primary'),
@@ -154,7 +154,7 @@ urlpatterns = urlpatterns + [
     url(
         r'^admin/update_all_profiles/$',
         views.update_all_profiles,
-        name='update_all_profiles'
+        name='update_all_profiles',
     ),
     url(r'^admin/set-meijin/$', views.admin_set_meijin, name='set_meijin'),
     url(r'^admin/download-ffg-tou/(?P<league_id>[0-9]+)/$',
@@ -162,12 +162,12 @@ urlpatterns = urlpatterns + [
     url(
         r'^profile/update/$',
         views.ProfileUpdate.as_view(),
-        name='profile_update'
+        name='profile_update',
     ),
     url(
         r'^profile/(?P<pk>[0-9]+)/update/$',
         views.ProfileUpdate.as_view(),
-        name='profile_update'
+        name='profile_update',
     ),
     url(r'discord-api/$', views.discord_api, name='discord_api'),
     url(r'games-api/$', views.games_datatable_api, name='games_api'),

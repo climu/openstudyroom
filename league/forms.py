@@ -84,7 +84,7 @@ class LeagueSignupForm(forms.Form):
         label='Time Zone (optional)',
         choices=[(t, t) for t in pytz.common_timezones],
         required=False,
-        initial='UTC'
+        initial='UTC',
     )
 
     def __init__(self, *args, **kwargs):
@@ -95,7 +95,7 @@ class LeagueSignupForm(forms.Form):
             label='Communities (optional)',
             choices=choices,
             required=False,
-            widget=Community_select
+            widget=Community_select,
         )
 
     def clean_egf_id(self):
@@ -153,7 +153,7 @@ class LeagueSignupForm(forms.Form):
         user.save()
         profile = Profile(
             user=user,
-            timezone=self.cleaned_data['timezone']
+            timezone=self.cleaned_data['timezone'],
         )
         if self.cleaned_data['kgs_username']:
             profile.kgs_username = self.cleaned_data['kgs_username']
@@ -207,12 +207,12 @@ class LeagueEventForm(forms.ModelForm):
     begin_time = forms.DateTimeField(
         input_formats=['%d/%m/%Y %H:%M:%S'],
         widget=forms.DateTimeInput(format='%d/%m/%Y %H:%M:%S'),
-        help_text='Format: dd/mm/yyyy hh:mm:ss (utc)'
+        help_text='Format: dd/mm/yyyy hh:mm:ss (utc)',
     )
     end_time = forms.DateTimeField(
         input_formats=['%d/%m/%Y %H:%M:%S'],
         widget=forms.DateTimeInput(format='%d/%m/%Y %H:%M:%S'),
-        help_text='Format: dd/mm/yyyy hh:mm:ss (utc)'
+        help_text='Format: dd/mm/yyyy hh:mm:ss (utc)',
     )
 
     class Meta:
@@ -243,13 +243,13 @@ class LeagueEventForm(forms.ModelForm):
             'prizes',
             'additional_informations',
             'community',
-            'servers'
+            'servers',
         ]
         # Customise year list to show 2 years in the past/future
         # EVENT_YEAR_CHOICES = range(datetime.date.today().year - 2, datetime.date.today().year + 3)
         widgets = {
             'name': forms.TextInput(),
-            'community': forms.HiddenInput()
+            'community': forms.HiddenInput(),
         }
         help_texts = {
             'name': 'Name of the league',
@@ -269,7 +269,7 @@ class LeagueEventForm(forms.ModelForm):
             'max_handicap': 'Games handicap must be lower or equal.',
             'min_handicap': 'Games handicap must be greater or equal.',
             'additional_informations': 'This will be shown in the infos tab of the league.',
-            'servers': 'Comma seperated list of Go servers from "KGS", "OGS" and "Goquest".'
+            'servers': 'Comma seperated list of Go servers from "KGS", "OGS" and "Goquest".',
         }
 
     def clean(self):
@@ -306,7 +306,7 @@ class ProfileForm(ModelForm):
             'ffg_licence_number',
             'ffg_rank',
             'country',
-            'go_quest_username'
+            'go_quest_username',
         ]
         widgets = {'country': CountrySelectWidget()}
 
@@ -368,7 +368,7 @@ class ProfileForm(ModelForm):
                     exclude(pk=self.instance.pk).exists():
                 self.add_error(
                     'go_quest_username',
-                    'Someone is already using this Go Quest username. Please contact an admin'
+                    'Someone is already using this Go Quest username. Please contact an admin',
                 )
             else:
                 # udate goquest username for all players
@@ -385,7 +385,7 @@ class ProfileForm(ModelForm):
         if Profile.objects.filter(egf_id=egf_id).exclude(pk=self.instance.pk).exists():
             self.add_error(
                 'egf_id',
-                'This EGF ID is already used by one of our member. You should contact us.'
+                'This EGF ID is already used by one of our member. You should contact us.',
             )
         # check if ID is valid and get rank
         egf_rank = get_egf_rank(egf_id)
@@ -403,7 +403,7 @@ class ProfileForm(ModelForm):
         if Profile.objects.filter(ffg_licence_number=ffg_licence_number).exclude(pk=self.instance.pk).exists():
             self.add_error(
                 'ffg_licence_number',
-                'This FFG Licence number is already used by one of our member. You should contact us.'
+                'This FFG Licence number is already used by one of our member. You should contact us.',
             )
         # check if ID is valid and get rank
         ffg_rank = get_ffg_rank(ffg_licence_number)

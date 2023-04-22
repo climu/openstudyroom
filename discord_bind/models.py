@@ -42,7 +42,7 @@ class DiscordUser(models.Model):
     user = models.ForeignKey(
         django_settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='discord_user'
+        related_name='discord_user',
     )
     uid = models.CharField(max_length=20, blank=False, unique=True)
     username = models.CharField(max_length=254)

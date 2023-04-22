@@ -130,7 +130,7 @@ class ImageBlock(StructBlock):
         blank=True,
         null=True,
         required=False,
-        help_text='optional width in px. Default is auto.'
+        help_text='optional width in px. Default is auto.',
     )
 
 class SponsorsBlock(StructBlock):
@@ -195,13 +195,13 @@ class HomePage(Page):
                 Case(
                     When(place__startswith='The KGS', then=1),
                     output_field=IntegerField(),
-                    distinct=True
+                    distinct=True,
                 )))\
             .annotate(ogs=Count(
                 Case(
                     When(place__startswith='OGS', then=1),
                     output_field=IntegerField(),
-                    distinct=True
+                    distinct=True,
                 )))\
             .values('total', 'kgs', 'ogs')
         if games:
@@ -266,7 +266,7 @@ class LeftSidebarPage(MenuPage):
 class StreamFieldEntryPage(EntryPage):
     streamfield = StreamField(MyStreamBlock(), blank=True)
     content_panels = EntryPage.content_panels + [
-        StreamFieldPanel('streamfield')
+        StreamFieldPanel('streamfield'),
     ]
 BlogPage.subpage_types.append(StreamFieldEntryPage)
 
@@ -286,7 +286,7 @@ def send_to_discord(sender, **kwargs):
 
     excerpt = render_to_string(
         'home/includes/excerpt.html',
-        {'entry': instance}
+        {'entry': instance},
     )
     # I tryed to convert excerpt to markdown using tomd without success
     values = {
@@ -295,7 +295,7 @@ def send_to_discord(sender, **kwargs):
             'title': instance.title,
             'url': 'https://openstudyroom.org' + instance.url,
             'description': excerpt,
-        }]
+        }],
     }
     r = requests.post(discord_url, json=values)
     r.raise_for_status()
@@ -325,7 +325,7 @@ def forum_post_to_discord(sender, instance, **kwargs):
 
     excerpt = render_to_string(
         'home/includes/forum_post_excerpt.html',
-        {'content': instance.content}
+        {'content': instance.content},
     )
     # I tryed to convert excerpt to markdown using tomd without success
     url = reverse(
@@ -343,7 +343,7 @@ def forum_post_to_discord(sender, instance, **kwargs):
             'title': instance.subject,
             'url': 'https://openstudyroom.org' + url,
             'description': excerpt,
-        }]
+        }],
     }
     r = requests.post(discord_url, json=values)
     r.raise_for_status()

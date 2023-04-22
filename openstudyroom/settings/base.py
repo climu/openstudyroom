@@ -187,7 +187,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    },
 }
 
 
@@ -273,7 +273,7 @@ CACHES = {
   'machina_attachments': {
     'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
     'LOCATION': '/tmp',
-  }
+  },
 }
 
 HAYSTACK_CONNECTIONS = {
@@ -351,14 +351,14 @@ COMMENTS_XTD_APP_MODEL_OPTIONS = {
         'allow_flagging': True,
         'allow_feedback': True,
         'show_feedback': True,
-        'who_can_post': 'users'
+        'who_can_post': 'users',
     },
     'home.streamfieldentrypage':{
         'allow_flagging': True,
         'allow_feedback': True,
         'show_feedback': True,
-        'who_can_post': 'users'
-    }
+        'who_can_post': 'users',
+    },
 }
 
 PUPUT_USERNAME_REGEX = r'[A-Za-z0-9-]+'

@@ -83,7 +83,7 @@ def ffg_user_infos(ffg_licence_number, echelle_ffg):
         return {
             'name': line[:38].rstrip(),
             'rating': line[38:43].lstrip(),
-            'club': line[54:58]
+            'club': line[54:58],
         }
 
 def format_ffg_tou(league, licences, location=None, comment=None):
@@ -169,7 +169,7 @@ def format_ffg_tou(league, licences, location=None, comment=None):
         if not in_round:
             rounds.append({
                 'users': [sgf.white, sgf.black],
-                'sgfs': [sgf]
+                'sgfs': [sgf],
             })
 
     # render players results per round

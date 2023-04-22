@@ -21,11 +21,11 @@ class AdminCommunityForm(ModelForm):
             'promote',
             'locale',
             'timezone',
-            'discord_webhook_url'
+            'discord_webhook_url',
         ]
         widgets = {
             'description': MarkupTextFieldWidget(attrs={'placeholder': 'Public description of the community.'}),
-            'private_description': MarkupTextFieldWidget(attrs={'placeholder': 'Only community members can see it.'},)
+            'private_description': MarkupTextFieldWidget(attrs={'placeholder': 'Only community members can see it.'}),
         }
 
         help_texts = {
@@ -36,7 +36,7 @@ class AdminCommunityForm(ModelForm):
             'promote': "If promoted, it's leagues will be shown to everyone in leagues views (same as OSR leagues).",
             'locale': 'The language used to send notifications.',
             'timezone': 'Timezone used to format dates in notifications.',
-            'discord_webhook_url': 'Discord webhook url to send notifications.'
+            'discord_webhook_url': 'Discord webhook url to send notifications.',
         }
 
 
@@ -48,18 +48,18 @@ class CommunityForm(ModelForm):
             'private_description',
             'close',
             'private',
-            'discord_webhook_url'
+            'discord_webhook_url',
         ]
 
         widgets = {
             'description': MarkupTextFieldWidget(attrs={'placeholder': 'Public description of the community.'}),
-            'private_description': MarkupTextFieldWidget(attrs={'placeholder': 'Only community members can see it.'},)
+            'private_description': MarkupTextFieldWidget(attrs={'placeholder': 'Only community members can see it.'}),
         }
 
         help_texts = {
             'close': "If close, it's invitation only community. Otherwise, anyone can join.",
             'private': 'If private, only members can see the community.',
-            'discord_webhook_url': 'Discord webhook url to send notifications'
+            'discord_webhook_url': 'Discord webhook url to send notifications',
         }
 
 
@@ -85,5 +85,5 @@ class CommunityRankingForm(forms.Form):
         initial=True,
         required=False,
         label='FFG Rating',
-        widget=forms.CheckboxInput()
+        widget=forms.CheckboxInput(),
     )

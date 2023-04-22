@@ -96,7 +96,7 @@ class LeagueEvent(models.Model):
         max_length=15,
         choices=RULES_TYPE_CHOICES,
         null=True,
-        blank=True
+        blank=True,
         )
     # servers allowed for this league. Comma seperated value of "KGS" "OGS" "Goquest"
     servers = models.CharField(max_length=20, null=True, blank=True, default='KGS,OGS')
@@ -106,15 +106,15 @@ class LeagueEvent(models.Model):
     # small text to show on league pages
     description = MarkupTextField(
         blank=True, null=True,
-        validators=[validators.NullableMaxLengthValidator(2000)]
+        validators=[validators.NullableMaxLengthValidator(2000)],
     )
     prizes = MarkupTextField(
         blank=True, null=True,
-        validators=[validators.NullableMaxLengthValidator(5000)]
+        validators=[validators.NullableMaxLengthValidator(5000)],
     )
     additional_informations = MarkupTextField(
         blank=True, null=True,
-        validators=[validators.NullableMaxLengthValidator(10000)]
+        validators=[validators.NullableMaxLengthValidator(10000)],
     )
 
     class Meta:
@@ -299,14 +299,14 @@ class LeagueEvent(models.Model):
         if user.is_authenticated:
             communitys = user.get_communities()
             events = LeagueEvent.objects.filter(
-                Q(community__isnull=True) | Q(community__in=communitys) | Q(community__promote=True)
+                Q(community__isnull=True) | Q(community__in=communitys) | Q(community__promote=True),
             )
             if not user.is_league_admin:
                 events = events.filter(is_public=True)
         else:
             events = LeagueEvent.objects.filter(
                 is_public=True,
-                community__isnull=True
+                community__isnull=True,
             )
         events = events.exclude(event_type='tournament')
         order = ['ladder', 'league', 'meijin', 'dan', 'ddk', 'tournament']
@@ -424,32 +424,32 @@ class Sgf(models.Model):
         if self.place.startswith('OGS'):
             black_player = LeaguePlayer.objects.filter(
                 event=event,
-                ogs_username__iexact=self.bplayer
+                ogs_username__iexact=self.bplayer,
             ).first()
 
             white_player = LeaguePlayer.objects.filter(
                 event=event,
-                ogs_username__iexact=self.wplayer
+                ogs_username__iexact=self.wplayer,
             ).first()
         elif self.place.startswith('The KGS'):
             black_player = LeaguePlayer.objects.filter(
                 event=event,
-                kgs_username__iexact=self.bplayer
+                kgs_username__iexact=self.bplayer,
             ).first()
 
             white_player = LeaguePlayer.objects.filter(
                 event=event,
-                kgs_username__iexact=self.wplayer
+                kgs_username__iexact=self.wplayer,
             ).first()
         elif self.place.startswith('GOQUEST'):
             black_player = LeaguePlayer.objects.filter(
                 event=event,
-                go_quest_username__iexact=self.bplayer.split(' ')[0]
+                go_quest_username__iexact=self.bplayer.split(' ')[0],
             ).first()
 
             white_player = LeaguePlayer.objects.filter(
                 event=event,
-                go_quest_username__iexact=self.wplayer.split(' ')[0]
+                go_quest_username__iexact=self.wplayer.split(' ')[0],
             ).first()
         return [black_player, white_player]
 
@@ -804,7 +804,7 @@ class User(AbstractUser):
             # we need minimal infos
             res['opponents'].append({
                 'pk': opponent.pk,
-                'name': opponent.username
+                'name': opponent.username,
             })
         return res
 
@@ -962,7 +962,7 @@ class User(AbstractUser):
             if server_list is not None:
                 if 'OGS' in server_list:
                     player_opponents = player_opponents.exclude(
-                        user__profile__ogs_id=0
+                        user__profile__ogs_id=0,
                     )
                 if 'KGS' in server_list:
                     player_opponents = player_opponents\
@@ -990,7 +990,7 @@ class User(AbstractUser):
             .filter(
                 Q(user__profile__last_kgs_online__gt=time_online) |
                 Q(user__profile__last_ogs_online__gt=time_online) |
-                Q(user__discord_user__status='online')
+                Q(user__discord_user__status='online'),
             ).values_list('user', flat=True)
         return players
 
@@ -1020,14 +1020,14 @@ class User(AbstractUser):
         list_urlto_games = utils.ask_kgs(
             kgs_username,
             months[0]['year'],
-            months[0]['month']
+            months[0]['month'],
         )
         if len(months) > 1:
             time.sleep(3)
             list_urlto_games += utils.ask_kgs(
                 kgs_username,
                 months[1]['year'],
-                months[1]['month']
+                months[1]['month'],
             )
         # list_urlto_games=[{url:'url',game_type:'game_type'},{...},...]
         for d in list_urlto_games:
@@ -1241,7 +1241,7 @@ class Profile(models.Model):
     # User can write what he wants in bio
     bio = MarkupTextField(
         blank=True, null=True,
-        validators=[validators.NullableMaxLengthValidator(2000)]
+        validators=[validators.NullableMaxLengthValidator(2000)],
     )
     # p_status help manage the scraplist
     p_status = models.PositiveSmallIntegerField(default=0)
@@ -1253,7 +1253,7 @@ class Profile(models.Model):
     timezone = models.CharField(
         max_length=100,
         choices=[(t, t) for t in pytz.common_timezones],
-        blank=True, null=True
+        blank=True, null=True,
     )
     start_cal = models.PositiveSmallIntegerField(default=0)
     end_cal = models.PositiveSmallIntegerField(default=24)
@@ -1277,7 +1277,7 @@ class Profile(models.Model):
 
 class Division(models.Model):
     """A group of players in a league"""
-    league_event = models.ForeignKey('LeagueEvent', on_delete=models.CASCADE,)
+    league_event = models.ForeignKey('LeagueEvent', on_delete=models.CASCADE)
     name = models.TextField(max_length=60)
     order = models.SmallIntegerField(default=0)
     winner = models.ForeignKey(
@@ -1289,11 +1289,11 @@ class Division(models.Model):
     )
     informations = MarkupTextField(
         blank=True, null=True,
-        validators=[validators.NullableMaxLengthValidator(2000)]
+        validators=[validators.NullableMaxLengthValidator(2000)],
     )
 
     class Meta:
-        unique_together = ('league_event', 'order',)
+        unique_together = ('league_event', 'order')
         ordering = ['-league_event', 'order']
 
     def __str__(self):
@@ -1310,7 +1310,7 @@ class Division(models.Model):
             # we need minimal infos
             res['users'].append({
                 'pk': player.user.pk,
-                'name': player.user.username
+                'name': player.user.username,
             })
         return res
 
@@ -1340,14 +1340,14 @@ class Division(models.Model):
         """return a boolean being True if the division is the first of the league."""
         return not Division.objects.filter(
             league_event=self.league_event,
-            order__lt=self.order
+            order__lt=self.order,
         ).exists()
 
     def is_last(self):
         """return a boolean being True if the division is the last of the league."""
         return not Division.objects.filter(
             league_event=self.league_event,
-            order__gt=self.order
+            order__gt=self.order,
         ).exists()
 
     def get_results(self):
@@ -1433,7 +1433,7 @@ class Division(models.Model):
         results = sorted(
             results,
             key=attrgetter('score', 'n_games', 'sos', 'sodos'),
-            reverse=True
+            reverse=True,
         )
         return results
 
@@ -1466,7 +1466,7 @@ class LeaguePlayer(models.Model):
     p_status = models.SmallIntegerField(default=0)
 
     class Meta:
-        unique_together = ('user', 'division',)
+        unique_together = ('user', 'division')
 
     def __str__(self):
         return str(self.pk) + ': ' + self.user.username + ', ' + self.event.name
@@ -1494,7 +1494,7 @@ class LeaguePlayer(models.Model):
             won = sgf.winner == self.user
             record = {
                 'id': sgf.pk,
-                'r': 1 if won else 0
+                'r': 1 if won else 0,
             }
             resultsDict[opponent.pk].append(record)
 
@@ -1503,7 +1503,7 @@ class LeaguePlayer(models.Model):
             won = sgf.winner == self.user
             record = {
                 'id': sgf.pk,
-                'r': 1 if won else 0
+                'r': 1 if won else 0,
             }
             resultsDict[opponent.pk].append(record)
         return resultsDict

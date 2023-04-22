@@ -11,7 +11,7 @@ def community_link(community, slug=None):
     link = '<a href="'
     link += reverse(
         'community:community_page',
-        kwargs={'slug': community.slug}
+        kwargs={'slug': community.slug},
     )
     link += '">' + community.name + '</a>'
     return mark_safe(link)

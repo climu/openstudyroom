@@ -273,7 +273,7 @@ def cancel_game_appointment_ajax(request):  # pylint: disable=inconsistent-retur
         plaintext = loader.get_template('fullcalendar/messages/game_cancel.txt')
         context = {
             'user': user,
-            'date': game_appointment.start
+            'date': game_appointment.start,
         }
         message = plaintext.render(context)
         pm_write(
@@ -281,7 +281,7 @@ def cancel_game_appointment_ajax(request):  # pylint: disable=inconsistent-retur
             recipient=opponent,
             subject=subject,
             body=message,
-            skip_notification=False
+            skip_notification=False,
         )
         return HttpResponse('success')
     return HttpResponseForbidden()
@@ -362,7 +362,7 @@ def admin_cal_event_list(request):
     return render(
         request,
         'fullcalendar/admin_cal_event_list.html',
-        {'public_events': public_events, 'categories': categories}
+        {'public_events': public_events, 'categories': categories},
     )
 
 @login_required()
