@@ -131,9 +131,9 @@ class AvailableEvent(CalEvent):
         }
         Then we go over this changes list and create new events formated as such:
         {
-            ‘start’:datetime,
-            ‘end’: datetime,
-            ‘users’: a list of users available at between start and end
+            'start': datetime,
+            'end': datetime,
+            'users': a list of users available at between start and end
         }
         """
         divisions = Division.objects.filter(league_event__in=leagues)
