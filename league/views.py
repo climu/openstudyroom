@@ -1494,7 +1494,7 @@ def division_create_wont_play(request, division_id):
         try:
             users = [User.objects.get(pk=pk)
                      for pk in form.cleaned_data['players']]
-            if all([division.has_user(user) for user in users]):
+            if all(division.has_user(user) for user in users):
                 Sgf.create_wont_play(event, division, users)
         except Exception:
             pass
