@@ -2,11 +2,11 @@
 line-length = 120
 select = [
     'E', 'F', 'I',
-    'YTT', 'COM', 'T10', 'ISC', 'G', 'PIE', 'Q', 'RSE',
+    'YTT', 'COM', 'T10', 'DJ', 'ISC', 'G', 'PIE', 'Q', 'RSE',
     'PLE',
     'RUF',
 ]
-ignore = ['ISC002', 'RUF005']
+ignore = ['DJ001', 'ISC002', 'RUF005']
 [tool.ruff.flake8-quotes]
 docstring-quotes = 'double'
 inline-quotes = 'single'

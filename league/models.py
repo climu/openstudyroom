@@ -318,7 +318,7 @@ class LeagueEvent(models.Model):
         return events
 
 
-class Registry(models.Model):
+class Registry(models.Model): # noqa: DJ008
     """this class should only have one instance.
 
     Anyway, other than pk=0 won't be use

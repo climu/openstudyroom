@@ -19,14 +19,14 @@ class Category(models.Model):
     color = RGBColorField(null=True)
     community = models.ForeignKey(Community, blank=True, null=True, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
     def can_edit(self, user):
         if self.community is None:
             return user.is_authenticated and user.is_osr_admin()
         else:
             return self.community.is_admin(user)
-
-    def __str__(self):
-        return self.name
 
     def get_redirect_url(self):
         """
