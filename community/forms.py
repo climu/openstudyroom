@@ -29,13 +29,13 @@ class AdminCommunityForm(ModelForm):
         }
 
         help_texts = {
-            'name': "Name of the community",
-            'slug': "Short slug to identify the community. URL will be https://openstudyroom.org/community/slug/",
+            'name': 'Name of the community',
+            'slug': 'Short slug to identify the community. URL will be https://openstudyroom.org/community/slug/',
             'close': "If close, it's invitation only community. Otherwise, anyone can join.",
-            'private': "If private, only members can see the community.",
+            'private': 'If private, only members can see the community.',
             'promote': "If promoted, it's leagues will be shown to everyone in leagues views (same as OSR leagues).",
-            'locale': "The language used to send notifications.",
-            'timezone': "Timezone used to format dates in notifications.",
+            'locale': 'The language used to send notifications.',
+            'timezone': 'Timezone used to format dates in notifications.',
             'discord_webhook_url': 'Discord webhook url to send notifications.'
         }
 
@@ -58,7 +58,7 @@ class CommunityForm(ModelForm):
 
         help_texts = {
             'close': "If close, it's invitation only community. Otherwise, anyone can join.",
-            'private': "If private, only members can see the community.",
+            'private': 'If private, only members can see the community.',
             'discord_webhook_url': 'Discord webhook url to send notifications'
         }
 
@@ -69,7 +69,7 @@ class CommunytyUserForm(forms.Form):
     def clean_username(self):
         username = self.cleaned_data['username']
         if not User.objects.filter(username__iexact=username).exists():
-            message = "We don't have a user with username" + username + "."
+            message = "We don't have a user with username" + username + '.'
             raise forms.ValidationError(message)
         return username
 

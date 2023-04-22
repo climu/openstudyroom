@@ -123,5 +123,5 @@ urlpatterns = [
         views.update_time_range_ajax,
         name='update_time_range_ajax'
     ),
-    url(r'^ical/(?P<user_id>\d+)/osr.ics$', views.ical, name="osr_ical")
+    url(r'^ical/(?P<user_id>\d+)/osr.ics$', views.ical, name='osr_ical')
 ]

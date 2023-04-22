@@ -102,7 +102,7 @@ class AvailableEvent(CalEvent):
 
     def format(self, tz, type='available'):
         event = super().format(tz, type)
-        event['user'] = {"name": self.user.username}
+        event['user'] = {'name': self.user.username}
         return event
 
     @staticmethod
@@ -146,13 +146,13 @@ class AvailableEvent(CalEvent):
         for event in availables:
             change = {
                 'time': event.start,
-                'user': {"name": event.user.username},
+                'user': {'name': event.user.username},
                 'type': 1  # means the user becomes available
             }
             changes.append(change)
             change = {
                 'time': event.end,
-                'user': {"name": event.user.username},
+                'user': {'name': event.user.username},
                 'type': 0  # means the user becomes unavailable
             }
             changes.append(change)
@@ -200,14 +200,14 @@ class GameRequestEvent(CalEvent):
     """
     sender = models.ForeignKey(
         User,
-        related_name="%(app_label)s_%(class)s_related_sender",
-        related_query_name="%(app_label)s_%(class)ss_sender",
+        related_name='%(app_label)s_%(class)s_related_sender',
+        related_query_name='%(app_label)s_%(class)ss_sender',
         on_delete=models.CASCADE
     )
     receivers = models.ManyToManyField(
         User,
-        related_name="%(app_label)s_%(class)s_related_receiver",
-        related_query_name="%(app_label)s_%(class)ss_receiver",
+        related_name='%(app_label)s_%(class)s_related_receiver',
+        related_query_name='%(app_label)s_%(class)ss_receiver',
     )
 
     private = models.BooleanField(default=False)
@@ -269,14 +269,14 @@ class GameRequestEvent(CalEvent):
 class GameAppointmentEvent(CalEvent):
     users = models.ManyToManyField(
         User,
-        related_name="%(app_label)s_%(class)s_related",
-        related_query_name="%(app_label)s_%(class)ss",
+        related_name='%(app_label)s_%(class)s_related',
+        related_query_name='%(app_label)s_%(class)ss',
     )
     private = models.BooleanField(default=False)
     divisions = models.ManyToManyField(Division, blank=True)
 
     def __str__(self):
-        return self.start.strftime("%x") + self.title()
+        return self.start.strftime('%x') + self.title()
 
     def format(self, tz, type='game-appointment'):
         event = super().format(tz, type)
@@ -367,11 +367,11 @@ class GameAppointmentEvent(CalEvent):
         accountURI = settings.BASE_URL + reverse('league:league_account')
         players = ' vs '.join(f'**[{user.username}]({accountURI + user.username}/)**' for user in self.users.all())
         return {
-            "embeds": [{
-                "title": title,
-                "description": f'{leagueInfo} \n\n {players} \n {date} ({tz})',
-                "thumbnail": {
-                    "url": "https://sits-go.org/wp-content/uploads/2021/03/the-shell-16x4-1.jpg"
+            'embeds': [{
+                'title': title,
+                'description': f'{leagueInfo} \n\n {players} \n {date} ({tz})',
+                'thumbnail': {
+                    'url': 'https://sits-go.org/wp-content/uploads/2021/03/the-shell-16x4-1.jpg'
                 }
             }]
         }

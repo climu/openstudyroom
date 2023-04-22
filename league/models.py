@@ -97,7 +97,7 @@ class LeagueEvent(models.Model):
         blank=True
         )
     # servers allowed for this league. Comma seperated value of "KGS" "OGS" "Goquest"
-    servers = models.CharField(max_length=20, null=True, blank=True, default="KGS,OGS")
+    servers = models.CharField(max_length=20, null=True, blank=True, default='KGS,OGS')
 
     # if the league is a community league
     community = models.ForeignKey(Community, blank=True, null=True, on_delete=models.CASCADE)
@@ -442,12 +442,12 @@ class Sgf(models.Model):
         elif self.place.startswith('GOQUEST'):
             black_player = LeaguePlayer.objects.filter(
                 event=event,
-                go_quest_username__iexact=self.bplayer.split(" ")[0]
+                go_quest_username__iexact=self.bplayer.split(' ')[0]
             ).first()
 
             white_player = LeaguePlayer.objects.filter(
                 event=event,
-                go_quest_username__iexact=self.wplayer.split(" ")[0]
+                go_quest_username__iexact=self.wplayer.split(' ')[0]
             ).first()
         return [black_player, white_player]
 
@@ -697,10 +697,10 @@ class Sgf(models.Model):
         sgfs_context = []
         for sgf in sgfs:
             sgf_context = (
-                sgf.date.strftime("%Y-%m-%d"),
+                sgf.date.strftime('%Y-%m-%d'),
                 sgf.white.build_context(sgf.winner, meijin),
                 sgf.black.build_context(sgf.winner, meijin),
-                {"sgf_pk": sgf.pk, "sgf_result": sgf.result},
+                {'sgf_pk': sgf.pk, 'sgf_result': sgf.result},
             )
             sgfs_context.append(sgf_context)
         return sgfs_context
@@ -713,7 +713,7 @@ class Sgf(models.Model):
             base_sgfs_queryset
             .defer('sgf_text')
             .filter(league_valid=True)
-            .select_related("white", "black", "winner", "white__profile", "black__profile")
+            .select_related('white', 'black', 'winner', 'white__profile', 'black__profile')
             .only(
             'black',
             'white',
@@ -738,14 +738,14 @@ class Sgf(models.Model):
             )
             .prefetch_related(
                 Prefetch(
-                    "white__discord_user",
+                    'white__discord_user',
                     queryset=DiscordUser.objects.all(),
-                    to_attr="discord_user_pf",
+                    to_attr='discord_user_pf',
                 ),
                 Prefetch(
-                    "black__discord_user",
+                    'black__discord_user',
                     queryset=DiscordUser.objects.all(),
-                    to_attr="discord_user_pf",
+                    to_attr='discord_user_pf',
                 ),
             )
             .order_by('-date')
@@ -956,7 +956,7 @@ class User(AbstractUser):
         for player in players:
             division = player.division
             player_opponents = LeaguePlayer.objects.filter(
-                division=division).exclude(pk=player.pk).select_related("user")
+                division=division).exclude(pk=player.pk).select_related('user')
             if server_list is not None:
                 if 'OGS' in server_list:
                     player_opponents = player_opponents.exclude(
@@ -1106,19 +1106,19 @@ class User(AbstractUser):
 
                 # we need to get timesetting datas here because they are not
                 # in OGS sgfs
-                time_settings = json.loads(game["time_control_parameters"])
+                time_settings = json.loads(game['time_control_parameters'])
                 # Some SGF does not have "system" in time_settings. Why? when?
                 # we had this check in the commit 3cea232.
                 if 'system' not in time_settings:
                     continue
                 sgf = Sgf()
-                if time_settings['system'] == "byoyomi":
+                if time_settings['system'] == 'byoyomi':
                     sgf.time = time_settings['main_time']
                     # Sadly byo is recorded as a string 3x30 byo-yomi in db
                     sgf.byo = str(time_settings['periods']) + 'x' + \
                         str(time_settings['period_time']) + ' byo-yomi'
 
-                elif time_settings['system'] == "fischer":
+                elif time_settings['system'] == 'fischer':
                     sgf.time = time_settings['initial_time']
                     sgf.byo = str(time_settings['time_increment'])
                 else:
@@ -1182,42 +1182,42 @@ class User(AbstractUser):
         """Build a context for a user to be used in templates.
         winner is optional and only used for games related template"""
         user_context = {
-        "kgs_data": None,
-        "kgs_online": False,
-        "ogs_online": False,
-        "ogs_data": None,
-        "discord_data": None,
-        "discord_online": False,
-        "winner": self == winner,
+        'kgs_data': None,
+        'kgs_online': False,
+        'ogs_online': False,
+        'ogs_data': None,
+        'discord_data': None,
+        'discord_online': False,
+        'winner': self == winner,
         }
         if self.profile.kgs_username:
-            user_context["kgs_online"] = self.is_online_kgs()
-            user_context["kgs_data"] = {
-            "username": self.profile.kgs_username,
-            "rank": self.profile.kgs_rank,
+            user_context['kgs_online'] = self.is_online_kgs()
+            user_context['kgs_data'] = {
+            'username': self.profile.kgs_username,
+            'rank': self.profile.kgs_rank,
             }
         if self.profile.ogs_username:
-            user_context["ogs_online"] = self.is_online_ogs()
-            user_context["ogs_data"] = {
-            "username": self.profile.ogs_username,
-            "rank": self.profile.ogs_rank,
+            user_context['ogs_online'] = self.is_online_ogs()
+            user_context['ogs_data'] = {
+            'username': self.profile.ogs_username,
+            'rank': self.profile.ogs_rank,
             }
         if self.discord_user_pf:
             discord_user = self.discord_user_pf[0]
-            user_context["discord_online"] = discord_user.status != 'offline'
-            user_context["discord_data"] = {
-            "username": discord_user.username,
-            "status": discord_user.status,
-            "discriminator": discord_user.discriminator,
+            user_context['discord_online'] = discord_user.status != 'offline'
+            user_context['discord_data'] = {
+            'username': discord_user.username,
+            'status': discord_user.status,
+            'discriminator': discord_user.discriminator,
             }
-        user_context["is_online"] = (
-            user_context["kgs_online"]
-            or user_context["ogs_online"]
-            or user_context["discord_online"]
+        user_context['is_online'] = (
+            user_context['kgs_online']
+            or user_context['ogs_online']
+            or user_context['discord_online']
         )
-        user_context["account_url"] = "/league/account/%s" % self.username
-        user_context["username"] = self.username
-        user_context["is_meijin"] = self == meijin
+        user_context['account_url'] = '/league/account/%s' % self.username
+        user_context['username'] = self.username
+        user_context['is_meijin'] = self == meijin
         return user_context
 
 class Profile(models.Model):
@@ -1282,7 +1282,7 @@ class Division(models.Model):
         'User',
         null=True,
         blank=True,
-        related_name="won_division",
+        related_name='won_division',
         on_delete=models.CASCADE,
     )
     informations = MarkupTextField(
@@ -1467,7 +1467,7 @@ class LeaguePlayer(models.Model):
         unique_together = ('user', 'division',)
 
     def __str__(self):
-        return str(self.pk) + ": " + self.user.username + ", " + self.event.name
+        return str(self.pk) + ': ' + self.user.username + ', ' + self.event.name
 
     def get_sgfs(self):
         """Return a queryset of all valid player SGF"""

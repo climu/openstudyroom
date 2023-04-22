@@ -9,7 +9,7 @@ urlpatterns = []
 
 # make the pattern for all the events
 for (event_type, _) in LeagueEvent.EVENT_TYPE_CHOICES:
-    new_pattern = [url(r"^" + re.escape(event_type) + r"/$",
+    new_pattern = [url(r'^' + re.escape(event_type) + r'/$',
                        views.get_first_league_event(event_type), name=event_type)]
     urlpatterns = urlpatterns + new_pattern
 

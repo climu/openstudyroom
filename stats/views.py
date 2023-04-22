@@ -8,7 +8,7 @@ from league.models import User, Sgf, LeagueEvent
 
 
 def overview(request):
-    '''Render various stats OSR related'''
+    """Render various stats OSR related"""
     osr_leagues = LeagueEvent.objects.filter(
                     is_public=True,
                     community__isnull=True
@@ -24,13 +24,13 @@ def overview(request):
         .annotate(total=Count('id'))\
         .annotate(kgs=Count(
             Case(
-                When(place__startswith="The KGS", then=1),
+                When(place__startswith='The KGS', then=1),
                 output_field=IntegerField(),
                 distinct=True
             )))\
         .annotate(ogs=Count(
             Case(
-                When(place__startswith="OGS", then=1),
+                When(place__startswith='OGS', then=1),
                 output_field=IntegerField(),
                 distinct=True
             )))\

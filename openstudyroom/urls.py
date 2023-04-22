@@ -19,13 +19,13 @@ urlpatterns = [
     url(r'^documents/', include(wagtaildocs_urls)),
     url(r'^comments/', include('django_comments_xtd.urls')),
     url(r'jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-    url(r'^search-api/', include('fancysearch.urls', namespace="fancysearch")),
+    url(r'^search-api/', include('fancysearch.urls', namespace='fancysearch')),
 
     url(r'^search/$', search_views.search, name='search'),
 
-    url(r'^league/', include('league.urls', namespace="league")),
-    url(r'^stats/', include('stats.urls', namespace="stats")),
-    url(r'^wgo/', include('wgo.urls', namespace="wgo")),
+    url(r'^league/', include('league.urls', namespace='league')),
+    url(r'^stats/', include('stats.urls', namespace='stats')),
+    url(r'^wgo/', include('wgo.urls', namespace='wgo')),
 
 
 #    url(r'^wgo/', include('wgo.urls', namespace="wgo")),

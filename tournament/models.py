@@ -1,7 +1,7 @@
-''' Implement bracket tournament models to send it to the jQuery Bracket library.
+""" Implement bracket tournament models to send it to the jQuery Bracket library.
 http://www.aropupu.fi/bracket/
 This is heavily inspire from https://github.com/kevinharvey/django-tourney and musniro work.
-'''
+"""
 
 from django.db import models
 from league.models import LeagueEvent, LeaguePlayer, Sgf, Division
@@ -31,7 +31,7 @@ class Tournament(LeagueEvent):
         'league.User',
         null=True,
         blank=True,
-        related_name="won_tournament",
+        related_name='won_tournament',
         on_delete=models.CASCADE
     )
 
@@ -151,12 +151,12 @@ class TournamentGroup(Division):
 
 
 class Bracket(models.Model):
-    name = models.TextField(max_length=20, blank=True, null=True, default="")
+    name = models.TextField(max_length=20, blank=True, null=True, default='')
     tournament = models.ForeignKey(Tournament, null=True, on_delete=models.CASCADE)
     order = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
-        return self.tournament.name + " " + str(self.order)
+        return self.tournament.name + ' ' + str(self.order)
 
     def get_rounds(self):
         return self.round_set.all().order_by('order')
@@ -179,12 +179,12 @@ class Bracket(models.Model):
 
 class Round(models.Model):
     """A tournament round."""
-    name = models.TextField(max_length=20, blank=True, null=True, default="")
+    name = models.TextField(max_length=20, blank=True, null=True, default='')
     bracket = models.ForeignKey(Bracket, blank=True, null=True, on_delete=models.CASCADE)
     order = models.PositiveSmallIntegerField()
 
     def __str__(self):
-        return self.bracket.tournament.name + " " + str(self.bracket.order) + "/" + str(self.order)
+        return self.bracket.tournament.name + ' ' + str(self.bracket.order) + '/' + str(self.order)
 
     def get_matchs(self):
         return self.match_set.all().order_by('order')
@@ -219,17 +219,17 @@ class Match(models.Model):
         on_delete=models.SET_NULL)
     bracket = models.ForeignKey(Bracket, blank=True, null=True, on_delete=models.CASCADE)
     round = models.ForeignKey(Round, blank=True, null=True, on_delete=models.CASCADE)
-    player_1 = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name="player_1_match", on_delete=models.CASCADE)
-    player_2 = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name="player_2_match", on_delete=models.CASCADE)
-    winner = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name="winner_match", on_delete=models.CASCADE)
+    player_1 = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name='player_1_match', on_delete=models.CASCADE)
+    player_2 = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name='player_2_match', on_delete=models.CASCADE)
+    winner = models.ForeignKey(TournamentPlayer, blank=True, null=True, related_name='winner_match', on_delete=models.CASCADE)
     order = models.PositiveSmallIntegerField()
 
     def __str__(self):
-        out = str(self.round) + ": match " + str(self.order)
+        out = str(self.round) + ': match ' + str(self.order)
         if self.player_1:
-            out += " " + self.player_1.user.username
+            out += ' ' + self.player_1.user.username
         if self.player_2:
-            out += " " + self.player_2.user.username
+            out += ' ' + self.player_2.user.username
 
         return out
 

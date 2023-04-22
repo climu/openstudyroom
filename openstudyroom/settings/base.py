@@ -33,12 +33,12 @@ INSTALLED_APPS = [
     'search',
     'rest_framework',
     # https://www.wagtail-localize.org/
-    "wagtail_localize",
-    "wagtail_localize.locales",  # This replaces "wagtail.locales"
+    'wagtail_localize',
+    'wagtail_localize.locales',  # This replaces "wagtail.locales"
 
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
-    "wagtail.contrib.table_block",
+    'wagtail.contrib.table_block',
     'wagtail.embeds',
     'wagtail.sites',
     'wagtail.users',
@@ -207,9 +207,9 @@ USE_TZ = True
 
 WAGTAIL_I18N_ENABLED = True
 WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
-    ('en', "English"),
-    ('fr', "French"),
-    ('es', "Spanish"),
+    ('en', 'English'),
+    ('fr', 'French'),
+    ('es', 'Spanish'),
 ]
 
 # Static files (CSS, JavaScript, Images)
@@ -237,7 +237,7 @@ LOCALE_PATHS = (
 )
 # Wagtail settings
 
-WAGTAIL_SITE_NAME = "openstudyroom"
+WAGTAIL_SITE_NAME = 'openstudyroom'
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
@@ -326,10 +326,10 @@ BOOTSTRAP3 = {
     #'theme_url': '/static/css/bootstrap-theme.min.css',
 
     # The complete URL to the Bootstrap JavaScript file (None means derive it from base_url)
-    "javascript_url": {
-    "url": "https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js",
-    "integrity": "sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd",
-    "crossorigin": "anonymous",
+    'javascript_url': {
+    'url': 'https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js',
+    'integrity': 'sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd',
+    'crossorigin': 'anonymous',
     },
 
     # Put JavaScript in the HEAD section of the HTML document (only relevant if you use bootstrap3.html)
@@ -343,8 +343,8 @@ COMMENTS_APP = 'django_comments_xtd'
 COMMENTS_XTD_MAX_THREAD_LEVEL = 2
 COMMENTS_XTD_CONFIRM_EMAIL = False
 #  To help obfuscating comments before they are sent for confirmation.
-COMMENTS_XTD_SALT = (b"Timendi causa est nescire. "
-                     b"Aequam memento rebus in arduis servare mentem.")
+COMMENTS_XTD_SALT = (b'Timendi causa est nescire. '
+                     b'Aequam memento rebus in arduis servare mentem.')
 PUPUT_COMMENTS_PROVIDER = 'puput.comments.DjangoCommentsProvider'
 COMMENTS_XTD_LIST_ORDER = ('-thread_id', 'order')  # default is ('thread_id', 'order')
 COMMENTS_XTD_APP_MODEL_OPTIONS = {

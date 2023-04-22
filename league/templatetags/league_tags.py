@@ -16,9 +16,9 @@ def html_points_amount(context):
     else:
         event = ''
     opponent_pk = opponent.pk
-    html = ""
+    html = ''
     if not opponent_pk in player.results:
-        return ""
+        return ''
     result = player.results[opponent_pk]
     for game in result:
         # here, game['id'] would get you the id of the game to add a link
@@ -55,13 +55,13 @@ def html_one_result(context, _blank=False):
     else:
         event = ''
     opponent_pk = opponent.pk
-    html = ""
+    html = ''
     if not opponent_pk in player.results:
-        return ""
+        return ''
     result = player.results[opponent_pk]
     for game in result:
         # here, game['id'] would get you the id of the game to add a link
-        html += '<a data-toggle="tooltip" target="' + ("_blank" if _blank is True else "_self")  + \
+        html += '<a data-toggle="tooltip" target="' + ('_blank' if _blank is True else '_self')  + \
                 '" href="/league/' + event + 'games/' + str(game['id']) + '" \
                 title="' + player.user.username + ' vs ' + \
                 opponent.user.username + '">'
@@ -76,7 +76,7 @@ def html_one_result(context, _blank=False):
 
 @register.simple_tag(takes_context=True)
 def html_one_result_2(context, _tr_idx, _td_idx, _blank=False):
-    """Replacement for html_one_result. Handles "WontPlay" results"""
+    '''Replacement for html_one_result. Handles "WontPlay" results'''
 
     player = context['player']
     opponent = context['opponent']
@@ -108,7 +108,7 @@ def html_one_result_2(context, _tr_idx, _td_idx, _blank=False):
     for game in results:
         if game['p'] != 'WontPlay':
             # here, game['id'] would get you the id of the game to add a link
-            html += '<a data-toggle="tooltip" target="' + ("_blank" if _blank is True else "_self")  + \
+            html += '<a data-toggle="tooltip" target="' + ('_blank' if _blank is True else '_self')  + \
                     '" href="/league/' + event + 'games/' + str(game['id']) + '" \
                     title="' + player.user.username + ' vs ' + \
                     opponent.user.username + '">'
@@ -131,7 +131,7 @@ def html_one_player_result(context):
     # this filter only works called from a context where player an opponent exists
     opponent = context['opponent']
     results = context['results']
-    html = ""
+    html = ''
     if opponent.user.pk in results:
         result = results[opponent.user.pk]
         for game in result:
@@ -156,7 +156,7 @@ def user_link(user, meijin=None):
     discord_online = False
     if user.profile.kgs_username:
         kgs_online = user.is_online_kgs()
-        k_info = user.profile.kgs_username + " " + user.profile.kgs_rank
+        k_info = user.profile.kgs_username + ' ' + user.profile.kgs_rank
         tooltip += '<p'
         if kgs_online:
             tooltip += " class='online'"
@@ -165,7 +165,7 @@ def user_link(user, meijin=None):
         tooltip += '>KGS: ' + k_info + '</p>'
     if user.profile.ogs_username:
         ogs_online = user.is_online_ogs()
-        o_info = user.profile.ogs_username + " " + user.profile.ogs_rank
+        o_info = user.profile.ogs_username + ' ' + user.profile.ogs_rank
         tooltip += '<p'
         if ogs_online:
             tooltip += " class='online'"
@@ -260,13 +260,13 @@ def boolean_icon(b):
 @register.filter()
 def p_status(status):
     if status == 0:
-        return mark_safe("0 : already scraped")
+        return mark_safe('0 : already scraped')
     elif status == 1:
-        return mark_safe("1 : to be scraped")
+        return mark_safe('1 : to be scraped')
     elif status == 2:
-        return mark_safe("2 : to be scraped soon")
+        return mark_safe('2 : to be scraped soon')
     else:
-        return mark_safe(str(status) + " : something wrong")
+        return mark_safe(str(status) + ' : something wrong')
 
 
 @register.filter()

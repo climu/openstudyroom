@@ -85,11 +85,11 @@ class Community(models.Model):
         for idx, user in enumerate(members):
             ## dictionary returned
             this_user_data = {
-                "full_name":user.get_full_name(),
-                "games_count":0,
-                "wins_count":0,
-                "win_ratio":0.0,
-                "idx":idx,
+                'full_name':user.get_full_name(),
+                'games_count':0,
+                'wins_count':0,
+                'win_ratio':0.0,
+                'idx':idx,
             }
             players = user.leagueplayer_set.all().filter(event__in=leagues)
 
@@ -107,8 +107,8 @@ class Community(models.Model):
                 this_user_data['ffg_rank'] = rank
                 this_user_data['has_ffg_license'] = True
             else:
-                this_user_data['ffg_rating'] = "N/A"
-                this_user_data['ffg_rank'] = "N/A"
+                this_user_data['ffg_rating'] = 'N/A'
+                this_user_data['ffg_rank'] = 'N/A'
                 this_user_data['has_ffg_license'] = False
 
 
@@ -118,7 +118,7 @@ class Community(models.Model):
 
     @classmethod
     def create(cls, name, slug):
-        '''We create the admin and users group before creating the community object'''
+        """We create the admin and users group before creating the community object"""
 
         if not Group.objects.filter(name=slug + '_community_admin').exists():
             admin_group = Group.objects.create(name=slug + '_community_admin')

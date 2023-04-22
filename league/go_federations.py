@@ -9,9 +9,9 @@ def get_egf_rank(egf_id):
     We return the rank (a string) or None if it's not valid
     https://senseis.xmp.net/?EGFRatingSystem
     """
-    url = "https://www.europeangodatabase.eu/EGD/GetPlayerDataByPIN.php?pin=" + str(egf_id)
+    url = 'https://www.europeangodatabase.eu/EGD/GetPlayerDataByPIN.php?pin=' + str(egf_id)
     request = requests.get(url, timeout=10).json()
-    if request['retcode'] == "Ok":
+    if request['retcode'] == 'Ok':
         gor = int(round(int(request['Gor']), -2)/100)
         if gor > 20:
             return f'{gor - 20}d'
@@ -23,8 +23,8 @@ def ffg_rating2rank(rating):
     """
     Convert a FFG rating into a Go rank
     """
-    if rating in ("NC", "-9999"):
-        return "NC"
+    if rating in ('NC', '-9999'):
+        return 'NC'
     else:
         return str(ceil(abs(int(rating)/100))) + ('D' if int(rating) > 0 else 'K')
 
@@ -33,7 +33,7 @@ def get_ffg_ladder():
     get the last FFG information
     """
     # url = "https://ffg.jeudego.org/echelle/echtxt/ech_ffg_V3.txt"
-    url = "https://ffg.jeudego.org/echelle/hybtxt/ech_ffg_V3.txt"
+    url = 'https://ffg.jeudego.org/echelle/hybtxt/ech_ffg_V3.txt'
     request = requests.get(url, timeout=10)
     if request.status_code != 200:
         return None
@@ -46,7 +46,7 @@ def get_ffg_rank(ffg_licence_number):
     """
     # url = "https://ffg.jeudego.org/echelle/echtxt/echelle.txt"
     # url = "https://ffg.jeudego.org/echelle/echtxt/ech_ffg_V3.txt"
-    url = "https://ffg.jeudego.org/echelle/hybtxt/ech_ffg_V3.txt"
+    url = 'https://ffg.jeudego.org/echelle/hybtxt/ech_ffg_V3.txt'
     request = requests.get(url, timeout=10)
     if request.status_code == 200:
         infos = ffg_user_infos(ffg_licence_number, request.text)
@@ -91,7 +91,7 @@ def format_ffg_tou(league, licences, location=None, comment=None):
     """
     # Create the header
     tou = f';name={league.name}\n'
-    date = league.begin_time.strftime("%d/%m/%Y")
+    date = league.begin_time.strftime('%d/%m/%Y')
     tou += f';date={date}\n'
     if location:
         tou += f';vill={location}\n'
@@ -122,11 +122,11 @@ def format_ffg_tou(league, licences, location=None, comment=None):
         infos = ffg_user_infos(licence_number, echelle_ffg)
         if infos is None:
             return None
-        player.name = infos["name"]
+        player.name = infos['name']
         player.rating = int(infos['rating'])
         player.rank = ffg_rating2rank(infos['rating'])
         player.licence_number = licence_number
-        player.club = infos["club"]
+        player.club = infos['club']
         player.results = '' #    2+w0    4+w2    3-b0
         player.wins = 0
 

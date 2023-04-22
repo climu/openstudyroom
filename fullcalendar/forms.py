@@ -5,7 +5,7 @@ from pytz import utc
 from .models import PublicEvent, Category
 
 class UTCPublicEventForm(ModelForm):
-    '''a form that force time to be entered with UTC'''
+    """a form that force time to be entered with UTC"""
     start = forms.DateTimeField(input_formats=['%d/%m/%Y %H:%M'], widget=forms.DateTimeInput(format='%d/%m/%Y %H:%M'))
     end = forms.DateTimeField(input_formats=['%d/%m/%Y %H:%M'], widget=forms.DateTimeInput(format='%d/%m/%Y %H:%M'))
 
@@ -14,7 +14,7 @@ class UTCPublicEventForm(ModelForm):
         fields = ('title', 'start', 'end', 'url', 'description', 'category')
 
     def clean(self):
-        '''convert replace timezones to utc'''
+        """convert replace timezones to utc"""
         cleaned_data = self.cleaned_data
         cleaned_data['start'] = cleaned_data['start'].replace(tzinfo=utc)
         cleaned_data['end'] = cleaned_data['end'].replace(tzinfo=utc)
@@ -34,7 +34,7 @@ class UTCPublicEventForm(ModelForm):
                 categories = Category.objects.filter(community__pk=community_pk)
         else:
             categories = Category.objects.filter(community=self.instance.community)
-        self.fields["category"].queryset = categories
+        self.fields['category'].queryset = categories
 
 
 class CategoryForm(ModelForm):

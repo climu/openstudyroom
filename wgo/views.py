@@ -16,4 +16,4 @@ def tsumego_api(request):
     sgf_file = open(os.path.join(BASE_DIR, 'wgo/tsumegos/' + set + '.sgf'), 'r')
     tsumego = random.choice(sgf_file.readlines())
     sgf_file.close()
-    return HttpResponse(tsumego, content_type="text/plain")
+    return HttpResponse(tsumego, content_type='text/plain')

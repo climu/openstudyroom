@@ -15,9 +15,9 @@ def tourney_result(context):
     else:
         event = ''
     opponent_pk = opponent.pk
-    html = ""
+    html = ''
     if opponent_pk not in player.results:
-        return ""
+        return ''
     result = player.results[opponent_pk]
     for game in result:
         points = str(game['p']).rpartition('+')[2]
@@ -200,5 +200,5 @@ def _test():
     import doctest
     doctest.testmod()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     _test()

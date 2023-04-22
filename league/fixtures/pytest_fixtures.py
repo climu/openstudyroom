@@ -23,7 +23,7 @@ def registry(league_event):
 @pytest.fixture()
 def cho_chikun():
     user = models.User.objects.create(
-        username="cho_chikun",
+        username='cho_chikun',
     )
     models.Profile.objects.create(
         ogs_id=11,
@@ -35,7 +35,7 @@ def cho_chikun():
 @pytest.fixture()
 def kobayashi_koichi():
     user = models.User.objects.create(
-        username="kobayashi_koichi",
+        username='kobayashi_koichi',
     )
     models.Profile.objects.create(
         ogs_id=22,
@@ -57,7 +57,7 @@ def sgf_cho_vs_kobayashi(cho_chikun, kobayashi_koichi, league_event):
     return sgf
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope='session')
 def sgf_text():
     return '''(;GM[1]FF[4]CA[UTF-8]AP[CGoban:3]ST[2]
     RU[Japanese]SZ[19]KM[0.50]TM[60]OT[1x10 byo-yomi]
@@ -340,224 +340,224 @@ def sgf_text():
     ])'''
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope='session')
 def ogs_response():
     return {
-        "count": 95,
-        "next": None,
-        "previous": None,
-        "results": [
+        'count': 95,
+        'next': None,
+        'previous': None,
+        'results': [
             {
-                "related": {
-                    "detail": "/api/v1/games/16083413"
+                'related': {
+                    'detail': '/api/v1/games/16083413'
                 },
-                "players": {
-                    "black": {
-                        "id": 531928,
-                        "username": "Naxe",
-                        "country": "ru",
-                        "icon": "https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/8b76b3356a7f05669ea9fbeb28b2a05d-32.png",
-                        "ratings": {
-                            "overall": {
-                                "deviation": 84.52931783075007,
-                                "rating": 1760.5976721537445,
-                                "games_played": 169,
-                                "volatility": 0.06097800395022088
+                'players': {
+                    'black': {
+                        'id': 531928,
+                        'username': 'Naxe',
+                        'country': 'ru',
+                        'icon': 'https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/8b76b3356a7f05669ea9fbeb28b2a05d-32.png',
+                        'ratings': {
+                            'overall': {
+                                'deviation': 84.52931783075007,
+                                'rating': 1760.5976721537445,
+                                'games_played': 169,
+                                'volatility': 0.06097800395022088
                             }
                         },
-                        "ranking": 20,
-                        "professional": False,
-                        "ui_class": ""
+                        'ranking': 20,
+                        'professional': False,
+                        'ui_class': ''
                     },
-                    "white": {
-                        "id": 106155,
-                        "username": "raylu",
-                        "country": "_Pirate",
-                        "icon": "https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/2b733fc955a2883ef8a7093ff10563f5-32.png",
-                        "ratings": {
-                            "overall": {
-                                "deviation": 119.06634171319544,
-                                "rating": 1626.0943874056077,
-                                "games_played": 30,
-                                "volatility": 0.05991960465200883
+                    'white': {
+                        'id': 106155,
+                        'username': 'raylu',
+                        'country': '_Pirate',
+                        'icon': 'https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/2b733fc955a2883ef8a7093ff10563f5-32.png',
+                        'ratings': {
+                            'overall': {
+                                'deviation': 119.06634171319544,
+                                'rating': 1626.0943874056077,
+                                'games_played': 30,
+                                'volatility': 0.05991960465200883
                             }
                         },
-                        "ranking": 17,
-                        "professional": False,
-                        "ui_class": "supporter"
+                        'ranking': 17,
+                        'professional': False,
+                        'ui_class': 'supporter'
                     }
                 },
-                "id": 16083413,
-                "name": "Tournament Game: Correspondence Weekly McMahon 19x19 2018-06-09 17:00 (37872) R:2 (raylu vs Naxe)",
-                "creator": 106155,
-                "mode": "game",
-                "source": "play",
-                "black": 531928,
-                "white": 106155,
-                "width": 19,
-                "height": 19,
-                "rules": "japanese",
-                "ranked": True,
-                "handicap": 0,
-                "komi": "6.50",
-                "time_control": "simple",
-                "black_player_rank": 21,
-                "black_player_rating": "1204.883",
-                "white_player_rank": 17,
-                "white_player_rating": "854.912",
-                "time_per_move": 89280,
-                "time_control_parameters": "{\"time_control\": \"fischer\", \"initial_time\": 259200, \"pause_on_weekends\": true, \"max_time\": 259200, \"time_increment\": 86400}",
-                "disable_analysis": False,
-                "tournament": 37872,
-                "tournament_round": 2,
-                "ladder": None,
-                "pause_on_weekends": True,
-                "outcome": "Resignation",
-                "black_lost": False,
-                "white_lost": True,
-                "annulled": False,
-                "started": "2019-01-11T03:46:34.078273-05:00",
-                "ended": "2019-04-30T14:41:18.183258-04:00",
-                "sgf_filename": None,
-                "historical_ratings": {
-                    "black": {
-                        "id": 531928,
-                        "ratings": {
-                            "overall": {
-                                "rating": 1771.5311279296875,
-                                "deviation": 90.05663299560547,
-                                "volatility": 0.061021242290735245
+                'id': 16083413,
+                'name': 'Tournament Game: Correspondence Weekly McMahon 19x19 2018-06-09 17:00 (37872) R:2 (raylu vs Naxe)',
+                'creator': 106155,
+                'mode': 'game',
+                'source': 'play',
+                'black': 531928,
+                'white': 106155,
+                'width': 19,
+                'height': 19,
+                'rules': 'japanese',
+                'ranked': True,
+                'handicap': 0,
+                'komi': '6.50',
+                'time_control': 'simple',
+                'black_player_rank': 21,
+                'black_player_rating': '1204.883',
+                'white_player_rank': 17,
+                'white_player_rating': '854.912',
+                'time_per_move': 89280,
+                'time_control_parameters': '{\"time_control\": \"fischer\", \"initial_time\": 259200, \"pause_on_weekends\": true, \"max_time\": 259200, \"time_increment\": 86400}',
+                'disable_analysis': False,
+                'tournament': 37872,
+                'tournament_round': 2,
+                'ladder': None,
+                'pause_on_weekends': True,
+                'outcome': 'Resignation',
+                'black_lost': False,
+                'white_lost': True,
+                'annulled': False,
+                'started': '2019-01-11T03:46:34.078273-05:00',
+                'ended': '2019-04-30T14:41:18.183258-04:00',
+                'sgf_filename': None,
+                'historical_ratings': {
+                    'black': {
+                        'id': 531928,
+                        'ratings': {
+                            'overall': {
+                                'rating': 1771.5311279296875,
+                                'deviation': 90.05663299560547,
+                                'volatility': 0.061021242290735245
                             }
                         },
-                        "username": "Naxe",
-                        "country": "Naxe",
-                        "ranking": 20,
-                        "professional": False,
-                        "icon": "https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/8b76b3356a7f05669ea9fbeb28b2a05d-32.png",
-                        "ui_class": ""
+                        'username': 'Naxe',
+                        'country': 'Naxe',
+                        'ranking': 20,
+                        'professional': False,
+                        'icon': 'https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/8b76b3356a7f05669ea9fbeb28b2a05d-32.png',
+                        'ui_class': ''
                     },
-                    "white": {
-                        "id": 106155,
-                        "ratings": {
-                            "overall": {
-                                "rating": 1652.8897705078125,
-                                "deviation": 109.97587585449219,
-                                "volatility": 0.05992735177278519
+                    'white': {
+                        'id': 106155,
+                        'ratings': {
+                            'overall': {
+                                'rating': 1652.8897705078125,
+                                'deviation': 109.97587585449219,
+                                'volatility': 0.05992735177278519
                             }
                         },
-                        "username": "raylu",
-                        "country": "raylu",
-                        "ranking": 17,
-                        "professional": False,
-                        "icon": "https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/2b733fc955a2883ef8a7093ff10563f5-32.png",
-                        "ui_class": "supporter"
+                        'username': 'raylu',
+                        'country': 'raylu',
+                        'ranking': 17,
+                        'professional': False,
+                        'icon': 'https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/2b733fc955a2883ef8a7093ff10563f5-32.png',
+                        'ui_class': 'supporter'
                     }
                 }
             },
             {
-                "related": {
-                    "detail": "/api/v1/games/16963628"
+                'related': {
+                    'detail': '/api/v1/games/16963628'
                 },
-                "players": {
-                    "black": {
-                        "id": 610746,
-                        "username": "stonemuncher",
-                        "country": "gb",
-                        "icon": "https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/c8ec4f3f96c64417c12e6e7b7c57a63d-32.png",
-                        "ratings": {
-                            "overall": {
-                                "deviation": 91.68388954461214,
-                                "rating": 1736.140415330084,
-                                "games_played": 42,
-                                "volatility": 0.060318472835717056
+                'players': {
+                    'black': {
+                        'id': 610746,
+                        'username': 'stonemuncher',
+                        'country': 'gb',
+                        'icon': 'https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/c8ec4f3f96c64417c12e6e7b7c57a63d-32.png',
+                        'ratings': {
+                            'overall': {
+                                'deviation': 91.68388954461214,
+                                'rating': 1736.140415330084,
+                                'games_played': 42,
+                                'volatility': 0.060318472835717056
                             }
                         },
-                        "ranking": 18,
-                        "professional": False,
-                        "ui_class": ""
+                        'ranking': 18,
+                        'professional': False,
+                        'ui_class': ''
                     },
-                    "white": {
-                        "id": 106155,
-                        "username": "raylu",
-                        "country": "_Pirate",
-                        "icon": "https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/2b733fc955a2883ef8a7093ff10563f5-32.png",
-                        "ratings": {
-                            "overall": {
-                                "deviation": 119.06634171319544,
-                                "rating": 1626.0943874056077,
-                                "games_played": 30,
-                                "volatility": 0.05991960465200883
+                    'white': {
+                        'id': 106155,
+                        'username': 'raylu',
+                        'country': '_Pirate',
+                        'icon': 'https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/2b733fc955a2883ef8a7093ff10563f5-32.png',
+                        'ratings': {
+                            'overall': {
+                                'deviation': 119.06634171319544,
+                                'rating': 1626.0943874056077,
+                                'games_played': 30,
+                                'volatility': 0.05991960465200883
                             }
                         },
-                        "ranking": 17,
-                        "professional": False,
-                        "ui_class": "supporter"
+                        'ranking': 17,
+                        'professional': False,
+                        'ui_class': 'supporter'
                     }
                 },
-                "id": 16963628,
-                "name": "Friendly Match",
-                "creator": 106155,
-                "mode": "game",
-                "source": "play",
-                "black": 610746,
-                "white": 106155,
-                "width": 19,
-                "height": 19,
-                "rules": "japanese",
-                "ranked": True,
-                "handicap": 0,
-                "komi": "6.50",
-                "time_control": "fischer",
-                "black_player_rank": 14,
-                "black_player_rating": "572.976",
-                "white_player_rank": 18,
-                "white_player_rating": "915.978",
-                "time_per_move": 89280,
-                "time_control_parameters": "{\"system\": \"fischer\", \"pause_on_weekends\": true, \"time_control\": \"fischer\", \"initial_time\": 259200, \"max_time\": 432000, \"time_increment\": 86400, \"speed\": \"correspondence\"}",
-                "disable_analysis": True,
-                "tournament": None,
-                "tournament_round": 0,
-                "ladder": None,
-                "pause_on_weekends": True,
-                "outcome": "Resignation",
-                "black_lost": False,
-                "white_lost": True,
-                "annulled": False,
-                "started": "2019-03-12T16:19:12.801090-04:00",
-                "ended": "2019-04-23T13:42:39.151854-04:00",
-                "sgf_filename": None,
-                "historical_ratings": {
-                    "black": {
-                        "id": 610746,
-                        "ratings": {
-                            "overall": {
-                                "rating": 1699.94482421875,
-                                "deviation": 76.8810806274414,
-                                "volatility": 0.06031230464577675
+                'id': 16963628,
+                'name': 'Friendly Match',
+                'creator': 106155,
+                'mode': 'game',
+                'source': 'play',
+                'black': 610746,
+                'white': 106155,
+                'width': 19,
+                'height': 19,
+                'rules': 'japanese',
+                'ranked': True,
+                'handicap': 0,
+                'komi': '6.50',
+                'time_control': 'fischer',
+                'black_player_rank': 14,
+                'black_player_rating': '572.976',
+                'white_player_rank': 18,
+                'white_player_rating': '915.978',
+                'time_per_move': 89280,
+                'time_control_parameters': '{\"system\": \"fischer\", \"pause_on_weekends\": true, \"time_control\": \"fischer\", \"initial_time\": 259200, \"max_time\": 432000, \"time_increment\": 86400, \"speed\": \"correspondence\"}',
+                'disable_analysis': True,
+                'tournament': None,
+                'tournament_round': 0,
+                'ladder': None,
+                'pause_on_weekends': True,
+                'outcome': 'Resignation',
+                'black_lost': False,
+                'white_lost': True,
+                'annulled': False,
+                'started': '2019-03-12T16:19:12.801090-04:00',
+                'ended': '2019-04-23T13:42:39.151854-04:00',
+                'sgf_filename': None,
+                'historical_ratings': {
+                    'black': {
+                        'id': 610746,
+                        'ratings': {
+                            'overall': {
+                                'rating': 1699.94482421875,
+                                'deviation': 76.8810806274414,
+                                'volatility': 0.06031230464577675
                             }
                         },
-                        "username": "stonemuncher",
-                        "country": "stonemuncher",
-                        "ranking": 18,
-                        "professional": False,
-                        "icon": "https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/c8ec4f3f96c64417c12e6e7b7c57a63d-32.png",
-                        "ui_class": ""
+                        'username': 'stonemuncher',
+                        'country': 'stonemuncher',
+                        'ranking': 18,
+                        'professional': False,
+                        'icon': 'https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/c8ec4f3f96c64417c12e6e7b7c57a63d-32.png',
+                        'ui_class': ''
                     },
-                    "white": {
-                        "id": 106155,
-                        "ratings": {
-                            "overall": {
-                                "rating": 1689.1734619140625,
-                                "deviation": 115.30014038085938,
-                                "volatility": 0.05995921045541763
+                    'white': {
+                        'id': 106155,
+                        'ratings': {
+                            'overall': {
+                                'rating': 1689.1734619140625,
+                                'deviation': 115.30014038085938,
+                                'volatility': 0.05995921045541763
                             }
                         },
-                        "username": "raylu",
-                        "country": "raylu",
-                        "ranking": 17,
-                        "professional": False,
-                        "icon": "https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/2b733fc955a2883ef8a7093ff10563f5-32.png",
-                        "ui_class": "supporter"
+                        'username': 'raylu',
+                        'country': 'raylu',
+                        'ranking': 17,
+                        'professional': False,
+                        'icon': 'https://b0c2ddc39d13e1c0ddad-93a52a5bc9e7cc06050c1a999beb3694.ssl.cf1.rackcdn.com/2b733fc955a2883ef8a7093ff10563f5-32.png',
+                        'ui_class': 'supporter'
                     }
                 }
             }

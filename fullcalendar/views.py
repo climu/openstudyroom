@@ -247,7 +247,7 @@ def delete_available_event(request):
 
 @require_POST
 @login_required()
-@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url='/', redirect_field_name=None)
 def update_time_range_ajax(request):
     start = request.POST.get('start')
     end = request.POST.get('end')
@@ -259,7 +259,7 @@ def update_time_range_ajax(request):
 
 @require_POST
 @login_required()
-@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url='/', redirect_field_name=None)
 def cancel_game_appointment_ajax(request):  # pylint: disable=inconsistent-return-statements
     """Cancel a game appointment from calendar ajax post."""
     user = request.user
@@ -289,7 +289,7 @@ def cancel_game_appointment_ajax(request):  # pylint: disable=inconsistent-retur
 
 @require_POST
 @login_required()
-@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url='/', redirect_field_name=None)
 def accept_game_request_ajax(request):
     """accept a game request from calendar ajax post."""
     user = request.user
@@ -304,7 +304,7 @@ def accept_game_request_ajax(request):
 
 @require_POST
 @login_required()
-@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url='/', redirect_field_name=None)
 def reject_game_request_ajax(request):
     """Reject a game request from calendar ajax post."""
     user = request.user
@@ -317,7 +317,7 @@ def reject_game_request_ajax(request):
 
 @require_POST
 @login_required()
-@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url='/', redirect_field_name=None)
 def cancel_game_request_ajax(request):
     """Cancel a game request from calendar ajax post."""
     user = request.user
@@ -328,7 +328,7 @@ def cancel_game_request_ajax(request):
 
 @require_POST
 @login_required()
-@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url='/', redirect_field_name=None)
 def create_game_ajax(request):
     """
     Create a game request/appointment based of request.POST.type.
@@ -355,7 +355,7 @@ def create_game_ajax(request):
     return HttpResponse('success')
 
 @login_required()
-@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url='/', redirect_field_name=None)
 def admin_cal_event_list(request):
     public_events = PublicEvent.objects.filter(community=None).order_by('-end')
     categories = Category.objects.filter(community=None)
@@ -366,7 +366,7 @@ def admin_cal_event_list(request):
     )
 
 @login_required()
-@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url='/', redirect_field_name=None)
 def admin_delete_category(request, pk):
     if request.method == 'POST':
         event = get_object_or_404(Category, pk=pk)
@@ -375,10 +375,10 @@ def admin_delete_category(request, pk):
             url = event.get_redirect_url()
             event.delete()
             return HttpResponseRedirect(url)
-    raise Http404("What are you doing here ?")
+    raise Http404('What are you doing here ?')
 
 @login_required()
-@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url='/', redirect_field_name=None)
 def admin_delete_event(request, pk):
     if request.method == 'POST':
         event = get_object_or_404(PublicEvent, pk=pk)
@@ -387,7 +387,7 @@ def admin_delete_event(request, pk):
             url = event.get_redirect_url()
             event.delete()
             return HttpResponseRedirect(url)
-    raise Http404("What are you doing here ?")
+    raise Http404('What are you doing here ?')
 
 def ical(request, user_id):
     osr_events = PublicEvent.objects.all()

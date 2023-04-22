@@ -1,0 +1,9 @@
+[tool.ruff]
+line-length = 120
+select = [
+    'Q',
+]
+[tool.ruff.flake8-quotes]
+docstring-quotes = 'double'
+inline-quotes = 'single'
+multiline-quotes = 'single'

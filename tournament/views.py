@@ -165,7 +165,7 @@ def calendar_feed(request, tournament_id):
     end = timezone.make_aware(end, tz)
 
     data = tournament.get_formated_events(start, end, tz)
-    return HttpResponse(json.dumps(data), content_type="application/json")
+    return HttpResponse(json.dumps(data), content_type='application/json')
 ############################################################################
 ###                  Admin views                                         ###
 ############################################################################
@@ -237,7 +237,7 @@ def create_calendar_event(request, tournament_id):
             event.url = form.cleaned_data['url']
             event.tournament = tournament
             event.save()
-            message = "Succesfully created a tournament event."
+            message = 'Succesfully created a tournament event.'
             messages.success(request, message)
             return HttpResponseRedirect(reverse(
                 'tournament:manage_calendar',
@@ -266,7 +266,7 @@ def edit_player_profile(request, tournament_id, user_id):
         form = TournamentPlayerProfileForm(request.POST, instance=user.profile)
         if form.is_valid():
             form.save()
-            message = "Succesfully updated " + user.username + " profile."
+            message = 'Succesfully updated ' + user.username + ' profile.'
             messages.success(request, message)
             return HttpResponseRedirect(reverse(
                 'tournament:players',
@@ -289,13 +289,13 @@ def edit_about(request, tournament_id):
         raise Http404('What are you doing here?')
     groups = TournamentGroup.objects.filter(league_event=tournament).exists()
 
-    if request.method == "POST":
+    if request.method == 'POST':
         form = TournamentAboutForm(request.POST, instance=tournament)
         if form.is_valid():
             tournament.description = form.cleaned_data['description']
             tournament.about = form.cleaned_data['about']
             tournament.save()
-            message = "Succesfully updated the " + tournament.name + " description."
+            message = 'Succesfully updated the ' + tournament.name + ' description.'
             messages.success(request, message)
             return HttpResponseRedirect(reverse(
                 'tournament:about',
@@ -312,7 +312,7 @@ def edit_about(request, tournament_id):
     return HttpResponse(template.render(context, request))
 
 @login_required()
-@user_passes_test(User.is_league_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_admin, login_url='/', redirect_field_name=None)
 def tournament_list(request):
     tournaments = Tournament.objects.all()
     context = {
@@ -394,7 +394,7 @@ def delete_match(request, round_id):
     match = round.match_set.all().order_by('order').last()
     if match is not None:
         if match.player_1 or match.player_2:
-            message = "Last match of " + round.name + " have players. Remove players before deleting the match "
+            message = 'Last match of ' + round.name + ' have players. Remove players before deleting the match '
             messages.success(request, message)
         elif request.method == 'POST':
             round.delete_match()
@@ -496,7 +496,7 @@ def save_brackets(request, tournament_id):
                 round = get_object_or_404(Round, pk=round_id, bracket=bracket)
                 save_round(round, matches)
 
-    return HttpResponse("success")
+    return HttpResponse('success')
 
 
 @login_required()
@@ -561,7 +561,7 @@ def set_stage(request, tournament_id):
                 tournament.stage = stage
                 tournament.save()
             return HttpResponseRedirect(form.cleaned_data['next'])
-    raise Http404("What are you doing here ?")
+    raise Http404('What are you doing here ?')
 
 
 @login_required()
@@ -592,7 +592,7 @@ def create_sgf(request, tournament_id):
                     else:
                         match.winner = bplayer
                     match.save()
-                message = " Succesfully created a SGF"
+                message = ' Succesfully created a SGF'
                 messages.success(request, message)
             else:
                 message = " the sgf didn't seems to pass the tests"
@@ -632,7 +632,7 @@ def upload_sgf(request, tournament_id):
     else:
         if 'sgf_data' in request.session:
             if request.session['sgf_data'] is None:
-                raise Http404("What are you doing here ?")
+                raise Http404('What are you doing here ?')
             sgf = Sgf()
             sgf.sgf_text = request.session['sgf_data']
             request.session['sgf_data'] = None
@@ -650,7 +650,7 @@ def upload_sgf(request, tournament_id):
             template = loader.get_template('tournament/upload_sgf.html')
             return HttpResponse(template.render(context, request))
         else:
-            raise Http404("What are you doing here ?")
+            raise Http404('What are you doing here ?')
 
 @login_required()
 def invite_user(request, tournament_id):
@@ -666,7 +666,7 @@ def invite_user(request, tournament_id):
                 event=tournament,
                 user=user
             ).exists():
-                message = user.username + " is already in the tournament."
+                message = user.username + ' is already in the tournament.'
                 messages.success(request, message)
                 return HttpResponseRedirect(reverse(
                     'tournament:manage_settings',
@@ -681,7 +681,7 @@ def invite_user(request, tournament_id):
             player.user = user
             player.order = tournament.last_player_order() + 1
             player.save()
-            message = user.username + " is now a playing in this tournament."
+            message = user.username + ' is now a playing in this tournament.'
             messages.success(request, message)
         else:
             message = "We don't have such a user."
@@ -697,11 +697,11 @@ def remove_players(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     if not request.user.is_league_admin(tournament):
         raise Http404('What are you doing here?')
-    if request.method == "POST":
+    if request.method == 'POST':
         players_list = json.loads(request.POST.get('players_list'))
         players = TournamentPlayer.objects.filter(pk__in=players_list)
         players.delete()
-        return HttpResponse("success")
+        return HttpResponse('success')
     else:
         raise Http404('what are you doing here ?')
 
@@ -719,7 +719,7 @@ def save_players_order(request, tournament_id):
             player.order = order
             player.save()
 
-        return HttpResponse("success")
+        return HttpResponse('success')
     else:
         raise Http404('what are you doing here ?')
 
@@ -738,7 +738,7 @@ def create_group(request, tournament_id):
             group.save()
         return HttpResponseRedirect(reverse('tournament:manage_groups', kwargs={'tournament_id': tournament_id}))
     else:
-        raise Http404("What are you doing here ?")
+        raise Http404('What are you doing here ?')
 
 
 @login_required()
@@ -755,20 +755,20 @@ def save_groups(request, tournament_id):
         for group_id, players in groups.items():
             group = get_object_or_404(TournamentGroup, pk=group_id)
             if group.league_event.pk != tournament.pk:
-                raise Http404("What are you doing here ?")
+                raise Http404('What are you doing here ?')
             for player_id in players:
                 player = get_object_or_404(TournamentPlayer, pk=player_id)
                 player.division = group
                 player.save()
 
-        return HttpResponse("success")
+        return HttpResponse('success')
     else:
-        raise Http404("What are you doing here ?")
+        raise Http404('What are you doing here ?')
 
 @login_required
-@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url='/', redirect_field_name=None)
 def set_winner(request, tournament_id):
-    '''set the winner for a division'''
+    """set the winner for a division"""
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     if request.method == 'POST':
         form = ActionForm(request.POST)
@@ -781,7 +781,7 @@ def set_winner(request, tournament_id):
                 tournament.winner = user
             tournament.save()
             return HttpResponseRedirect(form.cleaned_data['next'])
-    raise Http404("What are you doing here ?")
+    raise Http404('What are you doing here ?')
 
 @login_required
 def forfeit_group(request, tournament_id, group_id):
@@ -801,7 +801,7 @@ def forfeit_group(request, tournament_id, group_id):
             sgf.winner = winner.user
             sgf.black = winner.user
             sgf.white = looser.user
-            sgf.result = "Forfeit"
+            sgf.result = 'Forfeit'
             sgf.p_status = 0
             sgf.wplayer = looser.user.username
             sgf.bplayer = winner.user.username

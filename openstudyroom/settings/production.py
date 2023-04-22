@@ -47,7 +47,7 @@ RAVEN_CONFIG = {
 
 with open('/etc/discord_secret.txt') as f:
     discord_secret = f.read().strip()
-DISCORD_CLIENT_ID = "404373699287056385"
+DISCORD_CLIENT_ID = '404373699287056385'
 DISCORD_CLIENT_SECRET = discord_secret
 
 

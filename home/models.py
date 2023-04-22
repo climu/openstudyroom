@@ -31,7 +31,7 @@ from league.models import Registry, Sgf, LeagueEvent
 
 
 ForumPost = get_model('forum_conversation', 'Post')
-TopicPoll.__module__ = "machina.apps.forum_conversation.forum_polls.models"
+TopicPoll.__module__ = 'machina.apps.forum_conversation.forum_polls.models'
 
 register_snippet(TopicPoll)
 
@@ -45,7 +45,7 @@ class Advert(models.Model):
     panels = [
         FieldPanel('title'),
         FieldPanel('url'),
-        FieldPanel('body', classname="full"),
+        FieldPanel('body', classname='full'),
     ]
 
     def __str__(self):
@@ -88,11 +88,11 @@ class Sponsor(models.Model):
 
 
 class PullQuoteBlock(StructBlock):
-    quote = TextBlock("quote title")
+    quote = TextBlock('quote title')
     attribution = CharBlock()
 
     class Meta:
-        icon = "openquote"
+        icon = 'openquote'
 
 
 class ImageFormatChoiceBlock(FieldBlock):
@@ -121,43 +121,43 @@ class ImageBlock(StructBlock):
         blank=True,
         null=True,
         required=False,
-        help_text="optional width in px. Default is auto."
+        help_text='optional width in px. Default is auto.'
     )
 
 class SponsorsBlock(StructBlock):
     class Meta:
-        icon = "placeholder"
-        template = "home/includes/sponsors_block.html"
+        icon = 'placeholder'
+        template = 'home/includes/sponsors_block.html'
 
 class AlignedHTMLBlock(StructBlock):
     html = RawHTMLBlock()
     alignment = HTMLAlignmentChoiceBlock()
 
     class Meta:
-        icon = "code"
+        icon = 'code'
 
 class WgoBlock(StructBlock):
     sgf = DocumentChooserBlock()
     alignment = WgoAlignmentChoiceBlock()
     width = IntegerBlock(default=700)
     class Meta:
-        icon = "placeholder"
-        template = "wgo/wgoblock.html"
+        icon = 'placeholder'
+        template = 'wgo/wgoblock.html'
 
 
 class MyStreamBlock(StreamBlock):
-    h2 = CharBlock(icon="title", classname="title")
-    h3 = CharBlock(icon="title", classname="title")
-    h4 = CharBlock(icon="title", classname="title")
-    intro = RichTextBlock(icon="pilcrow")
-    paragraph = RichTextBlock(icon="pilcrow")
-    aligned_image = ImageBlock(label="Aligned image", icon="image")
+    h2 = CharBlock(icon='title', classname='title')
+    h3 = CharBlock(icon='title', classname='title')
+    h4 = CharBlock(icon='title', classname='title')
+    intro = RichTextBlock(icon='pilcrow')
+    paragraph = RichTextBlock(icon='pilcrow')
+    aligned_image = ImageBlock(label='Aligned image', icon='image')
     pullquote = PullQuoteBlock()
-    aligned_html = AlignedHTMLBlock(icon="code", label='Raw HTML')
-    document = DocumentChooserBlock(icon="doc-full-inverse")
-    wgo = WgoBlock(label="wgo")
+    aligned_html = AlignedHTMLBlock(icon='code', label='Raw HTML')
+    document = DocumentChooserBlock(icon='doc-full-inverse')
+    wgo = WgoBlock(label='wgo')
     table = TableBlock()
-    poll = SnippetChooserBlock(TopicPoll, template="home/includes/poll.html")
+    poll = SnippetChooserBlock(TopicPoll, template='home/includes/poll.html')
     sponsor = SponsorsBlock()
 
 
@@ -184,13 +184,13 @@ class HomePage(Page):
             .annotate(total=Count('id'))\
             .annotate(kgs=Count(
                 Case(
-                    When(place__startswith="The KGS", then=1),
+                    When(place__startswith='The KGS', then=1),
                     output_field=IntegerField(),
                     distinct=True
                 )))\
             .annotate(ogs=Count(
                 Case(
-                    When(place__startswith="OGS", then=1),
+                    When(place__startswith='OGS', then=1),
                     output_field=IntegerField(),
                     distinct=True
                 )))\
@@ -198,7 +198,7 @@ class HomePage(Page):
         if games:
             context['games'] = games[0]
         else:
-            context['games'] = {"total":0}
+            context['games'] = {'total':0}
         n_leagues = LeagueEvent.objects.filter(is_open=True, is_public=True, community__isnull=True).count()
         context['n_leagues'] = n_leagues
 #        user = request.user
@@ -281,11 +281,11 @@ def send_to_discord(sender, **kwargs):
     )
     # I tryed to convert excerpt to markdown using tomd without success
     values = {
-        "content": "Breaking news on OSR website !",
-        "embeds": [{
-            "title": instance.title,
-            "url": "https://openstudyroom.org" + instance.url,
-            "description": excerpt,
+        'content': 'Breaking news on OSR website !',
+        'embeds': [{
+            'title': instance.title,
+            'url': 'https://openstudyroom.org' + instance.url,
+            'description': excerpt,
         }]
     }
     r = requests.post(discord_url, json=values)
@@ -329,11 +329,11 @@ def forum_post_to_discord(sender, instance, **kwargs):
         }) + '?post=' + str(instance.pk) + '#' + str(instance.pk)
 
     values = {
-        "content": 'from ' + instance.poster.username + ' in ' + instance.topic.forum.name,
-        "embeds": [{
-            "title": instance.subject,
-            "url": 'https://openstudyroom.org' + url,
-            "description": excerpt,
+        'content': 'from ' + instance.poster.username + ' in ' + instance.topic.forum.name,
+        'embeds': [{
+            'title': instance.subject,
+            'url': 'https://openstudyroom.org' + url,
+            'description': excerpt,
         }]
     }
     r = requests.post(discord_url, json=values)

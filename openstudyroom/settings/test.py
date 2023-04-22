@@ -13,7 +13,7 @@ SECRET_KEY = 'test'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-DISCORD_CLIENT_ID = "xxxxxxxxxxxxxxxxx"
-DISCORD_CLIENT_SECRET = "xxxxxxxxxxxxxxxxxx"
+DISCORD_CLIENT_ID = 'xxxxxxxxxxxxxxxxx'
+DISCORD_CLIENT_SECRET = 'xxxxxxxxxxxxxxxxxx'
 
-SITE_URL = "http://test.test:8000"
+SITE_URL = 'http://test.test:8000'

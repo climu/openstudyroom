@@ -20,14 +20,14 @@ from .models import Community
 from .forms import CommunityForm, AdminCommunityForm, CommunytyUserForm, CommunityRankingForm
 
 @login_required()
-@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url='/', redirect_field_name=None)
 def admin_community_list(request):
     communitys = Community.objects.all()
     return render(request, 'community/admin/community_list.html', {'communitys': communitys})
 
 
 @login_required()
-@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url='/', redirect_field_name=None)
 def admin_community_create(request):
     if request.method == 'POST':
         form = AdminCommunityForm(request.POST)
@@ -76,7 +76,7 @@ class CommunityUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 
 @login_required()
-@user_passes_test(User.is_osr_admin, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_osr_admin, login_url='/', redirect_field_name=None)
 def admin_community_delete(request, pk):
     community = get_object_or_404(Community, pk=pk)
     if request.method == 'POST':
@@ -159,8 +159,8 @@ def ranking_table(request, slug):
 
     # default to last year
 
-    ranking_from = (datetime.now() - relativedelta(years=1)).strftime("%Y-%m-%d")
-    ranking_to = datetime.now().strftime("%Y-%m-%d")
+    ranking_from = (datetime.now() - relativedelta(years=1)).strftime('%Y-%m-%d')
+    ranking_to = datetime.now().strftime('%Y-%m-%d')
 
     context = {
         'community': community,
@@ -169,12 +169,12 @@ def ranking_table(request, slug):
         'ranking_to':ranking_to,
         'datatable_config':{
             'columns':[
-                {"title":"Name", "key":"full_name"},
-                {"title":"# Games", "key":"games_count"},
-                {"title":"# Wins", "key":"wins_count"},
-                {"title":"Win ratio (%)", "key":"win_ratio"},
-                {"title":"FFG Rating", "key":"ffg_rating"},
-                {"title":"FFG Rank", "key":"ffg_rank"}
+                {'title':'Name', 'key':'full_name'},
+                {'title':'# Games', 'key':'games_count'},
+                {'title':'# Wins', 'key':'wins_count'},
+                {'title':'Win ratio (%)', 'key':'win_ratio'},
+                {'title':'FFG Rating', 'key':'ffg_rating'},
+                {'title':'FFG Rank', 'key':'ffg_rank'}
             ],
             'id':'community_ranking_table',
             'url':f'/community/{slug}/ranking_api/?begin_time={ranking_from}&end_time={ranking_to}',
@@ -190,7 +190,7 @@ def ranking_api(request, slug):
     # load the input params
     form = CommunityRankingForm(request.GET)
     if not form.is_valid():
-        raise Http404("Invalid params")
+        raise Http404('Invalid params')
     begin_time = datetime.combine(form.cleaned_data['begin_time'], datetime.min.time(), utc)
     end_time = datetime.combine(form.cleaned_data['end_time'], datetime.min.time(), utc)
 
@@ -229,12 +229,12 @@ def community_ranking(request, slug):
                 data = community.ranking(begin_time=begin_time, end_time=end_time)
 
                 # Create the file's content
-                txt = f'{community.name}\'s ranking from {begin_time.date()} to {end_time.date()}\n'
+                txt = f"{community.name}'s ranking from {begin_time.date()} to {end_time.date()}\n"
 
                 for (stat_name, stat_sort) in [
-                    ("Played games", "games_count"),
-                    ("Games won", "wins_count"),
-                    ("Win ratio (%)", "win_ratio")
+                    ('Played games', 'games_count'),
+                    ('Games won', 'wins_count'),
+                    ('Win ratio (%)', 'win_ratio')
                 ]:
                     txt += '\n-------------------\n'+stat_name+' :\n-------------------\n'
                     txt += '\n'.join([
@@ -273,7 +273,7 @@ def community_list(request):
 
 
 @login_required()
-@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url='/', redirect_field_name=None)
 def community_join(request, community_pk, user_pk):
     community = get_object_or_404(Community, pk=community_pk)
     user = get_object_or_404(User, pk=user_pk)
@@ -284,7 +284,7 @@ def community_join(request, community_pk, user_pk):
 
     if request.method == 'POST':
         user.groups.add(community.user_group)
-        message = "You just join the " + community.name + " community."
+        message = 'You just join the ' + community.name + ' community.'
         messages.success(request, message)
         return HttpResponseRedirect(reverse(
             'community:community_page',
@@ -295,7 +295,7 @@ def community_join(request, community_pk, user_pk):
 
 
 @login_required()
-@user_passes_test(User.is_league_member, login_url="/", redirect_field_name=None)
+@user_passes_test(User.is_league_member, login_url='/', redirect_field_name=None)
 def community_quit(request, community_pk, user_pk):
     community = get_object_or_404(Community, pk=community_pk)
     user = get_object_or_404(User, pk=user_pk)
@@ -305,7 +305,7 @@ def community_quit(request, community_pk, user_pk):
         user.groups.remove(community.user_group)
         user.groups.remove(community.new_user_group)
         if user == request.user:
-            message = "You just quit the " + community.name + " community."
+            message = 'You just quit the ' + community.name + ' community.'
             messages.success(request, message)
             if community.private:
                 return HttpResponseRedirect(reverse(
@@ -317,7 +317,7 @@ def community_quit(request, community_pk, user_pk):
                     kwargs={'slug': community.slug}
                 ))
         else:
-            message = user.username + " is not in your community anymore."
+            message = user.username + ' is not in your community anymore.'
             messages.success(request, message)
             return HttpResponseRedirect(reverse(
                 'community:community_page',
@@ -362,7 +362,7 @@ def admin_invite_user(request, pk):
     if not community.is_admin(request.user):
         raise Http404('what are you doing here')
     form = CommunytyUserForm(request.POST)
-    message = "Oups! Something went wrong."
+    message = 'Oups! Something went wrong.'
     if form.is_valid():
         user = User.objects.get(username__iexact=form.cleaned_data['username'])
         if user.is_league_member():
@@ -370,7 +370,7 @@ def admin_invite_user(request, pk):
             user.groups.remove(community.new_user_group)
             # group = Group.objects.get(name='league_member')/
             # user.groups.add(group)
-            message = user.username +" is now a member of your community."
+            message = user.username +' is now a member of your community.'
     messages.success(request, message)
     return HttpResponseRedirect(reverse(
         'community:community_page',
@@ -388,15 +388,15 @@ def manage_admins(request, pk):
         if form.is_valid():
             user = get_object_or_404(User, pk=form.cleaned_data['user_id'])
             group = community.admin_group
-            if form.cleaned_data['action'] == "rm":
+            if form.cleaned_data['action'] == 'rm':
                 group.user_set.remove(user)
-                message = "Succesfully removed " + user.username + " from community admins."
-            elif form.cleaned_data['action'] == "add":
+                message = 'Succesfully removed ' + user.username + ' from community admins.'
+            elif form.cleaned_data['action'] == 'add':
                 if user.is_league_member():
                     group.user_set.add(user)
-                    message = "Succesfully added " + user.username + " to community admins."
+                    message = 'Succesfully added ' + user.username + ' to community admins.'
                 else:
-                    message = user.username + "account has nor been validated yet"
+                    message = user.username + 'account has nor been validated yet'
             messages.success(request, message)
     return HttpResponseRedirect(reverse(
         'community:community_page',

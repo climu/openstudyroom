@@ -28,20 +28,20 @@ class MultipleIntField(forms.Field):
             return int(x)
         except:
             raise ValidationError(
-                "Cannot convert to integer: {}".format(repr(x)))
+                'Cannot convert to integer: {}'.format(repr(x)))
 
     def clean(self, value):
         if self.length is len(value) or self.length is None:
             return [self.clean_int(x) for x in value]
         else:
             raise ValidationError(
-                "List integer must be of length: {}".format(repr(self.length)))
+                'List integer must be of length: {}'.format(repr(self.length)))
 
 
 class SgfAdminForm(forms.Form):
     sgf = forms.CharField(label='sgf data', widget=forms.Textarea(
         attrs={'cols': 60, 'rows': 20}))
-    url = forms.CharField(label="KGS archive link", required=False)
+    url = forms.CharField(label='KGS archive link', required=False)
 
 
 class AddWontPlayForm(forms.Form):
@@ -54,10 +54,10 @@ class CreateForfeitForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        winner = cleaned_data.get("winner")
-        loser = cleaned_data.get("loser")
+        winner = cleaned_data.get('winner')
+        loser = cleaned_data.get('loser')
         if winner == loser:
-            raise ValidationError("Winner and loser cannot be the same user")
+            raise ValidationError('Winner and loser cannot be the same user')
 
 
 class RemoveWontPlayForm(forms.Form):
@@ -89,8 +89,8 @@ class LeagueSignupForm(forms.Form):
         super(LeagueSignupForm, self).__init__(*args, **kwargs)
         communities = Community.objects.filter(private=False)
         choices = [(community.pk, community.name) for community in communities]
-        self.fields["communities"] = forms.MultipleChoiceField(
-            label="Communities (optional)",
+        self.fields['communities'] = forms.MultipleChoiceField(
+            label='Communities (optional)',
             choices=choices,
             required=False,
             widget=Community_select
@@ -102,7 +102,7 @@ class LeagueSignupForm(forms.Form):
         egf_id = self.cleaned_data['egf_id']
         if Profile.objects.filter(egf_id=egf_id).exists():
             self.add_error(
-                'egf_id', "This EGF ID is already used by one of our member. You should contact us.")
+                'egf_id', 'This EGF ID is already used by one of our member. You should contact us.')
         egf_rank = get_egf_rank(egf_id)
         if egf_rank is None:
             self.add_error('egf_id', 'This EGF ID seems invalid.')
@@ -114,7 +114,7 @@ class LeagueSignupForm(forms.Form):
         kgs_username = self.cleaned_data['kgs_username']
         if Profile.objects.filter(kgs_username__iexact=kgs_username).exists():
             self.add_error(
-                'kgs_username', "This kgs username is already used by one of our member. You should contact us")
+                'kgs_username', 'This kgs username is already used by one of our member. You should contact us')
         return kgs_username
 
     def clean_ogs_username(self):
@@ -136,7 +136,7 @@ class LeagueSignupForm(forms.Form):
         if not (self.cleaned_data['kgs_username'] or self.cleaned_data['ogs_username']):
             self.add_error('kgs_username', '')
             self.add_error('ogs_username', '')
-            raise forms.ValidationError("You should enter OGS or KGS username")
+            raise forms.ValidationError('You should enter OGS or KGS username')
         return self.cleaned_data
 
     def signup(self, request, user):
@@ -205,12 +205,12 @@ class LeagueEventForm(forms.ModelForm):
     begin_time = forms.DateTimeField(
         input_formats=['%d/%m/%Y %H:%M:%S'],
         widget=forms.DateTimeInput(format='%d/%m/%Y %H:%M:%S'),
-        help_text="Format: dd/mm/yyyy hh:mm:ss (utc)"
+        help_text='Format: dd/mm/yyyy hh:mm:ss (utc)'
     )
     end_time = forms.DateTimeField(
         input_formats=['%d/%m/%Y %H:%M:%S'],
         widget=forms.DateTimeInput(format='%d/%m/%Y %H:%M:%S'),
-        help_text="Format: dd/mm/yyyy hh:mm:ss (utc)"
+        help_text='Format: dd/mm/yyyy hh:mm:ss (utc)'
     )
 
     class Meta:
@@ -250,7 +250,7 @@ class LeagueEventForm(forms.ModelForm):
             'community': forms.HiddenInput()
         }
         help_texts = {
-            'name': "Name of the league",
+            'name': 'Name of the league',
             'event_type': 'League will work',
             'nb_matchs': 'Maximum number of match two players can play together',
             'ppwin': 'Point per win',
@@ -271,7 +271,7 @@ class LeagueEventForm(forms.ModelForm):
         }
 
     def clean(self):
-        '''convert replace timezones to utc'''
+        """convert replace timezones to utc"""
         cleaned_data = self.cleaned_data
         cleaned_data['begin_time'] = cleaned_data['begin_time'].replace(
             tzinfo=pytz.utc)
@@ -316,7 +316,7 @@ class ProfileForm(ModelForm):
         if Profile.objects.get(pk=self.instance.pk).egf_id:
             self.fields['egf_id'].disabled = True
         if Profile.objects.get(pk=self.instance.pk).ffg_licence_number and \
-                Profile.objects.get(pk=self.instance.pk).ffg_licence_number != "0":
+                Profile.objects.get(pk=self.instance.pk).ffg_licence_number != '0':
             self.fields['ffg_licence_number'].disabled = True
 
     def clean_kgs_username(self):
@@ -383,7 +383,7 @@ class ProfileForm(ModelForm):
         if Profile.objects.filter(egf_id=egf_id).exclude(pk=self.instance.pk).exists():
             self.add_error(
                 'egf_id',
-                "This EGF ID is already used by one of our member. You should contact us."
+                'This EGF ID is already used by one of our member. You should contact us.'
             )
         # check if ID is valid and get rank
         egf_rank = get_egf_rank(egf_id)
@@ -401,7 +401,7 @@ class ProfileForm(ModelForm):
         if Profile.objects.filter(ffg_licence_number=ffg_licence_number).exclude(pk=self.instance.pk).exists():
             self.add_error(
                 'ffg_licence_number',
-                "This FFG Licence number is already used by one of our member. You should contact us."
+                'This FFG Licence number is already used by one of our member. You should contact us.'
             )
         # check if ID is valid and get rank
         ffg_rank = get_ffg_rank(ffg_licence_number)
@@ -422,7 +422,7 @@ class ProfileForm(ModelForm):
         if not (self.cleaned_data['kgs_username'] or self.cleaned_data['ogs_username']):
             self.add_error('kgs_username', '')
             self.add_error('ogs_username', '')
-            raise forms.ValidationError("You should enter OGS or KGS username")
+            raise forms.ValidationError('You should enter OGS or KGS username')
         return self.cleaned_data
 
 

@@ -23,10 +23,10 @@ def kgs_connect():
             kgs_password = f.read().strip()
 
     message = {
-        "type": "LOGIN",
-        "name": "OSR",  # change this if you are testing locally
-        "password": kgs_password,
-        "locale": "de_DE",
+        'type': 'LOGIN',
+        'name': 'OSR',  # change this if you are testing locally
+        'password': kgs_password,
+        'locale': 'de_DE',
     }
     formatted_message = json.dumps(message)
     for _ in range(10):
@@ -45,13 +45,13 @@ def kgs_connect():
     if response.status_code != 200:
         return False
     requests.post(url, json.dumps(
-        {"type": "LOGOUT"}), cookies=cookies, timeout=10)
+        {'type': 'LOGOUT'}), cookies=cookies, timeout=10)
     return r
 
 
 def check_byoyomi(s):
-    '''check if a string is a correct byo-yomi time: at least '3x30 byo-yomi'
-    We don't have settings for that... for now'''
+    """check if a string is a correct byo-yomi time: at least '3x30 byo-yomi'
+    We don't have settings for that... for now"""
     if s.find('byo-yomi') == -1:
         return False
     else:
@@ -63,7 +63,7 @@ def check_byoyomi(s):
 
 
 def get_byoyomi(s):
-    '''Parse a string '3x30 byo-yomi' and return a couple (3,30)'''
+    """Parse a string '3x30 byo-yomi' and return a couple (3,30)"""
     if s.find('byo-yomi') == -1:
         return {'n': 0, 't': 0}
     else:
@@ -75,13 +75,13 @@ def get_byoyomi(s):
 
 
 def extract_players_from_url(url):
-    '''get players name from a kgs archive url
+    """get players name from a kgs archive url
     'http://files.gokgs.com/games/Year/month/day/white-black-d*.sgf'
 
      first we check wether it's a kgs archive link
     otherwise we could populate with dumb data
     Note: I am not proud of the way I handle error/exception where the url is not proper
-     Feel free to correct me here'''
+     Feel free to correct me here"""
 
     if url.startswith('http://files.gokgs.com/games/'):
         start = url.rfind('/') + 1
@@ -102,9 +102,9 @@ def extract_players_from_url(url):
 
 
 def ask_kgs(kgs_username, year, month):
-    ''' return a list of dic: { urlto, game_type} of games for the selected user, year and month
+    """ return a list of dic: { urlto, game_type} of games for the selected user, year and month
     We have to check game_type here because it's not in the sgf but only on kgs website
-    Do not perform any check on players or whatever.'''
+    Do not perform any check on players or whatever."""
 
     if len(str(month)):
         month = '0' + str(month)
@@ -112,7 +112,7 @@ def ask_kgs(kgs_username, year, month):
         str(kgs_username) + '&year=' + str(year) + '&month=' + str(month)
     r = requests.get(url)
     t = r.text
-    soup = BeautifulSoup(t, "html5lib")
+    soup = BeautifulSoup(t, 'html5lib')
     # old method that just get the links to games
     # we need type too to exclude reviews :(
     # la = soup.find_all(href=re.compile('^http://files.gokgs.com/games/'))
@@ -135,7 +135,7 @@ def ask_kgs(kgs_username, year, month):
 
 
 def findnth(haystack, needle, n):
-    ''' find the nth needle in a haystack. Return the index'''
+    """ find the nth needle in a haystack. Return the index"""
     parts = haystack.split(needle, n+1)
     if len(parts) <= n+1:
         return -1
@@ -143,8 +143,8 @@ def findnth(haystack, needle, n):
 
 
 def parse_sgf_string(sgf_string):
-    '''parse a sgf from a string and return a dict:
-    bplayer,wplayer,time,byo,result,handi,komi,size,rule,date,place'''
+    """parse a sgf from a string and return a dict:
+    bplayer,wplayer,time,byo,result,handi,komi,size,rule,date,place"""
 
     # First remove all espaces and new lines from the sgf
     sgf_string = sgf_string.replace(chr(160), '').replace(
@@ -178,7 +178,7 @@ def parse_sgf_string(sgf_string):
 
     # Format date, komi and time in proper type
     if out['date'] is not None:
-        out['date'] = datetime.datetime.strptime(out['date'], "%Y-%m-%d")
+        out['date'] = datetime.datetime.strptime(out['date'], '%Y-%m-%d')
     out['komi'] = float(out['komi'])
     out['time'] = int(out['time'])
     out['board_size'] = int(out['board_size'])
@@ -208,7 +208,7 @@ def parse_sgf_string(sgf_string):
 
 
 def quick_send_mail(user, mail):
-    '''sends 'user' an email with the contents from the template in 'mail' '''
+    """sends 'user' an email with the contents from the template in 'mail' """
     address = user.get_primary_email()
     if address is not None:
         plaintext = loader.get_template(mail)
@@ -224,9 +224,9 @@ def quick_send_mail(user, mail):
 
 
 def parse_ogs_iso8601_datetime(dt_str):
-    '''turn '2019-04-30T14:41:18.183258-04:00' or '2019-04-30T14:41:18.183258Z' into
+    """turn '2019-04-30T14:41:18.183258-04:00' or '2019-04-30T14:41:18.183258Z' into
     datetime.datetime(2019, 4, 30, 18, 41, 18, 183258).
-    OGS sends us these and we want to compare to a TZ-unaware datetime'''
+    OGS sends us these and we want to compare to a TZ-unaware datetime"""
 
     dt = dateutil.parser.isoparse(dt_str)
     dt = dt.astimezone(datetime.timezone.utc)
