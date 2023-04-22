@@ -559,7 +559,7 @@ def join_event(request, event_id, user_id):
 @require_POST
 @login_required()
 @user_passes_test(User.is_league_member, login_url='/', redirect_field_name=None)
-def quit_league(request, event_id, user_id=None):  # pylint: disable=inconsistent-return-statements
+def quit_league(request, event_id, user_id=None):
     """Allow a user to quit a league if he didn't play a game in it yet."""
     form = ActionForm(request.POST)
     if form.is_valid():
@@ -1056,7 +1056,7 @@ def create_sgf(request):
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url='/', redirect_field_name=None)
-def upload_sgf(request):  # pylint: disable=inconsistent-return-statements
+def upload_sgf(request):
     """THis view allow user to preview sgf with wgo along with valid status of the sgf.
         Can call save_sgf from it.
     """
@@ -1137,7 +1137,7 @@ def admin_delete_sgf(request, sgf_id):
 
 @login_required()
 @user_passes_test(User.is_league_admin, login_url='/', redirect_field_name=None)
-def admin_edit_sgf(request, sgf_id):  # pylint: disable=inconsistent-return-statements
+def admin_edit_sgf(request, sgf_id):
     """Show sgf preview in wgo and test if sgf is valid.
         Allow user to change raw sgf data in text field.
         Admin can call delete_sgf or save_sgf after preview.
@@ -1666,7 +1666,7 @@ def proceed_populate(request, from_event_id, to_event_id):
 
 @login_required()
 @user_passes_test(User.is_osr_admin, login_url='/', redirect_field_name=None)
-def admin_user_send_mail(request, user_id):  # pylint: disable=inconsistent-return-statements
+def admin_user_send_mail(request, user_id):
     """Send an email to a user."""
     user = get_object_or_404(User, pk=user_id)
 
@@ -1812,7 +1812,6 @@ class ProfileUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return '/league/account/'
 
     def form_valid(self, form):
-        # pylint: disable=attribute-defined-outside-init
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
 

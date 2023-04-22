@@ -50,9 +50,8 @@ As long as you are working in a [fork](https://help.github.com/articles/fork-a-r
 Submit [pull requests](https://help.github.com/articles/creating-a-pull-request/) to the `dev` branch.
 
 ### Code quality
-Your code should pass pylint test.
-You can run it with the command `pylint community fixtures fullcalendar home league openstudyroom search wgo manage.py`
-or let TravisCI run it automatically when you create the pull request.
+Your code should pass ruff lints.
+You can run it with the command `ruff .` or let GitHub actions run it automatically when you create the pull request.
 
 ## I speak another language; how can I help?
 

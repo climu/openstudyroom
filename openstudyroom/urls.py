@@ -54,7 +54,6 @@ urlpatterns = [
     #    url(r'^pages/', include(wagtail_urls)),
 ]
 if settings.DEBUG:
-    # pylint: disable=ungrouped-imports
     import debug_toolbar
     urlpatterns = [
         url(r'^__debug__/', include(debug_toolbar.urls)),

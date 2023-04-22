@@ -61,22 +61,22 @@ Have a look at our contributing guidelines [here](/CONTRIBUTING.md).
 
 
 # Working with Docker
-With the current Dockerfile and Docker compose, you can build everything with : 
+With the current Dockerfile and Docker compose, you can build everything with:
 
 ```bash
 docker-compose docker-compose -f docker-compose.dev.yml build
 ```
 
-Then, you can : 
-- Run the web server with : 
+Then, you can
+- Run the web server with:
 ```bash
 docker-compose -f docker-compose.dev.yml up app
 ```
-- Launch pylint tests with (it's slow) : 
+- Run ruff checks with:
 ```bash
-docker-compose -f docker-compose.dev.yml run --rm pylint
+docker-compose -f docker-compose.dev.yml run --rm ruff
 ```
-- Launch the container cli (for ewample to update translations) : 
+- Launch the container cli (for ewample to update translations):
 ```bash
 docker-compose -f docker-compose.dev.yml run --rm cli
 ```

@@ -12,7 +12,7 @@ services:
       - ./:/app/
     ports:
       - 8000:8000
-  cli: 
+  cli:
     container_name: openstudyroom-cli
     image: openstudyroom-cli
     stdin_open: true
@@ -21,12 +21,12 @@ services:
       target: cli
     volumes:
       - ./:/app/
-  pylint: 
-    container_name: openstudyroom-pylint
-    image: openstudyroom-pylint
+  ruff:
+    container_name: openstudyroom-ruff
+    image: openstudyroom-ruff
     build:
       context: .
-      target: pylint
+      target: ruff
     volumes:
       - ./:/app/
     stdin_open: true

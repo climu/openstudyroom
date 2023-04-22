@@ -260,7 +260,7 @@ def update_time_range_ajax(request):
 @require_POST
 @login_required()
 @user_passes_test(User.is_league_member, login_url='/', redirect_field_name=None)
-def cancel_game_appointment_ajax(request):  # pylint: disable=inconsistent-return-statements
+def cancel_game_appointment_ajax(request):
     """Cancel a game appointment from calendar ajax post."""
     user = request.user
     pk = int(request.POST.get('pk'))

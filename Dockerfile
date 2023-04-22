@@ -28,5 +28,5 @@ RUN rm -r /usr/local/lib/python3.7/site-packages/machina/locale
 FROM dev as cli
 ENTRYPOINT /bin/bash
 
-FROM dev as pylint
-ENTRYPOINT /usr/local/bin/pylint community fixtures fullcalendar home league openstudyroom search wgo manage.py
+FROM dev as ruff
+ENTRYPOINT /usr/local/bin/ruff check .
