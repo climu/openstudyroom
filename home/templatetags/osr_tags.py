@@ -1,5 +1,3 @@
-import json
-
 import requests
 from django import template
 from machina.core.db.models import get_model

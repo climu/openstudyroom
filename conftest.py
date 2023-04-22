@@ -1,4 +1,4 @@
-# pylint: disable=ungrouped-imports
+# ruff: noqa: F401
 import freezegun
 import pytest
 
