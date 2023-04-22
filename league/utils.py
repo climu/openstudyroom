@@ -116,7 +116,7 @@ def ask_kgs(kgs_username, year, month):
     # old method that just get the links to games
     # we need type too to exclude reviews :(
     # la = soup.find_all(href=re.compile('^http://files.gokgs.com/games/'))
-    l = []
+    l = []  # noqa: E741
     if soup.table is None:
         return l
     trs = soup.table.find_all('tr')

@@ -119,7 +119,7 @@ def calendar_main_view(request):
         leagues = active_leagues.filter(is_public=True)
 
     calendar_data['communities'] = [c.format() for c in communities]
-    calendar_data['leagues'] = [l.format() for l in leagues]
+    calendar_data['leagues'] = [l.format() for l in leagues]  # noqa: E741
 
     context['communities'] = communities
     context['leagues'] = leagues

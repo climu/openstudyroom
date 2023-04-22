@@ -21,7 +21,7 @@ class Community(models.Model):
     )
     locale = models.CharField(
         max_length=100,
-        choices=[(l[0], l[1]) for l in LANGUAGES],
+        choices=[(l[0], l[1]) for l in LANGUAGES],  # noqa: E741
         null=True,
         blank=True,
     )

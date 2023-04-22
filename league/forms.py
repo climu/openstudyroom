@@ -28,9 +28,8 @@ class MultipleIntField(forms.Field):
     def clean_int(self, x):
         try:
             return int(x)
-        except:
-            raise ValidationError(
-                'Cannot convert to integer: {}'.format(repr(x)))
+        except ValueError:
+            raise ValidationError('Cannot convert to integer: {}'.format(repr(x)))
 
     def clean(self, value):
         if self.length is len(value) or self.length is None:

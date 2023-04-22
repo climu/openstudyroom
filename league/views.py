@@ -1496,7 +1496,7 @@ def division_create_wont_play(request, division_id):
                      for pk in form.cleaned_data['players']]
             if all([division.has_user(user) for user in users]):
                 Sgf.create_wont_play(event, division, users)
-        except:
+        except Exception:
             pass
     return division_update_wont_play(request, division.pk)
 

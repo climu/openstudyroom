@@ -73,7 +73,7 @@ def ffg_user_infos(ffg_licence_number, echelle_ffg):
     """
     # we skip first line that is header
     line = None
-    for l in echelle_ffg.splitlines()[1:]:
+    for l in echelle_ffg.splitlines()[1:]:  # noqa: E741
         if l[46:53] == ffg_licence_number:
             line = l
             break

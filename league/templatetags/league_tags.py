@@ -18,7 +18,7 @@ def html_points_amount(context):
         event = ''
     opponent_pk = opponent.pk
     html = ''
-    if not opponent_pk in player.results:
+    if opponent_pk not in player.results:
         return ''
     result = player.results[opponent_pk]
     for game in result:
@@ -57,7 +57,7 @@ def html_one_result(context, _blank=False):
         event = ''
     opponent_pk = opponent.pk
     html = ''
-    if not opponent_pk in player.results:
+    if opponent_pk not in player.results:
         return ''
     result = player.results[opponent_pk]
     for game in result:
