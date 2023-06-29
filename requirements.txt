@@ -50,7 +50,7 @@ python3-openid==3.0.10
 pytz==2020.1
 raven==6.4.0
 rcssmin==1.1.0
-requests==2.25.0
+requests==2.31.0
 requests-oauthlib==0.7.0
 rjsmin==1.2.0
 six==1.11.0
