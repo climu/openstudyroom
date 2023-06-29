@@ -61,23 +61,17 @@ Have a look at our contributing guidelines [here](/CONTRIBUTING.md).
 
 
 # Working with Docker
-With the current Dockerfile and Docker compose, you can build everything with:
 
+- Run the web server:
 ```bash
-docker-compose -f docker-compose.dev.yml build
+docker compose up app
 ```
-
-Then, you can
-- Run the web server with:
+- Run ruff checks:
 ```bash
-docker-compose -f docker-compose.dev.yml up app
+docker compose run --rm ruff
 ```
-- Run ruff checks with:
+- Launch the container CLI (for ewample to update translations):
 ```bash
-docker-compose -f docker-compose.dev.yml run --rm ruff
-```
-- Launch the container cli (for ewample to update translations):
-```bash
-docker-compose -f docker-compose.dev.yml run --rm cli
+docker compose run --rm cli
 ```
 
