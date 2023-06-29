@@ -64,7 +64,7 @@ Have a look at our contributing guidelines [here](/CONTRIBUTING.md).
 With the current Dockerfile and Docker compose, you can build everything with:
 
 ```bash
-docker-compose docker-compose -f docker-compose.dev.yml build
+docker-compose -f docker-compose.dev.yml build
 ```
 
 Then, you can

@@ -4,6 +4,7 @@ services:
   app:
     container_name: openstudyroom-dev
     image: openstudyroom-dev
+    init: true
     restart: always
     build:
       context: .
@@ -15,15 +16,17 @@ services:
   cli:
     container_name: openstudyroom-cli
     image: openstudyroom-cli
-    stdin_open: true
+    init: true
     build:
       context: .
       target: cli
     volumes:
       - ./:/app/
+    stdin_open: true
   ruff:
     container_name: openstudyroom-ruff
     image: openstudyroom-ruff
+    init: true
     build:
       context: .
       target: ruff

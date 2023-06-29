@@ -42,16 +42,6 @@ Change branch to dev: `git checkout dev`
 
 Install development dependencies: `pip install -r requirements_dev.txt`
 
-Run migrations and migrate:
-
-`./manage.py makemigrations`
-
-`./manage.py migrate`
-
-Load initial datas:
-`./manage.py loaddata fixtures/initial_data.json `
-
-Run the server:
-`./manage.py runserver`
+Load initial data, run migrations, and run the server: `./run.sh`
 
 The server should now be running on your computer at [http://127.0.0.1:8000](http://127.0.0.1:8000). You can connect with user `admin` and pass `admin`

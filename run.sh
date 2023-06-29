@@ -1,19 +1,12 @@
 #!/bin/bash
 
-set -eu
+set -eux
 
 # This is ugly but it works.
 if [ ! -f db.sqlite3 ]; then
-    INIT_DATA=true
-else
-    INIT_DATA=false
+	wget --quiet https://cdn.discordapp.com/attachments/287520917255356416/1066436504597053570/db.sqlite3
 fi
 
 ./manage.py makemigrations
 ./manage.py migrate
-
-if $INIT_DATA ; then
-    ./manage.py loaddata fixtures/initial_data.json
-fi
-
 ./manage.py runserver 0.0.0.0:8000
