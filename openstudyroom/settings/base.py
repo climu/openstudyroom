@@ -238,7 +238,7 @@ LOCALE_PATHS = (
 
 WAGTAIL_SITE_NAME = 'openstudyroom'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0']
 
 #do that before migrate
 AUTH_USER_MODEL = 'league.User'
