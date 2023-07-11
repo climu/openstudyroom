@@ -277,16 +277,21 @@ def list_games(request, event_id=None, sgf_id=None):
         context.update({'sgf': sgf})
 
     if event_id is None:
-        template = loader.get_template('league/archives_games.html')
+        template_path = 'league/archives_games.html'
 
     else:
         event = get_object_or_404(LeagueEvent, pk=event_id)
-        template = loader.get_template('league/games.html')
+        template_path = 'league/games.html'
         context.update({
             'event': event,
             'can_join': event.can_join(request.user),
             'can_quit': event.can_quit(request.user),
         })
+    if request.GET.get('iframe'):
+        template_path = template_path.replace('league', 'league/iframe')
+    
+    template = loader.get_template(template_path)
+
     return HttpResponse(template.render(context, request))
 
 

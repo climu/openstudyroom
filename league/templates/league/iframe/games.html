@@ -1,0 +1,40 @@
+{% extends "iframe.html" %}
+{% load tz static league_tags wgo_tags bootstrap3 l10n i18n%}
+
+{% block extra_head_js %}
+<script type="text/javascript">
+function load_game(sgf_id) {
+    $.ajax({
+    type: "GET",
+    url: "/league/game/json/" + sgf_id,
+    dataType: "json",
+    success: processData,
+    error: function(){ alert("failed"); }
+});
+
+function processData(data)
+{
+    document.getElementById("game_infos").innerHTML= data.game_infos ;
+    var elem = document.getElementById("player");
+    var player = new WGo.BasicPlayer(elem, {
+      sgf: data.sgf
+      });
+    window.history.pushState('page2', 'Title', data.permalink);
+    document.getElementById("game_infos").innerHTML = data.game_infos ;
+    document.getElementById("game-header").innerHTML= ' - ' + data.white + ' vs ' + data.black;
+    document.title = data.white + ' vs ' + data.black + ' - Open Study Room';
+    $("[data-toggle=tooltip]").tooltip();
+
+};
+return false;};
+</script>
+{% endblock %}
+{% block content %}
+
+{% include "league/includes/game_table_view.html" with event=event %}
+{% endblock %}
+
+{% block extra_js %}
+{% get_current_language as LANGUAGE_CODE %}
+{% include "league/includes/sgrfs_datatable.html" with sgfs_data_json=sgfs_data_json %}
+{% endblock %}
