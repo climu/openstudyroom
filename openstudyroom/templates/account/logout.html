@@ -1,10 +1,10 @@
 {% extends "full_width.html" %}
 
-{% load bootstrap3 %}
+{% load bootstrap3 i18n %}
 
 {% block heading %}
 <div class="page-header">
-    <h1>Log out</h1>
+    <h1>{% trans "Log out" %}</h1>
 </div>
 {% endblock %}
 {% block content %}
@@ -13,8 +13,8 @@
             <form method="POST" action="{% url "account_logout" %}">
                 <fieldset>
                     {% csrf_token %}
-                    <p>Are you sure you want to log out?</p>
-                    <button type="submit" class="btn btn-primary">Log out</button>
+                    <p>{% trans "Are you sure you want to log out?" ?}</p>
+                    <button type="submit" class="btn btn-primary">{% trans "Log out" %}</button>
                 </fieldset>
             </form>
         </div>

@@ -1,4 +1,4 @@
-{% load menu_tags osr_tags bootstrap3%}
+{% load menu_tags osr_tags bootstrap3 i18n %}
 
 <!-- NAVBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARRRRRRRRRRRRRRRRRRRRRRRRR -->
 <div class="navbar navbar-default navbar-fixed-top" role="navigation" >
@@ -23,12 +23,12 @@
   {% if request.user.is_authenticated %}
     {% if request.user.is_league_admin %}
       <li>
-         <a href="{%url "league:admin" %}"> League admin </a>
+         <a href="{%url "league:admin" %}"> {% trans "League admin" %} </a>
       </li>
     {% endif %}
   <li class="dropdown">
      <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-      Hello {{ request.user.username }}
+      {% blocktrans with request_user_username=request.user.username %}Hello {{ request_user_username }}{% endblocktrans %}
       {% if postman_unread_count > 0 %}
         <span class="badge"> {{ postman_unread_count }}</span>
       {% endif %}
@@ -42,25 +42,25 @@
   <li>
     <a href="{% url "postman:inbox" %}" >
       <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
-        Messages
+      {% trans "Messages" %}
       <span class="badge"> {{ postman_unread_count }}</span>
     </a>
   </li>
   {% else %}
-    <div>Your account will be activated soon. Thanks for waiting !</div>
+    <div>{% trans "Your account will be activated soon. Thanks for waiting!" %}</div>
   {% endif %}
   <li>
     <a href="{% url "account_logout"%}"><i class="fa fa-sign-out" aria-hidden="true"></i>
-      Logout
+      {% trans "Logout" %}
     </a>
   </li>
  </ul>
 {% else %}
   <li>
-    <a href="{% url "account_login"%}">Login</a>
+    <a href="{% url "account_login"%}">{% trans "Login" %}</a>
   </li>
   <li>
-    <a href="{% url "account_signup"%}">Register</a>
+    <a href="{% url "account_signup"%}">{% trans "Register" %}</a>
   </li>
 {% endif %}
 <li>
@@ -72,7 +72,7 @@
 </div>
 </div>
 <div id ="search_container" class="hidden">
-  <input id="search-input"  type="text" oninput="autocomplet()" class="inline" placeholder="Search" ></input>
+  <input id="search-input"  type="text" oninput="autocomplet()" class="inline" placeholder="{% trans 'Search' %}" ></input>
   <div id="search-results">
     <div id="user-results" class="list-group"></div>
     <div id="page-results" class="list-group"></div>

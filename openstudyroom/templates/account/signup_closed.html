@@ -1,10 +1,10 @@
 {% extends "full_width.html" %}
-
+{% load i18n %}
 
 
 {% block content %}
-    <h1>This site is in private beta</h1>
-    <p>If you have signup code you can enter it below.</p>
+    <h1>{% trans "This site is in private beta" %}</h1>
+    <p>{% trans "If you have signup code you can enter it below." %}</p>
     <form method="get" action="">
         <div><input type="text" name="code" placeholder=" 'Your signup code...' %}" /></div>
         <div><input type="submit" class="btn btn-primary"></div>
