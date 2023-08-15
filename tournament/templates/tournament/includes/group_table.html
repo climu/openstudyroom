@@ -1,22 +1,22 @@
-{% load tournament_tags league_tags bootstrap3%}
+{% load tournament_tags league_tags bootstrap3 i18n %}
 {% get_meijin as meijin %}
 
 <div class='table-responsive'>
     <table id='example' class='table table-bordered  table-hover table-condensed' >
         <thead class='table-league-highlight'>
         <tr>
-            <th>player</th>
+            <th>{% trans "player" %}</th>
 
             {% for player in results %}
             <th>
                 <div class="kgs_username">{{ player.user.username }}</div>
             </th>
             {% endfor %}
-            <th>score</th>
+            <th>{% trans "score" %}</th>
             <th>sos</th>
             <th>sodos</th>
             {% if admin %}
-            <th>forfeit against</th>
+            <th>{% trans "forfeit against" %}</th>
             {% endif %}
         </thead>
         <tbody>

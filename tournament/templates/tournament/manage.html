@@ -1,15 +1,15 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 static league_tags%}
-{% block title %}OSR league admin - Create new Event{% endblock %}
+{% load bootstrap3 static league_tags i18n %}
+{% block title %}{% trans "OSR league admin" %} - {% trans "Create new event" %}{% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1>Manage a tournament</h1>
+    <h1>{% trans "Manage a tournament" %}</h1>
 </div>
 {%endblock%}
 {% block content %}
 <div class="row">
   <div class="col-md-3">
-    <legend>Tournament settings </legend>
+    <legend>{% trans "Tournament settings" %} </legend>
     <form action="" method="POST">{% csrf_token %}
        {% bootstrap_form form %}
         {% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
@@ -19,7 +19,7 @@
     <legend>Players </legend>
     <div class="panel panel-default">
       <div class="panel-heading">
-        Invite a user
+        {% trans "Invite a user" %}
       </div>
       <div class="panel-body">
         <form action="{% url 'tournament:tournament_invite_user' tournament.pk %}" method="post" >
@@ -37,16 +37,16 @@
 
     <div class="panel panel-danger ">
       <div class="panel-heading clearfix">
-        Remove players by droping it here.
+        {% trans "Remove players by droping it here." %}
       </div>
       <div id="remove_players"class='panel-body'>
       </div>
     </div>
     <div class="panel panel-default">
       <div class="panel-heading clearfix">
-        {{players|length}} registered players
+        {% blocktrans with players_length=players|length %}{{players_length}} registered players{% endblocktrans %}
         <button id="save_players_order" class="btn btn-default btn-sm pull-right">
-          Save
+          {% trans "Save" %}
         </button>
       </div>
       <div class="row">
@@ -79,9 +79,9 @@
 
   </div>
   <div class="col-md-3">
-    <legend>Groups stage </legend>
+    <legend>{% trans "Groups stage" %} </legend>
     <div class="panel panel-default">
-      <div class="panel-heading"> Create a new group</div>
+      <div class="panel-heading"> {% trans "Create a new group" %}</div>
       <div class="panel-body">
         <form action="" method="POST" class="form-inline" >
           {% csrf_token %}
@@ -94,7 +94,7 @@
     </div>
     <div class="panel panel-default">
       <div class="panel-heading clearfix">
-        Save groups
+        {% trans "Save groups" %}
             <button id="save_groups_button" class="btn btn-success btn-sm pull-right">
                 {% bootstrap_icon "ok" %}
             </button>

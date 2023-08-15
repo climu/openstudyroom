@@ -1,9 +1,9 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 static league_tags tournament_tags%}
+{% load bootstrap3 static league_tags tournament_tags l10n i18n %}
 {% block title %}Manage tournament games{% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1>{{tournament | tournament_link}} games</h1>
+    <h1>{% blocktrans with tournament_tournament_link=tournament | tournament_link %}{{tournament_tournament_link}} games{% endblocktrans %}</h1>
 </div>
 {%endblock%}
 {% block content %}
@@ -13,14 +13,14 @@
 <div class="row">
   <div class="panel panel-default">
     <div class="panel-heading">
-      Upload a sgf
+      {% trans "Upload a sgf" %}
     </div>
     <div class="panel-body">
       <form enctype="multipart/form-data" class="form-inline" action=" {% url 'league:handle_upload_sgf' tournament.pk %}" method="post" class="form">
     {% csrf_token %}
     <div class="form-group"><label class="sr-only" for="id_file">File</label><div class="row bootstrap3-multi-input"><div class="col-xs-12"><input class="" id="id_file" name="file" title="" type="file" required /></div></div></div>
     <button type="submit" class="btn btn-success btn-sm" >
-      {% bootstrap_icon "ok" %}  Submit
+      {% bootstrap_icon "ok" %}  {% trans "Submit" %}
     </button>
     </form>
     </div>
@@ -29,14 +29,14 @@
 
     <div class="panel panel-default">
       <div class="panel-heading">
-        Paste a SGF
+        {% trans "Paste a SGF" %}
       </div>
       <div class="panel-body">
         <form action=" {% url 'tournament:upload_sgf' tournament.pk %}" method="post" class="form">
           {% csrf_token %}
           <textarea name="sgf" cols="10" rows="5" class="form-control" placeholder="sgf data" title="" required="" id="sgf"></textarea>
           <button type="submit" class="btn btn-success btn-sm" >
-            {% bootstrap_icon "ok" %}  Submit
+            {% bootstrap_icon "ok" %}  {% trans "Submit" %}
           </button>
         </form>
       </div>
@@ -45,19 +45,19 @@
 
   <div class="panel panel-default">
     <div class="panel-heading">
-      List of all {{tournament.name}} sgfs
+      {% blocktrans with tournament_name=tournament.name %}List of all {{tournament_name}} sgfs{% endblocktrans %}
     </div>
   <table id='sgf-table' class='table table-over' >
     <thead>
-      <th>Id</th>
-      <th> Date</th>
-      <th> White</th>
-      <th>BLack</th>
-      <th>Result</th>
-      <th> Type </th>
-      <th>League valid?</th>
-      <th>p_status</th>
-      <th>Edit</th>
+      <th>{% trans "Id" %}</th>
+      <th> {% trans "Date" %}</th>
+      <th> {% trans "White" %}</th>
+      <th>{% trans "Black" %}</th>
+      <th>{% trans "Result" %}</th>
+      <th> {% trans "Type" %} </th>
+      <th>{% trans "League valid?" %}</th>
+      <th>{% trans "p_status" %}</th>
+      <th>{% trans "Edit" %}</th>
     </thead>
   </tbody>
   {% for sgf in games%}

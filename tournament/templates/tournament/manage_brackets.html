@@ -1,13 +1,13 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 static league_tags tournament_tags%}
+{% load bootstrap3 static league_tags tournament_tags i18n %}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
   <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
 {% endblock %}
-{% block title %}Manage tournament brackets{% endblock %}
+{% block title %}{% trans "Manage tournament brackets" %}{% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1>{{tournament | tournament_link}} brackets</h1>
+    <h1>{% blocktrans with tournament_link=tournament | tournament_link %}{{tournament_link}} brackets{% endblocktrans %}</h1>
 </div>
 {%endblock%}
 {% block content %}
@@ -20,13 +20,13 @@
       <div class="panel-body">
         <p>
         <button id="save_tournament" class="btn btn-success btn-sm">
-            {% bootstrap_icon "ok" %} save
+            {% bootstrap_icon "ok" %} {% trans "Save" %}
           </button>
         </p>
         <p>
           <form method="POST" class="form-inline" >{% csrf_token %}
             <button type="submit" formaction="{% url 'tournament:create_bracket' tournament.pk %}" class="btn btn-primary btn-sm">
-                {% bootstrap_icon "plus" %} Create new bracket
+                {% bootstrap_icon "plus" %} {% trans "Create new bracket" %}
               </button>
             </form>
           </p>
@@ -36,11 +36,11 @@
             <button type="submit" formaction="{% url 'tournament:set_stage' tournament.pk %}" class="btn btn-primary btn-sm">
               <input type="hidden" name="action" value="2">
               <input type="hidden" name="next" value="{{request.path}}">
-                {% bootstrap_icon "triangle-right" %} Start Bracket stage
+                {% bootstrap_icon "triangle-right" %} {% trans "Start Bracket stage" %}
               </button>
             </form>
             {% else %}
-            {% bootstrap_icon "ok" %}Bracket stage is on
+            {% bootstrap_icon "ok" %}{% trans "Bracket stage is on" %}
             {% endif %}
           </p>
       </div>
@@ -83,7 +83,7 @@
   <input type="hidden" name="next" value="{{request.path}}">
   <input id="name" class="form-control" name="name" placeholder="Bracket name" value="{{bracket.name}}" title=""  type="text">
   <button type="submit" formaction="{% url 'tournament:rename_bracket' bracket.pk %}" class="btn btn-primary btn-sm">
-    {% bootstrap_icon 'refresh' %} Rename the bracket
+    {% bootstrap_icon 'refresh' %} {% trans "Rename the bracket" %}
   </button>
 </div>
 </form>
@@ -100,7 +100,7 @@
         formaction="{% url 'tournament:delete_bracket' bracket.pk %}"
         class="btn btn-danger btn-sm pull-right"
         onclick="return confirm('Are you sure you want to delete this bracket?')">
-        {% bootstrap_icon "remove" %} Delete the bracket
+        {% bootstrap_icon "remove" %} {% trans "Delete the bracket" %}
     </button>
 </div>
 </form>
@@ -167,7 +167,7 @@
         <input type="hidden" name="next" value="{{request.path}}">
         <input id="name" class="form-control" name="name" placeholder=" new round name"  title=""  type="text">
       <button type="submit" formaction="{% url 'tournament:create_round' bracket.pk %}" class="btn btn-success btn-sm">
-    {% bootstrap_icon 'plus' %} create new round
+    {% bootstrap_icon 'plus' %} {% trans "create new round" %}
     </button>
     </div>
     </form>

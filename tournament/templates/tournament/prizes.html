@@ -1,5 +1,5 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 league_tags static forum_markup_tags%}
+{% load bootstrap3 league_tags static forum_markup_tags i18n %}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
   <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
@@ -7,11 +7,11 @@
 
 
 
-{% block title %}{{tournament.name}} - Prizes{% endblock %}
+{% block title %}{{tournament.name}} - {% trans "Prizes" %}{% endblock %}
 
 {% block heading %}
   <div class="page-header">
-    <h1>{{tournament.name}} - Prizes</h1>
+    <h1>{{tournament.name}} - {% trans "Prizes" %}</h1>
   </div>
   <div class="">{{tournament.description|safe|rendered}}</div>
   
