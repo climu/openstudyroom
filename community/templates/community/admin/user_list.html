@@ -1,5 +1,5 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 league_tags community_tags i18n%}
+{% load bootstrap3 league_tags community_tags i18n %}
 {% block heading %}
 <div class="page-header">
        <h1> {{community|community_link}} {% trans "members" %}</h1>
@@ -26,7 +26,7 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    {% blocktrans with name=community.name %}All {{community.name}} members {% endblocktrans %}
+    {% blocktrans with community_name=community.name %}All {{community_name}} members {% endblocktrans %}
   </div>
 <table id="user-table" class="table">
   <thead>
@@ -46,7 +46,7 @@
       <input type="hidden" name="action" value="quit">
       <input type="hidden" name="next" value="{{request.path}}">
       <button type="submit" class="btn btn-danger btn-sm"  onclick="return confirm('You are about to kick {{user.username}}. Allright?')">
-      {% bootstrap_icon "remove" %} {% trans "Kick  !" %}
+      {% bootstrap_icon "remove" %} {% trans "Kick !" %}
       </button>
       </div>
       </form>

@@ -1,8 +1,8 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 league_tags%}
+{% load bootstrap3 league_tags i18n %}
 {% block heading %}
 <div class="page-header">
-    <h1> Create a new Guest Community</h1>
+    <h1> {% trans "Create a new Guest Community" %}</h1>
 </div>
 {%endblock%}
 {% block content %}
@@ -12,7 +12,7 @@
 	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
 </form>
 
-<a class="btn btn-danger pull-right" href="/league/admin/">Cancel</a>
+<a class="btn btn-danger pull-right" href="/league/admin/">{% trans "Cancel" %}</a>
 {% endblock %}
 {% block extra_css %}
     {{ form.media.css }}

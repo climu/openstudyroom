@@ -2,10 +2,10 @@
 {% load tz static league_tags bootstrap3 i18n %}
 {% load datatable_tags %}
 
-{% block title %}Ranking{% endblock %}
+{% block title %}{% trans "Ranking" %}{% endblock %}
 {% block content %}
 
-<h1>{{community.slug}} player's rankings</h1>
+<h1>{% blocktrans with community_slug=community.slug %}{{community_slug}} player's rankings{% endblocktrans %}</h1>
 {% get_meijin as meijin %}
 
 <div class="container">

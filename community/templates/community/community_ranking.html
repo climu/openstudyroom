@@ -1,9 +1,9 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 league_tags%}
+{% load bootstrap3 league_tags i18n %}
 
 {% block heading %}
 <div class="page-header">
-    <h1>{{ community.name }} - ranking</h1>
+    <h1>{{ community.name }} - {% trans "Ranking" %}</h1>
 </div>
 {%endblock%}
 
@@ -12,10 +12,10 @@
 <div class="panel panel-default">
 
   <div class="panel-heading">
-      <h3>Generate league ranking file</h3>
+      <h3>{% trans "Generate league ranking file" %}</h3>
   </div>
   <div class="panel-body">
-    <p>Select a period when the leagues have been played</p>
+    <p>{% trans "Select a period when the leagues have been played" %}</p>
     <br/>
     <form action="{% url 'community:community_ranking' community.slug %}" method="POST">
       {% csrf_token %}

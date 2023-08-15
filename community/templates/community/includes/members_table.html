@@ -13,8 +13,8 @@
           </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="userLeagueModalSave">Save changes</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="userLeagueModalSave">{% trans "Save changes" %}</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
       </div>
     </div>
   </div>
@@ -36,15 +36,15 @@
 <table id="members-table" class="table">
   <thead>
     <th>{% trans "username" %}</th>
-    <th>OGS {% trans "username" %}</th>
-	  <th>KGS {% trans "username" %} </th>
+    <th>{% trans "OGS username" %}</th>
+	  <th>{% trans "KGS username" %} </th>
   	{% if admin %}
       <th> EGF ID </th>
       <th> FFG ID </th>
       <th> Discord </th>
       <th>{% trans "leagues" %}</th>
       <th>{% trans "kick out" %}</th>
-      <th>admin</th>
+      <th>{% trans "admin" %}</th>
   	{% endif %}
   </thead>
   <tbody>
