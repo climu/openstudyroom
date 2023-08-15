@@ -1,18 +1,18 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 league_tags static tz %}
-{% block title %}OSR league admin - Create new Event{% endblock %}
+{% load bootstrap3 league_tags static tz i18n %}
+{% block title %}{% trans "OSR league admin" %} - {% trans "Create new event" %}{% endblock %}
 
 {% block heading %}
 <div class="page-header">
-    <h1>Create new Event</h1>
+    <h1>{% trans "Create new event" %}</h1>
 </div>
 {%endblock%}
 {% block content %}
 {% timezone "UTC" %}
 <div class="row">
 <div class="col-md-4">
-  <legend>Create new Event </legend>
-  <div class="well">Please enter times in UTC/GMT time</div>
+  <legend>{% trans "Create new event" %} </legend>
+  <div class="well">{% trans "Please enter times in UTC/GMT time" %}</div>
 
 <form action="" method="POST">{% csrf_token %}
 {%bootstrap_form form %}

@@ -16,12 +16,12 @@
 <script src="https://unpkg.com/tippy.js@6"></script>
 {% endblock %}
 
-{% block title %}Calendar{% endblock %}
+{% block title %}{% trans "Calendar" %}{% endblock %}
 
 {% block heading %}
 {% get_current_timezone as TIME_ZONE %}
 <div class="page-header">
-  <h1>Calendar ({{TIME_ZONE}})</h1>
+  <h1>{% trans "Calendar" %} ({{TIME_ZONE}})</h1>
 </div>
 {%endblock%}
 

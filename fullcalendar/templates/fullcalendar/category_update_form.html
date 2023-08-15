@@ -1,10 +1,10 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 %}
-{% block title %}OSR league admin - Edit a Category{% endblock %}
+{% load bootstrap3 i18n %}
+{% block title %}{% trans "OSR league admin" %} - {% trans "Edit a category" %}{% endblock %}
 
 {% block heading %}
 <div class="page-header">
-    <h1>Edit {{object.name}} category</h1>
+    <h1>{% blocktrans with object_name=object.name %}Edit {{object_name}} category{% endblocktrans %}</h1>
 </div>
 {%endblock%}
 {% block content %}

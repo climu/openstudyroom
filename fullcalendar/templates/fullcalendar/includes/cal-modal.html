@@ -1,3 +1,4 @@
+{% load i18n %}
 <!-- Modals -->
 <div id="game-request-modal" class="modal fade modeless" role="dialog">
   <div class="modal-dialog">
@@ -13,11 +14,11 @@
       </div>
       <div id="modal-footer" class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-        <button id="send-game-request" type="button" class="btn btn-success modal-button" >Send game request</button>
-        <button id="cancel-game-request" type="button" class="btn btn-success modal-button" >Cancel game request</button>
-        <button id="reject-game-request" type="button" class="btn btn-warning modal-button" >Reject game request</button>
-        <button id="accept-game-request" type="button" class="btn btn-success modal-button" >Accept game request</button>
-        <button id="cancel-game" type="button" class="btn btn-success modal-button" >Cancel game appointment</button>
+        <button id="send-game-request" type="button" class="btn btn-success modal-button" >{% trans "Send game request" %}</button>
+        <button id="cancel-game-request" type="button" class="btn btn-success modal-button" >{% trans "Cancel game request" %}</button>
+        <button id="reject-game-request" type="button" class="btn btn-warning modal-button" >{% trans "Reject game request" %}</button>
+        <button id="accept-game-request" type="button" class="btn btn-success modal-button" >{% trans "Accept game request" %}</button>
+        <button id="cancel-game" type="button" class="btn btn-success modal-button" >{% trans "Cancel game appointment" %}</button>
       </div>
     </div>
 
