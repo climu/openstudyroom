@@ -1,12 +1,11 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags %}
+{% load static wagtailcore_tags i18n %}
 
 {% block body_class %}template-searchresults{% endblock %}
-
-{% block title %}Search{% endblock %}
+{% block title %}{% trans "Search" %}{% endblock %}
 
 {% block content %}
-    <h1>Search</h1>
+    <h1>{% trans "Search" %}</h1>
 
     <form action="{% url 'search' %}" method="get">
         <input type="text" name="query"{% if search_query %} value="{{ search_query }}"{% endif %}>
@@ -26,13 +25,13 @@
         </ul>
 
         {% if search_results.has_previous %}
-            <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.previous_page_number }}">Previous</a>
+            <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.previous_page_number }}">{% trans "Previous" %}</a>
         {% endif %}
 
         {% if search_results.has_next %}
-            <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.next_page_number }}">Next</a>
+            <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.next_page_number }}">{% trans "Next" %}</a>
         {% endif %}
     {% elif search_query %}
-        No results found
+        {% trans "No results found" %}
     {% endif %}
 {% endblock %}
