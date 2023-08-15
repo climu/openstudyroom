@@ -1,0 +1,92 @@
+{% load static wagtailuserbar compress puput_tags %}
+{% load menu_tags osr_tags tz calendar_tags%}
+{% load bootstrap3 %}
+{% load i18n %}
+
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- image for socials -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway:400,500" rel="stylesheet">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+  {% if not debug %}
+  <!-- Google Analytics -->
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-106566532-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+    <script async src='https://www.google-analytics.com/analytics.js'></script>
+  <!-- End Google Analytics -->
+  {% endif %}
+
+  <title>
+    {% block title %}
+    {% endblock %}
+  </title>
+
+
+  {# Global stylesheets #}
+  {% bootstrap_css %}
+
+  {% compress css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/openstudyroom.css' %}">
+	  <link type="text/css" href="{%static 'wgo/wgo.player.css' %}" rel="stylesheet" />
+
+  {% endcompress %}
+
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,100italic,100,400italic,500,500italic,700,900,700italic,900italic' rel='stylesheet' type='text/css'>
+	<script src="https://kit.fontawesome.com/0fe78b4c78.js" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="  crossorigin="anonymous"></script>
+  {% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+  {% endblock %}
+
+  {% block extra_head_js %}
+    {# Override this in templates to add extra stylesheets #}
+  {% endblock %}
+</head>
+
+<body class="iframe">
+
+<header>
+{% block extra-header %}{% endblock %}
+</header>
+
+  {% block content%}
+  {% endblock %}
+
+  {% block main %}{% endblock %}
+
+      {% get_current_timezone as TIME_ZONE %}
+      {% get_current_language as LANGUAGE_CODE %}
+
+
+  {# Global javascript #}
+    {% bootstrap_javascript %}
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/openstudyroom.js' %}"></script>
+    <script type="text/javascript" src="{%static 'wgo/wgo.min.js'%}"></script>
+    <script type="text/javascript" src="{%static 'wgo/wgo.player.min.js'%}"></script>
+    <script type="text/javascript">$("[data-toggle=tooltip]").tooltip();</script>
+    <script>
+    moment.locale('{{LANGUAGE_CODE}}');
+    gmt($('.rich-text'),'{{TIME_ZONE}}','{% tz_offset %}')
+    </script>
+    {% block extra_js %}
+      {# Override this in templates to add extra javascript #}
+    {% endblock %}
+
+    {# for machina templates we needs a js block #}
+    {% block js %}
+    {% endblock %}
+</body>
+</html>

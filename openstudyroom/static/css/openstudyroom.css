@@ -368,3 +368,7 @@ height: auto;
 .slider {
   margin-top: 5em;
 }
+
+body.iframe{
+  padding: 0 !important;
+}
