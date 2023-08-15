@@ -1,30 +1,31 @@
+{% load i18n %}
 <div class="container">
 
 <div class="text-center" style="padding-top: 20px; padding-bottom: 30px;">
-       <h1>Let's get better together </h1>
+       <h1>{% trans "Let's get better together" %} </h1>
 </div>
 <div class="row">
 
    <div class="col-sm-4 text-center">
      <a href="/calendar/" class=""><img class="img-magic image-center img-responsive" style="border-radius:50%; width:200px; height:200px;" src="https://openstudyroom.org/media/images/UEles4P_-_Imgur.original.jpg"></a>
       <h3 >  Study Go</h3>
-      <p class="text-justify">Ask stronger players to help review your games, study pro games or tsumego. We also organise lectures with strong teachers. The global idea is you get taught by the stronger while you teach the weaker.</p>
-      <br><p><a href="/calendar/" class="btn btn-default">See our study schedule in our calendar</a></p>
+      <p class="text-justify">{% trans "Ask stronger players to help review your games, study pro games or tsumego. We also organise lectures with strong teachers. The global idea is you get taught by the stronger while you teach the weaker." %}</p>
+      <br><p><a href="/calendar/" class="btn btn-default">{% trans "See our study schedule in our calendar" %}</a></p>
    </div>
 
    <div class="col-sm-4 text-center">
      <a href="/league/" class=""><img class="img-magic image-center img-responsive" style="border-radius:50%; width:200px; height:200px;" src="https://openstudyroom.org/media/images/tt45XLT_-_Imgur.original.jpg"></a>
-      <h3 class="text-center"> Play Go</h3>
-      <p class="text-justify">Playing long serious games is very important to improve. Our league system encourages you to do so in a friendly yet competitive environment. On top of that we reward our winners with cool prizes every month.</p>
-      <br><p><a href="/league/" class="btn btn-default">Check out our leagues</a></p>
+      <h3 class="text-center"> {% trans "Play Go" %}</h3>
+      <p class="text-justify">{% trans "Playing long serious games is very important to improve. Our league system encourages you to do so in a friendly yet competitive environment. On top of that we reward our winners with cool prizes every month." %}</p>
+      <br><p><a href="/league/" class="btn btn-default">{% trans "Check out our leagues" %}</a></p>
    </div>
 
    <div class="col-sm-4 text-center">
      <a href="https://discord.gg/b7meDjX" class=""><img class="img-magic image-center img-responsive" style="border-radius:50%; width:200px; height:200px;" src="https://openstudyroom.org/media/images/RR536ne_-_Imgur.original.jpg"></a>
 
-      <h3 class="text-center"> Together </h3>
-      <p class="text-justify">  We are a friendly active online community of Go players from all around the world. OSR is run by volunteers, community driven and all free for everyone to come enjoy the beautiful game of Go.</p>
-      <br><p><a href="https://discord.gg/b7meDjX" class="btn btn-default">Come chat with us in our Discord</a></p>
+      <h3 class="text-center"> {% trans "Together" %} </h3>
+      <p class="text-justify">  {% trans "We are a friendly active online community of Go players from all around the world. OSR is run by volunteers, community driven and all free for everyone to come enjoy the beautiful game of Go." %}</p>
+      <br><p><a href="https://discord.gg/b7meDjX" class="btn btn-default">{% trans "Come chat with us in our Discord" %}</a></p>
    </div>
 
 </div>
@@ -33,7 +34,7 @@
 </div>
 <div class="join-us container-fluid text-center">
 <h3 class="text-center">
-Whether you are a beginner just learning the rules or a strong player, OSR can help your Go.
+   {% trans "Whether you are a beginner just learning the rules or a strong player, OSR can help your Go." %}"
 </h3>
-<p><a href="{% url "account_signup"%}" class="btn btn-default btn-lg btn-huge">Join now !</a></p>
+<p><a href="{% url "account_signup"%}" class="btn btn-default btn-lg btn-huge">{% trans "Join now !" %}</a></p>
 </div>

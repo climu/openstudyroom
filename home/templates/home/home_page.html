@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static i18n wagtailcore_tags wagtailimages_tags puput_tags compress wagtailroutablepage_tags league_tags osr_tags tz%}
+{% load static l10n i18n wagtailcore_tags wagtailimages_tags puput_tags compress wagtailroutablepage_tags league_tags osr_tags tz %}
 {% load comments comments_xtd %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/puput.css' %}"/>
@@ -20,12 +20,14 @@
   <div >
   <a  href="https://discord.gg/b7meDjX" >
      <i class="fab fa-discord "></i> {{discord_presence_count}}
-   </a> <span class="hidden-xs hidden-sm">users connected in our discord right now</span>
+     {% comment %}Translators : the sentence that appears at the top left of the home page{% endcomment %}
+   </a> <span class="hidden-xs hidden-sm">{% trans "users connected in our discord right now" %}</span>
    </div>
    <div>
    <a href="/league/">
       <img src="https://openstudyroom.org/media/images/go_icon.original.png" style="height: 1.2em;padding-bottom:5px;"> {{games.total}}
-    </a> <span class="hidden-xs hidden-sm"> games played this month in {{n_leagues}} leagues</span>
+      {% comment %}Translators : the sentence that appears at the top left of the home page
+    </a> <span class="hidden-xs hidden-sm"> {% blocktrans with n_leagues=n_leagues %}games played this month in {{n_leagues}} leagues{% endblocktrans }%}</span>
    </div>
    </div>
 {% endblock %}
@@ -76,8 +78,8 @@
 
 
 <div class="col-md-9">
-
-<h2> Latest news in our <a href="/blog/">blog</a></h2>
+{% comment %}Translators : Latest news in our ... blog{% endcomment %}
+<h2> {% trans "Latest news in our" %} <a href="/blog/">blog</a></h2>
 <div class="row ">
 {% for entry in entries %}
 
@@ -137,7 +139,8 @@
 </div>
 </div>
 <div class="col-md-3">
-  <h2> In our <a href="/forum/">forums</a></h2>
+  {% comment %}Translators : In our ... forums (plural) {% endcomment %}
+  <h2> {% trans "In our" %} <a href="/forum/">forums</a></h2>
   {% last_topics request as topics %}
 
   {% for topic in topics %}
@@ -170,12 +173,12 @@
 
 <div class="row">
 <div class='col-md-8 col-xs-12 text-center'>
-  <h3>OSR is made possible thanks to the support from friends and partners</h3>
+  <h3>{% trans "OSR is made possible thanks to the support from friends and partners" %}</h3>
   {% sponsors %}
 </div>
 
 <div class='col-md-4 col-xs-12 text-center'>
-<h3> You can help OSR too!</h3>
+<h3> {% trans "You can help OSR too!" %}</h3>
 <div class="row">
 <div class="col-md-12 col-xs-6 sponsors text-center">
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" >
