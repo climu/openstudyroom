@@ -1,10 +1,10 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 league_tags %}
+{% load bootstrap3 league_tags i18n %}
 {% block title %} {{division.name}} edit {% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1> {{division.name}} - create forfeit</h1>
-    <a href="{% url 'league:results' event_pk division.pk %}">Go back to division's page</a>
+    <h1> {% blocktrans with division_name=division.name %}{{division_name}} - create forfeit{% endblocktrans %}</h1>
+    <a href="{% url 'league:results' event_pk division.pk %}">{% trans "Go back to division's page" %}</a>
 </div>
 {%endblock%}
 
@@ -14,7 +14,7 @@
         <form action="{% url 'league:division_create_forfeit' division.pk %}" method="POST">{% csrf_token %}
             <div class="form-group">
                 <select id="select-winner" class="form-control" name="winner">
-                    <option value="">Select the winner ...</option>
+                    <option value="">{% trans "Select the winner" %} ...</option>
                     {% for player in division.get_results %}
                         <option value="{{player.user.pk}}">{{player.user}}</option>
                     {% endfor %}
@@ -22,13 +22,13 @@
             </div>
             <div class="form-group">
                 <select id="select-loser" class="form-control" name="loser">
-                    <option value="">Select the loser ...</option>
+                    <option value="">{% trans "Select the loser" %} ...</option>
                     {% for player in division.get_results %}
                         <option value="{{player.user.pk}}">{{player.user}}</option>
                     {% endfor %}
                 </select>
             </div>
-            <button id="button_submit" class="btn btn-primary" type="submit" disabled>Create SGF</button>
+            <button id="button_submit" class="btn btn-primary" type="submit" disabled>{% trans "Create SGF" %}</button>
         </form>
     </div>
 </div>

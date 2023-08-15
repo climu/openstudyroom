@@ -1,7 +1,6 @@
 {% extends "full_width.html" %}
-
-{% load bootstrap3 static calendar_tags %}
-{% block title %} My profile - Timezone{% endblock %}
+{% load bootstrap3 static calendar_tags i18n %}
+{% block title %} {% trans "My profile" %} - {% trans "Timezone" %}{% endblock %}
 {% block extra_css %}
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
@@ -9,7 +8,7 @@
 
 {% block heading %}
 <div class="page-header">
-    <h1>My profile - Timezone</h1>
+    <h1>{% trans "My profile" %} - {% trans "Timezone" %}</h1>
 </div>
 {%endblock%}
 {% block content %}
@@ -19,20 +18,21 @@
 <div class="row">
   <div class="col-md-6">
 <div class="well">
-According to your setting your local time should be <span id='now'>{{now}}</span>.
+{% trans "According to your setting your local time should be" %} <span id='now'>{{now}}</span>.
 </div>
 
     <p>
-          Setting a timezone for your profile will allow our website to adapt the time to your local timezone everywhere: forum, messages, events...
+      {% trans "Setting a timezone for your profile will allow our website to adapt the time to your local timezone everywhere: forum, messages, events..." %}
     </p>
     <p>
-    If no timezone is set, we show times in <a href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time">UTC</a>.
+      {% comment %}Translators : If no timezone is set, we show times in ... UTC{% endcomment %}
+      {% trans "If no timezone is set, we show times in" %} <a href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time">UTC</a>.
     </p>
   </div>
   <div class= "col-md-6">
       {% bootstrap_form form %}
       <button id="send" class="btn btn-primary" >
-        {% bootstrap_icon "ok" %} Update timezone
+        {% bootstrap_icon "ok" %} {% trans "Update timezone" %}
       </button>
     </form>
   </div>

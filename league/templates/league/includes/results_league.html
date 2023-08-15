@@ -1,17 +1,17 @@
-{% load league_tags %}
+{% load league_tags i18n %}
 {% get_meijin as meijin %}
 
 <div class='table-responsive'>
     <table id='league-table' class='table table-bordered  table-hover ' >
         <thead >
         <tr>
-            <th>rank</th>
-            <th>player</th>
-            <th>score</th>
-            <th>wins</th>
-            <th>loss</th>
-            <th>games</th>
-            <th>Results</th>
+            <th>{% trans "rank" %}</th>
+            <th>{% trans "player" %}</th>
+            <th>{% trans "score" %}</th>
+            <th>{% trans "wins" %}</th>
+            <th>{% trans "loss" %}</th>
+            <th>{% trans "games" %}</th>
+            <th>{% trans "results" %}</th>
           </tr>
         </thead>
         <tbody>

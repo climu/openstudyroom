@@ -1,10 +1,10 @@
 {% extends "league/admin/base.html" %}
-{% load bootstrap3 wgo_tags league_tags%}
+{% load bootstrap3 wgo_tags league_tags l10n i18n %}
 {% block title %}Edit a sgf{% endblock %}
 
 {% block heading %}
 <div class="page-header">
-    <h1>{{sgf.wplayer}} vs {{sgf.bplayer}} the {{sgf.date |date:"M d, Y"}}</h1>
+    <h1>{% blocktrans with sgf_wplayer=sgf.wplayer sgf_bplayer=sgf.bplayer sgf_date=sgf.date |date:"M d, Y" %}{{sgf_wplayer}} vs {{sgf_bplayer}} the {{sgf_date}}{% endblocktrans %}</h1>
 </div>
 {%endblock%}
 {% block content %}
@@ -13,7 +13,7 @@
   <div class="col-md-4">
     <p>
     <button form="sgf-form" type="submit" class="btn btn-info " formaction="{%url 'league:edit_sgf' sgf.pk%}" >
-      {% bootstrap_icon "refresh" %}  Check sgf
+      {% bootstrap_icon "refresh" %}  {% trans "Check sgf" %}
     </button>
   </p>
   </div>
@@ -22,16 +22,16 @@
     {% csrf_token %}
     <input type="hidden" name="action" value="delete_sgf">
     <button form="sgf-form" type="submit" class="btn btn-danger " formaction="{%url 'league:delete_sgf' sgf.pk%}" onclick="return confirm('Are you sure you want to delete this SGF ?')" >
-      {% bootstrap_icon "remove" %}  Delete SGF
+      {% bootstrap_icon "remove" %}  {% trans "Delete SGF" %}
     </button>
     </form>
     </div>
 </div>
 {% if preview %}
 <div class="row">
-<div class="alert alert-info" role="alert">This is a preview of your changes. Click <button form="sgf-form" type="submit" class="btn btn-success btn-xs" formaction="{%url 'league:save_sgf' sgf.pk%}"onclick="return confirm('Save the sgf to db ?')" >
-  {% bootstrap_icon "ok" %} Save sgf
-</button> to save them to the database.</div>
+<div class="alert alert-info" role="alert">{% trans "This is a preview of your changes. Click " %}<button form="sgf-form" type="submit" class="btn btn-success btn-xs" formaction="{%url 'league:save_sgf' sgf.pk%}"onclick="return confirm('Save the sgf to db ?')" >
+  {% bootstrap_icon "ok" %} {% trans "Save sgf" %}
+</button> {% trans "to save them to the database." %}</div>
 </div>
 {% endif %}
 <div class="row">
@@ -46,31 +46,31 @@
         <td> {{sgf.pk}}</td>
       </tr>
         <tr>
-          <th>White</th>
+          <th>{% trans "White" %}</th>
             <td>{{sgf.wplayer}}</td>
         </tr>
         <tr>
-          <th>Black</th>
+          <th>{% trans "Black" %}</th>
             <td>{{sgf.bplayer}}</td>
         </tr>
         <tr>
-          <th>Date</th>
+          <th>{% trans "Date" %}</th>
           <td> {{sgf.date |date:"M d, Y"}}</td>
         </tr>
         <tr>
-          <th>Result</th>
+          <th>{% trans "Result" %}</th>
           <td> {{sgf.result}}</td>
         </tr>
         <tr>
-          <th>Type</th>
+          <th>{% trans "Type" %}</th>
           <td> {{sgf.game_type}}</td>
         </tr>
         <tr>
-          <th>p_status</th>
+          <th>{% trans "p_status" %}</th>
           <td> {{sgf.p_status | p_status}}</td>
         </tr>
         <tr>
-          <th>Download </th>
+          <th>{% trans "Download" %} </th>
           <td>   <a href="{% url 'league:sgf' sgf.pk%}">{% bootstrap_icon 'save' %} </a></td>
         </tr>
 

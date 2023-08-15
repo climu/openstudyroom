@@ -10,14 +10,14 @@
     {% endif %}
 
     {% if user.profile.kgs_username %}
-    <p>KGS Username:
+    <p>{% trans "KGS Username:" %}
       <a href="http://kgs.gosquares.net/index.rhtml.en?id={{user.profile.kgs_username}}" class="{% if user.is_online_kgs %} online{% else %} offline{%endif%}">
       {{user.profile.kgs_username}} {% if user.profile.kgs_rank %}({{user.profile.kgs_rank}}){% endif %}
     </a></p>
     {% endif %}
 
     {% if user.profile.ogs_id > 0 %}
-    <p>OGS Username:
+    <p>{% trans "OGS Username:" %}
        <a href="https://online-go.com/player/{{user.profile.ogs_id}}" class="{% if user.is_online_kgs %} online{% else %} offline{%endif%}">
          {{user.profile.ogs_username}} {% if user.profile.ogs_rank %}({{user.profile.ogs_rank}}){% endif %}
        </a>
@@ -25,11 +25,11 @@
     {% endif %}
 
     {% if user.profile.go_quest_username %}
-    <p>Go Quest Username: <a href="http://wars.fm/go9#user/{{user.profile.go_quest_username}}">{{user.profile.go_quest_username}}</a></p>
+    <p>{% trans "Go Quest Username:" %} <a href="http://wars.fm/go9#user/{{user.profile.go_quest_username}}">{{user.profile.go_quest_username}}</a></p>
     {% endif %}
 
     {% if discord_user %}
-    <p>Discord username :
+    <p>{% trans "Discord username:" %}
       {% if discord_user.avatar %}
       <img class="widget-member-avatar" src="https://cdn.discordapp.com/avatars/{{discord_user.uid}}/{{discord_user.avatar}}">
       {% endif %}
@@ -39,7 +39,7 @@
       {% endif %}
      </p>
     {% elif request.user == user %}
-    <p> Click this button to link your discord account with your OSR account: <a class="btn btn-default btn-xs" href="/discord/">{% bootstrap_icon "user"%}</a>
+    <p> {% trans "Click this button to link your discord account with your OSR account:" %} <a class="btn btn-default btn-xs" href="/discord/">{% bootstrap_icon "user"%}</a>
     {% endif %}
 
     {% if user.profile.egf_id %}

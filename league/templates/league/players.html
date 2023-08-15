@@ -33,7 +33,7 @@
 {% include 'league/includes/league_nav.html' with active='players' %}
 
 <div class="well">
-  {% trans "This table show all users who" %} {% if not event.is_open %}{% trans "played" %}{% else %} {% trans "play" %}{% endif %} {% trans "in the" %} {{event.name}}.
+  {% trans "This table show all users who" %} {% if not event.is_open %}{% trans "played" %}{% else %}{% trans "play" %}{% endif %} {% blocktrans with event_name=event.name %}in the {{event_name}}{% endblocktrans %}.
 </div>
 
 <div class="row equal ">

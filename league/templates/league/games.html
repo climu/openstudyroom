@@ -1,7 +1,7 @@
 {% extends "league/base.html" %}
-{% load tz static league_tags wgo_tags bootstrap3 l10n i18n%}
+{% load tz static league_tags wgo_tags bootstrap3 l10n i18n %}
 
-{% block title %}{% if sgf %} {{sgf.black.username}} vs {{sgf.white.username}} {% else %}{{event}}- Games{% endif %}{% endblock %}
+{% block title %}{% if sgf %} {{sgf.black.username}} vs {{sgf.white.username}} {% else %}{{event}}- {% trans "Games" %}{% endif %}{% endblock %}
 {% block extra_head_js %}
 <script type="text/javascript">
 function load_game(sgf_id) {
@@ -33,7 +33,7 @@ return false;};
 {% block content %}
 
 <ul class="nav nav-tabs">
-  <li ><a href="{% url 'league:archives' %}">Archives</a></li>
+  <li ><a href="{% url 'league:archives' %}">{% trans "Archives" %}</a></li>
   {%if event not in open_events%}
   <li class="active">{{event |event_link}}</li>
     {%endif%}
@@ -53,7 +53,7 @@ return false;};
     </a>
   </li>
   {% endfor %}
-  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrape list</a></li>
+  <li class="pull-right"><a href="{% url 'league:scrap_list' %}">{% trans "Scrape list" %}</a></li>
   </ul>
 {% include 'league/includes/league_nav.html' with active='games' %}
 

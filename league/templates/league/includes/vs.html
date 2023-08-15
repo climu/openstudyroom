@@ -2,7 +2,7 @@
 
 {% if user != request.user %}
 
-  <h4>Your results against {{user.username}}.</h4>
+  <h4>{% blocktrans with username=user.username %}Your results against {{username}}.{% endblocktrans %}</h4>
 
   {% if sgfs_links %}
 
@@ -28,7 +28,7 @@
   </div>
 
   {% else %}
-  <h5>You didn't play any games against each other yet.</h5>
+  <h5>{% trans "You didn't play any games against each other yet." %}</h5>
 
 {% endif %}
 {% endif %}

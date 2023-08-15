@@ -1,12 +1,12 @@
 {% extends "board_base.html" %}
-{% load i18n bootstrap3%}
+{% load i18n bootstrap3 %}
 
 {% block sub_title %}{% trans "Edit forum profile" %}{% endblock sub_title %}
 {% block breadcrumb %}{%endblock%}
 
 {% block heading %}
 <div class="page-header">
-    <h1>{{user.username}} profile</h1>
+    <h1>{% blocktrans with username=user.username %}{{username}} profile{% endblocktrans %}</h1>
 </div>
 {%endblock%}
 

@@ -1,9 +1,9 @@
 {% extends "league/admin/base.html" %}
-{% load wagtailcore_tags bootstrap3 community_tags %}
-{% block title %}OSR league admin{% endblock %}
+{% load wagtailcore_tags bootstrap3 community_tags l10n i18n %}
+{% block title %}{% trans "OSR league admin" %}{% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1>Dashboard</h1>
+    <h1>{% trans "Dashboard" %}</h1>
 </div>
 {%endblock%}
 {% block content %}
@@ -13,20 +13,20 @@
 {% include 'league/includes/no_profile_users_table.html' %}
 {% endif %}
   <div class="panel panel-default">
-  <div class="panel-heading"><h3> List of new users </h3></div>
+  <div class="panel-heading"><h3> {% trans "List of new users" %} </h3></div>
     <table id='new_user-table' class='display table' >
       <thead>
         <tr>
-          <th>username</th>
-          <th>email</th>
-          <th>date joined</th>
-          <th>kgs_username</th>
-          <th>ogs_username</th>
-          <th>Communities interest</th>
-          <th>Delete</th>
-          <th>email</th>
-          <th>No games</th>
-          <th>Accept</th>
+          <th>{% trans "username" %}</th>
+          <th>{% trans "email" %}</th>
+          <th>{% trans "date joined" %}</th>
+          <th>{% trans "KGS username" %}</th>
+          <th>{% trans "OGS username" %}</th>
+          <th>{% trans "Communities interest" %}</th>
+          <th>{% trans "Delete" %}</th>
+          <th>{% trans "email" %}</th>
+          <th>{% trans "No games" %}</th>
+          <th>{% trans "Accept" %}</th>
         </thead>
         <tbody>
           {% for new_user in new_users %}
@@ -87,7 +87,7 @@
   </div>
 
 <div class="panel panel-default">
-<div class="panel-heading"><h3> Admin board <a class="btn btn-default pull-right" href="/admin/pages/4/add_subpage/">Create new blog post</a></h3></div>
+<div class="panel-heading"><h3> {% trans "Admin board" %} <a class="btn btn-default pull-right" href="/admin/pages/4/add_subpage/">{% trans "Create new blog post" %}</a></h3></div>
 <iframe name="embed_readwrite" frameBorder="0" src="{{board_url}}" width="100%" height="500px"></iframe>
 </div>
 </div>

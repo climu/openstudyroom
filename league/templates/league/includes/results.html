@@ -1,3 +1,4 @@
+{% load i18n %}
 <ul class="nav nav-tabs">
   <li><a href="#">Overview</a></li>
   <li class = active ><a href="#">Results</a></li>
@@ -10,8 +11,8 @@
   <table id='example' class='table table-bordered table-player table-league table-hover ' >
      <thead class='table-league-highlight'>
        <tr>
-         <th style="width:12em;">player</th>
-         <th style="width:0em;"> score</th>
+         <th style="width:12em;">{% trans "player" %}</th>
+         <th style="width:0em;"> {% trans "score" %}</th>
         {% for player in players %}
        		<th style='text-align: center;'> {{ player.kgs_username }}</th>
         {% endfor %}

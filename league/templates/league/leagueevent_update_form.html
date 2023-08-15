@@ -1,12 +1,12 @@
 {% extends 'league/admin/base.html' %}
 
-{% load bootstrap3 league_tags i18n l10n tz%}
+{% load bootstrap3 league_tags i18n l10n tz %}
 
-{% block title %}OSR league admin - Leagues{% endblock %}
+{% block title %}{% trans "OSR league admin" %} - {% trans "Leagues" %}{% endblock %}
 
 {% block heading %}
 <div class="page-header">
-    <h1>Edit League "{{ object.name }}"</h1>
+    <h1>{% trans "Edit league" %} "{{ object.name }}"</h1>
 </div>
 {%endblock%}
 {% block content %}
@@ -18,18 +18,18 @@
   {% if object.number_players == 0 and object.number_divisions > 0%}
   <div class="alert alert-info clearfix">
     <div class=pull-left>
-    <h4>Populate empty event</h4>
+    <h4>{% trans "Populate empty event" %}</h4>
 
-    This event has no player in it. You can populate it easily from a previous event :
+    {% trans "This event has no player in it. You can populate it easily from a previous event:" %}"
     </div>
     <div>
     <form action="" method="GET" class="form-inline pull-right">
       <div class="form-group">
       <button type="submit" class="btn btn-primary" formaction="{% url 'league:admin_event_populate' object.pk %}">
 
-        Populate this event
+        {% trans "Populate this event" %}
       </button>
-       <label class="control-label">from</label>
+       <label class="control-label">{% trans "from" %}</label>
       <select class="form-control" name="from_event" >
         {% for event in other_events %}
   <option value="{{event.pk}}">{{event}}</option>
@@ -42,27 +42,27 @@
   {% endif %}
   <ul class="nav nav-tabs">
   <li class="active">
-    <a class="active" data-toggle="tab" href="#settings" role="tab">Settings</a>
+    <a class="active" data-toggle="tab" href="#settings" role="tab">{% trans "Settings" %}</a>
     </li>
     <li class="nav-item">
-      <a data-toggle="tab" href="#divisions" role="tab">Divisions</a>
+      <a data-toggle="tab" href="#divisions" role="tab">{% trans "Divisions" %}</a>
       </li>
   </ul>
   <div class="tab-content">
   <div class="tab-pane fade in active" id="settings">
-      <a class="btn btn-primary btn-xs pull-right" href="/league/admin/download-ffg-tou/{{object.pk}}">Download FFG tou</a>
+      <a class="btn btn-primary btn-xs pull-right" href="/league/admin/download-ffg-tou/{{object.pk}}">{% trans "Download FFG tou" %}</a>
         {% if request.user.is_league_admin %}
       <form action="" method="POST">{% csrf_token %}
       <input type="hidden" name="action" value="set_primary">
       <button type="submit" formaction="{% url 'league:set_primary' object.pk %}" class="btn btn-primary btn-xs pull-right">
-        Set as primary
+        {% trans "Set as primary" %}
       </button>
       </form>
       {% endif %}
       <form action="{% url 'league:delete_event' object.pk %}" method="POST">{% csrf_token %}
       	<input type="hidden" name="action" value="delete_event" />
       	<button type="submit" class="btn btn-danger btn-xs pull-right"  onclick="return confirm('Are you sure you want to delete this league')">
-      		Delete
+      		{% trans "Delete" %}
       	</button>
       </form>
       {% include 'league/includes/admin_league_form.html' %}

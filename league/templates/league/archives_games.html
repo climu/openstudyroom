@@ -1,7 +1,7 @@
 {% extends "league/base.html" %}
 {% load league_tags wgo_tags l10n i18n static %}
 
-{% block title %}Archives - Games {% if sgf %}- {{sgf.black.username}} vs {{sgf.white.username}} {%endif %}{% endblock %}
+{% block title %}{% trans "Archives" %} - {% trans "Games" %} {% if sgf %}- {{sgf.black.username}} vs {{sgf.white.username}} {%endif %}{% endblock %}
 {% block extra_head_js %}
 <script type="text/javascript">
   function load_game(sgf_id) {

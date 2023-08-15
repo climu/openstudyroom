@@ -1,13 +1,13 @@
-{% load static league_tags wgo_tags bootstrap3 l10n i18n%}
+{% load static league_tags wgo_tags bootstrap3 l10n i18n %}
 
 <div class ="row">
     <div  class="col-md-5">
         <div class="panel panel-default">
             <div class="panel-heading">
                 {% if event %}
-                    Games from {{event}}
+                    {% blocktrans with event=event %}Games from {{event}}{% endblocktrans %}
                 {% else %}
-                    All OSR games
+                    {% trans "All OSR games" %}
                 {% endif %}
             </div>
             {# don't forget to add data-community-pk or data-event-pk! #}
@@ -34,7 +34,7 @@
         {% else %}
             <div id="player">
                 <div class="alert alert-info">
-                    Click a game result to see it.
+                    {% trans "Click a game result to see it." %}
                 </div>
             </div>
         {% endif %}

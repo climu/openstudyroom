@@ -1,4 +1,6 @@
-{% load i18n %}
+{% load i18n tz %}
+{% localize off %}
+{% language 'en' %}
 Hello and welcome to the Open Study Room, {{user.username}}!
 
 You have just been accepted as an OSR member, and we are glad to have you onboard.
@@ -11,3 +13,5 @@ You can now also use our forums and join our Discord server at https://discord.g
 Looking forward to see you there!
 
 openstudyroom.org
+{% endlanguage %}
+{% endlocalize %}

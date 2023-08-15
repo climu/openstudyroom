@@ -1,3 +1,6 @@
+{% load l10n i18n tz %}
+{% localize off %}
+{% language 'en' %}
 Hello {{user.username}},
 
 You registered on Open Study Room website on the {{user.date_joined | date:"d/m/Y"}} but you didn't confirm your email since then.
@@ -9,3 +12,5 @@ You are more than welcome to register again. If you do, please don't forget to c
 Feel free to contact us at openstudyroom@gmail.com if you have any issue or question.
 
 openstudyroom.org
+{% endlanguage %}
+{% endlocalize %}

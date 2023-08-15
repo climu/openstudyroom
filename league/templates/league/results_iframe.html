@@ -68,12 +68,12 @@
 
           <thead >
             <tr>
-                <th>player</th>
-                <th>score</th>
-                <th>wins</th>
-                <th>loss</th>
-                <th>games</th>
-                <th>Results</th>
+                <th>{% trans "player" %}</th>
+                <th>{% trans "score" %}</th>
+                <th>{% trans "wins" %}</th>
+                <th>{% trans "loss" %}</th>
+                <th>{% trans "games" %}</th>
+                <th>{% trans "results" %}</th>
             </tr>
           </thead>
           <tbody>
@@ -106,8 +106,8 @@
 
           <thead class='table-league-highlight'>
             <tr>
-              <th scope="col">player</th>
-              <th scope="col">score</th>
+              <th scope="col">{% trans "player" %}</th>
+              <th scope="col">{% trans "score" %}</th>
               {% for player in results %}
               <th scope="col"><div class="kgs_username">{{player.user}}</div></th>
               {% endfor %}

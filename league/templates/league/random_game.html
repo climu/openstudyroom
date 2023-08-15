@@ -1,6 +1,6 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 league_tags tz static%}
-{% block title %}OSR league - random game{% endblock %}
+{% load bootstrap3 league_tags tz static l10n i18n %}
+{% block title %}{% trans "OSR league" %} - {% trans "Random game" %}{% endblock %}
 
 {% block extra_head_js%}
 
@@ -11,7 +11,7 @@
 {% block heading %}
 <div class="page-header">
     <h1>
-      Random game
+      {% trans "Random game" %}
     </h1>
 </div>
 {% endblock %}
@@ -34,7 +34,7 @@ Random game from <strong id="date_min"></strong> to <strong id="date_max"></stro
 {% if sgf %}
 
 <div class="well">
-  {{sgf.white | user_link:meijin}} vs {{sgf.black | user_link:meijin}} on {{sgf.date}} <a href="/league/games/{{sgf.pk}}"> link</a>
+  {% blocktrans with sgf_white=sgf.white | user_link:meijin sgf_black=sgf.black | user_link:meijin sgf_date=sgf.date %}{{sgf_white}} vs {{sgf_black}} on {{sgf_date}} {% endblocktrans %}<a href="/league/games/{{sgf.pk}}"> link</a>
 </div>
 {% endif %}
  {% endblock %}

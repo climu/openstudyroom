@@ -1,8 +1,8 @@
-{% load bootstrap3 league_tags%}
+{% load bootstrap3 league_tags i18n %}
 
 <form action="" method="POST">{% csrf_token %}
   <div class="col-md-4">
-    <legend>League settings
+    <legend>{% trans "League settings" %}
       <div class="pull-right">
         {% bootstrap_button "Save" button_type="submit" button_class="btn-primary" size="sm"%}
       </div>
@@ -18,13 +18,13 @@
     {% bootstrap_field form.is_primary %}
     {% bootstrap_field form.community %}
 
-    <legend>Match and points settings </legend>
+    <legend>{% trans "Match and points settings" %} </legend>
     {% bootstrap_field form.nb_matchs %}
     {% bootstrap_field form.ppwin %}
     {% bootstrap_field form.pploss %}
     {% bootstrap_field form.min_matchs %}
 
-    <legend>Games settings </legend>
+    <legend>{% trans "Games settings" %} </legend>
     {% bootstrap_field form.rules_type %}
     {% bootstrap_field form.servers %}
     {% bootstrap_field form.board_size %}
@@ -32,7 +32,7 @@
     {% bootstrap_field form.max_handicap %}
     {% bootstrap_field form.min_handicap %}
 
-    <legend>Clock setting </legend>
+    <legend>{% trans "Clock setting" %} </legend>
     {% bootstrap_field form.clock_type %}
     {% bootstrap_field form.main_time %}
     {% bootstrap_field form.additional_time %}
