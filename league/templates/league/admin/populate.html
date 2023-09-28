@@ -1,27 +1,27 @@
 {% extends "full_width.html" %}
-{% load bootstrap3 league_tags%}
-{% block title %}OSR league admin{% endblock %}
+{% load bootstrap3 league_tags i18n %}
+{% block title %}{% trans "OSR league admin" %}{% endblock %}
 {% block content %}
 <form  method="post" class="form">
     {% csrf_token %}
 <div class='row'>
   <div class="panel panel-default">
-  <div class="panel-heading"><h4>Rollover overview</h4></div>
+  <div class="panel-heading"><h4>{% trans "Rollover overview" %}"/h4></div>
   <div class="panel-body">
     <div class='col-md-8'>
-    <p>You are populating <b>{{to_event}}</b> with players from <b>{{from_event}}</b> </p>
-    <p>Out of {{from_event.number_players}} players, {{from_event.number_actives_players}} were active and {{from_event.number_inactives_players}} will get drop.</p>
-    <p> The minimum number of games to stay in the league is set to <b>{{from_event.min_matchs}}</b><p>
+    <p>{% blocktrans with to_event=to_event from_event=from_event %}You are populating <b>{{to_event}}</b> with players from <b>{{from_event}}</b> {% endblocktrans %}</p>
+    <p>{% blocktrans with from_event_number_players=from_event.number_players from_event_number_actives_players=from_event.number_actives_players from_event_number_inactives_players=from_event.number_inactives_players %}Out of {{from_event_number_players}} players, {{from_event_number_actives_players}} were active and {{from_event_number_inactives_players}} will get drop.{% endblocktrans %}</p>
+    <p>{% blocktrans with from_event_min_matchs=from_event.min_matchs %} The minimum number of games to stay in the league is set to <b>{{from_event_min_matchs}}</b>.{% endblocktrans %}<p>   
     </div>
     <div class='col-md-2'>
       <button type="submit" class="btn btn-info" formaction="{% url 'league:admin_event_populate' to_event.pk from_event.pk%}" >
-    {% bootstrap_icon "refresh" %}  Preview
+    {% bootstrap_icon "refresh" %}  {% trans "Preview" %}
   </button>
     </div>
     <div class='col-md-2'>
       {%if preview%}
     <button type="submit" class="btn btn-success" formaction="{% url 'league:admin_proceed_populate' to_event.pk from_event.pk  %}"onclick="return confirm('Populate the new {{to_event}} with above players ?')" >
-      {% bootstrap_icon "ok" %}  save
+      {% bootstrap_icon "ok" %}  {% trans "Save" %}
     </button>
     {%endif%}
   </div>
@@ -38,18 +38,18 @@
   {% for division in divisions %}
   <div class="panel panel-default clearfix">
   <div class="panel-heading">{{division.name}}
-    <div class="pull-right"> {{division.number_players}} players | {{division.number_games}} games</div>
+    <div class="pull-right"> {{division.number_players}} players | {{division.number_games}} {% trans "games" %}</div>
   </div>
   <div class="panel-body">
 
     <table class='table table-condensed'  >
        <thead>
          <tr>
-           <th>Rank</th>
-           <th>Player</th>
-           <th>Score</th>
-           <th>Games</th>
-           <th>Next</th>
+           <th>{% trans "Rank" %}</th>
+           <th>{% trans "Player" %}</th>
+           <th>{% trans "Score" %}</th>
+           <th>{% trans "Games" %}</th>
+           <th>{% trans "Next" %}</th>
         </tr>
       </thead>
 
@@ -79,7 +79,7 @@
 
 
 <div class ='col-md-6'>
-  <legend> {{to_event}} preview </legend>
+  <legend> {{to_event}} {% trans "preview" %} </legend>
   {%  for division, players in new_players.items %}
   <div class="panel panel-default">
   <div class="panel-heading clearfix">{{division}}
@@ -89,8 +89,8 @@
   <table class='table table-condensed'  >
      <thead>
        <tr>
-         <th>Player</th>
-         <th>Previous division</th>
+         <th>{% trans "Player" %}</th>
+         <th>{% trans "Previous division" %}</th>
       </tr>
     </thead>
 

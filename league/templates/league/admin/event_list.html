@@ -3,25 +3,28 @@
 {% language 'en' %}
 <table id='leagues-table' class='display table' cellspacing='0' width='100%' >
 	<thead>
-		<th>Status</th>
-		<th>Public?</th>
-		<th>Name</th>
-		<th>Begin</th>
-		<th>End</th>
-    <th>Community</th>
-		<th>Players</th>
-		<th>#Divisions</th>
-		<th>#Games</th>
-		<th>ppw</th>
-		<th>ppl</th>
-		<th>min match</th>
-    <th>copy</th>
+		<th>{% trans "Status" %}</th>
+		{% comment %}Translators : public (league) {% endcomment %}
+		<th>{% trans "Public?" %}</th>
+		<th>{% trans "Name" %}</th>
+		<th>{% trans "Begin" %}</th>
+		<th>{% trans "End" %}</th>
+    <th>{% trans "Community" %}</th>
+		<th>{% trans "Players" %}</th>
+		<th>{% trans "#Divisions" %}</th>
+		<th>{% trans "#Games" %}</th>
+		<th>{% trans "ppw" %}</th>
+		<th>{% trans "ppl" %}</th>
+		<th>{% trans "min match" %}</th>
+    <th>{% trans "copy" %}</th>
 	</thead>
 	<tbody>
 	{% for event in events %}
 	<tr {% if event.community is not None%} class="info"{% endif %}>
-		<td> {% if event.is_open %} <b>Open</b> {% else %} Closed {% endif %}</td>
-		<td>{% if event.is_public %} public {% else %} Private {% endif %}</td>
+		{% comment %}Translators : OPEN / CLOSED (league) {% endcomment %}
+		<td> {% if event.is_open %} <b>{% trans "Open" %}</b> {% else %} {% trans "Closed" %} {% endif %}</td>
+		{% comment %}Translators : PUBLIC / PRIVATE (league) {% endcomment %}
+		<td>{% if event.is_public %} {% trans "Public" %} {% else %} {% trans "Private" %} {% endif %}</td>
 		<td> <a href= "{% url 'league:admin_events_update' event.pk %}"> {{ event.name }} </a> </td>
 		<td> {{ event.begin_time | date:"M d, Y" }}  </td>
 		<td> {{ event.end_time | date:"M d, Y" }} </td>

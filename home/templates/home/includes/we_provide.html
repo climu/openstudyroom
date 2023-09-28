@@ -1,4 +1,6 @@
-<h2 class="text-center"> We provide</h2>
+{% load i18n %}
+{% comment %}Translators : 'we provide' section, on the home page{% endcomment %}
+<h2 class="text-center"> {% trans "We provide" %}</h2>
 <div class="row">
 
   <div class="col-md-6">
@@ -7,8 +9,8 @@
         <i class="fa fa-cog fa-3x"  aria-hidden="true"></i>
       </div>
       <div class="col-md-10">
-        <h3>OGS/KGS/Discord integration</h3>
-        <p class="text-justify">See what opponents are online on those platform to find a game. Play your league games, write #OSR during the chat and that's it. Our <a href="https://github.com/climu/openstudyroom">website</a> will collect it automatically.</p>
+        <h3>{% trans "OGS/KGS/Discord integration" %}</h3>
+        <p class="text-justify">{% blocktrans %}See what opponents are online on those platform to find a game. Play your league games, write #OSR during the chat and that's it. Our <a href="https://github.com/climu/openstudyroom">website</a> will collect it automatically.{% endblocktrans %}</p>
       </div>
     </div>
   </div>
@@ -19,8 +21,8 @@
         <i class="fa fa-university fa-3x" aria-hidden="true"></i>
       </div>
       <div class="col-md-10">
-        <h3>Teaching for everyone</h3>
-        <p class="text-justify">Do you prefer a simul game with a strong dan? A lecture on a topic of your choosing? A teaching game? Let us know! We set it up with our <a href="/teachers/">teachers</a>, record it and upload to our <a href="https://www.youtube.com/channel/UCebC2xkVmJZCnN-sjmhbuow">youtube channel</a>.</p>
+        <h3>{% trans "Teaching for everyone" %}</h3>
+        <p class="text-justify">{% blocktrans %}Do you prefer a simul game with a strong dan? A lecture on a topic of your choosing? A teaching game? Let us know! We set it up with our <a href="/teachers/">teachers</a>, record it and upload to our <a href="https://www.youtube.com/channel/UCebC2xkVmJZCnN-sjmhbuow">youtube channel</a>.{% endblocktrans %}</p>
       </div>
     </div>
   </div>
@@ -35,8 +37,8 @@
         <i class="fa fa-trophy fa-3x" aria-hidden="true"></i>
       </div>
       <div class="col-md-10">
-        <h3>Prizes</h3>
-        <p class="text-justify">Win a teaching game with a professional player, a game review by a strong dan or 10€ gift certificate at <a href="https://internetgoschool.com" >Guo Juan's internet go school</a>. All that just by playing go!</p>
+        <h3>{% trans "Prizes" %}</h3>
+        <p class="text-justify">{% blocktrans %}Win a teaching game with a professional player, a game review by a strong dan or 10€ gift certificate at <a href="https://internetgoschool.com" >Guo Juan's internet go school</a>. All that just by playing go!{% endblocktrans %}</p>
       </div>
     </div>
   </div>
@@ -47,8 +49,8 @@
           <i class="fa fa-calendar fa-3x" style="color: rgb(88,88,88)" aria-hidden="true"></i>
         </div>
         <div class="col-md-10">
-          <h3>Plan your games</h3>
-          <p class="text-justify">Plan your game in advance with your opponent using our <a href="/calendar/help/">game planner</a>. It's easy to use and it adapts to timezones automatically.</p>
+          <h3>{% trans "Plan your games" %}</h3>
+          <p class="text-justify">{% blocktrans %}Plan your game in advance with your opponent using our <a href="/calendar/help/">game planner</a>. It's easy to use and it adapts to timezones automatically.{% endblocktrans %}</p>
         </div>
       </div>
   </div>

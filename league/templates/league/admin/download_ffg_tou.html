@@ -1,12 +1,12 @@
 {% extends 'league/admin/base.html' %}
 
-{% load bootstrap3 league_tags i18n l10n tz%}
+{% load bootstrap3 league_tags i18n l10n tz %}
 
-{% block title %}OSR league admin - Leagues{% endblock %}
+{% block title %}{% trans "OSR league admin" %} - {% trans "Leagues" %}{% endblock %}
 
 {% block heading %}
 <div class="page-header">
-    <h1>League "{{ league.name }}" - download FFG .tou</h1>
+    <h1>{% blocktrans with league_name=league.name %}League "{{ league_name }}" - download FFG .tou{% endblocktrans %}</h1>
 </div>
 {%endblock%}
 {% block content %}

@@ -1,7 +1,8 @@
-{% load l10n i18n tz%}
+{% load l10n i18n tz %}
 {% localize off %}
 {% language 'en' %}
 Hello !
+
 This message was automaticly sent to you to inform you that the user {{user.username}} have accepted your game request !
 
 You should play a game with him on the {{date|utc}} UTC.

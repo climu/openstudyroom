@@ -1,15 +1,15 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 league_tags%}
+{% load bootstrap3 league_tags %}
 {% load l10n i18n tz %}
-{% block title %}OSR league admin - Users{% endblock %}
+{% block title %}{% trans "OSR league admin" %} - {% trans "Users" %}{% endblock %}
 {% block heading %}
 <div class="page-header">
   {% if event is None %}
     <h1>All OSR users</h1>
     {% elif division is None %}
-    <h1>All OSR users from {{event}}</h1>
+    <h1>{% blocktrans with event=event %}All OSR users from {{event}}{% endblocktrans %}</h1>
     {% else %}
-    <h1>All OSR users from {{event}} in {{division}}</h1>
+    <h1>{% blocktrans with event=event division=division %}All OSR users from {{event}} in {{division}}{% endblocktrans %}</h1>
     {% endif %}
 </div>
 {%endblock%}
@@ -24,12 +24,12 @@
 <table id='users-table' class='display table table-hover' cellspacing='0' width='100%' >
 	<thead>
 	<tr>
-		<th>User</th>
-		<th>KGS username</th>
-    <th>OGS username</th>
-		<th>Send email</th>
-    <th>Set meijin</th>
-    <th>Date joined</th>
+		<th>{% trans "User" %}</th>
+		<th>{% trans "KGS username" %}</th>
+    <th>{% trans "OGS username" %}</th>
+		<th>{% trans "Send email" %}</th>
+    <th>{% trans "Set meijin" %}</th>
+    <th>{% trans "Date joined" %}</th>
 	</thead>
 	<tbody>
 	{% for user in users %}

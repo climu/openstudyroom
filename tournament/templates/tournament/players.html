@@ -1,16 +1,16 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 league_tags tournament_tags static forum_markup_tags%}
+{% load bootstrap3 league_tags tournament_tags static forum_markup_tags i18n %}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
   <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
   <link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
 {% endblock %}
 
-{% block title %}{{tournament.name}} - Players{% endblock %}
+{% block title %}{{tournament.name}} - {% trans "Players" %}{% endblock %}
 
 {% block heading %}
   <div class="page-header">
-    <h1>{{tournament.name}} - Players</h1>
+    <h1>{{tournament.name}} - {% trans "Players" %}</h1>
   </div>
   <div class="">{{tournament.description|safe|rendered}}</div>
 

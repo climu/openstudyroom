@@ -76,7 +76,7 @@
   {% if request.user.is_authenticated and not request.user.is_league_member%}
     <li class="alert alert-info alert-dismissable fade in" style="list-style-type: none;">
       <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-      Your account will be activated soon. Be sure you verify your email and you entered a valid KGS or OGS username. Contact us if it takes too long. Thanks for waiting !
+      {% trans "Your account will be activated soon. Be sure you verify your email and you entered a valid KGS or OGS username. Contact us if it takes too long. Thanks for waiting !" %}
     </li>
   {% endif %}
 <div class="alerts">

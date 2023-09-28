@@ -1,3 +1,4 @@
+{% load l10n i18n %}
 <ul class="nav nav-tabs">
   <li class="active"><a href="#">Overview</a></li>
   <li><a href="url">Results</a></li>
@@ -7,9 +8,9 @@
 
 
 <h3>Infos</h3>
-<p>The <b>{{event.name}}</b> started on <b>{{event.begin_time |date:"M d, Y" }}</b> and {% if close %} stoped{% else %}will stop{%endif%} on <b>{{event.end_time |date:"M d, Y" }}</b>.</p>
-<p>{{event.number_players}} players played {{event.number_games}} games in {{event.number_divisions}} divisions. That is {{event.percent_game_played}} % of {{event.possible_games}} possible games.</p>
+<p>{% blocktrans with event_name=event.name event_begin=event.begin_time |date:"M d, Y"  %}The <b>{{event_name}}</b> started on <b>{{event_begin}}</b> and {% endblocktrans %}{% if close %}{% trans "stopped" %}{% else %}{% trans "will stop" %}{%endif%} {% blocktrans with event_end=event.end_time |date:"M d, Y" %}on <b>{{event_end}}</b>.{% endblocktrans %}</p>
+<p>{% blocktrans with event_number_players=event.number_players event_number_games=event.number_games event_number_divisions=event.number_divisions event_percent_game_played=event.percent_game_played event_possible_games=event.possible_games %}{{event_number_players}} players played {{event_number_games}} games in {{event_number_divisions}} divisions. That is {{event_percent_game_played}} % of {{event_possible_games}} possible games.{% endblocktrans %}</p>
 {% if close %}
-<h3> winners</h3>
+<h3> {% trans "winners" %}</h3>
 {% endif %}
 

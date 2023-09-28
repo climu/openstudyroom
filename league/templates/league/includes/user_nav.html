@@ -3,7 +3,7 @@
 <ul class="nav navbar-nav navbar-left">
   <li {% if active == 'league' %}class="active"{% endif %}><a href="{% url "league:league_account" user%}">{% trans "Leagues" %}</a></li>
   <li {% if active == 'activity' %}class="active"{% endif %}><a href="{% url "league:league_account_activity" user%}">{% trans "Activity" %}</a></li>
-  <li {% if active == 'forum' %}class="active"{% endif %}><a href="{% url "forum_member:profile" user.pk%}">Forum</a></li>
+  <li {% if active == 'forum' %}class="active"{% endif %}><a href="{% url "forum_member:profile" user.pk%}">{% trans "Forum" %}</a></li>
 </ul>
 {% if request.user.is_authenticated %}
 {% if user == request.user%}
@@ -23,16 +23,16 @@
   </a>
 
   <ul class="dropdown-menu">
-  <li><a href="{% url "account_change_password" %} ">Password</a></li>
-  <li ><a href="{% url "account_email" %}">Email</a></li>
-  <li ><a href="{% url "league:timezone_update" %}">Timezone</a></li>
+  <li><a href="{% url "account_change_password" %} ">{% trans "Password" %}</a></li>
+  <li ><a href="{% url "account_email" %}">{% trans "Email" %}</a></li>
+  <li ><a href="{% url "league:timezone_update" %}">{% trans "Timezone" %}</a></li>
 
 </ul>
 </li>
 </ul>
 {% else %}
 <ul class="nav navbar-nav navbar-right active" style="margin-right:5px;">
-  <li ><a href="{% url "postman:write" user.username%}">{% bootstrap_icon "envelope" %} Send message</a></li>
+  <li ><a href="{% url "postman:write" user.username%}">{% bootstrap_icon "envelope" %} {% trans "Send message" %}</a></li>
 </ul>
 {% endif %}
 {% endif %}

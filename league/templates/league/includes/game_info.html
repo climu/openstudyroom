@@ -1,4 +1,4 @@
-{% load league_tags bootstrap3 %}
+{% load league_tags bootstrap3 l10n i18n %}
 {% get_meijin as meijin %}
 
   <p class="text-center">
@@ -14,7 +14,7 @@
   {% endif %}
   </span>
   <span>
-    <i class="far fa-circle"></i> {{sgf.white |user_link:meijin}} vs {{sgf.black |user_link:meijin}} <i class="fas fa-circle"></i> on {{sgf.date|date:"M d, Y" }}: {{sgf.result}}
+    <i class="far fa-circle"></i> {{sgf.white |user_link:meijin}} vs {{sgf.black |user_link:meijin}} <i class="fas fa-circle"></i> {% blocktrans with a_date=sgf.date %}on {{a_date}}{% endblocktrans %} : {{sgf.result}}
 </span>
 <span class="pull-right">
 <a href="{% url 'league:sgf' sgf.pk%}" data-toggle="tooltip" title="Download sgf">{% bootstrap_icon 'save' %}</a>

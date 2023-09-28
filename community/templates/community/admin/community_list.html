@@ -1,8 +1,8 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 league_tags%}
+{% load bootstrap3 league_tags i18n %}
 {% block heading %}
 <div class="page-header">
-    <h1>Guest Communitys</h1>
+    <h1>{% trans "Guest Communitys" %}</h1>
 </div>
 {%endblock%}
 {% block content %}
@@ -10,10 +10,10 @@
 <div class="panel panel-default">
 
 <div class="panel-heading">
-    <h3>List of Communitys
+    <h3>{% trans "List of Communitys" %}
         <a href= "{% url 'community:admin_community_create' %}">
             <button class="btn btn-success pull-right clearfix">
-                {%bootstrap_icon 'plus'%} Create new community
+                {%bootstrap_icon 'plus'%} {% trans "Create new community" %}
             </button>
         </a>
     </h3>
@@ -21,12 +21,14 @@
 <div class="panel-body">
     <table id='community-table' class='table table-over' >
       <thead>
-        <th>Name</th>
-        <th>Close</th>
-        <th>Private</th>
-        <th>Admins</th>
-        <th>Edit</th>
-        <th>Delete</th>
+        <th>{% trans "Name" %}</th>
+        {% comment %}Translators : CLOSE community{% endcomment %}
+        <th>{% trans "Close" %}</th>
+        {% comment %}Translators : PRIVATE community{% endcomment %}
+        <th>{% trans "Private" %}</th>
+        <th>{% trans "Admins" %}</th>
+        <th>{% trans "Edit" %}</th>
+        <th>{% trans "Delete" %}</th>
       </thead>
     <tbody>
     {% for community in communitys%}
@@ -48,7 +50,7 @@
                   {% csrf_token %}
                     	<input type="hidden" name="action" value="delete_community" />
                     	<button type="submit" class="btn btn-danger btn-xs "  onclick="return confirm('Are you sure you want to delete this community?')">
-                    	{% bootstrap_icon 'remove-circle' %} Delete
+                    	{% bootstrap_icon 'remove-circle' %} {% trans "Delete" %}
                     	</button>
                     </form>
             </td>

@@ -1,5 +1,5 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 league_tags static forum_markup_tags%}
+{% load bootstrap3 league_tags static forum_markup_tags i18n %}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
   <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
@@ -12,7 +12,7 @@
 
 {% block heading %}
   <div class="page-header">
-    <h1>{{tournament.name}} - Edit</h1>
+    <h1>{% blocktrans with tournament_name=tournament.name %}{{tournament_name}} - Edit{% endblocktrans %}</h1>
   </div>
 {%endblock%}
 
@@ -24,7 +24,7 @@
 	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
 </form>
 <a class="btn btn-danger pull-right" href="{% url 'tournament:about' tournament.pk %}">
-    Cancel
+    {% trans "Cancel" %}
 </a>
 
 

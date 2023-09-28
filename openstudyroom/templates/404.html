@@ -1,9 +1,9 @@
 {% extends "full_width.html" %}
-
+{% load i18n %}
 {% block body_class %}template-404{% endblock %}
 
 {% block content %}
-    <h1>Page not found</h1>
+    <h1>{% trans "Page not found" %}</h1>
 
-    <h2>Sorry, this page could not be found.</h2>
+    <h2>{% trans "Sorry, this page could not be found." %}</h2>
 {% endblock %}

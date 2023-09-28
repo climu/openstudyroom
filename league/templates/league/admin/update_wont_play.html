@@ -1,10 +1,10 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 league_tags %}
-{% block title %} {{division.name}} edit {% endblock %}
+{% load bootstrap3 league_tags i18n %}
+{% block title %} {% blocktrans with division_name=division.name %}{{division_name}} edit{% endblocktrans %} {% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1>{{division.name}} - Manage WontPlay results</h1>
-    <a href="{% url 'league:results' event_pk division.pk %}">Go back to division's page</a>
+    <h1>{{division.name}} - {% trans "Manage WontPlay results" %}</h1>
+    <a href="{% url 'league:results' event_pk division.pk %}">{% trans "Go back to division's page" %}</a>
 </div>
 {%endblock%}
 

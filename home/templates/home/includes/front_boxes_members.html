@@ -1,23 +1,23 @@
-{% load league_tags %}
+{% load league_tags l10n i18n %}
 <div class="col-md-4">
     <div class="panel panel-default">
       <div class="panel-heading">
           {% if should_join %}
-          <h4>Join a league</h4>
+          <h4>{% trans "Join a league" %}</h4>
           {% else %}
-          <h4>Play, chat and study now in our <a href="https://discordapp.com/invite/37ExfDP"> discord</a>!</h4>
+          <h4>{% blocktrans %}Play, chat and study now in our <a href="https://discordapp.com/invite/37ExfDP"> discord</a>!{% endblocktrans %}</h4>
           {% endif %}
       </div>
     <div class="panel-body">
         {% if should_join %}
-        <p>You can easily join a league in the <a href="/league/">league pages</a>.</p>
-        <p> See how our leagues works <a href="/league/league-rules/">here.</a> </p>
+        <p>{% blocktrans %}You can easily join a league in the <a href="/league/">league pages</a>.{% endblocktrans %}</p>
+        <p> {% blocktrans %}See how our leagues works <a href="/league/league-rules/">here.</a>{% endblocktrans %} </p>
         {% else %}
       {% if online_opponents %}
       <p>
-        Join the motivated OSR-community in our <a href="https://discordapp.com/invite/37ExfDP"> discord channel</a>. Chat, arrange games and get your games reviewed.
+        {% blocktrans %}Join the motivated OSR-community in our <a href="https://discordapp.com/invite/37ExfDP"> discord channel</a>. Chat, arrange games and get your games reviewed.{% endblocktrans %}
       </p>
-        <p>Your opponents online now:</p>
+        <p>{% trans "Your opponents online now:" %}</p>
         <div class="row">
           <div class="col-md-4">
         {% for user in online_opponents %}
@@ -31,7 +31,7 @@
     </div>
 
       {% else %}
-      <p>No opponents are online now on KGS, OGS nor Discord.</p><p> Try planning your games.</p>
+      {% blocktrans %}<p>No opponents are online now on KGS, OGS nor Discord.</p><p> Try planning your games.</p>{% endblocktrans %}
       {% endif %}
       {% endif %}
 
@@ -41,32 +41,33 @@
           <div class="col-md-4">
               <div class="panel panel-default">
                   <div class="panel-heading">
-                      <h4><a href="/calendar"> Plan your games</a></h4>
+                      <h4><a href="/calendar"> {% trans "Plan your games" %}</a></h4>
                   </div>
                   <div class="panel-body">
                       {% if availables %}
                       {% for available in availables %}
-                      <p>{{available.user|user_link}} wants to play on the {{available.start|date:"j b"}} {{available.start|time}} -> {{available.end|time}}</p>
+                      <p>{% blocktrans with available_user=available.user|user_link available_start_date=available.start|date:"j b" available_start_time=available.start|time available_end_time=available.end|time %}{{available_user}} wants to play on the {{available_start_date}} {{available_start_time}} -> {{available_end_time}}{% endblocktrans %}</p>
                       {% endfor %}
                       {% endif %}
                       {% if not me_available %}
-                      <p>Tell others when you are available so they can schedule games with you.</p>
+                      <p>{% trans "Tell others when you are available so they can schedule games with you." %}</p>
                       {% endif %}
                       {% if game_requests > 0 %}
-                      <p> You have {{game_requests}} game requests. </p>
+                      <p> {% blocktrans with game_requests=game_requests %}You have {{game_requests}} game requests.{% endblocktrans %} </p>
                       {% endif %}
-                      <p> Manage all this <a href="/calendar"> here </a> </p>
+                      {% comment %}Translators : this sentence append just after 'You have 'game_requests' game requests'{% endcomment %}
+                      <p> {% blocktrans %}Manage all this <a href="/calendar"> here </a>{% endblocktrans %} </p>
                   </div>
               </div>
           </div>
           <div class="col-md-4">
               <div class="panel panel-default">
                   <div class="panel-heading">
-                      <h4><a href="/help-osr/">Support the OSR project</a></h4>
+                      <h4><a href="/help-osr/">{% trans "Support the OSR project" %}</a></h4>
                   </div>
                   <div class="panel-body">
-                      <p>Click <a href="/help-osr/">here</a> to see various way you can help OSR.</p>
-                      <p>You can also just push the donate button.</p>
+                      <p>{% blocktrans %}Click <a href="/help-osr/">here</a> to see various way you can help OSR.{% endblocktrans %}</p>
+                      <p>{% trans "You can also just push the donate button." %}</p>
 
 
         <div class=" text-center" style="margin-top:30px;" >

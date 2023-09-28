@@ -1,15 +1,15 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 league_tags static forum_markup_tags%}
+{% load bootstrap3 league_tags static forum_markup_tags i18n %}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/league.css' %}"/>
   <link rel="stylesheet" href="{% static 'css/tournament.css' %}"/>
 {% endblock %}
 
-{% block title %}{{tournament.name}} - Groups{% endblock %}
+{% block title %}{% blocktrans with tournament_name=tournament.name %}{{tournament_name}} - Groups{% endblocktrans %}{% endblock %}
 
 {% block heading %}
   <div class="page-header">
-    <h1>{{tournament.name}} - Groups</h1>
+    <h1>{% blocktrans with tournament_name=tournament.name %}{{tournament_name}} - Groups{% endblocktrans %}</h1>
   </div>
   <div class="">{{tournament.description|safe|rendered}}</div>
 
@@ -33,7 +33,7 @@
       {% endfor %}
   </div>
   {% else %}
-    There is no group in this tournament!
+    {% trans "There is no group in this tournament!" %}"
   {% endif %}
 </div>
 

@@ -1,5 +1,5 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 league_tags static forum_markup_tags i18n tz%}
+{% load bootstrap3 league_tags static forum_markup_tags i18n tz %}
 {% block title %}OSR - {{community.name}}{% endblock %}
 {% block extra_head_js %}
 {% get_current_language as LANGUAGE_CODE %}
@@ -79,7 +79,7 @@ return false;};
     <button type="submit" class="btn btn-success pull-right"  onclick="return confirm('
     {% blocktrans with name=community.name %}You are about to join the {{name}} community. Allright? {% endblocktrans %}
     ')">
-    {% bootstrap_icon "ok" %} {% trans "Join" %} {{community.name}} !
+    {% bootstrap_icon "ok" %} {% blocktrans with community_name=community.name %}Join {{community_name}} !{% endblocktrans %}
     </button>
     </div>
     </form>
@@ -90,8 +90,10 @@ return false;};
     <div class="form-group">
     <input type="hidden" name="action" value="join">
     <input type="hidden" name="next" value="{{request.path}}">
-    <button type="submit" class="btn btn-danger pull-right"  onclick="return confirm('You are about to quit the {{community.name}} community. Allright?')">
-    {% bootstrap_icon "remove" %} {% trans "Quit" %} {{community.name}} !
+    <button type="submit" class="btn btn-danger pull-right"  onclick="return confirm('
+    {% blocktrans with name=community.name %}You are about to quit the {{name}} community. Allright?{% endblocktrans %}
+    ')">
+    {% bootstrap_icon "remove" %} {% blocktrans with community_name=community.name %}Quit {{community_name}} !{% endblocktrans %}
     </button>
     </div>
     </form>
@@ -114,7 +116,7 @@ return false;};
 
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#leagues">{% trans "Leagues" %}</a></li>
-  <li><a data-toggle="tab" href="#tournaments">{% trans "tournaments" %}</a></li>
+  <li><a data-toggle="tab" href="#tournaments">{% trans "Tournaments" %}</a></li>
   <li><a data-toggle="tab" href="#games" id="games_tab">{% trans "Games" %}</a></li>
   <li><a data-toggle="tab" href="#members">{% trans "Members" %}</a></li>
   <li><a data-toggle="tab" href="#activity">{% trans "Activity" %}</a></li>
@@ -128,7 +130,7 @@ return false;};
   <div id="leagues" class="panel panel-default tab-pane fade in active">
     <div class="panel-heading clearfix">
       <h3>
-        {% blocktrans with name=community.name %}All {{name}} leagues {% endblocktrans %}
+        {% blocktrans with community_name=community.name %}All {{community_name}} leagues {% endblocktrans %}
         {% if admin %}
         <a href="{% url 'community:create_league' community.pk %}">
           <button class="btn btn-success pull-right">
@@ -145,7 +147,7 @@ return false;};
 
   <div id="games" class="panel panel-default tab-pane fade in">
     <div class="panel-heading">
-      <h3>{{community.name}} {% trans "Games" %}</h3>
+      <h3>{% blocktrans with community_name=community.name %}{{community_name}} games{% endblocktrans %}</h3>
     </div>
     <div class ="row">
       <div class="col-md-4">
@@ -171,7 +173,7 @@ return false;};
   <div id="tournaments" class="panel panel-default tab-pane fade">
     <div class="panel-heading clearfix">
       <h3>
-        {% blocktrans with name=community.name %}All {{name}} tournaments {% endblocktrans %}
+        {% blocktrans with community_name=community.name %}All {{community_name}} tournaments {% endblocktrans %}
         {% if admin %}
         <a href="{% url 'community:create_tournament' community.pk %}">
           <button class="btn btn-success pull-right">
@@ -189,7 +191,7 @@ return false;};
 
   <div id="members" class="panel panel-default tab-pane fade">
     <div class="panel-heading clearfix">
-      <h3> {% blocktrans with name=community.name %}All {{name}} members {% endblocktrans %} </h3>
+      <h3> {% blocktrans with community_name=community.name %}All {{community_name}} members {% endblocktrans %} </h3>
       {% if admin %}
         <div class="pull-right">
           {% trans "Invite a user" %}
@@ -217,7 +219,7 @@ return false;};
       Categories
       <a  href="{%url 'community:create_category' community.pk %}">
         <button class="btn btn-xs btn-success pull-right clearfix">
-          {%bootstrap_icon 'plus'%} Create a new category
+          {%bootstrap_icon 'plus'%} {% trans "Create a new category" %}
         </button>
       </a>
       </legend>
@@ -227,7 +229,7 @@ return false;};
       Events
       <a  href="{%url 'community:create_event' community.pk %}">
         <button class="btn btn-xs btn-success pull-right clearfix">
-          {%bootstrap_icon 'plus'%} Create a new event
+          {%bootstrap_icon 'plus'%} {% trans "Create a new event" %}
         </button>
       </a>
       </legend>

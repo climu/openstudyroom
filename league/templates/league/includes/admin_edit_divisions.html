@@ -1,13 +1,13 @@
-{% load bootstrap3 %}
-<legend>{{object}} divisions</legend>
+{% load bootstrap3 i18n %}
+<legend>{% blocktrans with object=object %}{{object}} divisions{% endblocktrans %}</legend>
 <div class="panel panel-default">
-  <div class="panel-heading"> Create a new division</div>
+  <div class="panel-heading"> {% trans "Create a new division" %}</div>
   <div class="panel-body">
 <form action="" method="POST" class="form-inline" >{% csrf_token %}
 <input type="hidden" name="next" value="{{request.path}}">
 <input id="name" class="form-control" name="name" placeholder="New division name" title=""  type="text">
 <button type="submit" formaction="{% url 'league:admin_create_division' object.pk %}" class="btn btn-primary  pull-right">
-  {% bootstrap_icon "plus" %} Create new division
+  {% bootstrap_icon "plus" %} {% trans "Create a new division" %}
 </button>
 </form>
  </div>
@@ -17,7 +17,7 @@
   <div class="panel-heading clearfix">
 <b>{{division.name}}</b>
      <div class="pull-right">
-        <a href="{% url 'league:admin_users_list' object.pk division.pk %}">{{division.number_players}} players </a>| {{division.number_games}} games</div>
+        <a href="{% url 'league:admin_users_list' object.pk division.pk %}">{{division.number_players}} {% trans "players" %} </a>| {{division.number_games}} {% trans "games" %}</div>
    </div>
   <div class="panel-body">
     <div class="row">
@@ -26,7 +26,7 @@
       <input type="hidden" name="next" value="{{request.path}}">
       <input id="name" class="form-control" name="name" placeholder="Division name" value="{{division.name}}" title=""  type="text">
     <button type="submit" formaction="{% url 'league:admin_rename_division' division.pk %}" class="btn btn-primary">
-Rename
+{% trans "Rename" %}
 </button>
 </form>
 </div>
@@ -36,7 +36,7 @@ Rename
       <input type="hidden" name="next" value="{{request.path}}">
       <button type="submit" formaction="{% url 'league:admin_delete_division' division.pk %}" class="btn btn-danger"
       onclick="return confirm('Delete the {% if division.number_players > 0 %}division {{division}} and all its players/games?'{% else %}empty division {{division}}?'{% endif %} )">
-        {% bootstrap_icon "remove" %} Delete
+        {% bootstrap_icon "remove" %} {% trans "Delete" %}
       </button>
     </form>
   </div>
@@ -69,7 +69,7 @@ Rename
   <div class="panel-footer">
 
   <form action="" method="POST" class="form-inline" >{% csrf_token %}
-      <label for="user_id">Winner
+      <label for="user_id">{% trans "Winner" %}
         <select class="form-control" id="user_id" name="user_id">
           <option value="-1">-------------</option>
           {% for player in division.get_players %}

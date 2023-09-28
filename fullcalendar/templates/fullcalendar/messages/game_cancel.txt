@@ -1,4 +1,4 @@
-{% load l10n i18n tz%}
+{% load l10n i18n tz %}
 {% localize off %}
 {% language 'en' %}
 Hello !

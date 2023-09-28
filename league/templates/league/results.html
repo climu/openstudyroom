@@ -1,6 +1,6 @@
 {% extends "league/base.html" %}
 {% load tz static league_tags bootstrap3 i18n forum_markup_tags osr_tags %}
-{% block title %}{{event}}- {% trans "results" %}{% endblock %}
+{% block title %}{{event}} - {% trans "Results" %}{% endblock %}
 
 
 {% block content %}
@@ -61,15 +61,15 @@
   <p>
     {% if can_edit_division_infos or admin %}
     <a href="{% url 'league:division_update_infos' division.pk %}">
-      <button class="btn btn-default">Edit informations</button>
+      <button class="btn btn-default">{% trans "Edit informations" %}</button>
     </a>
     {% endif %}
     {% if admin %}
     <a href="{% url 'league:division_update_wont_play' division.pk %}">
-      <button class="btn btn-default">Manage WontPlay results</button>
+      <button class="btn btn-default">{% trans "Manage WontPlay results" %}</button>
     </a>
     <a href="{% url 'league:division_create_forfeit' division.pk %}">
-      <button class="btn btn-default">Create forfait</button>
+      <button class="btn btn-default">{% trans "Create forfait" %}</button>
     </a>
     {% endif %}
   </p>
@@ -79,7 +79,7 @@
 <div>{{division.informations|safe|rendered}}</div>
 {% endif %}
 {% if not event.community %}
-<h3> OSR is made possible thanks to the support from friends and partners </h3>
+<h3> {% trans "OSR is made possible thanks to the support from friends and partners" %} </h3>
   {% sponsors %}
 {% endif %}
 {% endblock %}

@@ -1,7 +1,8 @@
-{% load l10n i18n tz%}
+{% load l10n i18n tz %}
 {% localize off %}
 {% language 'en' %}
 Hello !
+
 This message was automatically sent to you to inform you that the user {{sender.username}} want to play on {{date|utc}} UTC.
 
 You can either accept or decline this game request on your calendar.

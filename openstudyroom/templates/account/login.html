@@ -2,11 +2,11 @@
 
 {% load account %}
 
-{% load bootstrap3 %}
-{% block title %}Log in {% endblock %}
+{% load bootstrap3 i18n %}
+{% block title %}{% trans "Log in" %} {% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1>Log in to an existing account</h1>
+    <h1>{% trans "Log in to an existing account" %}</h1>
 </div>
 {% endblock %}
 
@@ -20,7 +20,7 @@
                     <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                 {% endif %}
                 <button type="submit" class="btn btn-primary">Log in</button>
-                <a href="{% url 'account_reset_password'%}" class="btn btn-link"> Forgot your password?</a>
+                <a href="{% url 'account_reset_password'%}" class="btn btn-link"> {% trans "Forgot your password?" %}</a>
             </form>
         </div>
         <div class="col-md-4">

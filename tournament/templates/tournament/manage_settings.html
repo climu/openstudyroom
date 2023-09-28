@@ -1,9 +1,9 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 static tournament_tags league_tags%}
-{% block title %}OSR league admin - Manage a tournament{% endblock %}
+{% load bootstrap3 static tournament_tags league_tags i18n %}
+{% block title %}{% trans "OSR league admin" %} - {% trans "Manage a tournament" %}{% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1>{{tournament | tournament_link}} settings & players</h1>
+    <h1>{% blocktrans with tournament_tournament_link=tournament | tournament_link %}{{tournament_tournament_link}} settings & players{% endblocktrans %}</h1>
 </div>
 {%endblock%}
 {% block content %}
@@ -13,23 +13,23 @@
 <div class="row">
 
   <div class="col-md-4">
-    <legend>Tournament settings </legend>
+    <legend>{% trans "Tournament settings" %} </legend>
     <form action="" method="POST">{% csrf_token %}
        {% bootstrap_form form %}
         {% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}
     </form>
   </div>
   <div class="col-md-6">
-    <legend>Players </legend>
+    <legend>{% trans "Players" %} </legend>
     <div class="panel panel-default">
       <div class="panel-heading">
-        Invite a user
+        {% trans "Invite a user" %}
       </div>
       <div class="panel-body">
         <form action="{% url 'tournament:invite_user' tournament.pk %}" method="post" >
             {% csrf_token %}
             <div class="form-group">
-            <input type="text" name="username" placeholder="OSR Username" >
+            <input type="text" name="username" placeholder="{% trans 'OSR username' %}" >
 
             <button type="submit" class="pull-right btn btn-success btn-sm"  >
             {% bootstrap_icon "plus" %}
@@ -41,15 +41,15 @@
 
     <div class="panel panel-default">
       <div class="panel-heading clearfix">
-        {{players|length}} registered players
+        {% blocktrans with players_length=players|length %}{{players_length}} registered players{% endblocktrans %}
         <button id="save_players_order" class="btn btn-default btn-sm pull-right">
-          Save
+          {% trans "Save" %}
         </button>
         <button id="remove_players" class="btn btn-default btn-sm pull-right">
-          remove
+          {% trans "remove" %}
         </button>
         <button id="shuffle_players" class="btn btn-default btn-sm pull-right">
-         shuffle
+          {% trans "shuffle" %}
         </button>
       </div>
       <div class="row">
@@ -81,7 +81,7 @@
     </div>
     <div class="panel panel-default">
       <div class="panel-heading">
-        Set a winner
+        {% trans "Set a winner" %}
       </div>
       <div class="panel-body">
         <form action="" method="POST" class="form-inline" >{% csrf_token %}

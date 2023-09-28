@@ -1,16 +1,16 @@
 
-{% load bootstrap3 community_tags %}
+{% load bootstrap3 community_tags i18n %}
 
   <div class="panel panel-default">
-  <div class="panel-heading"><h3> Users with no profiles </h3></div>
+  <div class="panel-heading"><h3> {% trans "Users with no profiles" %} </h3></div>
     <table id='new_user-table' class='display table' >
       <thead>
         <tr>
-          <th>username</th>
-          <th>email</th>
-          <th>Communities interest</th>
-          <th>Delete</th>
-          <th>Create profile</th>
+          <th>{% trans "username" %</th>
+          <th>{% trans "email" %</th>
+          <th>{% trans "Communities interest" %</th>
+          <th>{% trans "Delete" %</th>
+          <th>{% trans "Create profile" %</th>
         </thead>
         <tbody>
           {% for u in no_profile_users %}

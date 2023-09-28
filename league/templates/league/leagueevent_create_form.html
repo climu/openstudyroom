@@ -1,13 +1,13 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 league_tags tz%}
-{% block title %}OSR league admin - Create new Event{% endblock %}
+{% load bootstrap3 league_tags tz i18n %}
+{% block title %}{% trans "OSR league admin" %} - {% trans "Create new event" %}{% endblock %}
 {% block heading %}
 <div class="page-header">
     <h1>
       {% if copy_from%}
-        Copy {{copy_from}} league
+        {% blocktrans with league_copy_from=copy_from %}Copy {{league_copy_from}} league{% endblocktrans %}
       {% else %}
-        Create new Event
+      {% trans "Create new event" %}
       {% endif %}
     </h1>
 </div>
@@ -17,9 +17,9 @@
 <div class="row">
   <legend>
     {% if copy_from%}
-        Copy {{copy_from}} league
+        {% blocktrans with league_copy_from=copy_from %}Copy {{league_copy_from}} league{% endblocktrans %}
     {% else %}
-        Create new League
+        {% trans "Create new league" %}
     {% endif %}
   </legend>
   {% include 'league/includes/admin_league_form.html' %}

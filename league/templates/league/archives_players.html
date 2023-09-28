@@ -1,9 +1,9 @@
 {% extends "league/base.html" %}
-{% block title %}Archives- Players{% endblock %}
-{% load league_tags %}
+{% load league_tags i18n %}
+{% block title %}{% trans "Archives" %}- {% trans "Players" %}{% endblock %}
 {% block content %}
   <ul class="nav nav-tabs">
-    <li class="active"><a href="{% url 'league:archives' %}">Archives</a></li>
+    <li class="active"><a href="{% url 'league:archives' %}">{% trans "Archives" %}</a></li>
     {% for ev in open_events %}
       <li>
         <a href ="{% url 'league:players' ev.pk %}">
@@ -17,25 +17,26 @@
         </a>
       </li>
     {% endfor %}
-    <li class="pull-right"><a href="{% url 'league:scrap_list' %}">Scrape list</a></li>
+    <li class="pull-right"><a href="{% url 'league:scrap_list' %}">{% trans "Scrape list" %}</a></li>
   </ul>
   <nav class="navbar navbar-default">
   <ul class="nav navbar-nav navbar-left">
-    <li><a href="{% url 'league:archives' %}">Leagues</a></li>
-    <li class="active"><a href="{% url 'league:players'  %}">Players</a></li>
-    <li><a href="{% url 'league:games' %}">Games</a></li>
+    <li><a href="{% url 'league:archives' %}">{% trans "Leagues" %}</a></li>
+    <li class="active"><a href="{% url 'league:players'  %}">{% trans "Players" %}</a></li>
+    <li><a href="{% url 'league:games' %}">{% trans "Games" %}</a></li>
   </ul>
 
   </nav>
-  <div class="well"> This table show all users of the Open Study Room since it's creation.</div>
+  <div class="well"> {% trans "This table show all users of the Open Study Room since it's creation." %}</div>
   <table id='player-table' class=' table table-hover '  >
     <thead>
       <tr>
-        <th>Player</th>
-        <th># leagues</th>
-        <th># Win</th>
-        <th># Loss</th>
-        <th># Games</th>
+        <th>{% trans "Player" %}</th>
+        <th># {% trans "Leagues" %}</th>
+        <th># {% trans "Wins" %}</th>
+        {% comment %}Translators: 'loss' is plural{% endcomment %}
+        <th># {% trans "Loss" %}</th>
+        <th># {% trans "Games" %}</th>
       </tr>
     </thead>
     <tbody>
@@ -61,7 +62,7 @@
   $(document).ready(function() {
     $('#player-table').DataTable({
       language: {
-        searchPlaceholder: "OSR/KGS/OGS username"
+        searchPlaceholder: "{% trans 'OSR/KGS/OGS username' %}"
       }
     });
   } );

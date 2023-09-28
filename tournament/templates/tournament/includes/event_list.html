@@ -1,10 +1,10 @@
-{%load tz calendar_tags%}
+{%load tz calendar_tags l10n i18n %}
 {% get_current_timezone as TIME_ZONE %}
 
 <ul class="sidebar">
   <h4>
   <a href="{% url 'tournament:calendar' tournament.pk%}">  <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-  Upcoming events ({{TIME_ZONE}})
+  {% blocktrans with TIME_ZONE=TIME_ZONE %}Upcoming events ({{TIME_ZONE}}){% endblocktrans %}
 </a>
   </h4>
 {% get_now as now %}
@@ -17,7 +17,7 @@
     <div class="col-md-4">
       <p>
         {% if cal_event.start.date == now.date %}
-        Today !
+        {% trans "Today !" %}"
         {% else %}
         {{cal_event.start|date:"d, M"}}
         {% endif %}

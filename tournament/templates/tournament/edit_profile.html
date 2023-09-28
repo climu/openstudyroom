@@ -1,10 +1,10 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 league_tags%}
-{% block title %}Edit a user Profile{% endblock %}
+{% load bootstrap3 league_tags i18n %}
+{% block title %}{% trans "Edit a user profile" %}{% endblock %}
 
 {% block heading %}
 <div class="page-header">
-    <h1>Edit {{user.username}} Profile</h1>
+    <h1>{% blocktrans with user_username=user.username %}Edit {{user_username}} profile{% endblocktrans %}</h1>
 </div>
 {%endblock%}
 {% block content %}
@@ -16,7 +16,7 @@
 
 
 <div class="well">
-Please make sure all the league games you have played so far are on the results before changing your KGS or OGS usernames.
+{% trans "Please make sure all the league games you have played so far are on the results before changing your KGS or OGS usernames." %}"
 </div>
 {%bootstrap_field form.ogs_username %}
 {%bootstrap_field form.kgs_username %}

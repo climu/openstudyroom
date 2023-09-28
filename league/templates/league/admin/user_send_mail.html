@@ -1,9 +1,9 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 league_tags%}
-{% block title %}OSR league admin - send mail{% endblock %}
+{% load bootstrap3 league_tags i18n %}
+{% block title %}{% trans "OSR league admin" %} - {% trans "Send mail" %}{% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1>Send an email to {{user}}</h1>
+    <h1>{% blocktrans with user=user %}Send an email to {{user}}{% endblocktrans %}</h1>
 </div>
 {%endblock%}
 {% block content %}

@@ -1,9 +1,9 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 static league_tags tournament_tags%}
+{% load bootstrap3 static league_tags tournament_tags i18n %}
 {% block title %}Manage tournament groups{% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1>{{tournament | tournament_link}} groups</h1>
+    <h1>{% blocktrans with tournament_tournament_link=tournament | tournament_link %}{{tournament_tournament_link}} groups{% endblocktrans %}</h1>
 </div>
 {%endblock%}
 {% block content %}
@@ -15,19 +15,19 @@
 
 
   <div class="col-md-3">
-  <legend>Players </legend>
+  <legend>{% trans "Players" %} </legend>
 
 
   <div class="panel panel-danger ">
     <div class="panel-heading clearfix">
-      Remove players by droping it here.
+      {% trans "Remove players by droping it here." %}
     </div>
     <div id="remove_players"class='panel-body'>
     </div>
   </div>
   <div class="panel panel-default">
     <div class="panel-heading clearfix">
-      {{players|length}} registered players
+      {% blocktrans with players_length=players|length %}{{players_length}} registered players{% endblocktrans %}
     </div>
     <div class="row">
     <div class="col-md-2">
@@ -64,24 +64,24 @@
 
 </div>
 <div class="col-md-6">
-  <legend>Groups stage </legend>
+  <legend>{% trans "Groups stage" %} </legend>
   <div class="panel panel-default">
     <div class="panel-heading clearfix">
 
           <button id="save_groups_button" class="btn btn-success btn-sm pull-right">
-              {% bootstrap_icon "ok" %}    Save groups
+              {% bootstrap_icon "ok" %}    {% trans "Save groups" %}
           </button>
           {% if tournament.stage == 1 %}
-          {% bootstrap_icon "ok" %}Group stage is on
+          {% bootstrap_icon "ok" %}{% trans "Group stage is on" %}
           {% else %}
           <form method="POST" class="form-inline" >{% csrf_token %}
             <button type="submit" formaction="{% url 'tournament:set_stage' tournament.pk %}" class="btn btn-primary btn-sm">
               <input type="hidden" name="action" value="1">
               <input type="hidden" name="next" value="{{request.path}}">
                 {% if tournament.stage == 0%}
-                  {% bootstrap_icon "triangle-right" %} Start group stage
+                  {% bootstrap_icon "triangle-right" %} {% trans "Start group stage" %}
                 {% else %}
-                  {% bootstrap_icon "triangle-left" %} Back to group stage
+                  {% bootstrap_icon "triangle-left" %} {% trans "Back to group stage" %}
 
                 {% endif %}
               </button>
@@ -90,7 +90,7 @@
     </div>
   </div>
   <div class="panel panel-default">
-    <div class="panel-heading"> Create a new group</div>
+    <div class="panel-heading"> {% trans "Create a new group" %}</div>
     <div class="panel-body">
       <form action="" method="POST" class="form-inline" >
         {% csrf_token %}

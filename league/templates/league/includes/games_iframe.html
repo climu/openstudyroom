@@ -1,14 +1,14 @@
-{% load wagtailcore_tags league_tags%}
+{% load wagtailcore_tags league_tags l10n i18n %}
 
 {# generate a table from a game queryset #}
 {# don't forget to add the extrajs when including this ! #}
 <table id='game-table' class='display table ' cellspacing='0' width='100%'>
    <thead>
      <tr>
-       <th>date</th>
-       <th>white</th>
-       <th>black</th>
-       <th>result</th>
+      <th>{% trans "date" %}</th>
+      <th>{% trans "white" %}</th>
+      <th>{% trans "black" %}</th>
+      <th>{% trans "result" %}</th>
     </thead>
     <tbody>
 {% for game in games %}

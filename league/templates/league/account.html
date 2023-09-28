@@ -28,7 +28,7 @@ return false;};
 
 {% block body_class %}user{% endblock %}
 
-{% block title %}{% if user == request.user %}My{% else %}{{user.username}}{% endif %} profile{% endblock %}
+{% block title %}{% if user == request.user %}{% trans "My profile" %}{% else %}{% blocktrans with username=user.username %}{{username}} profile{% endblocktrans %}{% endif %}{% endblock %}
 {% block heading %}
 {% get_meijin as meijin %}
 
@@ -37,7 +37,7 @@ return false;};
         {% if user == meijin %}
             <i class="fa fa-trophy" data-toggle="tooltip" title="{{user.username}} is OSR Meijin !"></i>
         {% endif %}
-        {% if user == request.user %}My{% else %}{{user.username}}{% endif %} profile
+        {% if user == request.user %}{% trans "My profile" %}{% else %}{% blocktrans with username=user.username %}{{username}} profile{% endblocktrans %}{% endif %}
     </h1>
 
 </div>
@@ -49,8 +49,8 @@ return false;};
 
 {% if user == meijin %}
 <div class="well">
-    <h4><i class="fa fa-trophy"></i> {{user.username}} is OSR Meijin!</h4>
-    He earned respect from all Open Study Room and a teaching game with Alexander Dinerchtein (3p).
+    <h4><i class="fa fa-trophy"></i> {% blocktrans with username=user.username %}{{username}} is OSR Meijin !{% endblocktrans %}</h4>
+    {% trans "He earned respect from all Open Study Room and a teaching game with Alexander Dinerchtein (3p)." %}"
 </div>
 {% endif %}
 <div class="panel panel-default">
@@ -59,7 +59,7 @@ return false;};
     {% if user.profile.country %}
     <img   src="{{user.profile.country.flag}}">
     {% endif %}
-     {{user.username}} infos
+    {% blocktrans with username=user.username %}{{username}} infos{% endblocktrans %}
      {% if request.user == user %}
       <a href="{% url 'league:profile_update' user.profile.pk %}"><button class="btn btn-default pull-right">{% bootstrap_icon 'wrench' %} Edit </button></a>
      {% endif %}
@@ -75,23 +75,23 @@ return false;};
 {% if won_divisions or won_tournaments %}
 <div class="panel panel-default">
 <div class="panel-heading">
-  <h4> Trophys</h4>
+  <h4> {% trans "Trophys" %}</h4>
 </div>
 <div class="panel-body">
   {% if won_divisions %}
   <div class="col-md-6">
-    <h4>Leagues</h4>
+    <h4>{% trans "Leagues" %}</h4>
   {% for division in won_divisions %}
-  <p>  {{division.league_event.end_time|date}}: Winner of {{division|division_link}}</p>
+  <p>  {{division.league_event.end_time|date}}: {% blocktrans with division=division|division_link %}Winner of {{division}}{% endblocktrans %}</p>
   {% endfor %}
 </div>
 {% endif %}
 {% if won_tournaments %}
 
 <div class="col-md-6">
-  <h4>Tournaments</h4>
+  <h4>{% trans "Tournaments" %}</h4>
 {% for tournament in won_tournaments %}
-  <p>{{tournament.end_time|date}}: Winner of <a href="{% url "tournament:view" tournament.pk %}">{{tournament.name}}</a></p>
+  <p>{{tournament.end_time|date}}: {% trans "Winner of tournament" %} <a href="{% url "tournament:view" tournament.pk %}">{{tournament.name}}</a></p>
 {% endfor %}
 </div>
 {% endif %}
@@ -102,11 +102,11 @@ return false;};
 
 {% if players %}
 <div class="panel panel-default">
-  <div class="panel-heading"><h4>{{user.username}} results of passed and open leagues</h4></div>
+  <div class="panel-heading"><h4>{% blocktrans with username=user.username %}{{username}} results of passed and open leagues{% endblocktrans %}</h4></div>
 <div class="panel-body">
 <div class="col-md-6">
 <ul class="nav nav-tabs">
-  <li class ="active"><a data-toggle="tab" href="#archives">Archives</a></li>
+  <li class ="active"><a data-toggle="tab" href="#archives">{% trans "Archives" %}</a></li>
   {% for event in open_events %}
   {% if event.is_in %}
   <li ><a data-toggle="tab" href="#{{event.pk}}">{{event.name}}</a></li>
@@ -118,11 +118,11 @@ return false;};
         <table id='archive-table' class='table' >
           <thead>
        <tr>
-         <th>Event</th>
-         <th>Division</th>
-         <th>win</th>
-         <th>loss</th>
-         <th>games </th>
+         <th>{% trans "Event" %}</th>
+         <th>{% trans "Division" %}</th>
+         <th>{% trans "win" %}</th>
+         <th>{% trans "Loss" %}</th>
+         <th>{% trans "Games" %}</th>
       </thead>
       <tbody>
   {% for player in players %}
@@ -144,10 +144,10 @@ return false;};
       <table id='{{event.pk}}-opponents-table' class=' table table-hover table-condensed'  >
         <thead>
             <tr>
-            <th>Rank</th>
-            <th>Player</th>
-            <th>score</th>
-            <th> {{user.profile.kgs_username}}'s results</th>
+            <th>{% trans "Rank" %}</th>
+            <th>{% trans "Player" %}</th>
+            <th>{% trans "Score" %}</th>
+            <th> {% blocktrans with kgs_username=user.profile.kgs_username %}{{kgs_username}}'s results{% endblocktrans %}</th>
             </tr>
         </thead>
         <tbody>
@@ -197,14 +197,14 @@ return false;};
 
 
 <div class="panel panel-default">
-  <div class="panel-heading clearfix"><h3>{{user}} Games
+  <div class="panel-heading clearfix"><h3>{% blocktrans %}{{user}} games{% endblocktrans %}
     <a href= "\league\all_sgf\{{user.pk}}">
-      <button class="btn btn-default btn-sm pull-right">Download all games</button>
+      <button class="btn btn-default btn-sm pull-right">{% trans "Download all games" %}</button>
     </a>
   </div>
   {% if sgfs is None %}
     <div class="panel-body">
-      {{user}} didn't play any league game yet.
+      {% blocktrans %}{{user}} didn't play any league game yet.{% endblocktrans %}
     </div>
   {% else %}
     <div class ="row">
@@ -215,7 +215,7 @@ return false;};
       <div id ="game_infos"></div>
       <div id="player">
         <div class="alert alert-info">
-          Click a game result to see it.
+          {% trans "Click a game result to see it." %}
         </div>
       </div>
     </div>

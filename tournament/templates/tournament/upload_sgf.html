@@ -1,9 +1,9 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 static league_tags wgo_tags tournament_tags%}
-{% block title %}Manage tournament games{% endblock %}
+{% load bootstrap3 static league_tags wgo_tags tournament_tags l10n i18n %}
+{% block title %}{% trans "Manage tournament games" %}{% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1>Upload a game for {{tournament.name}}</h1>
+    <h1>{% trans "{% blocktrans with tournament_name=tournament.name %}Upload a game for {{tournament_name}}{% endblocktrans %}</h1>
 </div>
 {%endblock%}
 {% block content %}
@@ -13,12 +13,12 @@
 <div class="row">
   <div class="col-lg-4">
     <button form="sgf-form" type="submit" class="btn btn-info " formaction="{%url 'tournament:upload_sgf' tournament.pk%}" >
-      {% bootstrap_icon "refresh" %}  Check sgf
+      {% bootstrap_icon "refresh" %}  {% trans "Check sgf" %}
     </button>
   </div>
   <div class="col-lg-4">
     <button  class="btn btn-info" id="go-quest-btn">
-      {% bootstrap_icon "equalizer" %}  Go Quest
+      {% bootstrap_icon "equalizer" %}  {% trans "Go Quest" %}
     </button>
     <input
       class="datepicker">
@@ -27,45 +27,45 @@
   <div class="col-lg-4">
     {%if sgf.league_valid %}
     <button form="sgf-form" type="submit" class="btn btn-success " formaction="{%url 'tournament:create_sgf' tournament.pk%}"onclick="return confirm('Save the sgf and create a league game ?')" >
-      {% bootstrap_icon "ok" %} Save sgf
+      {% bootstrap_icon "ok" %} {% trans "Save sgf" %}
     </button>
     {% endif %}
   </div>
 </div>
 <div class="row">
 {%if sgf.league_valid %}
- <h3>Your sgf is valid !</h3>
- <p>Check details below and click save sgf to add it to the database</p>
+ <h3>{% trans "Your sgf is valid!" %}</h3>
+ <p>{% trans "Check details below and click save sgf to add it to the database" %}</p>
 
  {% else %}
- <h3> Your sgf didn't pass the test. Check details below.</h3>
+ <h3> {% trans "Your sgf didn't pass the test. Check details below." %}</h3>
 {% endif %}
 </div>
 
  <div class="row">
         <div class="col-md-3">
           <div class="panel panel-default">
-            <div class="panel-heading"> Sgf infos</div>
+            <div class="panel-heading"> {% trans "Sgf infos" %}</div>
           <table class="table table-condensed">
          <tbody>
            <tr>
-               <th>White</th>
+               <th>{% trans "White" %}</th>
                  <td>{{sgf.wplayer}}</td>
              </tr>
              <tr>
-               <th>Black</th>
+               <th>{% trans "Black" %}</th>
                  <td>{{sgf.bplayer}}</td>
              </tr>
              <tr>
-               <th>Date</th>
+               <th>{% trans "Date" %}</th>
                <td> {{sgf.date |date:"M d, Y"}}</td>
              </tr>
              <tr>
-               <th>Result</th>
+               <th>{% trans "Result" %}</th>
                <td> {{sgf.result}}</td>
              </tr>
              <tr>
-               <th>Type</th>
+               <th>{% trans "Type" %}</th>
                <td> {{sgf.game_type}}</td>
              </tr>
            </tbody>
@@ -76,14 +76,14 @@
   <div class="panel-heading">
     {% if sgf.league_valid %}
       {% if match %}
-         This SGF is valid for the match {{match.player_1.user|user_link}} vs {{match.player_2.user |user_link}} in the round {{match.round.name}}
+      {% blocktrans with match_player_1=match.player_1.user|user_link match_player_2=match.player_2.user |user_link match_round_name=match.round.name %}This SGF is valid for the match {{match_player_1}} vs {{match_player_2}} in the round {{match_round_name}}{% endblocktrans %}
       {% elif group %}
-       This SGF is valid for the  {{group.name}}.
+      {% blocktrans with group_name=group.name %}This SGF is valid for the {{group_name}}.{% endblocktrans %}
       {% endif %}
        </div>
 
 {% else %}
-This SGF is not valid :
+{% trans "This SGF is not valid :" %}"
 </div>
 <table class="table table-condensed">
   {% for error in errors %}

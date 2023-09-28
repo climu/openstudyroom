@@ -1,8 +1,8 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 league_tags community_tags%}
+{% load bootstrap3 league_tags community_tags i18n %}
 {% block heading %}
 <div class="page-header">
-    <h1> Edit the {{community|community_link}} community</h1>
+    <h1> {% blocktrans with community_link=community|community_link %}Edit the {{community_link}} community{% endblocktrans %}</h1>
 </div>
 {%endblock%}
 {% block content %}
@@ -12,7 +12,7 @@
 </form>
 <a href="{% url 'community:community_page' community.slug %}">
   <button class="btn btn-danger pull-right">
-    Cancel
+    {% trans "Cancel" %}
   </button>
 </a>
 

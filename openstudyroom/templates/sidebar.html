@@ -13,7 +13,7 @@
 {% last_topics request as topics %}
 
         <ul class="sidebar">
-           <li><h4> Being discussed in our forums </h4></li>
+           <li><h4> {% trans "Being discussed in our forums" %} </h4></li>
            {% for topic in topics %}
               <li>
                  <article class="box post-summary">

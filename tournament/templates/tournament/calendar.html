@@ -1,5 +1,5 @@
 {% extends 'full_width.html' %}
-{% load calendar_tags bootstrap3 tz league_tags static forum_markup_tags%}
+{% load calendar_tags bootstrap3 tz league_tags static forum_markup_tags i18n %}
 
 
 {% block extra_css %}
@@ -20,12 +20,12 @@
 {% endblock %}
 
 
-{% block title %}{{tournament.name}} - Calendar{% endblock %}
+{% block title %}{{tournament.name}} - {% trans "Calendar" %}{% endblock %}
 
 {% block heading %}
 {% get_current_timezone as TIME_ZONE %}
   <div class="page-header">
-    <h1>{{tournament.name}} - Calendar ({{TIME_ZONE}})</h1>
+    <h1>{{tournament.name}} - {% trans "Calendar" %} ({{TIME_ZONE}})</h1>
   </div>
   <div >{{tournament.description|safe|rendered}}</div>
 {%endblock%}
@@ -35,8 +35,8 @@
 {% include 'tournament/includes/tournament_menu.html' with active="calendar" %}
 {% if admin %}
 <ul class="nav nav-tabs">
-  <li role="presentation" class="active"><a href="#">Calendar</a></li>
-  <li role="presentation"><a href="{% url 'tournament:manage_calendar' tournament.pk %}">Manage events</a></li>
+  <li role="presentation" class="active"><a href="#">{% trans "Calendar" %}</a></li>
+  <li role="presentation"><a href="{% url 'tournament:manage_calendar' tournament.pk %}">{% trans "Manage events" %}</a></li>
 </ul>
 {% endif %}
 <div id='calendar'></div>

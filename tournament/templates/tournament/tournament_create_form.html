@@ -1,15 +1,15 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 league_tags%}
-{% block title %}OSR league admin - Create new Event{% endblock %}
+{% load bootstrap3 league_tags i18n %}
+{% block title %}{% trans "OSR league admin" %} - {% trans "Create new event" %}{% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1>Create new tournament</h1>
+    <h1>{% trans "Create new tournament" %}</h1>
 </div>
 {%endblock%}
 {% block content %}
 <div class="row">
 <div class="col-md-4">
-  <legend>Create new tournament </legend>
+  <legend>{% trans "Create new tournament" %} </legend>
 <form action="" method="POST">{% csrf_token %}
 	{% bootstrap_form form %}
 	{% bootstrap_button "Save" button_type="submit" button_class="btn-primary" %}

@@ -1,8 +1,9 @@
 {% extends "league/base.html" %}
-{% load static tz league_tags bootstrap3 calendar_tags community_tags i18n forum_markup_tags%}
+{% load static tz league_tags bootstrap3 calendar_tags community_tags l10n i18n forum_markup_tags %}
 
 
 {% block title %}{{event}}- Overview{% endblock %}
+{% block title %}{{event}} - {% trans "Overview" %}{% endblock %}
 {% block content %}
 <ul class="nav nav-tabs">
   <li ><a href="{% url 'league:archives' %}">{% trans "Archives" %}</a></li>
@@ -27,7 +28,7 @@
 {% endif %}
 <p>{% blocktrans with name=event.name begin_time=event.begin_time|date:"M d, Y H:i"  TIME_ZONE=TIME_ZONE %}The <b>{{name}}</b> started on <b>{{begin_time}}</b> ({{TIME_ZONE}}) and {% endblocktrans %}{% if close %}
   {% comment %}Translators: Following words is for the sentence "the league will start/stop on {{date}}"{% endcomment %}
-   {% trans "stoped" %}{% else %}{% trans "will stop" %}{% endif %} {% trans "on" %} <b>{{event.end_time |date:"M d, Y H:i" }}</b> ({{TIME_ZONE}}).</p>
+   {% trans "stopped" %}{% else %}{% trans "will stop" %}{% endif %} {% trans "on" %} <b>{{event.end_time |date:"M d, Y H:i" }}</b> ({{TIME_ZONE}}).</p>
 <p>{% blocktrans with number_players=event.number_players number_games=event.number_games number_divisions=event.number_divisions percent_game_played=event.percent_game_played possible_games=event.possible_games %}{{number_players}} players played {{number_games}} games in {{number_divisions}} divisions. That is {{percent_game_played}} % of {{possible_games}} possible games.{% endblocktrans %}</p>
 
 {% if event.additional_informations %}
@@ -39,14 +40,12 @@
   {% if event.rules_type %}
   <li>{% blocktrans with rules=event.get_rules_type_display %}Game must be played with the <b>{{rules}} rules</b>{% endblocktrans %}.</li>
   {% endif %}
-  <li>{% trans "Game must be played on one of the following Go server:" %} {{ event.get_servers_list|join:", "}}.</li>
-  <li>{% trans "Game must be <b>public</b>." %}</li>
+  <li>{% trans "Games must be played on one of the following Go server:" %} {{ event.get_servers_list|join:", "}}.</li>
+  <li>{% trans "Games must be <b>public</b>." %}</li>
   {% if event.max_handicap == 0 %}
-    <li>{% trans "Games must be played with <b>no handicap</b>" %}</li>
+    <li>{% trans "Games must be played with <b>no handicap</b>." %}</li>
   {% else %}
-    <li>{% blocktrans with max_handi=event.max_handicap min_handi=event.min_handicap %}
-      Handicap must be between {{min_handi}} and {{max_handi}} inclusive.
-     {% endblocktrans %}</li>
+    <li>{% blocktrans with max_handi=event.max_handicap min_handi=event.min_handicap %}Handicap must be between {{min_handi}} and {{max_handi}} inclusive.{% endblocktrans %}</li>
   {% endif %}
   {% if event.clock_type == "fisher" %}
     <li>{% blocktrans with get_main_time_min=event.get_main_time_min additional_time=event.additional_time %}Games must use <b>Fisher timesetting</b> with at least <b>{{get_main_time_min}} min main time and max time</b> and <b>{{additional_time}} sec increment</b>.{% endblocktrans %}</li>

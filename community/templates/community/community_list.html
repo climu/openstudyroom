@@ -1,18 +1,18 @@
 {% extends 'full_width.html' %}
-{% load bootstrap3 community_tags forum_markup_tags%}
-{% block title %}OSR - Communities {% endblock %}
+{% load bootstrap3 community_tags forum_markup_tags i18n %}
+{% block title %}OSR - {% trans "Communities" %} {% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1> List of all OSR communities</h1>
+    <h1> {% trans "List of all OSR communities" %}</h1>
 </div>
 {%endblock%}
 
 {% block content %}
 <div class="well">
-<p>The Open Study Room have and always will be a project to help online go community organising and setting up go leagues.
-With that in mind, we are very happy to host some league for other friendly go community.</p>
-<p>Below is the list of the public communities OSR is hosting. Joining a community will allow you to play in their leagues.</p>
-<p>If you want your community to run some leagues using the OSR league system, contact us at openstudyroom@gmail.com.</p>
+<p>{% trans "The Open Study Room have and always will be a project to help online go community organising and setting up go leagues. " %}
+{% trans "With that in mind, we are very happy to host some league for other friendly go community." %}</p>
+<p>{% trans "Below is the list of the public communities OSR is hosting. Joining a community will allow you to play in their leagues." %}</p>
+<p>{% trans "If you want your community to run some leagues using the OSR league system, contact us at openstudyroom@gmail.com." %}</p>
 </div>
   {% for community in communitys %}
     <div class="panel panel-default">

@@ -1,9 +1,9 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 league_tags static tz%}
-{% block title %}OSR league admin - Events list{% endblock %}
+{% load bootstrap3 league_tags static tz l10n i18n %}
+{% block title %}{% trans "OSR league admin" %} - {% trans "Events list" %}{% endblock %}
 {% block heading %}
 <div class="page-header">
-    <h1>Events list</h1>
+    <h1>{% trans "Events list" %}</h1>
 </div>
 {%endblock%}
 
@@ -12,7 +12,7 @@
   Categories
   <a  href="{%url 'calendar:create_category'%}">
     <button class="btn btn-xs btn-success pull-right clearfix">
-      {%bootstrap_icon 'plus'%} Create a new category
+      {%bootstrap_icon 'plus'%} {% trans "Create a new category" %}
     </button>
   </a>
   </legend>
@@ -23,7 +23,7 @@
   Events
   <a  href="{%url 'calendar:create_cal_event'%}">
     <button class="btn btn-xs btn-success pull-right clearfix">
-      {%bootstrap_icon 'plus'%} Create a new event
+      {%bootstrap_icon 'plus'%} {% trans "Create a new event" %}
     </button>
   </a>
   </legend>

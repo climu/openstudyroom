@@ -1,10 +1,10 @@
 {% extends 'league/admin/base.html' %}
-{% load bootstrap3 league_tags static tz%}
-{% block title %}OSR league admin - Tournament list{% endblock %}
+{% load bootstrap3 league_tags static tz i18n %}
+{% block title %}{% trans "OSR league admin" %} - {% trans "Tournament list" %}{% endblock %}
 {% load l10n i18n %}
 {% block heading %}
 <div class="page-header">
-    <h1>Tournament list</h1>
+    <h1>{% trans "Tournament list" %}</h1>
 </div>
 {%endblock%}
 {% localize off %}
@@ -13,16 +13,16 @@
 {% timezone "UTC" %}
 <a  href="{%url 'tournament:create'%}">
   <button class="btn btn-success pull-right clearfix">
-    {%bootstrap_icon 'plus'%} Create a new Tournament
+    {%bootstrap_icon 'plus'%} {% trans "Create a new tournament" %}
   </button>
 </a>
 <table class="table" id="cal-event-table">
  <thead>
-   <th>Name</th>
-   <th>Begin Time (UTC/24h)</th>
-   <th>End Time (UTC/24h)</th>
-   <th> Manage</th>
-   <th>Delete</th>
+   <th>{% trans "Name" %}</th>
+   <th>{% trans "Begin Time (UTC/24h)" %}</th>
+   <th>{% trans "End Time (UTC/24h)" %}</th>
+   <th> {% trans "Manage" %}</th>
+   <th>{% trans "Delete" %}</th>
  </thead>
 
 <tbody>
@@ -43,7 +43,7 @@
       {% csrf_token %}
         	<input type="hidden" name="action" value="delete_event" />
         	<button type="submit" class="btn btn-danger btn-xs "  onclick="return confirm('Are you sure you want to delete this event?')">
-        	{% bootstrap_icon 'remove-circle' %} Delete
+        	{% bootstrap_icon 'remove-circle' %} {% trans "Delete" %}
         	</button>
         </form>
     </td>

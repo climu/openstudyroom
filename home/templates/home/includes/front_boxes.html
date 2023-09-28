@@ -1,36 +1,37 @@
+{% load i18n %}
 <div class="container">
 <div class= "row equal">
 <div class="col-md-4">
               <div class="panel panel-default">
                   <div class="panel-heading">
                       <h4><i class="fa fa-book" aria-hidden="true"></i>
- Study Go</h4>
+                        {% trans "Study Go" %}</h4>
                   </div>
                   <div class="panel-body">
-                      <p>We provide a place to study go together. Review your games, study pro games, attend lectures, and more</p>
-                      <a href="{% url "account_signup"%}" class="btn btn-default">Join now !</a>
+                      <p>{% trans "We provide a place to study go together. Review your games, study pro games, attend lectures, and more." %}</p>
+                      <a href="{% url "account_signup"%}" class="btn btn-default">{% trans "Join now !" %}</a>
                   </div>
               </div>
           </div>
           <div class="col-md-4">
               <div class="panel panel-default">
                   <div class="panel-heading">
-                      <h4><i class="fa fa-gamepad" aria-hidden="true"></i> Play Go</h4>
+                      <h4><i class="fa fa-gamepad" aria-hidden="true"></i> {% trans "Play Go" %}</h4>
                   </div>
                   <div class="panel-body">
-                      <p>Our league system allow you to play long serious games in a friendly yet competitive environement.</p>
-                      <a href="/league/" class="btn btn-default">Check out our league</a>
+                      <p>{% trans "Our league system allow you to play long serious games in a friendly yet competitive environement." %}</p>
+                      <a href="/league/" class="btn btn-default">{% trans "Check out our league" %}</a>
                   </div>
               </div>
           </div>
           <div class="col-md-4">
               <div class="panel panel-default">
                   <div class="panel-heading">
-                      <h4><i class="fa fa-comments" aria-hidden="true"></i> Together</h4>
+                      <h4><i class="fa fa-comments" aria-hidden="true"></i> {% trans "Together" %}</h4>
                   </div>
                   <div class="panel-body">
-                      <p>Run by and for an international go community. We would be delighted to hear your ideas or feedback.</p>
-                      <a href="{% url 'forum:index' %}" class="btn btn-default">Visit our forums</a>
+                      <p>{% trans "Run by and for an international go community. We would be delighted to hear your ideas or feedback." %}</p>
+                      <a href="{% url 'forum:index' %}" class="btn btn-default">{% trans "Visit our forums" %}</a>
                   </div>
               </div>
 </div>
